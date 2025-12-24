@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin;
-use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Employee;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Settings;
 use Illuminate\Support\Facades\Route;
@@ -28,20 +28,22 @@ Route::middleware(['auth'])->group(function () {
     Route::put('settings/password', [Settings\PasswordController::class, 'update'])->name('settings.password.update');
     Route::get('settings/appearance', [Settings\AppearanceController::class, 'edit'])->name('settings.appearance.edit');
 
-    // Employee attendance routes
-    Route::get('attendance/dashboard', [AttendanceController::class, 'dashboard'])->name('attendance.dashboard');
-    Route::get('attendance/selfie', [AttendanceController::class, 'selfie'])->name('attendance.selfie');
-    Route::get('attendance/checkout', [AttendanceController::class, 'checkout'])->name('attendance.checkout');
-    Route::post('attendance/checkout', [AttendanceController::class, 'storeCheckout'])->name('attendance.checkout.store');
-    Route::get('attendance', [AttendanceController::class, 'create'])->name('attendance.create');
-    Route::post('attendance', [AttendanceController::class, 'store'])->name('attendance.store');
-    Route::get('attendance/history', [AttendanceController::class, 'index'])->name('attendance.index');
+    // Employee dashboard (SRP - separate controller)
+    Route::get('attendance/dashboard', [Employee\DashboardController::class, 'index'])->name('attendance.dashboard');
+
+    // Employee attendance routes (SRP - separate controller)
+    Route::get('attendance/selfie', [Employee\AttendanceController::class, 'selfie'])->name('attendance.selfie');
+    Route::get('attendance/checkout', [Employee\AttendanceController::class, 'checkout'])->name('attendance.checkout');
+    Route::post('attendance/checkout', [Employee\AttendanceController::class, 'storeCheckout'])->name('attendance.checkout.store');
+    Route::get('attendance', [Employee\AttendanceController::class, 'create'])->name('attendance.create');
+    Route::post('attendance', [Employee\AttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('attendance/history', [Employee\AttendanceController::class, 'index'])->name('attendance.index');
     
-    // Employee profile routes (mobile)
-    Route::get('attendance/profile', [AttendanceController::class, 'profile'])->name('attendance.profile');
-    Route::put('attendance/profile', [AttendanceController::class, 'updateProfile'])->name('attendance.profile.update');
-    Route::get('attendance/password', [AttendanceController::class, 'password'])->name('attendance.password');
-    Route::put('attendance/password', [AttendanceController::class, 'updatePassword'])->name('attendance.password.update');
+    // Employee profile routes (SRP - separate controller)
+    Route::get('attendance/profile', [Employee\ProfileController::class, 'show'])->name('attendance.profile');
+    Route::put('attendance/profile', [Employee\ProfileController::class, 'update'])->name('attendance.profile.update');
+    Route::get('attendance/password', [Employee\ProfileController::class, 'showPassword'])->name('attendance.password');
+    Route::put('attendance/password', [Employee\ProfileController::class, 'updatePassword'])->name('attendance.password.update');
 
     // Employee leave/permission routes (mobile)
     Route::get('attendance/leaves', [LeaveController::class, 'index'])->name('attendance.leaves.index');
