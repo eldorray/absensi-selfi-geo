@@ -21,7 +21,7 @@ class AdminController extends Controller
     public function index(): View
     {
         // Get statistics
-        $totalEmployees = User::where('role', 'employee')->count();
+        $totalEmployees = User::role('employee')->count();
         $totalOffices = Office::count();
         $todayAttendances = Attendance::whereDate('created_at', today())->count();
         $todayLate = Attendance::whereDate('created_at', today())
