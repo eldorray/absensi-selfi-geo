@@ -4,11 +4,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0ea5e9">
+    <meta name="description" content="Aplikasi Absensi Selfie dengan Verifikasi GPS">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AbsenKu">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/images/icons/icon-512x512.svg">
     <title>AbsenKu - {{ auth()->user()->name }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Install Script -->
+    <script>
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallBanner();
+        });
+        window.addEventListener('appinstalled', () => {
+            hideInstallBanner();
+            deferredPrompt = null;
+        });
+        function showInstallBanner() {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner && !localStorage.getItem('pwaInstallDismissed')) {
+                banner.classList.remove('hidden');
+            }
+        }
+        function hideInstallBanner() {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) {
+                banner.classList.add('hidden');
+            }
+        }
+        window.installPWA = async function() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            hideInstallBanner();
+        }
+        window.dismissInstallBanner = function() {
+            hideInstallBanner();
+            localStorage.setItem('pwaInstallDismissed', 'true');
+        }
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => console.log('SW registered:', registration.scope))
+                    .catch((error) => console.log('SW registration failed:', error));
+            });
+        }
+    </script>
+    
     <style>
         * {
             font-family: 'Inter', sans-serif;
@@ -33,6 +86,36 @@
 </head>
 
 <body>
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner"
+        class="hidden fixed bottom-24 left-4 right-4 z-50 p-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg">
+        <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="flex-shrink-0 w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="text-white">
+                    <p class="font-semibold text-sm">Install AbsenKu</p>
+                    <p class="text-xs text-white/80">Akses lebih cepat & offline</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="installPWA()"
+                    class="px-3 py-1.5 bg-white text-indigo-600 font-semibold text-sm rounded-lg hover:bg-gray-100">
+                    Install
+                </button>
+                <button onclick="dismissInstallBanner()" class="p-1.5 text-white/80 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="mobile-container safe-bottom">
         <div class="min-h-screen pb-20">
             <!-- Header with User Profile -->
