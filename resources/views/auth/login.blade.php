@@ -85,7 +85,7 @@
                         <label class="flex items-center">
                             <input type="checkbox" name="remember"
                                 class="rounded border-gray-300 text-sky-600 focus:ring-sky-500">
-                            <span class="ml-2 text-sm text-gray-600">Ingat saya</span>
+                            <span class="ml-2 text-sm text-gray-600">Ingat saya 30 hari</span>
                         </label>
                         @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}" class="text-sm text-sky-600 hover:text-sky-800">
