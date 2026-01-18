@@ -1,69 +1,181 @@
-# Laravel + Blade Starter Kit
+# 📋 AbsenKU - Sistem Absensi Digital
+
+<p align="center">
+  <img src="docs/screenshots/login.png" alt="Login Page" width="400">
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard" width="400">
+</p>
 
 ---
 
-## Introduction
+## 📖 Tentang Aplikasi
 
-Our Laravel 12 + Blade starter kit provides the typical functionality found in the Laravel Starter kits, but with a few key differences:
+**AbsenKU** adalah sistem kehadiran modern yang menggunakan teknologi **Selfie** dan **Geolokasi** untuk memvalidasi absensi. Aplikasi ini dirancang untuk memudahkan pengelolaan kehadiran karyawan/siswa dengan fitur-fitur canggih dan antarmuka yang modern.
 
-- A CoreUI/AdminLTE inspired design layout
-- Blade + AlpineJS code
+### ✨ Fitur Utama
 
-This kit aims to fill the gap where there is no simple **Blade only** starter kit available.
-
-Our internal goal at Laravel Daily is to start using this starter kit for our Demo applications, to avoid overwhelming our audience with Vue/Livewire/React if we had used one of the official Laravel 12 starter kits.
-
-**Note:** This is Work in Progress kit, so it will get updates and fixes/features as we go.
-
----
-
-## Screenshots
-
-![](https://laraveldaily.com/uploads/2025/05/LoginPage.png)
-
-![](https://laraveldaily.com/uploads/2025/05/RegisterPage.png)
-
-![](https://laraveldaily.com/uploads/2025/05/DashboardPage.png)
-
-![](https://laraveldaily.com/uploads/2025/05/ProfilePage.png)
+- 📸 **Absensi Selfie** - Verifikasi wajah otomatis saat absensi
+- 📍 **Geolokasi** - Validasi lokasi kehadiran menggunakan GPS
+- 📄 **Perizinan Online** - Ajukan izin & cuti secara digital
+- 📊 **Rekap Absensi** - Laporan kehadiran bulanan (Hadir, Terlambat, Total)
+- 🏢 **Multi Kantor/Lokasi** - Dukungan untuk beberapa lokasi kerja
+- 📅 **Jadwal Kerja** - Pengaturan jadwal masuk dan pulang
+- 📆 **Tahun Akademik** - Manajemen periode akademik
+- 👥 **Manajemen User** - Pengelolaan data pengguna dengan role
 
 ---
 
-## What is Inside?
+## 🛠️ Teknologi
 
-Inside you will find all the functions that you would expect:
-
-- Authentication
-    - Login
-    - Registration
-    - Password Reset Flow
-    - Email Confirmation Flow
-- Dashboard Page
-- Profile Settings
-    - Profile Information Page
-    - Password Update Page
-    - Appearance Preferences
+- **Framework**: Laravel 12
+- **Frontend**: Blade + AlpineJS
+- **Database**: MySQL/SQLite
+- **CSS**: Custom CSS
+- **Icons**: Font Awesome, Blade Icons
 
 ---
 
-## How to use it?
+## 🚀 Cara Clone & Instalasi
 
-To use this kit, you can install it using:
+### Persyaratan Sistem
 
-```bash
-laravel new --using=laraveldaily/starter-kit
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
+- MySQL atau SQLite
+
+### Langkah-langkah Instalasi
+
+1. **Clone Repository**
+
+    ```bash
+    git clone https://github.com/USERNAME/absensi-selfie-geo.git
+    cd absensi-selfie-geo
+    ```
+
+2. **Install Dependencies PHP**
+
+    ```bash
+    composer install
+    ```
+
+3. **Install Dependencies Node.js**
+
+    ```bash
+    npm install
+    ```
+
+4. **Konfigurasi Environment**
+
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+
+5. **Konfigurasi Database**
+
+    Edit file `.env` dan sesuaikan konfigurasi database:
+
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=absensi_db
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+
+    Atau gunakan SQLite (lebih mudah untuk development):
+
+    ```bash
+    touch database/database.sqlite
+    ```
+
+    Lalu ubah `.env`:
+
+    ```env
+    DB_CONNECTION=sqlite
+    ```
+
+6. **Jalankan Migrasi Database**
+
+    ```bash
+    php artisan migrate
+    ```
+
+7. **Build Assets**
+
+    ```bash
+    npm run build
+    ```
+
+8. **Jalankan Server Development**
+
+    ```bash
+    # Terminal 1 - Laravel Server
+    php artisan serve
+
+    # Terminal 2 - Vite Development Server
+    npm run dev
+    ```
+
+9. **Akses Aplikasi**
+
+    Buka browser dan akses: `http://localhost:8000`
+
+---
+
+## 📁 Struktur Direktori
+
+```
+absensi-selfie-geo/
+├── app/
+│   ├── Http/Controllers/    # Controller aplikasi
+│   ├── Models/              # Model Eloquent
+│   ├── Services/            # Business logic
+│   └── ...
+├── database/
+│   ├── migrations/          # File migrasi database
+│   └── seeders/             # Data seeder
+├── resources/
+│   ├── views/               # Blade templates
+│   ├── css/                 # Stylesheet
+│   └── js/                  # JavaScript files
+├── routes/
+│   └── web.php              # Route definitions
+└── ...
 ```
 
-From there, you can modify the kit to your needs.
+---
+
+## 📊 Model Database
+
+| Model          | Deskripsi              |
+| -------------- | ---------------------- |
+| `User`         | Data pengguna/karyawan |
+| `Attendance`   | Record kehadiran       |
+| `Leave`        | Data perizinan/cuti    |
+| `Office`       | Lokasi kantor          |
+| `WorkSchedule` | Jadwal kerja           |
+| `WorkSetting`  | Pengaturan kerja       |
+| `AcademicYear` | Tahun akademik         |
+| `Role`         | Hak akses pengguna     |
 
 ---
 
-## Design Elements
+## 🤝 Kontribusi
 
-If you want to see examples of what design elements we have, you can [visit the Wiki](<https://github.com/LaravelDaily/starter-kit/wiki/Design-Examples-(Raw-Files)>) and see the raw HTML files.
+Kontribusi selalu diterima! Silakan buat Pull Request atau buka Issue jika menemukan bug.
 
 ---
 
-## Licence
+## 📄 Lisensi
 
-Starter kit is open-sourced software licensed under the MIT license.
+Proyek ini dilisensikan di bawah [MIT License](LICENSE).
+
+---
+
+## 👨‍💻 Developer
+
+Dikembangkan dengan ❤️ menggunakan Laravel
+</CodeContent>
+<parameter name="EmptyFile">false
