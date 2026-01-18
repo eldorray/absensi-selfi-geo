@@ -176,6 +176,6 @@ Proyek ini dilisensikan di bawah [MIT License](LICENSE).
 
 ## 👨‍💻 Developer
 
-Dikembangkan dengan ❤️ menggunakan Laravel
+Dikembangkan dengan ❤️ menggunakan Ai Assistence
 </CodeContent>
-<parameter name="EmptyFile">false
+<parameter name="EmptyFile">
