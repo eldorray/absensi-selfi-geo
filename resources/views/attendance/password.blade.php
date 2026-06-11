@@ -8,14 +8,37 @@
     <title>Ganti Password - Absensi</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        html,
         body {
-            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
-            min-height: 100vh;
+            background:
+                radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.24), transparent 28rem),
+                linear-gradient(160deg, #0f172a 0%, #164e63 48%, #f8fafc 48.15%, #f8fafc 100%);
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
         }
 
         .mobile-container {
-            max-width: 480px;
+            max-width: 560px;
             margin: 0 auto;
+            height: 100svh;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .mobile-container > .min-h-screen {
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-container > .min-h-screen > .bg-gray-100 {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
     </style>
 </head>
