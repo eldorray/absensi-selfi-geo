@@ -1,147 +1,98 @@
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Detail Perizinan - Absensi</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        html,
-        body {
-            background:
-                radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.24), transparent 28rem),
-                linear-gradient(160deg, #0f172a 0%, #164e63 48%, #f8fafc 48.15%, #f8fafc 100%);
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
-        }
-
-        .mobile-container {
-            max-width: 560px;
-            margin: 0 auto;
-            height: 100svh;
-            overflow: hidden;
-            background: transparent;
-        }
-
-        .mobile-container > .min-h-screen {
-            height: 100%;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mobile-container > .min-h-screen > .bg-gray-100 {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="mobile-container min-h-screen pb-6">
-        <!-- Header -->
-        <div class="px-5 pt-8 pb-6">
-            <div class="flex items-center">
-                <a href="{{ route('attendance.leaves.index') }}" class="text-white/80 hover:text-white mr-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                        </path>
-                    </svg>
-                </a>
-                <h1 class="text-xl font-bold text-white">Detail Perizinan</h1>
+<x-layouts.mobile title="Detail Perizinan" backUrl="{{ route('attendance.leaves.index') }}" showNav="true">
+    <div class="space-y-4 pb-4">
+        
+        <!-- Status Overview Card -->
+        <div class="glass-card theme-border rounded-[24px] p-5 text-left">
+            <div class="flex items-center justify-between gap-3 mb-4.5">
+                <span class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-full bg-white/10 theme-text-main">
+                    {{ $leave->type_label }}
+                </span>
+                
+                <span class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-full @if($leave->status === 'approved') theme-status-ok-card theme-status-ok-text @elseif($leave->status === 'rejected') theme-status-late-card theme-status-late-text @else bg-amber-400/10 text-amber-500 border border-amber-500/20 @endif">
+                    {{ $leave->status_label }}
+                </span>
             </div>
-        </div>
 
-        <!-- Content -->
-        <div class="bg-gray-100 rounded-t-[32px] min-h-screen px-5 pt-6">
-            <!-- Status Card -->
-            <div class="bg-white rounded-2xl shadow-lg p-5 mb-5">
-                <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full {{ $leave->type_badge_class }}">
-                            {{ $leave->type_label }}
-                        </span>
-                    </div>
-                    <span class="px-3 py-1 text-sm font-semibold rounded-full {{ $leave->status_badge_class }}">
-                        {{ $leave->status_label }}
-                    </span>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex items-center text-gray-600">
-                        <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                            </path>
+            <!-- Date range list -->
+            <div class="space-y-3.5 text-xs">
+                <div class="flex items-center gap-3 theme-text-muted">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-none">
+                        <svg class="w-4.5 h-4.5 text-cyan-500" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
                         </svg>
-                        <span>
+                    </div>
+                    <div class="leading-none">
+                        <p class="text-[8px] uppercase font-bold tracking-wider opacity-60">Durasi Perizinan</p>
+                        <p class="font-bold theme-text-main mt-1">
                             {{ $leave->start_date->format('d M Y') }}
                             @if ($leave->start_date != $leave->end_date)
                                 - {{ $leave->end_date->format('d M Y') }}
                             @endif
-                            <span class="text-gray-400">({{ $leave->duration }} hari)</span>
-                        </span>
+                            <span class="theme-status-ok-text ml-1">({{ $leave->duration }} hari)</span>
+                        </p>
                     </div>
-                    <div class="flex items-center text-gray-600">
-                        <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </div>
+
+                <div class="flex items-center gap-3 theme-text-muted">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-none">
+                        <svg class="w-4.5 h-4.5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span>Diajukan {{ $leave->created_at->format('d M Y, H:i') }}</span>
+                    </div>
+                    <div class="leading-none">
+                        <p class="text-[8px] uppercase font-bold tracking-wider opacity-60">Tanggal Pengajuan</p>
+                        <p class="font-bold theme-text-main mt-1">{{ $leave->created_at->format('d M Y, H:i') }} WIB</p>
                     </div>
                 </div>
             </div>
-
-            <!-- Reason -->
-            <div class="bg-white rounded-2xl shadow-lg p-5 mb-5">
-                <h3 class="font-semibold text-gray-800 mb-3">Alasan</h3>
-                <p class="text-gray-600">{{ $leave->reason }}</p>
-            </div>
-
-            <!-- Attachment -->
-            @if ($leave->attachment)
-                <div class="bg-white rounded-2xl shadow-lg p-5 mb-5">
-                    <h3 class="font-semibold text-gray-800 mb-3">Lampiran</h3>
-                    <img src="{{ $leave->attachment_url }}" alt="Lampiran" class="w-full rounded-xl">
-                </div>
-            @endif
-
-            <!-- Approval Info -->
-            @if (!$leave->isPending())
-                <div class="bg-white rounded-2xl shadow-lg p-5 mb-5">
-                    <h3 class="font-semibold text-gray-800 mb-3">
-                        {{ $leave->isApproved() ? 'Disetujui Oleh' : 'Ditolak Oleh' }}
-                    </h3>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                            <span class="font-medium text-gray-600">
-                                {{ $leave->approver ? substr($leave->approver->name, 0, 1) : '?' }}
-                            </span>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-800">{{ $leave->approver?->name ?? '-' }}</p>
-                            <p class="text-sm text-gray-500">{{ $leave->approved_at?->format('d M Y, H:i') }}</p>
-                        </div>
-                    </div>
-
-                    @if ($leave->isRejected() && $leave->rejection_reason)
-                        <div class="mt-4 p-3 bg-red-50 rounded-xl">
-                            <p class="text-sm font-medium text-red-800 mb-1">Alasan Penolakan:</p>
-                            <p class="text-sm text-red-700">{{ $leave->rejection_reason }}</p>
-                        </div>
-                    @endif
-                </div>
-            @endif
         </div>
-    </div>
-</body>
 
-</html>
+        <!-- Reason Card -->
+        <div class="glass-card theme-border rounded-[22px] p-4.5 text-left">
+            <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-2.5">Alasan Pengajuan</h3>
+            <p class="text-xs theme-text-main leading-relaxed font-semibold">{{ $leave->reason }}</p>
+        </div>
+
+        <!-- Attachment image Card -->
+        @if ($leave->attachment)
+            <div class="glass-card theme-border rounded-[22px] p-4 text-left">
+                <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-3">Dokumen Lampiran</h3>
+                <div class="rounded-xl overflow-hidden border border-white/10 shadow bg-slate-900">
+                    <a href="{{ $leave->attachment_url }}" target="_blank">
+                        <img src="{{ $leave->attachment_url }}" alt="Lampiran" class="w-full object-contain max-h-60 hover:opacity-90 transition-opacity">
+                    </a>
+                </div>
+            </div>
+        @endif
+
+        <!-- Approval / Rejection details -->
+        @if (!$leave->isPending())
+            <div class="glass-card theme-border rounded-[22px] p-4.5 text-left">
+                <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-3.5">
+                    {{ $leave->isApproved() ? 'Disetujui Oleh' : 'Ditolak Oleh' }}
+                </h3>
+                
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-emerald-400 p-[1px] flex-none">
+                        <div class="w-full h-full rounded-xl bg-slate-950 flex items-center justify-center font-bold text-white text-xs font-outfit uppercase">
+                            {{ $leave->approver ? substr($leave->approver->name, 0, 1) : '?' }}
+                        </div>
+                    </div>
+                    
+                    <div class="leading-none text-left flex-1 min-w-0">
+                        <p class="font-bold text-xs theme-text-main font-display truncate">{{ $leave->approver?->name ?? '-' }}</p>
+                        <p class="text-[9px] theme-text-muted mt-1 font-outfit uppercase font-semibold">{{ $leave->approved_at?->format('d M Y, H:i') }} WIB</p>
+                    </div>
+                </div>
+
+                @if ($leave->isRejected() && $leave->rejection_reason)
+                    <div class="mt-4 p-3.5 rounded-xl border border-red-500/20 bg-red-500/10 theme-status-late-text text-xs leading-normal">
+                        <p class="font-black text-[10px] uppercase tracking-wider mb-1 font-outfit">Alasan Penolakan:</p>
+                        <p class="font-semibold">{{ $leave->rejection_reason }}</p>
+                    </div>
+                @endif
+            </div>
+        @endif
+
+    </div>
+</x-layouts.mobile>

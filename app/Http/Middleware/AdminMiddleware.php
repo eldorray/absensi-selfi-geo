@@ -25,7 +25,7 @@ class AdminMiddleware
                 return response()->json(['message' => 'Unauthorized.'], 403);
             }
 
-            return redirect()->route('attendance.create')
+            return redirect()->route('attendance.dashboard')
                 ->with('error', 'Anda tidak memiliki akses ke halaman admin.');
         }
 

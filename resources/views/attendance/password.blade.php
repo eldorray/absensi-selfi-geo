@@ -1,167 +1,89 @@
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Ganti Password - Absensi</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        html,
-        body {
-            background:
-                radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.24), transparent 28rem),
-                linear-gradient(160deg, #0f172a 0%, #164e63 48%, #f8fafc 48.15%, #f8fafc 100%);
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
-        }
-
-        .mobile-container {
-            max-width: 560px;
-            margin: 0 auto;
-            height: 100svh;
-            overflow: hidden;
-            background: transparent;
-        }
-
-        .mobile-container > .min-h-screen {
-            height: 100%;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mobile-container > .min-h-screen > .bg-gray-100 {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="mobile-container min-h-screen pb-6">
-        <!-- Header -->
-        <div class="px-5 pt-8 pb-6">
-            <div class="flex items-center">
-                <a href="{{ route('attendance.dashboard') }}" class="text-white/80 hover:text-white mr-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                        </path>
-                    </svg>
-                </a>
-                <h1 class="text-xl font-bold text-white">Ganti Password</h1>
+<x-layouts.mobile title="Ganti Password" backUrl="{{ route('attendance.profile') }}" showNav="true">
+    <div class="space-y-4 pb-4">
+        
+        <!-- Icon Banner -->
+        <div class="flex flex-col items-center justify-center py-2">
+            <div class="w-14 h-14 rounded-2xl theme-icon-password flex items-center justify-center text-amber-500 shadow-md">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
             </div>
+            <p class="text-[9px] theme-text-muted mt-2 uppercase font-bold tracking-wider font-outfit">Sandi Keamanan</p>
         </div>
 
-        <!-- Content -->
-        <div class="bg-gray-100 rounded-t-[32px] min-h-screen px-5 pt-6">
-            <!-- Icon -->
-            <div class="flex justify-center mb-6">
-                <div
-                    class="w-20 h-20 rounded-full bg-amber-100 border-4 border-white shadow-lg flex items-center justify-center">
-                    <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                        </path>
-                    </svg>
+        <!-- Form card -->
+        <div class="glass-card theme-border rounded-[24px] p-5">
+            @if (session('success'))
+                <div class="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-xs theme-status-ok-text text-left font-bold">
+                    {{ session('success') }}
                 </div>
-            </div>
+            @endif
 
-            <!-- Form -->
-            <div class="bg-white rounded-2xl shadow-lg p-5 mb-5">
-                @if (session('success'))
-                    <div class="mb-4 p-3 bg-green-100 border border-green-300 text-green-700 rounded-xl text-sm">
-                        {{ session('success') }}
-                    </div>
-                @endif
+            @if ($errors->any())
+                <div class="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-500 text-left font-medium">
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                @if ($errors->any())
-                    <div class="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-xl text-sm">
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+            <form action="{{ route('attendance.password.update') }}" method="POST" class="space-y-4 text-left">
+                @csrf
+                @method('PUT')
 
-                <form action="{{ route('attendance.password.update') }}" method="POST">
-                    @csrf
-                    @method('PUT')
+                <!-- Current Password -->
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Password Saat Ini</label>
+                    <input type="password" name="current_password"
+                        class="theme-input w-full rounded-2xl px-4 py-3 text-xs font-semibold"
+                        placeholder="Masukkan password saat ini" required>
+                </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password Saat Ini</label>
-                        <input type="password" name="current_password"
-                            class="w-full p-3 rounded-xl border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"
-                            placeholder="Masukkan password saat ini">
-                    </div>
+                <!-- New Password -->
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Password Baru</label>
+                    <input type="password" name="password"
+                        class="theme-input w-full rounded-2xl px-4 py-3 text-xs font-semibold"
+                        placeholder="Minimal 8 karakter" required>
+                </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password Baru</label>
-                        <input type="password" name="password"
-                            class="w-full p-3 rounded-xl border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"
-                            placeholder="Minimal 8 karakter">
-                    </div>
+                <!-- Confirm Password -->
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Konfirmasi Password Baru</label>
+                    <input type="password" name="password_confirmation"
+                        class="theme-input w-full rounded-2xl px-4 py-3 text-xs font-semibold"
+                        placeholder="Ulangi password baru" required>
+                </div>
 
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password Baru</label>
-                        <input type="password" name="password_confirmation"
-                            class="w-full p-3 rounded-xl border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"
-                            placeholder="Ulangi password baru">
-                    </div>
-
-                    <button type="submit"
-                        class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-colors">
-                        Ganti Password
-                    </button>
-                </form>
-            </div>
-
-            <!-- Tips -->
-            <div class="bg-white rounded-2xl shadow-lg p-5">
-                <h3 class="font-semibold text-gray-800 mb-3">Tips Password Aman</h3>
-                <ul class="space-y-2 text-sm text-gray-600">
-                    <li class="flex items-start">
-                        <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        Gunakan minimal 8 karakter
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        Kombinasikan huruf besar dan kecil
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        Tambahkan angka dan simbol
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        Jangan gunakan informasi pribadi
-                    </li>
-                </ul>
-            </div>
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="theme-btn-submit flex w-full items-center justify-center rounded-[1.4rem] py-3.5 text-xs font-bold tracking-wider uppercase hover:scale-[1.01] active:scale-[0.99] font-outfit" style="background-color: var(--status-late-text); color: #fff; box-shadow: 0 10px 24px rgba(245, 158, 11, 0.15)">
+                    Update Password
+                </button>
+            </form>
         </div>
-    </div>
-</body>
 
-</html>
+        <!-- Security Tips Info Card -->
+        <div class="glass-card theme-border rounded-[22px] p-4 text-left">
+            <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-3">Persyaratan Password Kuat</h3>
+            
+            <ul class="space-y-2 text-[10px] font-semibold theme-text-muted font-outfit">
+                <li class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                    Gunakan minimal 8 karakter unik
+                </li>
+                <li class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                    Kombinasikan huruf kapital, huruf kecil, dan angka
+                </li>
+                <li class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                    Hindari penggunaan informasi pribadi (nama, tanggal lahir)
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</x-layouts.mobile>

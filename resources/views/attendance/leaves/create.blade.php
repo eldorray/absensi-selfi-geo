@@ -1,180 +1,116 @@
-<!DOCTYPE html>
-<html lang="id">
+<x-layouts.mobile title="Ajukan Izin" backUrl="{{ route('attendance.leaves.index') }}" showNav="true">
+    <div class="space-y-4 pb-4">
+        
+        <!-- Form card -->
+        <div class="glass-card theme-border rounded-[24px] p-5 text-left">
+            @if ($errors->any())
+                <div class="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-500 font-medium">
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Ajukan Perizinan - Absensi</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        html,
-        body {
-            background:
-                radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.24), transparent 28rem),
-                linear-gradient(160deg, #0f172a 0%, #164e63 48%, #f8fafc 48.15%, #f8fafc 100%);
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
-        }
+            <form action="{{ route('attendance.leaves.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                @csrf
 
-        .mobile-container {
-            max-width: 560px;
-            margin: 0 auto;
-            height: 100svh;
-            overflow: hidden;
-            background: transparent;
-        }
-
-        .mobile-container > .min-h-screen {
-            height: 100%;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mobile-container > .min-h-screen > .bg-gray-100 {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="mobile-container min-h-screen pb-6">
-        <!-- Header -->
-        <div class="px-5 pt-8 pb-6">
-            <div class="flex items-center">
-                <a href="{{ route('attendance.leaves.index') }}" class="text-white/80 hover:text-white mr-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                        </path>
-                    </svg>
-                </a>
-                <h1 class="text-xl font-bold text-white">Ajukan Perizinan</h1>
-            </div>
-        </div>
-
-        <!-- Content -->
-        <div class="bg-gray-100 rounded-t-[32px] min-h-screen px-5 pt-6">
-            <!-- Form -->
-            <div class="bg-white rounded-2xl shadow-lg p-5 mb-5">
-                @if ($errors->any())
-                    <div class="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-xl text-sm">
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <form action="{{ route('attendance.leaves.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <!-- Type -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Perizinan</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <label class="relative">
-                                <input type="radio" name="type" value="izin" class="peer sr-only"
-                                    {{ old('type') == 'izin' ? 'checked' : '' }} required>
-                                <div
-                                    class="p-3 text-center rounded-xl border-2 border-gray-200 peer-checked:border-blue-500 peer-checked:bg-blue-50 cursor-pointer transition-colors">
-                                    <svg class="w-6 h-6 mx-auto mb-1 text-blue-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                        </path>
-                                    </svg>
-                                    <span class="text-sm font-medium">Izin</span>
-                                </div>
-                            </label>
-                            <label class="relative">
-                                <input type="radio" name="type" value="cuti" class="peer sr-only"
-                                    {{ old('type') == 'cuti' ? 'checked' : '' }}>
-                                <div
-                                    class="p-3 text-center rounded-xl border-2 border-gray-200 peer-checked:border-purple-500 peer-checked:bg-purple-50 cursor-pointer transition-colors">
-                                    <svg class="w-6 h-6 mx-auto mb-1 text-purple-600" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    <span class="text-sm font-medium">Cuti</span>
-                                </div>
-                            </label>
-                            <label class="relative">
-                                <input type="radio" name="type" value="sakit" class="peer sr-only"
-                                    {{ old('type') == 'sakit' ? 'checked' : '' }}>
-                                <div
-                                    class="p-3 text-center rounded-xl border-2 border-gray-200 peer-checked:border-red-500 peer-checked:bg-red-50 cursor-pointer transition-colors">
-                                    <svg class="w-6 h-6 mx-auto mb-1 text-red-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                                        </path>
-                                    </svg>
-                                    <span class="text-sm font-medium">Sakit</span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Dates -->
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai</label>
-                            <input type="date" name="start_date" value="{{ old('start_date', date('Y-m-d')) }}"
-                                class="w-full p-3 rounded-xl border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Selesai</label>
-                            <input type="date" name="end_date" value="{{ old('end_date', date('Y-m-d')) }}"
-                                class="w-full p-3 rounded-xl border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                        </div>
-                    </div>
-
-                    <!-- Reason -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Alasan</label>
-                        <textarea name="reason" rows="4" placeholder="Jelaskan alasan perizinan Anda..."
-                            class="w-full p-3 rounded-xl border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">{{ old('reason') }}</textarea>
-                    </div>
-
-                    <!-- Attachment -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Lampiran (Opsional)</label>
-                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center" id="dropzone">
-                            <input type="file" name="attachment" id="attachment" accept="image/*" class="hidden">
-                            <div id="preview" class="hidden mb-3">
-                                <img id="preview-image" class="w-full max-h-48 object-contain rounded-xl">
-                            </div>
-                            <label for="attachment" class="cursor-pointer">
-                                <svg class="w-10 h-10 mx-auto text-gray-400 mb-2" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                    </path>
+                <!-- Type Selector Radio Tabs (Izin, Cuti, Sakit) -->
+                <div>
+                    <label class="mb-2 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Jenis Perizinan</label>
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <!-- Izin Tab -->
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="type" value="izin" class="peer sr-only"
+                                {{ old('type', 'izin') == 'izin' ? 'checked' : '' }} required>
+                            <div class="p-3 text-center rounded-2xl glass-card theme-border peer-checked:border-cyan-500/60 peer-checked:bg-cyan-500/10 hover:bg-white/5 active:scale-98 transition-all flex flex-col items-center justify-center">
+                                <svg class="w-5.5 h-5.5 text-cyan-500 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                 </svg>
-                                <p class="text-sm text-gray-500">Klik untuk upload foto bukti</p>
-                                <p class="text-xs text-gray-400 mt-1">Maks. 5MB (JPG, PNG)</p>
-                            </label>
-                        </div>
+                                <span class="text-[10px] font-bold theme-text-main font-outfit">Izin</span>
+                            </div>
+                        </label>
+                        
+                        <!-- Cuti Tab -->
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="type" value="cuti" class="peer sr-only"
+                                {{ old('type') == 'cuti' ? 'checked' : '' }}>
+                            <div class="p-3 text-center rounded-2xl glass-card theme-border peer-checked:border-purple-500/60 peer-checked:bg-purple-500/10 hover:bg-white/5 active:scale-98 transition-all flex flex-col items-center justify-center">
+                                <svg class="w-5.5 h-5.5 text-purple-500 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="text-[10px] font-bold theme-text-main font-outfit">Cuti</span>
+                            </div>
+                        </label>
+                        
+                        <!-- Sakit Tab -->
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="type" value="sakit" class="peer sr-only"
+                                {{ old('type') == 'sakit' ? 'checked' : '' }}>
+                            <div class="p-3 text-center rounded-2xl glass-card theme-border peer-checked:border-red-500/60 peer-checked:bg-red-500/10 hover:bg-white/5 active:scale-98 transition-all flex flex-col items-center justify-center">
+                                <svg class="w-5.5 h-5.5 text-red-500 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+                                </svg>
+                                <span class="text-[10px] font-bold theme-text-main font-outfit">Sakit</span>
+                            </div>
+                        </label>
                     </div>
+                </div>
 
-                    <button type="submit"
-                        class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl transition-colors">
-                        Kirim Pengajuan
-                    </button>
-                </form>
-            </div>
+                <!-- Date pickers -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Tanggal Mulai</label>
+                        <input type="date" name="start_date" value="{{ old('start_date', date('Y-m-d')) }}"
+                            class="theme-input w-full rounded-2xl px-4.5 py-3 text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Tanggal Selesai</label>
+                        <input type="date" name="end_date" value="{{ old('end_date', date('Y-m-d')) }}"
+                            class="theme-input w-full rounded-2xl px-4.5 py-3 text-xs font-semibold">
+                    </div>
+                </div>
+
+                <!-- Reason Textarea -->
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Alasan Pengajuan</label>
+                    <textarea name="reason" rows="3" placeholder="Tuliskan alasan perizinan Anda secara jelas..."
+                        class="theme-input w-full rounded-2xl px-4.5 py-3 text-xs font-semibold" required>{{ old('reason') }}</textarea>
+                </div>
+
+                <!-- File Attachment Dropzone -->
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Dokumen Pendukung (Opsional)</label>
+                    <div class="relative glass-card theme-border rounded-[22px] p-4 text-center cursor-pointer hover:bg-white/5 transition-colors duration-200">
+                        <input type="file" name="attachment" id="attachment" accept="image/*" class="hidden">
+                        
+                        <!-- Image Preview display block -->
+                        <div id="preview" class="hidden mb-3.5 max-w-[150px] mx-auto rounded-xl overflow-hidden border border-white/10">
+                            <img id="preview-image" class="w-full max-h-36 object-contain">
+                        </div>
+                        
+                        <label for="attachment" class="cursor-pointer block">
+                            <svg class="w-8 h-8 mx-auto text-cyan-500 mb-2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/>
+                            </svg>
+                            <p class="text-[9px] font-bold theme-text-main font-outfit uppercase">Pilih File Foto Bukti</p>
+                            <p class="text-[8px] theme-text-muted mt-1 font-outfit">Maksimal file 5MB (JPG, PNG)</p>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="theme-btn-submit flex w-full items-center justify-center rounded-[1.4rem] py-3.5 text-xs font-bold tracking-wider uppercase hover:scale-[1.01] active:scale-[0.99] font-outfit">
+                    Kirim Pengajuan Izin
+                </button>
+            </form>
         </div>
+
     </div>
 
+    <!-- Script for Handling Attachment Image Preview -->
     <script>
         document.getElementById('attachment').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -188,6 +124,4 @@
             }
         });
     </script>
-</body>
-
-</html>
+</x-layouts.mobile>

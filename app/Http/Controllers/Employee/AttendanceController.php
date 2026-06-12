@@ -65,7 +65,7 @@ class AttendanceController extends Controller
             ->whereDate('created_at', today())
             ->first();
 
-        return view('attendance.create', [
+        return view('attendance.selfie', [
             'offices' => $offices,
             'user' => $user,
             'todayAttendance' => $todayAttendance,

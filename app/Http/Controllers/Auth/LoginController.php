@@ -48,7 +48,7 @@ class LoginController extends Controller
         }
 
         // Employee/Teacher goes directly to dashboard
-        return redirect()->intended(route('attendance.dashboard'));
+        return redirect()->route('attendance.dashboard');
     }
 
     public function destroy(Request $request): RedirectResponse

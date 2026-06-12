@@ -1,337 +1,328 @@
-<!DOCTYPE html>
-<html lang="id">
+<x-layouts.mobile title="Absensi Pulang" activeTab="pulang">
+    <x-slot:headerAction>
+        <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+        </span>
+    </x-slot:headerAction>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Absensi Pulang - AbsenKu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        html,
-        body {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
+        /* Viewfinder Scanner Animations */
+        @keyframes scanline {
+            0%, 100% { top: 12%; opacity: 0.8; }
+            50% { top: 85%; opacity: 0.8; }
         }
 
-        * {
-            font-family: 'Inter', sans-serif;
+        @keyframes pulse-ring {
+            0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
         }
 
-        body {
-            background:
-                radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.24), transparent 28rem),
-                linear-gradient(160deg, #0f172a 0%, #164e63 48%, #f8fafc 48.15%, #f8fafc 100%);
-            height: 100%;
+        .animate-scanline {
+            animation: scanline 3.2s ease-in-out infinite;
         }
 
-        .mobile-container {
-            max-width: 560px;
-            margin: 0 auto;
-            height: 100svh;
-            overflow: hidden;
-            background: transparent;
+        .animate-pulse-ring {
+            animation: pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
 
-        .safe-bottom {
-            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        /* Viewfinder */
+        .viewfinder-border-glow {
+            box-shadow: 0 0 16px rgba(245, 158, 11, 0.05);
         }
 
-        .mobile-container > .min-h-screen {
-            height: 100%;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
+        .theme-scanline {
+            background-color: var(--active-nav-color);
+            box-shadow: 0 0 12px var(--active-nav-color);
         }
 
-        .mobile-container > .min-h-screen > .bg-gray-100 {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+        .theme-brackets {
+            border-color: var(--active-nav-color);
+        }
+
+        .theme-guideline {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        body.light-theme .theme-guideline {
+            border-color: rgba(99, 102, 241, 0.2);
         }
     </style>
-</head>
 
-<body>
-    <div class="mobile-container safe-bottom" x-data="checkoutForm()" x-init="init()">
-        <div class="min-h-screen pb-20">
-            <!-- Header -->
-            <div class="px-5 pt-8 pb-6">
-                <div class="flex items-center justify-between">
-                    <a href="{{ route('attendance.dashboard') }}" class="p-2 -ml-2 text-white/70 hover:text-white">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                            </path>
+    <div x-data="checkoutForm()" x-init="init()" class="space-y-4 pb-4">
+
+        @if (!$todayAttendance)
+            <!-- Not Checked In Yet Screen -->
+            <div class="rounded-3xl p-6 text-center theme-status-late-card theme-status-late-text relative overflow-hidden">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-white/10 flex items-center justify-center">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-black font-display mb-1">Belum Absen Masuk</h2>
+                <p class="text-xs theme-text-muted">Anda wajib melakukan absensi masuk terlebih dahulu sebelum bisa mencatat absensi pulang harian.</p>
+                
+                <a href="{{ route('attendance.selfie') }}"
+                    class="mt-6 flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all duration-300 font-outfit shadow-md">
+                    Absen Masuk Sekarang
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                    </svg>
+                </a>
+            </div>
+
+        @elseif ($todayAttendance->hasCheckedOut())
+            <!-- Already Checked Out Screen -->
+            <div class="rounded-3xl p-6 text-center theme-status-ok-card theme-status-ok-text relative overflow-hidden">
+                <div class="relative w-24 h-24 mx-auto mb-4 rounded-full border-4 border-white/20 overflow-hidden shadow-md bg-slate-900">
+                    <img src="{{ $todayAttendance->check_out_image_url }}" alt="Selfie Pulang" class="w-full h-full object-cover">
+                </div>
+                <h2 class="text-xl font-black font-display mb-1">Sudah Absen Pulang!</h2>
+                <p class="text-[10px] theme-text-muted uppercase tracking-wider font-outfit">Status Pulang Harian</p>
+                
+                <div class="my-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    Selesai Kerja
+                </div>
+                
+                <p class="text-xs theme-text-muted">Absen pulang dicatat pukul <span class="font-bold theme-text-main">{{ $todayAttendance->check_out_at->format('H:i') }} WIB</span></p>
+                
+                <a href="{{ route('attendance.dashboard') }}"
+                    class="mt-6 flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/15 theme-text-main font-bold text-xs uppercase tracking-wider transition-all duration-300 font-outfit border border-white/5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Kembali ke Beranda
+                </a>
+            </div>
+
+        @else
+            <!-- Camera Viewfinder Section -->
+            <div class="glass-card theme-border rounded-[24px] overflow-hidden p-2.5 viewfinder-border-glow">
+                <div class="relative aspect-[3/4] bg-slate-950 rounded-[18px] overflow-hidden">
+                    <video x-ref="video" x-show="!photoTaken" autoplay playsinline class="w-full h-full object-cover"></video>
+                    <canvas x-ref="canvas" x-show="photoTaken" class="w-full h-full object-cover"></canvas>
+
+                    <!-- Camera Loading Overlay -->
+                    <div x-show="cameraLoading" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 z-20">
+                        <svg class="animate-spin h-9 w-9 text-amber-500 mb-3" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                    </a>
-                    <h1 class="text-white font-semibold text-lg">Absensi Pulang</h1>
-                    <div class="w-10"></div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest font-outfit">Menghubungkan Kamera...</span>
+                    </div>
+
+                    <!-- Camera Access Error Overlay -->
+                    <div x-show="cameraError" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/95 z-20 px-6 text-center">
+                        <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mb-3 border border-red-500/20">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <p class="text-xs font-bold text-red-500 font-outfit uppercase tracking-wider">Akses Kamera Gagal</p>
+                        <p class="text-[10px] text-slate-400 mt-1" x-text="cameraError"></p>
+                    </div>
+
+                    <!-- Scanning Overlay Details -->
+                    <div x-show="!photoTaken && !cameraLoading && !cameraError" class="absolute inset-0 pointer-events-none z-10">
+                        <!-- Laser line -->
+                        <div class="theme-scanline absolute left-2 right-2 h-[1px] rounded animate-scanline"></div>
+                        
+                        <!-- Brackets corners -->
+                        <div class="theme-brackets absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 rounded-tl-sm opacity-60"></div>
+                        <div class="theme-brackets absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 rounded-tr-sm opacity-60"></div>
+                        <div class="theme-brackets absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 rounded-bl-sm opacity-60"></div>
+                        <div class="theme-brackets absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 rounded-br-sm opacity-60"></div>
+
+                        <!-- Face Guidance Ellipse -->
+                        <div class="absolute inset-10 border border-dashed border-white/5 rounded-full flex items-center justify-center opacity-40">
+                            <div class="theme-guideline w-[82%] h-[82%] border border-dashed rounded-full"></div>
+                        </div>
+
+                        <!-- Scanner Status Tag -->
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                            <span class="text-[8px] text-amber-400 font-black tracking-widest uppercase font-outfit">DETEKSI WAJAH</span>
+                        </div>
+                    </div>
+
+                    <!-- Photo Success Badge -->
+                    <div x-show="photoTaken" class="absolute inset-0 pointer-events-none z-10 flex items-center justify-center bg-black/10">
+                        <span class="px-3.5 py-1.5 bg-emerald-500/90 backdrop-blur-md text-white rounded-full text-[9px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                            </svg>
+                            Foto Terkunci
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="bg-gray-100 rounded-t-[32px] min-h-screen px-5 pt-6">
-
-                @if (!$todayAttendance)
-                    <!-- Not Checked In Yet -->
-                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
-                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-100 flex items-center justify-center">
-                            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                                </path>
-                            </svg>
-                        </div>
-                        <h2 class="text-xl font-bold text-amber-800 mb-2">Belum Absen Masuk</h2>
-                        <p class="text-amber-700 mb-4">Anda harus absen masuk terlebih dahulu.</p>
-                        <a href="{{ route('attendance.selfie') }}"
-                            class="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-medium transition-colors">
-                            Absen Masuk
-                        </a>
-                    </div>
-                @elseif($todayAttendance->hasCheckedOut())
-                    <!-- Already Checked Out -->
-                    <div
-                        class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-center text-white">
-                        <div class="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-white/50 overflow-hidden">
-                            <img src="{{ $todayAttendance->check_out_image_url }}" alt="Selfie"
-                                class="w-full h-full object-cover">
-                        </div>
-                        <h2 class="text-2xl font-bold mb-2">Sudah Absen Pulang!</h2>
-                        <p class="text-white/80">Check-out {{ $todayAttendance->check_out_at->format('H:i') }} WIB</p>
-                        <a href="{{ route('attendance.dashboard') }}"
-                            class="inline-block mt-6 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-medium transition-colors">
-                            Kembali ke Beranda
-                        </a>
-                    </div>
-                @else
-                    <!-- Camera Section -->
-                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-5">
-                        <div class="relative aspect-[3/4] bg-gray-900">
-                            <video x-ref="video" x-show="!photoTaken" autoplay playsinline
-                                class="w-full h-full object-cover"></video>
-                            <canvas x-ref="canvas" x-show="photoTaken" class="w-full h-full object-cover"></canvas>
-
-                            <!-- Camera Loading -->
-                            <div x-show="cameraLoading"
-                                class="absolute inset-0 flex items-center justify-center bg-gray-900">
-                                <div class="text-center">
-                                    <svg class="animate-spin h-12 w-12 text-sky-500 mx-auto mb-3" fill="none"
-                                        viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10"
-                                            stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                    <span class="text-gray-400">Mengaktifkan kamera...</span>
-                                </div>
-                            </div>
-
-                            <!-- Photo Overlay -->
-                            <div x-show="photoTaken"
-                                class="absolute bottom-4 left-4 right-4 flex items-center justify-center">
-                                <span class="px-4 py-2 bg-green-500 text-white rounded-full text-sm font-medium">✓ Foto
-                                    Berhasil</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Camera Button -->
-                    <div class="flex gap-3 mb-5">
-                        <button type="button" @click="takePhoto()" x-show="!photoTaken && !cameraError"
-                            :disabled="cameraLoading"
-                            class="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 px-6 rounded-2xl transition-all shadow-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
-                                </path>
-                            </svg>
-                            Ambil Foto
-                        </button>
-                        <button type="button" @click="retakePhoto()" x-show="photoTaken"
-                            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-4 px-6 rounded-2xl transition-all flex items-center justify-center">
-                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                                </path>
-                            </svg>
-                            Ulangi
-                        </button>
-                    </div>
-
-                    <!-- Office Selection -->
-                    <div class="bg-white rounded-2xl shadow-lg p-5 mb-5">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Pilih Kantor</label>
-                        <select x-model="officeId" @change="calculateDistance()"
-                            class="w-full rounded-xl border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 py-3 text-gray-700">
-                            <option value="">-- Pilih Kantor --</option>
-                            @foreach ($offices as $office)
-                                <option value="{{ $office->id }}" data-lat="{{ $office->latitude }}"
-                                    data-lng="{{ $office->longitude }}" data-radius="{{ $office->radius_meters }}">
-                                    {{ $office->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Distance Warning -->
-                    <div x-show="distanceWarning" class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-5">
-                        <div class="flex items-start">
-                            <svg class="w-6 h-6 text-red-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                                </path>
-                            </svg>
-                            <div>
-                                <p class="font-semibold text-red-700">⚠️ Anda Jauh dari Lokasi Kantor!</p>
-                                <p class="text-red-600 text-sm mt-1"
-                                    x-text="'Jarak Anda: ' + Math.round(currentDistance) + ' meter (maksimal: ' + maxDistance + ' meter)'">
-                                </p>
-                                <p class="text-red-500 text-xs mt-1">Pastikan Anda berada di area kantor untuk
-                                    melakukan absensi.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Distance OK -->
-                    <div x-show="distanceOk && locationFetched && officeId"
-                        class="bg-green-50 border border-green-200 rounded-2xl p-4 mb-5">
-                        <div class="flex items-center">
-                            <svg class="w-6 h-6 text-green-500 mr-3" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <div>
-                                <p class="font-semibold text-green-700">✓ Lokasi Valid</p>
-                                <p class="text-green-600 text-sm"
-                                    x-text="'Jarak: ' + Math.round(currentDistance) + ' meter dari kantor'"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Location Status -->
-                    <div class="bg-white rounded-2xl shadow-lg p-5 mb-5">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center"
-                                    :class="locationFetched ? 'bg-green-100' : 'bg-amber-100'">
-                                    <svg x-show="locationLoading" class="animate-spin h-5 w-5 text-amber-600"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10"
-                                            stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                    <svg x-show="locationFetched && !locationLoading" class="w-5 h-5 text-green-600"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="font-medium text-gray-800"
-                                        x-text="locationLoading ? 'Mengambil lokasi...' : (locationFetched ? 'Lokasi Ditemukan' : 'Menunggu Lokasi')">
-                                    </p>
-                                    <p x-show="locationFetched" class="text-sm text-gray-500"
-                                        x-text="latitude + ', ' + longitude"></p>
-                                </div>
-                            </div>
-                            <button type="button" @click="fetchLocation()"
-                                class="p-2 text-sky-600 hover:bg-sky-50 rounded-lg">
-                                <svg class="w-5 h-5" :class="{ 'animate-spin': locationLoading }" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Error Messages -->
-                    @if ($errors->any())
-                        <div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-5">
-                            <ul class="text-red-700 text-sm list-disc list-inside space-y-1">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <!-- Submit Button -->
-                    <form method="POST" action="{{ route('attendance.checkout.store') }}"
-                        @submit.prevent="submitForm">
-                        @csrf
-                        <input type="hidden" name="latitude" x-model="latitude">
-                        <input type="hidden" name="longitude" x-model="longitude">
-                        <input type="hidden" name="image_base64" x-model="imageBase64">
-                        <input type="hidden" name="office_id" x-model="officeId">
-
-                        <button type="submit" :disabled="!canSubmit || isSubmitting"
-                            class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg flex items-center justify-center text-lg">
-                            <svg x-show="isSubmitting" class="animate-spin h-6 w-6 mr-2" fill="none"
-                                viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10"
-                                    stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                </path>
-                            </svg>
-                            <svg x-show="!isSubmitting" class="w-6 h-6 mr-2" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                                </path>
-                            </svg>
-                            <span x-text="isSubmitting ? 'Memproses...' : 'SUBMIT PULANG'"></span>
-                        </button>
-                    </form>
-                @endif
-            </div>
-        </div>
-
-        <!-- Bottom Navigation -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
-            <div class="max-w-[480px] mx-auto flex items-center justify-around h-20">
-                <a href="{{ route('attendance.dashboard') }}" class="flex flex-col items-center text-gray-400">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            <!-- Action Trigger Button (Camera Capture) -->
+            <div class="flex gap-3">
+                <button type="button" @click="takePhoto()" x-show="!photoTaken && !cameraError" :disabled="cameraLoading"
+                    class="flex-1 theme-btn-submit flex items-center justify-center gap-2 rounded-2xl py-3.5 text-xs font-bold uppercase tracking-wider font-outfit shadow-md hover:scale-[1.01] active:scale-[0.99] transition-transform" style="background-color: var(--status-late-text); color: #fff; box-shadow: 0 12px 28px rgba(245, 158, 11, 0.15)">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/>
                     </svg>
-                    <span class="text-xs mt-1 font-medium">Beranda</span>
-                </a>
-                <a href="{{ route('attendance.selfie') }}" class="flex flex-col items-center -mt-6">
-                    <div
-                        class="w-16 h-16 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 shadow-lg flex items-center justify-center">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4">
-                            </path>
+                    Ambil Foto Selfie
+                </button>
+                <button type="button" @click="retakePhoto()" x-show="photoTaken"
+                    class="flex-1 theme-nav-inactive flex items-center justify-center gap-2 rounded-2xl py-3.5 text-xs font-bold uppercase tracking-wider font-outfit hover:bg-white/5 active:scale-98 transition-all">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Ulangi Foto
+                </button>
+            </div>
+
+            <!-- Office Location Selection Card -->
+            <div class="glass-card theme-border rounded-[22px] p-4 text-left">
+                <label class="block text-[10px] font-bold tracking-wide uppercase theme-text-muted mb-2 font-outfit">Pilih Kantor Tujuan</label>
+                <div class="relative">
+                    <select x-model="officeId" @change="calculateDistance()"
+                        class="w-full theme-input rounded-xl px-4 py-3 text-xs font-semibold appearance-none cursor-pointer">
+                        <option value="">-- Pilih Lokasi Kerja --</option>
+                        @foreach ($offices as $office)
+                            <option value="{{ $office->id }}" data-lat="{{ $office->latitude }}"
+                                data-lng="{{ $office->longitude }}" data-radius="{{ $office->radius_meters }}">
+                                {{ $office->name }}</option>
+                        @endforeach
+                    </select>
+                    <!-- Custom Arrow icon -->
+                    <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none theme-text-muted">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
                         </svg>
                     </div>
-                    <span class="text-xs mt-1 font-medium text-gray-400">Absensi</span>
-                </a>
-                <a href="{{ route('attendance.index') }}" class="flex flex-col items-center text-gray-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                        </path>
-                    </svg>
-                    <span class="text-xs mt-1 font-medium">Data Absensi</span>
-                </a>
+                </div>
             </div>
-        </nav>
+
+            <!-- Geofencing Location Status & Alerts -->
+            
+            <!-- Distance OUTSIDE boundary Warning -->
+            <div x-show="distanceWarning" x-transition.opacity
+                class="rounded-[22px] theme-status-late-card theme-status-late-text p-4 text-left border relative overflow-hidden">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl flex-none bg-white/10 flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                        </svg>
+                    </div>
+                    <div class="leading-tight flex-1">
+                        <p class="font-black text-xs font-display">Diluar Radius Kantor</p>
+                        <p class="text-[9px] theme-text-muted mt-0.5" x-text="'Jarak: ' + Math.round(currentDistance) + 'm (Maksimal: ' + maxDistance + 'm)'"></p>
+                        <p class="text-[8px] opacity-75 mt-1">Anda berada di luar batas koordinat GPS kantor. Mohon masuk ke area kantor untuk melakukan absensi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Distance INSIDE boundary OK -->
+            <div x-show="distanceOk && locationFetched && officeId" x-transition.opacity
+                class="rounded-[22px] theme-status-ok-card theme-status-ok-text p-4 text-left border relative overflow-hidden">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl flex-none bg-white/10 flex-center flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/>
+                        </svg>
+                    </div>
+                    <div class="leading-tight flex-1">
+                        <p class="font-black text-xs font-display">Lokasi Terverifikasi</p>
+                        <p class="text-[9px] theme-text-muted mt-0.5" x-text="'Jarak: ' + Math.round(currentDistance) + 'm dari titik pusat kantor'"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GPS Geolocation Details Card -->
+            <div class="glass-card theme-border rounded-[22px] p-4 text-left relative overflow-hidden">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8.5 h-8.5 rounded-xl flex-none flex items-center justify-center relative bg-white/5">
+                            <span x-show="locationLoading" class="absolute inset-0 rounded-xl bg-cyan-400/20 animate-pulse"></span>
+                            <span x-show="locationFetched && !locationLoading" class="absolute inset-0.5 rounded-full bg-emerald-400/20 animate-pulse-ring"></span>
+                            
+                            <svg x-show="locationLoading" class="animate-spin w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                            </svg>
+                            <svg x-show="locationFetched && !locationLoading" class="w-4 h-4 theme-status-ok-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                            </svg>
+                            <svg x-show="locationError && !locationLoading" class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="leading-none text-left">
+                            <p class="text-xs font-bold theme-text-main" x-text="locationLoading ? 'Mengambil GPS...' : (locationFetched ? 'GPS Terkunci' : 'Menunggu GPS')"></p>
+                            <p x-show="locationFetched" class="text-[9px] theme-text-muted mt-1" x-text="latitude + ', ' + longitude"></p>
+                            <p x-show="locationError" class="text-[9px] text-red-500 mt-1" x-text="locationError"></p>
+                        </div>
+                    </div>
+                    
+                    <button type="button" @click="fetchLocation()" :disabled="locationLoading"
+                        class="w-7 h-7 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center theme-text-muted hover:theme-text-main hover:scale-105 active:scale-95 transition-all">
+                        <svg class="w-4 h-4" :class="{ 'animate-spin': locationLoading }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Validation Error Messages from Controller -->
+            @if ($errors->any())
+                <div class="rounded-[22px] border border-red-500/20 bg-red-500/10 p-4 text-left">
+                    <ul class="text-xs text-red-500 font-medium list-disc list-inside space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <!-- Submit Form Button -->
+            <form method="POST" action="{{ route('attendance.checkout.store') }}" @submit.prevent="submitForm" class="pt-2">
+                @csrf
+                <input type="hidden" name="latitude" x-model="latitude">
+                <input type="hidden" name="longitude" x-model="longitude">
+                <input type="hidden" name="image_base64" x-model="imageBase64">
+                <input type="hidden" name="office_id" x-model="officeId">
+
+                <button type="submit" :disabled="!canSubmit || isSubmitting"
+                    class="w-full flex items-center justify-center gap-2 rounded-[1.4rem] py-4 text-xs font-bold uppercase tracking-wider font-outfit shadow-md disabled:opacity-50 disabled:scale-100 hover:scale-[1.01] active:scale-[0.99] transition-transform text-slate-950 bg-gradient-to-r from-amber-400 to-orange-400 shadow-[0_6px_16px_rgba(245,158,11,0.25)]">
+                    <svg x-show="isSubmitting" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                    </svg>
+                    <svg x-show="!isSubmitting" class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    <span x-text="isSubmitting ? 'Mengirim Data...' : 'SUBMIT ABSENSI PULANG'"></span>
+                </button>
+            </form>
+
+            <!-- Inline Checklist Requirements Status -->
+            <div class="flex items-center justify-center gap-3 pt-2 text-[9px] font-bold theme-text-muted font-outfit uppercase">
+                <span class="flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full transition-colors" :class="officeId ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]' : 'bg-white/20'"></span>
+                    Kantor
+                </span>
+                <span class="text-white/20">•</span>
+                <span class="flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full transition-colors" :class="locationFetched ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]' : 'bg-white/20'"></span>
+                    GPS Lokasi
+                </span>
+                <span class="text-white/20">•</span>
+                <span class="flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full transition-colors" :class="photoTaken ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]' : 'bg-white/20'"></span>
+                    Selfie
+                </span>
+            </div>
+        @endif
     </div>
 
+    <!-- Alpine.js logic controller -->
     <script>
         function checkoutForm() {
             return {
@@ -352,70 +343,81 @@
                 distanceWarning: false,
                 distanceOk: false,
                 offices: @json($offices),
+
                 get canSubmit() {
-                    return this.officeId && this.locationFetched && this.photoTaken && !this.isSubmitting && !this
-                        .distanceWarning;
+                    return this.officeId && this.locationFetched && this.photoTaken && !this.isSubmitting && !this.distanceWarning;
                 },
+
                 init() {
                     this.initCamera();
                     this.fetchLocation();
                 },
+
                 async initCamera() {
                     this.cameraLoading = true;
+                    this.cameraError = null;
                     try {
                         this.stream = await navigator.mediaDevices.getUserMedia({
                             video: {
                                 facingMode: 'user',
-                                width: {
-                                    ideal: 640
-                                },
-                                height: {
-                                    ideal: 480
-                                }
+                                width: { ideal: 640 },
+                                height: { ideal: 480 }
                             }
                         });
                         this.$refs.video.srcObject = this.stream;
                         this.cameraLoading = false;
                     } catch (error) {
                         this.cameraLoading = false;
-                        this.cameraError = 'Gagal mengakses kamera.';
+                        this.cameraError = 'Gagal mengakses kamera perangkat.';
                     }
                 },
+
                 takePhoto() {
-                    const video = this.$refs.video,
-                        canvas = this.$refs.canvas,
-                        ctx = canvas.getContext('2d');
+                    const video = this.$refs.video;
+                    const canvas = this.$refs.canvas;
+                    const context = canvas.getContext('2d');
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
-                    ctx.drawImage(video, 0, 0);
-                    this.imageBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    this.imageBase64 = canvas.toDataURL('image/jpeg', 0.85);
                     this.photoTaken = true;
-                    if (this.stream) this.stream.getTracks().forEach(t => t.stop());
+                    if (this.stream) {
+                        this.stream.getTracks().forEach(track => track.stop());
+                    }
                 },
+
                 async retakePhoto() {
                     this.photoTaken = false;
                     this.imageBase64 = '';
                     await this.initCamera();
                 },
+
                 fetchLocation() {
                     this.locationLoading = true;
+                    this.locationError = null;
+                    if (!navigator.geolocation) {
+                        this.locationLoading = false;
+                        this.locationError = 'Browser tidak mendukung GPS Geolocation.';
+                        return;
+                    }
                     navigator.geolocation.getCurrentPosition(
-                        (pos) => {
-                            this.latitude = pos.coords.latitude.toFixed(8);
-                            this.longitude = pos.coords.longitude.toFixed(8);
+                        (position) => {
+                            this.latitude = position.coords.latitude.toFixed(8);
+                            this.longitude = position.coords.longitude.toFixed(8);
                             this.locationFetched = true;
                             this.locationLoading = false;
                             this.calculateDistance();
                         },
-                        () => {
+                        (error) => {
                             this.locationLoading = false;
-                            this.locationError = 'Gagal mendapatkan lokasi.';
+                            this.locationError = 'Gagal mengambil koordinat lokasi.';
                         }, {
                             enableHighAccuracy: true,
                             timeout: 10000
                         }
                     );
                 },
+
                 calculateDistance() {
                     if (!this.officeId || !this.locationFetched) {
                         this.distanceWarning = false;
@@ -449,44 +451,40 @@
                         this.distanceOk = true;
                     }
                 },
+
                 async submitForm() {
                     if (!this.canSubmit) return;
                     this.isSubmitting = true;
-                    const fd = new FormData();
-                    fd.append('_token', '{{ csrf_token() }}');
-                    fd.append('office_id', this.officeId);
-                    fd.append('latitude', this.latitude);
-                    fd.append('longitude', this.longitude);
-                    fd.append('image_base64', this.imageBase64);
+                    const formData = new FormData();
+                    formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('office_id', this.officeId);
+                    formData.append('latitude', this.latitude);
+                    formData.append('longitude', this.longitude);
+                    formData.append('image_base64', this.imageBase64);
                     try {
-                        const res = await fetch('{{ route('attendance.checkout.store') }}', {
+                        const response = await fetch('{{ route('attendance.checkout.store') }}', {
                             method: 'POST',
-                            body: fd,
+                            body: formData,
                             headers: {
                                 'Accept': 'application/json'
                             }
                         });
-                        if (res.ok || res.redirected) {
-                            // Success - redirect to dashboard
+
+                        if (response.ok || response.redirected) {
                             window.location.href = '{{ route('attendance.dashboard') }}';
-                        } else if (res.status === 422) {
-                            // Validation error
-                            const data = await res.json();
-                            alert('Error: ' + (data.message || 'Validasi gagal'));
+                        } else if (response.status === 422) {
+                            const data = await response.json();
+                            alert('Gagal absensi pulang:\n' + (data.message || 'Terjadi kesalahan validasi.'));
                             this.isSubmitting = false;
                         } else {
-                            // Other error
                             window.location.href = '{{ route('attendance.dashboard') }}';
                         }
-                    } catch (e) {
-                        console.error('Submit error:', e);
+                    } catch (error) {
                         this.isSubmitting = false;
-                        alert('Terjadi kesalahan jaringan. Silakan coba lagi.');
+                        alert('Terjadi gangguan koneksi jaringan. Silakan coba kembali.');
                     }
                 }
             };
         }
     </script>
-</body>
-
-</html>
+</x-layouts.mobile>
