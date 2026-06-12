@@ -164,16 +164,16 @@
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     @if ($data['attendance'] && $data['attendance']->image_path)
-                                        <a href="{{ $data['attendance']->image_url }}" target="_blank"
-                                            class="inline-flex items-center px-2 py-1 bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300 text-xs rounded-lg hover:bg-pink-200">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                        <button type="button" @click="$dispatch('open-photo-modal', { url: '{{ $data['attendance']->image_url }}', title: 'Foto Masuk - {{ $data['user']->name }}' })"
+                                            class="inline-flex items-center px-2 py-1 bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300 text-xs rounded-lg hover:bg-pink-200 cursor-pointer border border-pink-200/50 dark:border-pink-800/40">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2"
                                                 viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                                 </path>
                                             </svg>
                                             Lihat
-                                        </a>
+                                        </button>
                                     @else
                                         <span class="text-gray-400">-</span>
                                     @endif
@@ -189,16 +189,16 @@
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     @if ($data['attendance'] && $data['attendance']->check_out_image_path)
-                                        <a href="{{ $data['attendance']->check_out_image_url }}" target="_blank"
-                                            class="inline-flex items-center px-2 py-1 bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300 text-xs rounded-lg hover:bg-pink-200">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                        <button type="button" @click="$dispatch('open-photo-modal', { url: '{{ $data['attendance']->check_out_image_url }}', title: 'Foto Pulang - {{ $data['user']->name }}' })"
+                                            class="inline-flex items-center px-2 py-1 bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300 text-xs rounded-lg hover:bg-pink-200 cursor-pointer border border-pink-200/50 dark:border-pink-800/40">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                                 </path>
                                             </svg>
                                             Lihat
-                                        </a>
+                                        </button>
                                     @else
                                         <span class="text-gray-400">-</span>
                                     @endif
@@ -252,5 +252,45 @@
                     </table>
                 </div>
             </div>
+        </div>
+
+        <!-- Photo Modal Overlay -->
+        <div x-data="{ open: false, imageUrl: '', title: '' }"
+             @open-photo-modal.window="open = true; imageUrl = $event.detail.url; title = $event.detail.title"
+             x-show="open"
+             x-cloak
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0">
+             
+             <!-- Modal Box -->
+             <div class="relative bg-white dark:bg-gray-800 rounded-[28px] max-w-md w-full overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800/80 p-5 text-left"
+                  @click.away="open = false"
+                  x-transition:enter="transition ease-out duration-300 transform"
+                  x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+                  x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                  x-transition:leave="transition ease-in duration-200 transform"
+                  x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                  x-transition:leave-end="opacity-0 translate-y-4 scale-95">
+                  
+                  <!-- Header -->
+                  <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-xs font-bold text-slate-850 dark:text-white font-display uppercase tracking-wider" x-text="title">Foto Absensi</h3>
+                      <button @click="open = false" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-700 text-slate-400 hover:text-slate-600 transition-colors">
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                          </svg>
+                      </button>
+                  </div>
+                  
+                  <!-- Image Container -->
+                  <div class="rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800/80 bg-slate-900 flex items-center justify-center aspect-square shadow-inner">
+                      <img :src="imageUrl" alt="Foto Absensi" class="w-full h-full object-contain">
+                  </div>
+             </div>
         </div>
     </x-layouts.app>

@@ -340,3 +340,7 @@ main button[type="submit"]:not(.theme-btn-submit):not(.w-7\.5):active {
     background-color: var(--status-late-bg) !important;
     border: 1px solid var(--status-late-border) !important;
 }
+
+[x-cloak] {
+    display: none !important;
+}
