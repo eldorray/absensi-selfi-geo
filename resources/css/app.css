@@ -306,3 +306,37 @@ main a.bg-indigo-600:active,
 main button[type="submit"]:not(.theme-btn-submit):not(.w-7\.5):active {
     transform: translateY(0px) !important;
 }
+
+/* Status Badges Styling */
+:root {
+    --status-ok-text: #047857;
+    --status-ok-bg: rgba(52, 211, 153, 0.15);
+    --status-ok-border: rgba(52, 211, 153, 0.3);
+    --status-late-text: #b45309;
+    --status-late-bg: rgba(245, 158, 11, 0.15);
+    --status-late-border: rgba(245, 158, 11, 0.3);
+}
+
+.dark {
+    --status-ok-text: #10b981;
+    --status-ok-bg: rgba(16, 185, 129, 0.12);
+    --status-ok-border: rgba(16, 185, 129, 0.22);
+    --status-late-text: #f59e0b;
+    --status-late-bg: rgba(245, 158, 11, 0.12);
+    --status-late-border: rgba(245, 158, 11, 0.22);
+}
+
+.theme-status-ok-text {
+    color: var(--status-ok-text) !important;
+}
+.theme-status-ok-card {
+    background-color: var(--status-ok-bg) !important;
+    border: 1px solid var(--status-ok-border) !important;
+}
+.theme-status-late-text {
+    color: var(--status-late-text) !important;
+}
+.theme-status-late-card {
+    background-color: var(--status-late-bg) !important;
+    border: 1px solid var(--status-late-border) !important;
+}
