@@ -21,24 +21,35 @@
     (function () {
         if (!('serviceWorker' in navigator)) return;
 
+        var registration = null;
         var refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', function () {
+
+        function reloadOnce() {
             if (refreshing) return;
             refreshing = true;
             window.location.reload();
-        });
+        }
+
+        // Fires when the new worker takes control -> reload to pick up fresh assets.
+        navigator.serviceWorker.addEventListener('controllerchange', reloadOnce);
 
         function showBanner(worker) {
             var banner = document.getElementById('pwa-update-banner');
             if (banner) banner.style.display = 'flex';
             window.__pwaApplyUpdate = function () {
                 if (banner) banner.style.display = 'none';
-                if (worker) worker.postMessage({ type: 'SKIP_WAITING' });
+                var w = (registration && registration.waiting) || worker;
+                if (w) w.postMessage({ type: 'SKIP_WAITING' });
+                // Fallback: controllerchange is unreliable on some platforms
+                // (iOS standalone). Give the new worker time to activate, then
+                // reload anyway so the fresh cache is served.
+                setTimeout(reloadOnce, 1500);
             };
         }
 
         window.addEventListener('load', function () {
             navigator.serviceWorker.register('/sw.js').then(function (reg) {
+                registration = reg;
                 // Already a new SW waiting from a previous visit.
                 if (reg.waiting && navigator.serviceWorker.controller) {
                     showBanner(reg.waiting);

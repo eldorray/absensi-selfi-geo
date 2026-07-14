@@ -1,4 +1,4 @@
-const CACHE_NAME = 'absensi-selfie-geo-v2';
+const CACHE_NAME = 'absensi-selfie-geo-v3';
 
 // Assets to cache on install
 const STATIC_ASSETS = [
