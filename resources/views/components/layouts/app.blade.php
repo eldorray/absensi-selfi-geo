@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Absensi">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/icons/icon-512x512.svg">
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
     <title>{{ config('app.name') }}</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,18 +103,7 @@
             localStorage.setItem('pwaInstallDismissed', 'true');
         }
 
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('SW registered:', registration.scope);
-                    })
-                    .catch((error) => {
-                        console.log('SW registration failed:', error);
-                    });
-            });
-        }
+        // Service Worker registration handled in partials/pwa-update.blade.php
     </script>
 </head>
 
@@ -223,6 +212,8 @@
             </main>
         </div>
     </div>
+
+    @include('partials.pwa-update')
 </body>
 
 </html>

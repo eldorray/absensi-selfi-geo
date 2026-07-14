@@ -1,4 +1,4 @@
-const CACHE_NAME = 'absensi-selfie-geo-v1';
+const CACHE_NAME = 'absensi-selfie-geo-v2';
 
 // Assets to cache on install
 const STATIC_ASSETS = [
@@ -16,7 +16,8 @@ self.addEventListener('install', (event) => {
             return cache.addAll(STATIC_ASSETS);
         })
     );
-    self.skipWaiting();
+    // No auto skipWaiting: new SW stays "waiting" so the app can prompt
+    // the user to update. skipWaiting is triggered by the SKIP_WAITING message.
 });
 
 // Activate event - clean up old caches

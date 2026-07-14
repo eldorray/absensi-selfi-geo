@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#080710">
     <meta name="description" content="Aplikasi absensi digital dengan selfie, GPS, dan pengajuan izin online.">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/icons/icon-512x512.svg">
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
     <title>Absensi Selfie Geo</title>
     
     <!-- Google Fonts -->

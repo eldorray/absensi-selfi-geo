@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#080710">
     <meta name="description" content="Halaman login aplikasi absensi digital MI Daarul Hikmah.">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/icons/icon-512x512.svg">
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
     <title>Masuk - Absensi</title>
     
     <!-- Google Fonts -->

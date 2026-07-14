@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AbsenKu">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/icons/icon-512x512.svg">
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
     <title>AbsenKu - {{ auth()->user()->name }}</title>
     
     <!-- Google Fonts -->

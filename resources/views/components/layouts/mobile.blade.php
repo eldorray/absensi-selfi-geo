@@ -27,7 +27,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AbsenKu">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/icons/icon-512x512.svg">
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
     <title>AbsenKu - {{ $title }}</title>
     
     <!-- Google Fonts -->
@@ -547,6 +547,8 @@
             localStorage.setItem('welcome-theme', isLight ? 'light' : 'dark');
         }
     </script>
+
+    @include('partials.pwa-update')
 </body>
 
 </html>
