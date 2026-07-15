@@ -427,8 +427,6 @@
             }
         }
     </script>
-
-    @include('partials.pwa-update')
 </body>
 
 </html>
