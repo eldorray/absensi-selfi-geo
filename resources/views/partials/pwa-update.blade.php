@@ -7,7 +7,7 @@
            box-shadow:0 12px 40px -8px rgba(0,0,0,0.6);
            font-family:'Plus Jakarta Sans',system-ui,sans-serif;
            display:flex;align-items:center;gap:12px;">
-    <img src="/images/icons/icon-192.png" alt="" width="36" height="36" style="border-radius:10px;flex-shrink:0;">
+    <img src="/images/icons/icon-192.png?v=2" alt="" width="36" height="36" style="border-radius:10px;flex-shrink:0;">
     <div style="flex:1;min-width:0;">
         <div style="font-weight:700;font-size:14px;line-height:1.2;">Pembaruan tersedia</div>
         <div style="font-size:12px;color:#94a3b8;">Muat ulang untuk versi & ikon terbaru.</div>

@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#080710">
     <meta name="description" content="Aplikasi absensi digital dengan selfie, GPS, dan pengajuan izin online.">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json?v=2">
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png?v=2">
     <title>Absensi Selfie Geo</title>
     
     <!-- Google Fonts -->
@@ -384,7 +384,7 @@
                 <header class="relative z-10 flex items-center justify-between mt-1">
                     <a href="{{ route('home') }}" class="flex items-center gap-2.5 group" aria-label="Absensi Selfie Geo">
                         <span class="flex h-9 w-9 items-center justify-center rounded-xl glass-card theme-border shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
-                            <img src="/images/icons/icon-512x512.svg" alt="" class="h-5.5 w-5.5">
+                            <img src="/images/icons/icon-192.png?v=2" alt="" class="h-5.5 w-5.5">
                         </span>
                         <span class="leading-none text-left">
                             <span class="block text-xs font-black tracking-tight theme-text-main font-display">Absensi</span>

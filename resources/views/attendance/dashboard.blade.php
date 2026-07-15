@@ -9,8 +9,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AbsenKu">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json?v=2">
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png?v=2">
     <title>AbsenKu - {{ auth()->user()->name }}</title>
     
     <!-- Google Fonts -->
@@ -493,7 +493,7 @@
                         <div class="flex items-center justify-center">
                             <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-400 to-emerald-400 p-[1px] shadow-sm mr-2.5">
                                 <div class="w-full h-full rounded-xl bg-slate-950 flex items-center justify-center">
-                                    <img src="/images/icons/icon-512x512.svg" alt="" class="h-5.5 w-5.5">
+                                    <img src="/images/icons/icon-192.png?v=2" alt="" class="h-5.5 w-5.5">
                                 </div>
                             </span>
                             <span class="text-2xl font-black theme-text-main font-display">absen<span class="text-cyan-500 font-extrabold">KU</span></span>
