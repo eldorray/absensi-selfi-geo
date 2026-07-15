@@ -48,7 +48,7 @@
         }
 
         window.addEventListener('load', function () {
-            navigator.serviceWorker.register('/sw.js').then(function (reg) {
+            navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(function (reg) {
                 registration = reg;
                 // Already a new SW waiting from a previous visit.
                 if (reg.waiting && navigator.serviceWorker.controller) {
