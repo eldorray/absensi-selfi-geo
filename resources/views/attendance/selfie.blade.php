@@ -102,6 +102,31 @@
                         <p class="text-[10px] text-slate-400 mt-1" x-text="cameraError"></p>
                     </div>
 
+                    <!-- Liveness Model Loading Overlay -->
+                    <div x-show="livenessLoading && !cameraError && !photoTaken" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/85 z-20">
+                        <svg class="animate-spin h-9 w-9 text-cyan-400 mb-3" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest font-outfit">Memuat Deteksi Wajah...</span>
+                    </div>
+
+                    <!-- Liveness Model Error Overlay -->
+                    <div x-show="livenessError && !photoTaken" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/95 z-20 px-6 text-center">
+                        <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mb-3 border border-red-500/20">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <p class="text-xs font-bold text-red-500 font-outfit uppercase tracking-wider">Deteksi Wajah Gagal Dimuat</p>
+                        <p class="text-[10px] text-slate-400 mt-1" x-text="livenessError"></p>
+                        <button type="button" @click="startLiveness()"
+                            class="mt-4 px-5 py-2 rounded-xl bg-cyan-500/90 text-white text-[10px] font-black uppercase tracking-wider font-outfit">Coba Lagi</button>
+                    </div>
+
+                    <!-- Blink capture flash -->
+                    <div x-show="captureFlash" x-transition.opacity.duration.150ms class="absolute inset-0 bg-white z-30 pointer-events-none"></div>
+
                     <!-- Scanning Overlay Details -->
                     <div x-show="!photoTaken && !cameraLoading && !cameraError" class="absolute inset-0 pointer-events-none z-10">
                         <!-- Laser line -->
@@ -118,10 +143,14 @@
                             <div class="theme-guideline w-[82%] h-[82%] border border-dashed rounded-full"></div>
                         </div>
 
-                        <!-- Scanner Status Tag -->
-                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10">
-                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                            <span class="text-[8px] text-cyan-400 font-black tracking-widest uppercase font-outfit">DETEKSI WAJAH</span>
+                        <!-- Liveness Prompt Tag -->
+                        <div x-show="!livenessLoading && !livenessError"
+                            class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border transition-colors"
+                            :class="faceDetected ? 'border-cyan-400/40' : 'border-white/10'">
+                            <span class="w-1.5 h-1.5 rounded-full animate-pulse" :class="faceDetected ? 'bg-cyan-400' : 'bg-amber-400'"></span>
+                            <span class="text-[8px] font-black tracking-widest uppercase font-outfit"
+                                :class="faceDetected ? 'text-cyan-400' : 'text-amber-400'"
+                                x-text="faceDetected ? 'Kedipkan Mata' : 'Arahkan Wajah ke Kamera'"></span>
                         </div>
                     </div>
 
@@ -137,16 +166,16 @@
                 </div>
             </div>
 
-            <!-- Action Trigger Button (Camera Capture) -->
+            <!-- Action Trigger: retake only; capture is automatic on blink -->
             <div class="flex gap-3">
-                <button type="button" @click="takePhoto()" x-show="!photoTaken && !cameraError" :disabled="cameraLoading"
-                    class="flex-1 theme-btn-submit flex items-center justify-center gap-2 rounded-2xl py-3.5 text-xs font-bold uppercase tracking-wider font-outfit shadow-md hover:scale-[1.01] active:scale-[0.99] transition-transform">
-                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/>
+                <div x-show="!photoTaken && !cameraError && !livenessError"
+                    class="flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-[11px] font-bold uppercase tracking-wider font-outfit text-slate-400 border border-dashed theme-border">
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    Ambil Foto Selfie
-                </button>
+                    Kedip untuk Ambil Foto
+                </div>
                 <button type="button" @click="retakePhoto()" x-show="photoTaken"
                     class="flex-1 theme-nav-inactive flex items-center justify-center gap-2 rounded-2xl py-3.5 text-xs font-bold uppercase tracking-wider font-outfit hover:bg-white/5 active:scale-98 transition-all">
                     <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -311,6 +340,11 @@
                 photoTaken: false,
                 imageBase64: '',
                 stream: null,
+                livenessLoading: false,
+                livenessError: null,
+                faceDetected: false,
+                captureFlash: false,
+                detector: null,
                 locationLoading: false,
                 locationFetched: false,
                 locationError: null,
@@ -328,9 +362,41 @@
                     return this.officeId && this.locationFetched && this.photoTaken && !this.isSubmitting && !this.distanceWarning;
                 },
 
-                init() {
-                    this.initCamera();
+                async init() {
+                    await this.initCamera();
                     this.fetchLocation();
+                    if (!this.cameraError) this.startLiveness();
+                },
+
+                async startLiveness() {
+                    this.livenessError = null;
+                    this.livenessLoading = true;
+                    this.faceDetected = false;
+                    if (!window.createBlinkDetector) {
+                        this.livenessLoading = false;
+                        this.livenessError = 'Modul deteksi wajah tidak tersedia.';
+                        return;
+                    }
+                    if (!this.detector) {
+                        this.detector = window.createBlinkDetector({
+                            video: this.$refs.video,
+                            onState: ({ faceDetected }) => { this.faceDetected = faceDetected; },
+                            onBlink: () => { this.onBlinkCapture(); },
+                            onError: (e) => {
+                                console.error('liveness load error', e);
+                                this.livenessLoading = false;
+                                this.livenessError = 'Gagal memuat model. Periksa koneksi lalu coba lagi.';
+                            },
+                        });
+                    }
+                    await this.detector.start();
+                    if (!this.livenessError) this.livenessLoading = false;
+                },
+
+                onBlinkCapture() {
+                    this.captureFlash = true;
+                    this.takePhoto();
+                    setTimeout(() => { this.captureFlash = false; }, 220);
                 },
 
                 async initCamera() {
@@ -367,6 +433,7 @@
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
                     this.imageBase64 = canvas.toDataURL('image/jpeg', 0.85);
                     this.photoTaken = true;
+                    if (this.detector) this.detector.stop();
                     if (this.stream) {
                         this.stream.getTracks().forEach(track => track.stop());
                     }
@@ -376,6 +443,7 @@
                     this.photoTaken = false;
                     this.imageBase64 = '';
                     await this.initCamera();
+                    if (!this.cameraError) this.startLiveness();
                 },
 
                 fetchLocation() {
