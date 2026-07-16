@@ -1,10 +1,10 @@
 <x-layouts.app>
     <div class="space-y-6">
         <!-- Page Header -->
-        <div class="flex items-center justify-between">
+        <div class="admin-page-header flex items-center justify-between">
             <div>
                 <h1 class="text-2xl font-black text-slate-800 dark:text-white font-display">Dashboard Admin</h1>
-                <p class="mt-1 text-xs text-slate-400 dark:text-slate-500 font-semibold font-outfit uppercase tracking-wider">
+                <p class="admin-muted mt-1 text-xs text-slate-400 dark:text-slate-500 font-semibold font-outfit uppercase tracking-wider">
                     Selamat datang kembali, <span class="text-indigo-500">{{ auth()->user()->name }}</span>!
                 </p>
             </div>
@@ -13,7 +13,7 @@
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Total Employees -->
-            <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-850 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]">
+            <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-850 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]">
                 <div class="flex items-center">
                     <div class="p-3 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -28,7 +28,7 @@
             </div>
 
             <!-- Total Offices -->
-            <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-855 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]">
+            <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-855 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]">
                 <div class="flex items-center">
                     <div class="p-3 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
             </div>
 
             <!-- Today Attendances -->
-            <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-860 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]">
+            <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-860 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]">
                 <div class="flex items-center">
                     <div class="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@
             </div>
 
             <!-- Today Late -->
-            <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-865 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]">
+            <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-865 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]">
                 <div class="flex items-center">
                     <div class="p-3 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@
 
         <!-- Quick Links -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <a href="{{ route('admin.offices.index') }}" class="bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-800/80 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 group">
+            <a href="{{ route('admin.offices.index') }}" class="admin-glass-panel bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-800/80 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 group">
                 <div class="flex items-center">
                     <div class="p-3.5 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-500/20 transition-all duration-300">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -84,12 +84,12 @@
                     </div>
                     <div class="ml-4 text-left leading-none">
                         <p class="font-bold text-slate-800 dark:text-white font-display text-sm">Kelola Kantor</p>
-                        <p class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold font-outfit uppercase mt-1.5">Tambah, edit, hapus lokasi kantor</p>
+                        <p class="admin-muted text-[10px] text-slate-400 dark:text-slate-500 font-semibold font-outfit uppercase mt-1.5">Tambah, edit, hapus lokasi kantor</p>
                     </div>
                 </div>
             </a>
 
-            <a href="{{ route('admin.users.index') }}" class="bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-800/80 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 group">
+            <a href="{{ route('admin.users.index') }}" class="admin-glass-panel bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-800/80 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 group">
                 <div class="flex items-center">
                     <div class="p-3.5 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500/20 transition-all duration-300">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -98,12 +98,12 @@
                     </div>
                     <div class="ml-4 text-left leading-none">
                         <p class="font-bold text-slate-800 dark:text-white font-display text-sm">Kelola User</p>
-                        <p class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold font-outfit uppercase mt-1.5">Manajemen karyawan & admin</p>
+                        <p class="admin-muted text-[10px] text-slate-400 dark:text-slate-500 font-semibold font-outfit uppercase mt-1.5">Manajemen karyawan & admin</p>
                     </div>
                 </div>
             </a>
 
-            <a href="{{ route('admin.attendances.index') }}" class="bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-800/80 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 group">
+            <a href="{{ route('admin.attendances.index') }}" class="admin-glass-panel bg-white dark:bg-gray-800 rounded-[24px] shadow-lg p-6 border border-slate-100 dark:border-slate-800/80 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 group">
                 <div class="flex items-center">
                     <div class="p-3.5 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover:bg-amber-500/20 transition-all duration-300">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -112,19 +112,19 @@
                     </div>
                     <div class="ml-4 text-left leading-none">
                         <p class="font-bold text-slate-800 dark:text-white font-display text-sm">Laporan Absensi</p>
-                        <p class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold font-outfit uppercase mt-1.5">Lihat semua rekap absensi</p>
+                        <p class="admin-muted text-[10px] text-slate-400 dark:text-slate-500 font-semibold font-outfit uppercase mt-1.5">Lihat semua rekap absensi</p>
                     </div>
                 </div>
             </a>
         </div>
 
         <!-- Recent Attendances -->
-        <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-lg overflow-hidden border border-slate-100 dark:border-slate-800/80">
+        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-[24px] shadow-lg overflow-hidden border border-slate-100 dark:border-slate-800/80">
             <div class="px-6 py-4.5 border-b border-gray-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-gray-900/10 text-left">
                 <h2 class="text-xs font-bold text-slate-800 dark:text-white font-display uppercase tracking-wider">Absensi Terbaru</h2>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="admin-table w-full">
                     <thead class="bg-slate-50 dark:bg-gray-900/50">
                         <tr>
                             <th class="px-6 py-4.5 text-left text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider font-outfit">Karyawan</th>
@@ -143,25 +143,25 @@
                                         </div>
                                         <div class="ml-3.5 leading-none">
                                             <p class="text-xs font-bold text-slate-800 dark:text-white font-display">{{ $attendance->user->name }}</p>
-                                            <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5 font-semibold font-outfit">{{ $attendance->user->email }}</p>
+                                            <p class="admin-muted text-[10px] text-slate-400 dark:text-slate-500 mt-1.5 font-semibold font-outfit">{{ $attendance->user->email }}</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4.5 whitespace-nowrap text-xs text-slate-500 dark:text-slate-400 font-semibold font-outfit">
+                                <td class="admin-muted px-6 py-4.5 whitespace-nowrap text-xs text-slate-500 dark:text-slate-400 font-semibold font-outfit">
                                     {{ $attendance->user->office?->name ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4.5 whitespace-nowrap">
-                                    <span class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-full @if($attendance->status->value === 'present') theme-status-ok-card theme-status-ok-text @elseif($attendance->status->value === 'late') theme-status-late-card theme-status-late-text @else bg-slate-400/10 text-slate-500 border border-slate-500/20 @endif">
+                                    <span class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-full @if($attendance->status->value === 'present') admin-status-success theme-status-ok-card theme-status-ok-text @elseif($attendance->status->value === 'late') admin-status-warning theme-status-late-card theme-status-late-text @else admin-status-neutral bg-slate-400/10 text-slate-500 border border-slate-500/20 @endif">
                                         {{ $attendance->status->label() }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4.5 whitespace-nowrap text-xs text-slate-400 dark:text-slate-500 font-bold font-outfit uppercase">
+                                <td class="admin-muted px-6 py-4.5 whitespace-nowrap text-xs text-slate-400 dark:text-slate-500 font-bold font-outfit uppercase">
                                     {{ $attendance->created_at->format('d M Y, H:i') }} WIB
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-10 text-center text-xs text-slate-400 dark:text-slate-500 font-bold font-outfit">
+                                <td colspan="4" class="admin-muted px-6 py-10 text-center text-xs text-slate-400 dark:text-slate-500 font-bold font-outfit">
                                     Belum ada data absensi hari ini.
                                 </td>
                             </tr>

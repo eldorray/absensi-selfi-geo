@@ -42,3 +42,29 @@ test('shared non-admin pages do not expose the admin shell', function () {
         ->assertDontSee('admin-nav-link', escape: false)
         ->assertDontSee('admin-glass-popover', escape: false);
 });
+
+dataset('admin index views', [
+    'dashboard' => 'admin/dashboard.blade.php',
+    'academic years' => 'admin/academic-years/index.blade.php',
+    'announcements' => 'admin/announcements/index.blade.php',
+    'attendances' => 'admin/attendances/index.blade.php',
+    'leaves' => 'admin/leaves/index.blade.php',
+    'offices' => 'admin/offices/index.blade.php',
+    'daily report' => 'admin/reports/daily.blade.php',
+    'monthly report' => 'admin/reports/monthly.blade.php',
+    'roles' => 'admin/roles/index.blade.php',
+    'users' => 'admin/users/index.blade.php',
+    'work schedules' => 'admin/work-schedules/index.blade.php',
+]);
+
+test('admin index views adopt semantic glass surfaces', function (string $view) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+
+    expect($source)
+        ->toContain('admin-page-header')
+        ->toContain('admin-glass-panel');
+
+    if (str_contains($source, '<table')) {
+        expect($source)->toContain('admin-table');
+    }
+})->with('admin index views');

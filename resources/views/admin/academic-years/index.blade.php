@@ -1,14 +1,14 @@
 <x-layouts.app>
     <div class="space-y-6">
         <!-- Header -->
-        <div class="flex items-center justify-between">
+        <div class="admin-page-header flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Tahun Ajaran</h1>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Kelola periode tahun ajaran untuk sistem absensi
+                <p class="admin-muted mt-1 text-sm text-gray-600 dark:text-gray-400">Kelola periode tahun ajaran untuk sistem absensi
                 </p>
             </div>
             <a href="{{ route('admin.academic-years.create') }}"
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
+                class="admin-button-primary inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -17,9 +17,9 @@
         </div>
 
         <!-- Table -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="admin-table w-full">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th
@@ -45,21 +45,21 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="font-semibold text-gray-900 dark:text-white">{{ $year->name }}</span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $year->start_date->format('d M Y') }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $year->end_date->format('d M Y') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     @if ($year->is_active)
                                         <span
-                                            class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            class="admin-status-success px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                             Aktif
                                         </span>
                                     @else
                                         <span
-                                            class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                            class="admin-status-neutral px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
                                             Tidak Aktif
                                         </span>
                                     @endif
@@ -72,7 +72,7 @@
                                                 onsubmit="return confirm('Aktifkan tahun ajaran ini? Jadwal kerja akan di-reset.')">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="p-2 text-gray-600 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400 transition-colors"
+                                                    class="admin-button-success p-2 text-gray-600 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400 transition-colors"
                                                     title="Aktifkan">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
@@ -83,7 +83,7 @@
                                             </form>
                                         @endif
                                         <a href="{{ route('admin.academic-years.edit', $year) }}"
-                                            class="p-2 text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
+                                            class="admin-button-primary p-2 text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -98,7 +98,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="p-2 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">
+                                                    class="admin-button-danger p-2 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -114,7 +114,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="5" class="admin-muted px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                     Belum ada tahun ajaran. Silakan tambahkan tahun ajaran baru.
                                 </td>
                             </tr>

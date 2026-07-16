@@ -1,10 +1,10 @@
 <x-layouts.app>
     <div class="space-y-6">
         <!-- Header -->
-        <div class="flex items-center justify-between">
+        <div class="admin-page-header flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Jam Kerja</h1>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Pengaturan jadwal kerja dan toleransi absensi
+                <p class="admin-muted mt-1 text-sm text-gray-600 dark:text-gray-400">Pengaturan jadwal kerja dan toleransi absensi
                 </p>
             </div>
         </div>
@@ -21,7 +21,7 @@
         @endif
 
         <!-- Tolerance Settings Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-sky-50 dark:bg-sky-900/30">
                 <h2 class="text-lg font-semibold text-sky-700 dark:text-sky-300">Toleransi Jam Kerja</h2>
             </div>
@@ -34,58 +34,58 @@
                                 Sebelum Masuk (Menit)
                             </label>
                             <input type="number" name="before_check_in" value="{{ $settings->before_check_in }}"
-                                class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Sesudah Masuk (Menit)
                             </label>
                             <input type="number" name="after_check_in" value="{{ $settings->after_check_in }}"
-                                class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Limit Sesudah Masuk (Menit)
                             </label>
                             <input type="number" name="late_limit" value="{{ $settings->late_limit }}"
-                                class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Sebelum Pulang (Menit)
                             </label>
                             <input type="number" name="before_check_out" value="{{ $settings->before_check_out }}"
-                                class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
                         </div>
                     </div>
 
                     <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Denda Keterlambatan</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Denda dihitung dari menit telat setelah batas toleransi (Sesudah Masuk). Hanya untuk status Terlambat.</p>
+                        <p class="admin-muted text-xs text-gray-500 dark:text-gray-400 mb-4">Denda dihitung dari menit telat setelah batas toleransi (Sesudah Masuk). Hanya untuk status Terlambat.</p>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Denda Tier 1 (Rp)
                                 </label>
                                 <input type="number" name="fine_tier1_amount" min="0" value="{{ $settings->fine_tier1_amount }}"
-                                    class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                                <p class="mt-1 text-xs text-gray-400">Telat 1 s/d batas menit di bawah.</p>
+                                    class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                <p class="admin-muted mt-1 text-xs text-gray-400">Telat 1 s/d batas menit di bawah.</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Batas Menit Tier 1
                                 </label>
                                 <input type="number" name="fine_tier1_max_minutes" min="1" value="{{ $settings->fine_tier1_max_minutes }}"
-                                    class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                                <p class="mt-1 text-xs text-gray-400">Telat &le; menit ini kena Tier 1, di atasnya Tier 2.</p>
+                                    class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                <p class="admin-muted mt-1 text-xs text-gray-400">Telat &le; menit ini kena Tier 1, di atasnya Tier 2.</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Denda Tier 2 (Rp)
                                 </label>
                                 <input type="number" name="fine_tier2_amount" min="0" value="{{ $settings->fine_tier2_amount }}"
-                                    class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                                <p class="mt-1 text-xs text-gray-400">Telat di atas batas menit Tier 1.</p>
+                                    class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                <p class="admin-muted mt-1 text-xs text-gray-400">Telat di atas batas menit Tier 1.</p>
                             </div>
                         </div>
                     </div>
@@ -95,12 +95,12 @@
                             <input type="checkbox" name="require_check_in" value="1"
                                 {{ $settings->require_check_in ? 'checked' : '' }}
                                 class="rounded border-gray-300 text-sky-600 shadow-sm focus:ring-sky-500">
-                            <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span class="admin-muted ml-2 text-sm text-gray-600 dark:text-gray-400">
                                 Wajib Absen Masuk - Jika dicentang, maka absen pulang harus absen masuk terlebih dahulu.
                             </span>
                         </label>
                         <button type="submit"
-                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-colors">
+                            class="admin-button-success px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-colors">
                             Update Toleransi
                         </button>
                     </div>
@@ -109,12 +109,12 @@
         </div>
 
         <!-- List Data Jam Kerja -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">List Data Jam Kerja</h2>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="admin-table w-full">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th
@@ -151,20 +151,20 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <p class="font-medium text-gray-900 dark:text-white">{{ $user->name }}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</p>
+                                    <p class="admin-muted text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</p>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $user->office?->name ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
-                                        class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                        class="admin-status-info px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                                         {{ $user->workSchedules->where('is_active', true)->count() }} Hari
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right" @click.stop>
                                     <a href="{{ route('admin.work-schedules.edit', $user) }}"
-                                        class="inline-flex items-center px-3 py-1.5 bg-sky-100 hover:bg-sky-200 text-sky-700 font-medium rounded-lg text-sm transition-colors">
+                                        class="admin-button-primary inline-flex items-center px-3 py-1.5 bg-sky-100 hover:bg-sky-200 text-sky-700 font-medium rounded-lg text-sm transition-colors">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -180,7 +180,7 @@
                                 class="bg-gray-50 dark:bg-gray-700/30">
                                 <td colspan="5" class="px-6 py-4">
                                     <div class="overflow-x-auto">
-                                        <table class="w-full text-sm">
+                                        <table class="admin-table w-full text-sm">
                                             <thead>
                                                 <tr class="text-left text-gray-500 dark:text-gray-400">
                                                     <th class="pb-2 font-semibold">Hari</th>
@@ -195,19 +195,19 @@
                                                     <tr>
                                                         <td class="py-2 font-medium text-gray-900 dark:text-white">
                                                             {{ ucfirst($day) }}</td>
-                                                        <td class="py-2 text-gray-600 dark:text-gray-300">
+                                                        <td class="admin-muted py-2 text-gray-600 dark:text-gray-300">
                                                             {{ $schedule ? \Carbon\Carbon::parse($schedule->check_in_time)->format('H:i') : '07:00' }}
                                                         </td>
-                                                        <td class="py-2 text-gray-600 dark:text-gray-300">
+                                                        <td class="admin-muted py-2 text-gray-600 dark:text-gray-300">
                                                             {{ $schedule ? \Carbon\Carbon::parse($schedule->check_out_time)->format('H:i') : '16:00' }}
                                                         </td>
                                                         <td class="py-2">
                                                             @if ($schedule && $schedule->is_active)
                                                                 <span
-                                                                    class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Active</span>
+                                                                    class="admin-status-success px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Active</span>
                                                             @else
                                                                 <span
-                                                                    class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-500">Inactive</span>
+                                                                    class="admin-status-neutral px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-500">Inactive</span>
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -219,7 +219,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="5" class="admin-muted px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                     Belum ada data karyawan.
                                 </td>
                             </tr>

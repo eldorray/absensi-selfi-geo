@@ -1,13 +1,13 @@
 <x-layouts.app>
     <div class="space-y-6">
         <!-- Header -->
-        <div class="flex items-center justify-between">
+        <div class="admin-page-header flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Kelola User</h1>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Manajemen akun karyawan dan administrator</p>
+                <p class="admin-muted mt-1 text-sm text-gray-600 dark:text-gray-400">Manajemen akun karyawan dan administrator</p>
             </div>
             <a href="{{ route('admin.users.create') }}"
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
+                class="admin-button-primary inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -38,18 +38,18 @@
         @endif
 
         <!-- Filters -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
             <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cari</label>
                     <input type="text" name="search" value="{{ request('search') }}"
                         placeholder="Nama atau email..."
-                        class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Role</label>
                     <select name="role_id"
-                        class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Semua Role</option>
                         @foreach ($roles as $role)
                             <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>
@@ -60,7 +60,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kantor</label>
                     <select name="office_id"
-                        class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Semua Kantor</option>
                         @foreach ($offices as $office)
                             <option value="{{ $office->id }}"
@@ -72,7 +72,7 @@
                 </div>
                 <div class="flex items-end">
                     <button type="submit"
-                        class="w-full px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
+                        class="admin-button-primary w-full px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
                         Filter
                     </button>
                 </div>
@@ -80,9 +80,9 @@
         </div>
 
         <!-- Table -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="admin-table w-full">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th
@@ -115,22 +115,22 @@
                                             class="ml-3 font-medium text-gray-900 dark:text-white">{{ $user->name }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $user->email }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
-                                        class="px-3 py-1 text-xs font-semibold rounded-full {{ $user->role?->badge_class ?? 'bg-gray-100 text-gray-800' }}">
+                                        class="{{ $user->role?->is_admin ? 'admin-status-danger' : match ($user->role?->slug) { 'tendik' => 'admin-status-success', 'kepala-sekolah', 'guru' => 'admin-status-info', default => 'admin-status-neutral' } }} px-3 py-1 text-xs font-semibold rounded-full {{ $user->role?->badge_class ?? 'bg-gray-100 text-gray-800' }}">
                                         {{ $user->role?->name ?? 'No Role' }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $user->office?->name ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <div class="flex items-center justify-end space-x-2">
                                         <a href="{{ route('admin.users.edit', $user) }}"
-                                            class="p-2 text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
+                                            class="admin-button-primary p-2 text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -144,7 +144,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="p-2 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">
+                                                    class="admin-button-danger p-2 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -160,7 +160,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="5" class="admin-muted px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                     Tidak ada user yang ditemukan.
                                 </td>
                             </tr>
