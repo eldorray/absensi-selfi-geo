@@ -9,12 +9,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 /**
  * ProfileController - Handle employee profile and password management.
- * 
+ *
  * Follows Single Responsibility Principle by only handling profile-related operations.
  */
 class ProfileController extends Controller
@@ -39,13 +40,25 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
         ], [
             'name.required' => 'Nama harus diisi.',
             'email.required' => 'Email harus diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah digunakan.',
+            'avatar.image' => 'File harus berupa gambar.',
+            'avatar.mimes' => 'Format gambar harus jpeg, jpg, png, atau webp.',
+            'avatar.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar_path) {
+                Storage::disk('public')->delete($user->avatar_path);
+            }
+            $validated['avatar_path'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
+        unset($validated['avatar']);
         $user->update($validated);
 
         return back()->with('success', 'Profil berhasil diperbarui.');

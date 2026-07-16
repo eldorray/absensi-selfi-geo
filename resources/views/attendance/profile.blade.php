@@ -5,10 +5,10 @@
         <div class="flex flex-col items-center justify-center py-3">
             <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-cyan-400 to-emerald-400 p-[1.5px] shadow-lg">
                 <div class="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden">
-                    @if(auth()->user()->attendances()->whereDate('created_at', today())->first() && auth()->user()->attendances()->whereDate('created_at', today())->first()->image_url)
-                        <img src="{{ auth()->user()->attendances()->whereDate('created_at', today())->first()->image_url }}" alt="Profile" class="w-full h-full object-cover">
+                    @if ($user->avatar_url)
+                        <img src="{{ $user->avatar_url }}" alt="Profile" class="w-full h-full object-cover">
                     @else
-                        <span class="text-white text-xl font-black font-outfit uppercase">{{ auth()->user()->initials() }}</span>
+                        <span class="text-white text-xl font-black font-outfit uppercase">{{ $user->initials() }}</span>
                     @endif
                 </div>
             </div>
@@ -24,9 +24,42 @@
                 </div>
             @endif
 
-            <form action="{{ route('attendance.profile.update') }}" method="POST" class="space-y-4 text-left">
+            <form action="{{ route('attendance.profile.update') }}" method="POST" enctype="multipart/form-data"
+                class="space-y-4 text-left" x-data="{ preview: null }">
                 @csrf
                 @method('PUT')
+
+                <!-- Avatar Field -->
+                <div>
+                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Foto Profil</label>
+                    <div class="flex items-center gap-3">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-400 to-emerald-400 p-[1.5px] shrink-0">
+                            <div class="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden">
+                                <template x-if="preview">
+                                    <img :src="preview" alt="" class="w-full h-full object-cover">
+                                </template>
+                                <template x-if="!preview">
+                                    <span>
+                                        @if ($user->avatar_url)
+                                            <img src="{{ $user->avatar_url }}" alt="" class="w-full h-full object-cover">
+                                        @else
+                                            <span class="text-white text-sm font-black font-outfit uppercase">{{ $user->initials() }}</span>
+                                        @endif
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                        <label class="theme-input cursor-pointer rounded-2xl px-4 py-2.5 text-[11px] font-bold uppercase tracking-wide font-outfit theme-text-main">
+                            Pilih Foto
+                            <input type="file" name="avatar" accept="image/*" class="hidden"
+                                @change="preview = $event.target.files.length ? URL.createObjectURL($event.target.files[0]) : null">
+                        </label>
+                    </div>
+                    <p class="mt-1.5 text-[9px] theme-text-muted">JPG/PNG/WEBP, maks 2MB.</p>
+                    @error('avatar')
+                        <p class="mt-1.5 text-xs text-red-500 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <!-- Name Field -->
                 <div>

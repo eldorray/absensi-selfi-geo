@@ -445,8 +445,8 @@
                     <div class="flex items-center gap-2.5">
                         <div class="relative w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-400 to-emerald-400 p-[1px] shadow-sm">
                             <div class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center overflow-hidden border border-white/10">
-                                @if ($todayAttendance && $todayAttendance->image_url)
-                                    <img src="{{ $todayAttendance->image_url }}" alt="Profile"
+                                @if (auth()->user()->avatar_url)
+                                    <img src="{{ auth()->user()->avatar_url }}" alt="Profile"
                                         class="w-full h-full object-cover">
                                 @else
                                     <span class="text-white text-[10px] font-bold font-outfit">{{ auth()->user()->initials() }}</span>

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'office_id',
         'role_id',
+        'avatar_path',
     ];
 
     /**
@@ -63,6 +64,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Public URL for the uploaded avatar, or null when none set.
+     */
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->avatar_path
+            ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar_path)
+            : null;
+    }
+
+    /**
      * Get the role that the user belongs to.
      */
     public function role(): BelongsTo
@@ -83,7 +94,7 @@ class User extends Authenticatable
      */
     public function isEmployee(): bool
     {
-        return !$this->isAdmin();
+        return ! $this->isAdmin();
     }
 
     /**
@@ -110,4 +121,3 @@ class User extends Authenticatable
         return $this->hasMany(WorkSchedule::class);
     }
 }
-

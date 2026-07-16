@@ -1,0 +1,63 @@
+<?php
+
+use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+
+test('employee can upload an avatar', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->put(route('attendance.profile.update'), [
+            'name' => $user->name,
+            'email' => $user->email,
+            'avatar' => UploadedFile::fake()->image('me.jpg'),
+        ])
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
+
+    $user->refresh();
+    expect($user->avatar_path)->not->toBeNull()
+        ->and($user->avatar_url)->not->toBeNull();
+    Storage::disk('public')->assertExists($user->avatar_path);
+});
+
+test('uploading a new avatar deletes the old one', function () {
+    Storage::fake('public');
+    $user = User::factory()->create(['avatar_path' => 'avatars/old.jpg']);
+    Storage::disk('public')->put('avatars/old.jpg', 'x');
+
+    $this->actingAs($user)->put(route('attendance.profile.update'), [
+        'name' => $user->name,
+        'email' => $user->email,
+        'avatar' => UploadedFile::fake()->image('new.jpg'),
+    ])->assertSessionHasNoErrors();
+
+    Storage::disk('public')->assertMissing('avatars/old.jpg');
+    Storage::disk('public')->assertExists($user->refresh()->avatar_path);
+});
+
+test('avatar must be an image', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->put(route('attendance.profile.update'), [
+        'name' => $user->name,
+        'email' => $user->email,
+        'avatar' => UploadedFile::fake()->create('doc.pdf', 100, 'application/pdf'),
+    ])->assertSessionHasErrors('avatar');
+
+    expect($user->refresh()->avatar_path)->toBeNull();
+});
+
+test('profile still updates without an avatar', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->put(route('attendance.profile.update'), [
+        'name' => 'Nama Baru',
+        'email' => $user->email,
+    ])->assertSessionHasNoErrors();
+
+    expect($user->refresh()->name)->toBe('Nama Baru');
+});
