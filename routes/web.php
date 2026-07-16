@@ -38,7 +38,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('attendance', [Employee\AttendanceController::class, 'create'])->name('attendance.create');
     Route::post('attendance', [Employee\AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('attendance/history', [Employee\AttendanceController::class, 'index'])->name('attendance.index');
-    
+
+    // Employee announcement (Informasi) detail
+    Route::get('attendance/information/{announcement}', [Employee\AnnouncementController::class, 'show'])->name('attendance.information.show');
+
     // Employee profile routes (SRP - separate controller)
     Route::get('attendance/profile', [Employee\ProfileController::class, 'show'])->name('attendance.profile');
     Route::put('attendance/profile', [Employee\ProfileController::class, 'update'])->name('attendance.profile.update');
@@ -94,6 +97,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Academic year management
     Route::resource('academic-years', Admin\AcademicYearController::class)->except(['show']);
     Route::post('academic-years/{academic_year}/activate', [Admin\AcademicYearController::class, 'activate'])->name('academic-years.activate');
+
+    // Announcement (Informasi) management
+    Route::resource('announcements', Admin\AnnouncementController::class)->except(['show']);
+    Route::patch('announcements/{announcement}/toggle', [Admin\AnnouncementController::class, 'toggle'])->name('announcements.toggle');
 
     // Reports
     Route::get('reports/daily', [Admin\ReportController::class, 'daily'])->name('reports.daily');

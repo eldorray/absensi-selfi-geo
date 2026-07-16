@@ -649,6 +649,39 @@
                         </div>
                     </div>
 
+                    <!-- Informasi (swipeable cards, admin-managed) -->
+                    @if ($announcements->isNotEmpty())
+                        <style>
+                            .info-scroll::-webkit-scrollbar { display: none; }
+                            .info-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+                        </style>
+                        <div class="pt-1">
+                            <h3 class="font-black text-xs theme-text-main font-display uppercase tracking-wider mb-3">Informasi</h3>
+                            <div class="info-scroll flex gap-3 overflow-x-auto snap-x snap-mandatory -mx-1 px-1 pb-1">
+                                @foreach ($announcements as $info)
+                                    <a href="{{ route('attendance.information.show', $info) }}"
+                                        class="snap-start shrink-0 w-[78%] glass-card theme-border rounded-[20px] overflow-hidden hover:scale-[1.01] transition-transform duration-300">
+                                        <div class="relative aspect-[16/9] w-full overflow-hidden">
+                                            @if ($info->image_url)
+                                                <img src="{{ $info->image_url }}" alt="" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-4">
+                                                    <span class="text-white font-bold text-sm text-center line-clamp-2">{{ $info->title }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="p-3">
+                                            <p class="font-bold text-[11px] theme-text-main font-outfit line-clamp-1">{{ $info->title }}</p>
+                                            @if ($info->summary)
+                                                <p class="text-[9px] theme-text-main opacity-60 font-outfit mt-0.5 line-clamp-2">{{ $info->summary }}</p>
+                                            @endif
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Menu Persetujuan (Kepala Sekolah only) -->
                     @if (auth()->user()->role?->slug === 'kepala-sekolah')
                         <div class="pt-1">

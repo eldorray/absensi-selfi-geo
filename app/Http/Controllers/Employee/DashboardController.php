@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Employee;
 
 use App\Enums\AttendanceStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
 use App\Models\Attendance;
 use App\Models\WorkSchedule;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ use Illuminate\View\View;
 
 /**
  * DashboardController - Handle employee dashboard display.
- * 
+ *
  * Follows Single Responsibility Principle by only handling dashboard operations.
  */
 class DashboardController extends Controller
@@ -51,12 +52,16 @@ class DashboardController extends Controller
 
         $totalAttendance = $monthlyPresent;
 
+        // Active info cards for the swipeable "Informasi" section
+        $announcements = Announcement::activeOrdered()->get();
+
         return view('attendance.dashboard', [
             'todayAttendance' => $todayAttendance,
             'todaySchedule' => $todaySchedule,
             'monthlyPresent' => $monthlyPresent,
             'monthlyLate' => $monthlyLate,
             'totalAttendance' => $totalAttendance,
+            'announcements' => $announcements,
         ]);
     }
 }
