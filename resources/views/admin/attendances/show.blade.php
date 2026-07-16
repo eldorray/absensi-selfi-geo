@@ -2,7 +2,7 @@
     <div class="max-w-2xl mx-auto">
         <!-- Header -->
         <div class="admin-page-header mb-8">
-            <a href="{{ route('admin.attendances.index') }}" class="admin-button-secondary inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-4">
+            <a href="{{ route('admin.attendances.index') }}" class="admin-button-secondary px-3 inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-4">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>

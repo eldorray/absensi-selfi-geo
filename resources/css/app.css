@@ -259,8 +259,8 @@
 
     .admin-shell .admin-modal-overlay {
         background: rgba(4, 8, 20, .58) !important;
-        -webkit-backdrop-filter: blur(10px);
-        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px) !important;
+        backdrop-filter: blur(10px) !important;
     }
 
     .admin-shell .admin-page-header h1 {
@@ -445,21 +445,21 @@
     }
 
     .admin-shell .admin-alert-success {
-        border: 1px solid var(--admin-success-border-soft);
-        border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent);
+        border: 1px solid var(--admin-success-border-soft) !important;
+        border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent) !important;
         background: var(--admin-success-alert-soft) !important;
         background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;
-        color: var(--admin-success);
+        color: var(--admin-success) !important;
         -webkit-backdrop-filter: blur(16px);
         backdrop-filter: blur(16px);
     }
 
     .admin-shell .admin-alert-danger {
-        border: 1px solid var(--admin-danger-border-soft);
-        border: 1px solid color-mix(in srgb, var(--admin-danger) 30%, transparent);
+        border: 1px solid var(--admin-danger-border-soft) !important;
+        border: 1px solid color-mix(in srgb, var(--admin-danger) 30%, transparent) !important;
         background: var(--admin-danger-alert-soft) !important;
         background: color-mix(in srgb, var(--admin-danger) 10%, var(--admin-glass)) !important;
-        color: var(--admin-danger);
+        color: var(--admin-danger) !important;
         -webkit-backdrop-filter: blur(16px);
         backdrop-filter: blur(16px);
     }

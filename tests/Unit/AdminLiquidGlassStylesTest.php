@@ -104,7 +104,7 @@ test('admin table and success alert use exact semantic values', function () {
         'font: 700 0.72rem/1.2 "Outfit", sans-serif !important;',
         'letter-spacing: .07em !important;',
         'transition: background-color 180ms ease;',
-        'border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent);',
+        'border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent) !important;',
         'background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;',
     );
 });
@@ -112,20 +112,44 @@ test('admin table and success alert use exact semantic values', function () {
 test('admin modal overlay uses the exact scoped dimming and blur values', function () {
     expect(adminRule('.admin-shell .admin-modal-overlay'))->toContain(
         'background: rgba(4, 8, 20, .58) !important;',
-        '-webkit-backdrop-filter: blur(10px);',
-        'backdrop-filter: blur(10px);',
+        '-webkit-backdrop-filter: blur(10px) !important;',
+        'backdrop-filter: blur(10px) !important;',
     );
 });
 
 test('admin danger alert uses semantic color with static glass fallbacks', function () {
     expect(adminRule('.admin-shell .admin-alert-danger'))->toContain(
-        'border: 1px solid var(--admin-danger-border-soft);',
-        'border: 1px solid color-mix(in srgb, var(--admin-danger) 30%, transparent);',
+        'border: 1px solid var(--admin-danger-border-soft) !important;',
+        'border: 1px solid color-mix(in srgb, var(--admin-danger) 30%, transparent) !important;',
         'background: var(--admin-danger-alert-soft) !important;',
         'background: color-mix(in srgb, var(--admin-danger) 10%, var(--admin-glass)) !important;',
-        'color: var(--admin-danger);',
+        'color: var(--admin-danger) !important;',
         '-webkit-backdrop-filter: blur(16px);',
         'backdrop-filter: blur(16px);',
+    );
+});
+
+test('admin alerts keep important semantic declarations and ordered static fallbacks', function () {
+    foreach (['success', 'danger'] as $semantic) {
+        $rule = adminRule(".admin-shell .admin-alert-{$semantic}");
+        $staticBorder = "border: 1px solid var(--admin-{$semantic}-border-soft) !important;";
+        $mixedBorder = "border: 1px solid color-mix(in srgb, var(--admin-{$semantic}) 30%, transparent) !important;";
+
+        expect($rule)->toContain(
+            $staticBorder,
+            $mixedBorder,
+            "color: var(--admin-{$semantic}) !important;",
+        );
+        expect(strpos($rule, $staticBorder))->toBeLessThan(strpos($rule, $mixedBorder));
+    }
+
+    expect(adminRule('.dark .admin-shell'))->toContain(
+        '--admin-success: #34d399;',
+        '--admin-danger: #fb7185;',
+        '--admin-success-border-soft: rgba(52, 211, 153, .3);',
+        '--admin-success-alert-soft: rgba(22, 55, 52, .88);',
+        '--admin-danger-border-soft: rgba(251, 113, 133, .3);',
+        '--admin-danger-alert-soft: rgba(70, 31, 44, .88);',
     );
 });
 
@@ -270,8 +294,8 @@ test('admin color mixes retain static semantic fallbacks', function () {
     );
 
     expect(adminRule('.admin-shell .admin-alert-success'))->toContain(
-        'border: 1px solid var(--admin-success-border-soft);',
-        'border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent);',
+        'border: 1px solid var(--admin-success-border-soft) !important;',
+        'border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent) !important;',
         'background: var(--admin-success-alert-soft) !important;',
         'background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;',
     );

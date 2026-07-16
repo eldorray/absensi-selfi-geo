@@ -252,6 +252,32 @@ test('admin detail views adopt semantic glass surfaces', function (string $view)
         ->not->toContain('bg-white dark:bg-gray-800');
 })->with('admin detail views');
 
+test('admin detail views retain semantic status and approval mappings', function () {
+    $attendance = file_get_contents(resource_path('views/admin/attendances/show.blade.php'));
+    $leave = file_get_contents(resource_path('views/admin/leaves/show.blade.php'));
+
+    expect($attendance)->toContain(
+        "{{ \$attendance->status->value === 'present' ? 'admin-status-success' : 'admin-status-warning' }}",
+    );
+    expect($leave)
+        ->toContain("'pending' => 'admin-status-warning'")
+        ->toContain("'approved' => 'admin-status-success'")
+        ->toContain("'rejected' => 'admin-status-danger'")
+        ->toMatch('/<button\b[^>]*class="[^"]*\badmin-button-success\b[^"]*"[^>]*onclick="return confirm\(\'Setujui pengajuan ini\?\'\)"/s')
+        ->toMatch('/<button\b[^>]*class="[^"]*\badmin-button-danger\b[^"]*"[^>]*onclick="return confirm\(\'Tolak pengajuan ini\?\'\)"/s');
+
+    $matched = preg_match(
+        '/<a href="\{\{ route\(\'admin\.attendances\.index\'\) \}\}" class="(?<classes>[^"]*)"/s',
+        $attendance,
+        $backLink,
+    );
+
+    expect($matched)->toBe(1);
+    expect($backLink['classes'])
+        ->toContain('admin-button-secondary')
+        ->toContain('px-3');
+});
+
 test('daily report photo modal adopts semantic glass classes and an accessible close target', function () {
     $source = file_get_contents(resource_path('views/admin/reports/daily.blade.php'));
 
@@ -284,11 +310,7 @@ dataset('admin pdf report views', [
 test('pdf report templates stay isolated from admin screen classes', function (string $view) {
     $source = file_get_contents(resource_path("views/{$view}"));
 
-    expect($source)->not->toContain(
-        'admin-glass',
-        'admin-field',
-        'admin-table',
-    );
+    expect($source)->not->toMatch('/\badmin-[a-z0-9-]+/i');
 })->with('admin pdf report views');
 
 dataset('direct admin feedback containers', [
