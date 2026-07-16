@@ -417,6 +417,10 @@
         color: var(--admin-text) !important;
     }
 
+    .admin-shell .admin-table td.admin-muted {
+        color: var(--admin-muted) !important;
+    }
+
     .admin-shell .admin-table tbody tr {
         transition: background-color 180ms ease;
     }

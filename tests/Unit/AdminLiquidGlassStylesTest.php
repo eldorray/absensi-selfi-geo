@@ -107,6 +107,12 @@ test('admin table and success alert use exact semantic values', function () {
     );
 });
 
+test('admin table muted cells override the base table cell color', function () {
+    expect(adminRule('.admin-shell .admin-table td.admin-muted'))->toContain(
+        'color: var(--admin-muted) !important;',
+    );
+});
+
 test('admin icon and scrollbar helpers use their semantic tokens', function () {
     expect(adminStyles())->toContain(
         'background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft)) !important;',

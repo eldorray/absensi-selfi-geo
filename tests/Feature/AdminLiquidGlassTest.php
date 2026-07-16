@@ -64,7 +64,66 @@ test('admin index views adopt semantic glass surfaces', function (string $view) 
         ->toContain('admin-page-header')
         ->toContain('admin-glass-panel');
 
-    if (str_contains($source, '<table')) {
-        expect($source)->toContain('admin-table');
+    preg_match_all('/<table\b[^>]*>/s', $source, $tables);
+
+    expect($tables[0])->not->toBeEmpty();
+
+    foreach ($tables[0] as $table) {
+        expect($table)->toContain('admin-table');
     }
 })->with('admin index views');
+
+test('roles table body stays transparent inside the glass panel', function () {
+    $source = file_get_contents(resource_path('views/admin/roles/index.blade.php'));
+
+    expect($source)->not->toMatch('/<tbody\b[^>]*\bbg-white\b[^>]*\bdark:bg-gray-800\b[^>]*>/s');
+});
+
+dataset('admin compact text actions', [
+    'attendance detail' => [
+        'admin/attendances/index.blade.php',
+        '/<a\b[^>]*class="[^"]*\badmin-button-primary\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Detail\s*<\/a>/s',
+    ],
+    'leave detail' => [
+        'admin/leaves/index.blade.php',
+        '/<a\b[^>]*class="[^"]*\badmin-button-primary\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Detail\s*<\/a>/s',
+    ],
+    'role edit' => [
+        'admin/roles/index.blade.php',
+        '/<a\b[^>]*class="[^"]*\badmin-button-primary\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Edit\s*<\/a>/s',
+    ],
+    'role delete' => [
+        'admin/roles/index.blade.php',
+        '/<button\b[^>]*class="[^"]*\badmin-button-danger\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Hapus\s*<\/button>/s',
+    ],
+]);
+
+test('compact admin text actions retain intentional horizontal padding', function (string $view, string $pattern) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+
+    expect($source)->toMatch($pattern);
+})->with('admin compact text actions');
+
+dataset('admin icon action views', [
+    'academic years' => 'admin/academic-years/index.blade.php',
+    'announcements' => 'admin/announcements/index.blade.php',
+    'offices' => 'admin/offices/index.blade.php',
+    'users' => 'admin/users/index.blade.php',
+]);
+
+test('icon-only admin actions use fixed accessible targets', function (string $view) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+    $matched = preg_match_all(
+        '/<(?<tag>a|button)\b[^>]*class="(?<classes>[^"]*\badmin-button-(?:primary|success|danger)\b[^"]*)"[^>]*>\s*<svg\b(?:(?!<\/svg>).)*<\/svg>\s*<\/\k<tag>>/s',
+        $source,
+        $actions,
+    );
+
+    expect($matched)->toBeGreaterThan(0);
+
+    foreach ($actions['classes'] as $classes) {
+        expect($classes)
+            ->toContain('size-11')
+            ->toContain('p-0');
+    }
+})->with('admin icon action views');

@@ -84,7 +84,7 @@
                                     {{ $attendance->created_at->format('d M Y H:i') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a href="{{ route('admin.attendances.show', $attendance) }}" class="admin-button-primary text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">
+                                    <a href="{{ route('admin.attendances.show', $attendance) }}" class="admin-button-primary px-3 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">
                                         Detail
                                     </a>
                                 </td>

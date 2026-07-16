@@ -122,7 +122,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <a href="{{ route('admin.leaves.show', $leave) }}"
-                                    class="admin-button-primary text-sky-600 hover:text-sky-800 font-medium text-sm">
+                                    class="admin-button-primary px-3 text-sky-600 hover:text-sky-800 font-medium text-sm">
                                     Detail
                                 </a>
                             </td>

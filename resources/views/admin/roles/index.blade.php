@@ -49,7 +49,7 @@
                             Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse ($roles as $role)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -79,14 +79,14 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('admin.roles.edit', $role) }}"
-                                    class="admin-button-primary text-sky-600 hover:text-sky-900 dark:text-sky-400 mr-3">Edit</a>
+                                    class="admin-button-primary px-3 text-sky-600 hover:text-sky-900 dark:text-sky-400 mr-3">Edit</a>
                                 @if ($role->users_count === 0)
                                     <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
                                         class="inline" onsubmit="return confirm('Yakin ingin menghapus role ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="admin-button-danger text-red-600 hover:text-red-900 dark:text-red-400">Hapus</button>
+                                            class="admin-button-danger px-3 text-red-600 hover:text-red-900 dark:text-red-400">Hapus</button>
                                     </form>
                                 @endif
                             </td>
