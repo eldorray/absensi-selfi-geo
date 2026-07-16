@@ -281,6 +281,10 @@
         box-shadow: var(--admin-focus) !important;
     }
 
+    .admin-shell .admin-field.border-red-500 {
+        border-color: var(--admin-danger) !important;
+    }
+
     .admin-shell :is(
         .admin-button-primary,
         .admin-button-secondary,
@@ -470,10 +474,18 @@
         accent-color: var(--admin-primary) !important;
     }
 
-    .admin-shell .admin-toggle:checked + span {
+    .admin-shell .admin-toggle + .admin-toggle-track {
+        border: 1px solid var(--admin-border-soft) !important;
+        background-color: var(--admin-glass-soft) !important;
+    }
+
+    .admin-shell .admin-toggle:checked + .admin-toggle-track {
         border-color: var(--admin-primary) !important;
         background-color: var(--admin-primary) !important;
-        color: #ffffff !important;
+    }
+
+    .admin-shell .admin-toggle:focus-visible + .admin-toggle-track {
+        box-shadow: var(--admin-focus) !important;
     }
 
     .admin-shell :disabled,

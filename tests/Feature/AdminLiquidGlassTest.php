@@ -193,6 +193,43 @@ test('admin form controls adopt semantic field classes', function (string $view)
     }
 })->with('admin form field views');
 
+dataset('admin fields with conditional error borders', [
+    'academic year date' => ['admin/academic-years/create.blade.php', 'start_date'],
+    'announcement image' => ['admin/announcements/_form.blade.php', 'image'],
+]);
+
+test('admin fields retain conditional error border classes', function (string $view, string $field) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+
+    preg_match_all('/<(?:input|select|textarea)\b(?:(?:{{.*?}})|(?:\?->|->)|[^>])*>/s', $source, $controls);
+
+    $control = collect($controls[0])->first(
+        fn (string $tag): bool => str_contains($tag, "name=\"{$field}\""),
+    );
+
+    expect($control)
+        ->toBeString()
+        ->toContain('admin-field')
+        ->toContain("@error('{$field}') border-red-500 @enderror");
+})->with('admin fields with conditional error borders');
+
+test('work schedule toggle retains peer behavior with a semantic visible track', function () {
+    $source = file_get_contents(resource_path('views/admin/work-schedules/edit.blade.php'));
+    $matched = preg_match(
+        '/(?<checkbox><input\b(?:(?:{{.*?}})|(?:\?->|->)|[^>])*type="checkbox"(?:(?:{{.*?}})|(?:\?->|->)|[^>])*>)[\t\r\n ]*(?<track><div\b[^>]*>)/s',
+        $source,
+        $toggle,
+    );
+
+    expect($matched)->toBe(1);
+    expect($toggle['checkbox'])
+        ->toContain('sr-only')
+        ->toContain('peer')
+        ->toContain('admin-toggle')
+        ->not->toContain('admin-checkbox');
+    expect($toggle['track'])->toContain('admin-toggle-track');
+});
+
 test('admin form views adopt semantic action classes', function (string $view) {
     $source = file_get_contents(resource_path("views/{$view}"));
 

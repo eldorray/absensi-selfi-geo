@@ -181,15 +181,35 @@ test('admin controls use scoped cascade-safe semantic tokens', function () {
         'accent-color: var(--admin-primary) !important;',
     );
 
-    expect(adminRule('.admin-shell .admin-toggle:checked + span'))->toContain(
-        'border-color: var(--admin-primary) !important;',
-        'background-color: var(--admin-primary) !important;',
-        'color: #ffffff !important;',
-    );
-
     expect(adminRule('.admin-shell .custom-scrollbar::-webkit-scrollbar-thumb'))->toContain(
         'background-color: var(--admin-scrollbar-thumb) !important;',
         'background-color: color-mix(in srgb, var(--admin-muted) 42%, transparent) !important;',
+    );
+});
+
+test('admin field errors override the neutral border with semantic danger', function () {
+    $styles = adminStyles();
+    $errorRule = adminRule('.admin-shell .admin-field.border-red-500');
+
+    expect($errorRule)->toContain('border-color: var(--admin-danger) !important;');
+    expect(strpos($styles, '.admin-shell .admin-field.border-red-500'))
+        ->toBeGreaterThan(strpos($styles, '.admin-shell .admin-field {'))
+        ->toBeGreaterThan(strpos($styles, '.admin-shell .admin-field:focus'));
+});
+
+test('admin toggles style their visible tracks with semantic tokens', function () {
+    expect(adminRule('.admin-shell .admin-toggle + .admin-toggle-track'))->toContain(
+        'border: 1px solid var(--admin-border-soft) !important;',
+        'background-color: var(--admin-glass-soft) !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-toggle:checked + .admin-toggle-track'))->toContain(
+        'border-color: var(--admin-primary) !important;',
+        'background-color: var(--admin-primary) !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-toggle:focus-visible + .admin-toggle-track'))->toContain(
+        'box-shadow: var(--admin-focus) !important;',
     );
 });
 
