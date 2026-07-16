@@ -107,7 +107,12 @@
     </script>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased" x-data="{
+@php($isAdminRoute = request()->routeIs('admin.*'))
+
+<body @class([
+    'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased',
+    'admin-shell' => $isAdminRoute,
+]) x-data="{
     sidebarOpen: localStorage.getItem('sidebarOpen') === null ? window.innerWidth >= 1024 : localStorage.getItem('sidebarOpen') === 'true',
     toggleSidebar() {
         this.sidebarOpen = !this.sidebarOpen;
@@ -164,7 +169,10 @@
             <x-layouts.app.sidebar />
 
             <!-- Main Content -->
-            <main class="flex-1 overflow-auto bg-gray-100 dark:bg-gray-900 content-transition">
+            <main @class([
+                'flex-1 overflow-auto bg-gray-100 dark:bg-gray-900 content-transition',
+                'admin-main' => $isAdminRoute,
+            ])>
                 <div class="p-6">
                     <!-- Success Message -->
                     @session('status')
