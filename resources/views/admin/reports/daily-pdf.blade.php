@@ -152,6 +152,7 @@
                 <th class="text-center">Jam Masuk</th>
                 <th class="text-center">Jam Pulang</th>
                 <th class="text-center">Keterangan</th>
+                <th class="text-center">Denda</th>
             </tr>
         </thead>
         <tbody>
@@ -205,13 +206,29 @@
                                 <span class="badge badge-gray">{{ $data['status'] }}</span>
                         @endswitch
                     </td>
+                    <td class="text-center">
+                        @if ($data['fine'] > 0)
+                            Rp {{ number_format($data['fine'], 0, ',', '.') }}<br>
+                            <small style="color: #666;">telat {{ $data['late_minutes'] }} mnt</small>
+                        @else
+                            -
+                        @endif
+                    </td>
                 </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center">Tidak ada data pegawai.</td>
+                        <td colspan="7" class="text-center">Tidak ada data pegawai.</td>
                     </tr>
                 @endforelse
             </tbody>
+            @if ($reportData->isNotEmpty())
+                <tfoot>
+                    <tr>
+                        <td colspan="6" class="text-right" style="font-weight: bold;">Total Denda</td>
+                        <td class="text-center" style="font-weight: bold;">Rp {{ number_format($stats['total_fine'], 0, ',', '.') }}</td>
+                    </tr>
+                </tfoot>
+            @endif
         </table>
 
         <div class="footer">

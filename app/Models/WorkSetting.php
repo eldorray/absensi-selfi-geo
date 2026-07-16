@@ -27,6 +27,9 @@ class WorkSetting extends Model
         'late_limit',
         'before_check_out',
         'require_check_in',
+        'fine_tier1_amount',
+        'fine_tier2_amount',
+        'fine_tier1_max_minutes',
     ];
 
     /**
@@ -38,6 +41,9 @@ class WorkSetting extends Model
     {
         return [
             'require_check_in' => 'boolean',
+            'fine_tier1_amount' => 'integer',
+            'fine_tier2_amount' => 'integer',
+            'fine_tier1_max_minutes' => 'integer',
         ];
     }
 
@@ -52,6 +58,9 @@ class WorkSetting extends Model
             'late_limit' => 120,
             'before_check_out' => 30,
             'require_check_in' => true,
+            'fine_tier1_amount' => 5000,
+            'fine_tier2_amount' => 10000,
+            'fine_tier1_max_minutes' => 15,
         ]);
     }
 }

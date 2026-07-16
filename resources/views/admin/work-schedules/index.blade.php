@@ -59,6 +59,37 @@
                         </div>
                     </div>
 
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Denda Keterlambatan</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Denda dihitung dari menit telat setelah batas toleransi (Sesudah Masuk). Hanya untuk status Terlambat.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Denda Tier 1 (Rp)
+                                </label>
+                                <input type="number" name="fine_tier1_amount" min="0" value="{{ $settings->fine_tier1_amount }}"
+                                    class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                <p class="mt-1 text-xs text-gray-400">Telat 1 s/d batas menit di bawah.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Batas Menit Tier 1
+                                </label>
+                                <input type="number" name="fine_tier1_max_minutes" min="1" value="{{ $settings->fine_tier1_max_minutes }}"
+                                    class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                <p class="mt-1 text-xs text-gray-400">Telat &le; menit ini kena Tier 1, di atasnya Tier 2.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Denda Tier 2 (Rp)
+                                </label>
+                                <input type="number" name="fine_tier2_amount" min="0" value="{{ $settings->fine_tier2_amount }}"
+                                    class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                <p class="mt-1 text-xs text-gray-400">Telat di atas batas menit Tier 1.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex items-center justify-between">
                         <label class="flex items-center">
                             <input type="checkbox" name="require_check_in" value="1"

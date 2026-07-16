@@ -90,6 +90,9 @@
                             <th
                                 class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
                                 Persentase</th>
+                            <th
+                                class="px-4 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
+                                Total Denda</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -139,15 +142,30 @@
                                     @endphp
                                     <span class="font-semibold {{ $colorClass }}">{{ $rate }}%</span>
                                 </td>
+                                <td class="px-4 py-3 text-right text-sm">
+                                    @if ($data['total_fine'] > 0)
+                                        <span class="font-semibold text-red-600 dark:text-red-400">Rp {{ number_format($data['total_fine'], 0, ',', '.') }}</span>
+                                    @else
+                                        <span class="text-gray-400">-</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="px-4 py-12 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="9" class="px-4 py-12 text-center text-gray-500 dark:text-gray-400">
                                     Tidak ada data pegawai.
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
+                    @if ($reportData->isNotEmpty())
+                        <tfoot class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Total Denda Keseluruhan</td>
+                                <td class="px-4 py-3 text-right text-sm font-bold text-red-600 dark:text-red-400">Rp {{ number_format($totalFine, 0, ',', '.') }}</td>
+                            </tr>
+                        </tfoot>
+                    @endif
                 </table>
             </div>
         </div>

@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\WorkSetting;
+use App\Support\FineCalculator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ use Illuminate\View\View;
 
 /**
  * Controller for generating attendance reports.
- * 
+ *
  * Handles both daily and monthly attendance reports with PDF export.
  */
 class ReportController extends Controller
@@ -75,7 +77,7 @@ class ReportController extends Controller
 
     /**
      * Get daily report data.
-     * 
+     *
      * Shared logic between daily() and exportDailyPdf().
      *
      * @return array{reportData: Collection, stats: array, selectedDate: Carbon, activeYear: ?AcademicYear}
@@ -86,23 +88,25 @@ class ReportController extends Controller
         $selectedDate = Carbon::parse($date);
 
         $activeYear = AcademicYear::getActive();
+        $settings = WorkSetting::current();
         $users = $this->getEmployees(withSchedules: true);
         $attendances = $this->getDailyAttendances($selectedDate, $activeYear);
 
-        $reportData = $users->map(fn($user) => $this->buildDailyUserReport($user, $attendances, $selectedDate));
+        $reportData = $users->map(fn ($user) => $this->buildDailyUserReport($user, $attendances, $selectedDate, $settings));
 
         $stats = [
             'total_employees' => $users->count(),
             'checked_in' => $attendances->count(),
-            'checked_out' => $attendances->filter(fn($a) => $a->check_out_at !== null)->count(),
+            'checked_out' => $attendances->filter(fn ($a) => $a->check_out_at !== null)->count(),
+            'total_fine' => (int) $reportData->sum('fine'),
         ];
 
-        return compact('reportData', 'stats', 'selectedDate', 'activeYear');
+        return compact('reportData', 'stats', 'selectedDate', 'activeYear', 'settings');
     }
 
     /**
      * Get monthly report data.
-     * 
+     *
      * Shared logic between monthly() and exportMonthlyPdf().
      *
      * @return array{reportData: Collection, startDate: string, endDate: string, activeYear: ?AcademicYear, workDays: int}
@@ -116,13 +120,16 @@ class ReportController extends Controller
         $end = Carbon::parse($endDate);
 
         $activeYear = AcademicYear::getActive();
-        $users = $this->getEmployees(withSchedules: false);
+        $settings = WorkSetting::current();
+        $users = $this->getEmployees(withSchedules: true);
         $attendances = $this->getRangeAttendances($start, $end, $activeYear);
         $workDays = $this->countWorkDaysInRange($start, $end);
 
-        $reportData = $users->map(fn($user) => $this->buildMonthlyUserReport($user, $attendances, $workDays));
+        $reportData = $users->map(fn ($user) => $this->buildMonthlyUserReport($user, $attendances, $workDays, $settings));
 
-        return compact('reportData', 'startDate', 'endDate', 'activeYear', 'workDays');
+        $totalFine = (int) $reportData->sum('total_fine');
+
+        return compact('reportData', 'startDate', 'endDate', 'activeYear', 'workDays', 'settings', 'totalFine');
     }
 
     /**
@@ -136,7 +143,7 @@ class ReportController extends Controller
         }
 
         return User::with($relations)
-            ->whereHas('role', fn($q) => $q->where('is_admin', false))
+            ->whereHas('role', fn ($q) => $q->where('is_admin', false))
             ->orderBy('name')
             ->get();
     }
@@ -148,7 +155,7 @@ class ReportController extends Controller
     {
         return Attendance::with('user')
             ->whereDate('created_at', $date)
-            ->when($activeYear, fn($q) => $q->where('academic_year_id', $activeYear->id))
+            ->when($activeYear, fn ($q) => $q->where('academic_year_id', $activeYear->id))
             ->get()
             ->keyBy('user_id');
     }
@@ -160,7 +167,7 @@ class ReportController extends Controller
     {
         return Attendance::with('user')
             ->whereBetween('created_at', [$start->startOfDay(), $end->endOfDay()])
-            ->when($activeYear, fn($q) => $q->where('academic_year_id', $activeYear->id))
+            ->when($activeYear, fn ($q) => $q->where('academic_year_id', $activeYear->id))
             ->get()
             ->groupBy('user_id');
     }
@@ -168,7 +175,7 @@ class ReportController extends Controller
     /**
      * Build daily report data for a single user.
      */
-    private function buildDailyUserReport(User $user, Collection $attendances, Carbon $date): array
+    private function buildDailyUserReport(User $user, Collection $attendances, Carbon $date, WorkSetting $settings): array
     {
         $attendance = $attendances->get($user->id);
         $dayName = strtolower($date->locale('id')->dayName);
@@ -178,29 +185,44 @@ class ReportController extends Controller
             ->where('is_active', true)
             ->first();
 
+        $lateMinutes = FineCalculator::lateMinutes($attendance, $workSchedule, $settings);
+
         return [
             'user' => $user,
             'work_schedule' => $workSchedule,
             'attendance' => $attendance,
             'status' => $this->determineStatus($attendance, $workSchedule),
+            'late_minutes' => $lateMinutes,
+            'fine' => FineCalculator::amountForMinutes($lateMinutes, $settings),
         ];
     }
 
     /**
      * Build monthly report data for a single user.
      */
-    private function buildMonthlyUserReport(User $user, Collection $attendances, int $workDays): array
+    private function buildMonthlyUserReport(User $user, Collection $attendances, int $workDays, WorkSetting $settings): array
     {
         $userAttendances = $attendances->get($user->id, collect());
+
+        $totalFine = $userAttendances->sum(function ($attendance) use ($user, $settings) {
+            $dayName = strtolower($attendance->created_at->locale('id')->dayName);
+            $schedule = $user->workSchedules
+                ->where('day', $dayName)
+                ->where('is_active', true)
+                ->first();
+
+            return FineCalculator::fine($attendance, $schedule, $settings);
+        });
 
         return [
             'user' => $user,
             'total_present' => $userAttendances->count(),
-            'total_late' => $userAttendances->filter(fn($a) => $a->status->value === 'late')->count(),
-            'total_on_time' => $userAttendances->filter(fn($a) => $a->status->value === 'present')->count(),
+            'total_late' => $userAttendances->filter(fn ($a) => $a->status->value === 'late')->count(),
+            'total_on_time' => $userAttendances->filter(fn ($a) => $a->status->value === 'present')->count(),
             'total_alpha' => $workDays - $userAttendances->count(),
             'work_days' => $workDays,
             'attendance_rate' => $workDays > 0 ? round(($userAttendances->count() / $workDays) * 100, 1) : 0,
+            'total_fine' => (int) $totalFine,
         ];
     }
 
@@ -209,11 +231,11 @@ class ReportController extends Controller
      */
     private function determineStatus(?Attendance $attendance, $workSchedule): string
     {
-        if (!$workSchedule) {
+        if (! $workSchedule) {
             return 'no_schedule';
         }
 
-        if (!$attendance) {
+        if (! $attendance) {
             return 'absent';
         }
 
@@ -230,7 +252,7 @@ class ReportController extends Controller
         $workDays = 0;
 
         while ($startCopy <= $endCopy) {
-            if (!$startCopy->isWeekend()) {
+            if (! $startCopy->isWeekend()) {
                 $workDays++;
             }
             $startCopy->addDay();

@@ -134,6 +134,7 @@
                 <th class="text-center">Terlambat</th>
                 <th class="text-center">Alpha</th>
                 <th class="text-center">Persentase</th>
+                <th class="text-center">Total Denda</th>
             </tr>
         </thead>
         <tbody>
@@ -165,13 +166,28 @@
                             {{ $rate }}%
                         </strong>
                     </td>
+                    <td class="text-center">
+                        @if ($data['total_fine'] > 0)
+                            Rp {{ number_format($data['total_fine'], 0, ',', '.') }}
+                        @else
+                            -
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="text-center">Tidak ada data pegawai.</td>
+                    <td colspan="9" class="text-center">Tidak ada data pegawai.</td>
                 </tr>
             @endforelse
         </tbody>
+        @if ($reportData->isNotEmpty())
+            <tfoot>
+                <tr>
+                    <td colspan="8" class="text-right" style="font-weight: bold;">Total Denda Keseluruhan</td>
+                    <td class="text-center" style="font-weight: bold;">Rp {{ number_format($totalFine, 0, ',', '.') }}</td>
+                </tr>
+            </tfoot>
+        @endif
     </table>
 
     <div class="footer">

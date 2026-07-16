@@ -48,6 +48,9 @@ class WorkScheduleController extends Controller
             'late_limit' => 'required|integer|min:0|max:1440', // Up to 24 hours
             'before_check_out' => 'required|integer|min:0|max:360',
             'require_check_in' => 'boolean',
+            'fine_tier1_amount' => 'required|integer|min:0|max:10000000',
+            'fine_tier2_amount' => 'required|integer|min:0|max:10000000',
+            'fine_tier1_max_minutes' => 'required|integer|min:1|max:1440',
         ]);
 
         $settings = WorkSetting::current();
@@ -57,6 +60,9 @@ class WorkScheduleController extends Controller
             'late_limit' => $validated['late_limit'],
             'before_check_out' => $validated['before_check_out'],
             'require_check_in' => $request->boolean('require_check_in'),
+            'fine_tier1_amount' => $validated['fine_tier1_amount'],
+            'fine_tier2_amount' => $validated['fine_tier2_amount'],
+            'fine_tier1_max_minutes' => $validated['fine_tier1_max_minutes'],
         ]);
 
         return back()->with('success', 'Pengaturan toleransi berhasil diperbarui.');
@@ -102,7 +108,7 @@ class WorkScheduleController extends Controller
 
         return redirect()
             ->route('admin.work-schedules.index')
-            ->with('success', 'Jadwal kerja ' . $user->name . ' berhasil diperbarui.');
+            ->with('success', 'Jadwal kerja '.$user->name.' berhasil diperbarui.');
     }
 
     /**
@@ -110,7 +116,7 @@ class WorkScheduleController extends Controller
      */
     public function toggleStatus(WorkSchedule $schedule): RedirectResponse
     {
-        $schedule->update(['is_active' => !$schedule->is_active]);
+        $schedule->update(['is_active' => ! $schedule->is_active]);
 
         return back()->with('success', 'Status jadwal berhasil diubah.');
     }
