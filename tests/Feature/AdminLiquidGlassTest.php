@@ -278,6 +278,29 @@ test('admin detail views retain semantic status and approval mappings', function
         ->toContain('px-3');
 });
 
+dataset('leave type semantic mappings', [
+    'sakit' => ['sakit', 'admin-status-danger'],
+    'izin' => ['izin', 'admin-status-info'],
+    'cuti' => ['cuti', 'admin-status-info'],
+]);
+
+test('leave types retain their semantic mappings', function (string $type, string $expectedClass) {
+    $source = file_get_contents(resource_path('views/admin/leaves/show.blade.php'));
+    $matched = preg_match(
+        '/\{\{ \$leave->type === \'(?<dangerType>[^\']+)\' \? \'(?<dangerClass>[^\']+)\' : \'(?<otherClass>[^\']+)\' \}\}/',
+        $source,
+        $mapping,
+    );
+
+    expect($matched)->toBe(1);
+
+    $actualClass = $type === $mapping['dangerType']
+        ? $mapping['dangerClass']
+        : $mapping['otherClass'];
+
+    expect($actualClass)->toBe($expectedClass);
+})->with('leave type semantic mappings');
+
 test('daily report photo modal adopts semantic glass classes and an accessible close target', function () {
     $source = file_get_contents(resource_path('views/admin/reports/daily.blade.php'));
 

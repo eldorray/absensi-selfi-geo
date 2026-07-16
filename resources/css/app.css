@@ -231,7 +231,6 @@
     .admin-shell .admin-nav-link[aria-current="page"],
     .admin-shell .admin-nav-active {
         background: var(--admin-primary-soft) !important;
-        background: color-mix(in srgb, var(--admin-primary) 12%, transparent) !important;
         color: var(--admin-nav-active) !important;
     }
 
@@ -382,31 +381,26 @@
     .admin-shell .admin-status-success {
         color: var(--admin-success) !important;
         background: var(--admin-success-soft) !important;
-        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-status-warning {
         color: var(--admin-warning) !important;
         background: var(--admin-warning-soft) !important;
-        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-status-info {
         color: var(--admin-info) !important;
         background: var(--admin-info-soft) !important;
-        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-status-danger {
         color: var(--admin-danger) !important;
         background: var(--admin-danger-soft) !important;
-        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-status-neutral {
         color: var(--admin-neutral) !important;
         background: var(--admin-neutral-soft) !important;
-        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-table {
@@ -441,14 +435,11 @@
 
     .admin-shell .admin-table tbody tr:hover > * {
         background: var(--admin-primary-soft) !important;
-        background: color-mix(in srgb, var(--admin-primary) 6%, transparent) !important;
     }
 
     .admin-shell .admin-alert-success {
         border: 1px solid var(--admin-success-border-soft) !important;
-        border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent) !important;
         background: var(--admin-success-alert-soft) !important;
-        background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;
         color: var(--admin-success) !important;
         -webkit-backdrop-filter: blur(16px);
         backdrop-filter: blur(16px);
@@ -456,9 +447,7 @@
 
     .admin-shell .admin-alert-danger {
         border: 1px solid var(--admin-danger-border-soft) !important;
-        border: 1px solid color-mix(in srgb, var(--admin-danger) 30%, transparent) !important;
         background: var(--admin-danger-alert-soft) !important;
-        background: color-mix(in srgb, var(--admin-danger) 10%, var(--admin-glass)) !important;
         color: var(--admin-danger) !important;
         -webkit-backdrop-filter: blur(16px);
         backdrop-filter: blur(16px);
@@ -476,7 +465,6 @@
         justify-content: center;
         border: 1px solid var(--admin-border-soft) !important;
         background: var(--admin-primary-soft) !important;
-        background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft)) !important;
         color: var(--admin-primary) !important;
     }
 
@@ -518,6 +506,39 @@
         background-color: var(--admin-scrollbar-thumb) !important;
         background-color: color-mix(in srgb, var(--admin-muted) 42%, transparent) !important;
         border-radius: 999px;
+    }
+
+    @supports (color: color-mix(in srgb, red, blue)) {
+        .admin-shell .admin-nav-link[aria-current="page"],
+        .admin-shell .admin-nav-active {
+            background: color-mix(in srgb, var(--admin-primary) 12%, transparent) !important;
+        }
+
+        .admin-shell .admin-status-success,
+        .admin-shell .admin-status-warning,
+        .admin-shell .admin-status-info,
+        .admin-shell .admin-status-danger,
+        .admin-shell .admin-status-neutral {
+            background: color-mix(in srgb, currentColor 12%, transparent) !important;
+        }
+
+        .admin-shell .admin-table tbody tr:hover > * {
+            background: color-mix(in srgb, var(--admin-primary) 6%, transparent) !important;
+        }
+
+        .admin-shell .admin-alert-success {
+            border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent) !important;
+            background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;
+        }
+
+        .admin-shell .admin-alert-danger {
+            border: 1px solid color-mix(in srgb, var(--admin-danger) 30%, transparent) !important;
+            background: color-mix(in srgb, var(--admin-danger) 10%, var(--admin-glass)) !important;
+        }
+
+        .admin-shell .admin-icon {
+            background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft)) !important;
+        }
     }
 
     @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {

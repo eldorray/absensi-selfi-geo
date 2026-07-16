@@ -30,6 +30,20 @@ function adminRule(string $selector): string
     return $matches[1];
 }
 
+function adminColorMixEnhancements(): string
+{
+    $styles = adminStyles();
+    $start = strpos($styles, '@supports (color: color-mix(in srgb, red, blue))');
+
+    expect($start, 'Missing positive color-mix support query.')->not->toBeFalse();
+
+    $end = strpos($styles, '@supports not ((-webkit-backdrop-filter:', (int) $start);
+
+    expect($end, 'Missing end boundary after color-mix support query.')->not->toBeFalse();
+
+    return substr($styles, (int) $start, (int) $end - (int) $start);
+}
+
 test('admin stylesheet defines the complete semantic glass system', function () {
     expect(adminStyles())->toContain(
         '.admin-shell',
@@ -120,27 +134,23 @@ test('admin modal overlay uses the exact scoped dimming and blur values', functi
 test('admin danger alert uses semantic color with static glass fallbacks', function () {
     expect(adminRule('.admin-shell .admin-alert-danger'))->toContain(
         'border: 1px solid var(--admin-danger-border-soft) !important;',
-        'border: 1px solid color-mix(in srgb, var(--admin-danger) 30%, transparent) !important;',
         'background: var(--admin-danger-alert-soft) !important;',
-        'background: color-mix(in srgb, var(--admin-danger) 10%, var(--admin-glass)) !important;',
         'color: var(--admin-danger) !important;',
         '-webkit-backdrop-filter: blur(16px);',
         'backdrop-filter: blur(16px);',
-    );
+    )->not->toContain('color-mix(');
 });
 
-test('admin alerts keep important semantic declarations and ordered static fallbacks', function () {
+test('admin alerts keep important static semantic fallbacks in their base rules', function () {
     foreach (['success', 'danger'] as $semantic) {
         $rule = adminRule(".admin-shell .admin-alert-{$semantic}");
         $staticBorder = "border: 1px solid var(--admin-{$semantic}-border-soft) !important;";
-        $mixedBorder = "border: 1px solid color-mix(in srgb, var(--admin-{$semantic}) 30%, transparent) !important;";
 
         expect($rule)->toContain(
             $staticBorder,
-            $mixedBorder,
+            "background: var(--admin-{$semantic}-alert-soft) !important;",
             "color: var(--admin-{$semantic}) !important;",
-        );
-        expect(strpos($rule, $staticBorder))->toBeLessThan(strpos($rule, $mixedBorder));
+        )->not->toContain('color-mix(');
     }
 
     expect(adminRule('.dark .admin-shell'))->toContain(
@@ -197,9 +207,8 @@ test('admin shell tokens and compatibility rules stay in their scoped blocks', f
 
     expect(adminRule('.admin-shell .admin-nav-active'))->toContain(
         'background: var(--admin-primary-soft) !important;',
-        'background: color-mix(in srgb, var(--admin-primary) 12%, transparent) !important;',
         'color: var(--admin-nav-active) !important;',
-    );
+    )->not->toContain('color-mix(');
 
     expect(adminStyles())
         ->toMatch('/@supports not \(\(-webkit-backdrop-filter: blur\(1px\)\) or \(backdrop-filter: blur\(1px\)\)\)\s*\{.*?\.admin-shell \.admin-header,.*?\.admin-shell \.admin-sidebar,.*?\.admin-shell \.admin-glass-panel,.*?background: var\(--admin-glass-strong\) !important;.*?\}/s')
@@ -216,9 +225,8 @@ test('admin controls use scoped cascade-safe semantic tokens', function () {
     expect(adminRule('.admin-shell .admin-icon'))->toContain(
         'border: 1px solid var(--admin-border-soft) !important;',
         'background: var(--admin-primary-soft) !important;',
-        'background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft)) !important;',
         'color: var(--admin-primary) !important;',
-    );
+    )->not->toContain('color-mix(');
 
     expect(adminRule('.admin-shell .admin-checkbox'))->toContain(
         'border-color: var(--admin-border-soft) !important;',
@@ -277,28 +285,30 @@ test('admin actions use contrast-safe fills and a visible focus indicator', func
     );
 });
 
-test('admin color mixes retain static semantic fallbacks', function () {
-    expect(adminRule('.admin-shell .admin-status-success'))->toContain(
-        'background: var(--admin-success-soft) !important;',
-        'background: color-mix(in srgb, currentColor 12%, transparent) !important;',
-    );
+test('critical color mixes keep static base rules and use a positive support enhancement', function () {
+    foreach (['success', 'warning', 'info', 'danger', 'neutral'] as $semantic) {
+        expect(adminRule(".admin-shell .admin-status-{$semantic}"))
+            ->toContain("background: var(--admin-{$semantic}-soft) !important;")
+            ->not->toContain('color-mix(');
+    }
 
-    expect(adminRule('.admin-shell .admin-status-warning'))->toContain(
-        'background: var(--admin-warning-soft) !important;',
-        'background: color-mix(in srgb, currentColor 12%, transparent) !important;',
-    );
+    expect(adminRule('.admin-shell .admin-table tbody tr:hover > *'))
+        ->toContain('background: var(--admin-primary-soft) !important;')
+        ->not->toContain('color-mix(');
 
-    expect(adminRule('.admin-shell .admin-table tbody tr:hover > *'))->toContain(
-        'background: var(--admin-primary-soft) !important;',
-        'background: color-mix(in srgb, var(--admin-primary) 6%, transparent) !important;',
-    );
+    $enhancements = adminColorMixEnhancements();
 
-    expect(adminRule('.admin-shell .admin-alert-success'))->toContain(
-        'border: 1px solid var(--admin-success-border-soft) !important;',
-        'border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent) !important;',
-        'background: var(--admin-success-alert-soft) !important;',
-        'background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;',
-    );
+    foreach (['success', 'warning', 'info', 'danger', 'neutral'] as $semantic) {
+        expect($enhancements)->toContain(".admin-shell .admin-status-{$semantic}");
+    }
+
+    expect($enhancements)
+        ->toMatch('/\.admin-shell \.admin-status-success,.*?\.admin-shell \.admin-status-neutral\s*\{[^}]*background: color-mix\(in srgb, currentColor 12%, transparent\) !important;/s')
+        ->toMatch('/\.admin-shell \.admin-nav-active\s*\{[^}]*background: color-mix\(in srgb, var\(--admin-primary\) 12%, transparent\) !important;/s')
+        ->toMatch('/\.admin-shell \.admin-table tbody tr:hover > \*\s*\{[^}]*background: color-mix\(in srgb, var\(--admin-primary\) 6%, transparent\) !important;/s')
+        ->toMatch('/\.admin-shell \.admin-alert-success\s*\{[^}]*border: 1px solid color-mix\(in srgb, var\(--admin-success\) 30%, transparent\) !important;[^}]*background: color-mix\(in srgb, var\(--admin-success\) 10%, var\(--admin-glass\)\) !important;/s')
+        ->toMatch('/\.admin-shell \.admin-alert-danger\s*\{[^}]*border: 1px solid color-mix\(in srgb, var\(--admin-danger\) 30%, transparent\) !important;[^}]*background: color-mix\(in srgb, var\(--admin-danger\) 10%, var\(--admin-glass\)\) !important;/s')
+        ->toMatch('/\.admin-shell \.admin-icon\s*\{[^}]*background: color-mix\(in srgb, var\(--admin-primary\) 10%, var\(--admin-glass-soft\)\) !important;/s');
 });
 
 test('admin main and accessibility selectors remain route scoped', function () {
