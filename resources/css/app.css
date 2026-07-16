@@ -148,6 +148,15 @@
         --admin-danger: #be123c;
         --admin-info: #0369a1;
         --admin-neutral: #526075;
+        --admin-primary-soft: rgba(99, 102, 241, .12);
+        --admin-success-soft: rgba(4, 120, 87, .12);
+        --admin-warning-soft: rgba(161, 98, 7, .12);
+        --admin-danger-soft: rgba(190, 18, 60, .12);
+        --admin-info-soft: rgba(3, 105, 161, .12);
+        --admin-neutral-soft: rgba(82, 96, 117, .12);
+        --admin-success-border-soft: rgba(4, 120, 87, .3);
+        --admin-success-alert-soft: rgba(226, 241, 238, .88);
+        --admin-scrollbar-thumb: rgba(89, 101, 121, .42);
         --admin-shadow: 0 24px 60px -34px rgba(44, 52, 92, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.86);
         --admin-focus: 0 0 0 3px rgba(99, 102, 241, 0.26);
 
@@ -172,11 +181,20 @@
         --admin-danger: #fb7185;
         --admin-info: #7dd3fc;
         --admin-neutral: #c1cad8;
+        --admin-primary-soft: rgba(129, 140, 248, .12);
+        --admin-success-soft: rgba(52, 211, 153, .12);
+        --admin-warning-soft: rgba(251, 191, 36, .12);
+        --admin-danger-soft: rgba(251, 113, 133, .12);
+        --admin-info-soft: rgba(125, 211, 252, .12);
+        --admin-neutral-soft: rgba(193, 202, 216, .12);
+        --admin-success-border-soft: rgba(52, 211, 153, .3);
+        --admin-success-alert-soft: rgba(22, 55, 52, .88);
+        --admin-scrollbar-thumb: rgba(168, 180, 199, .42);
         --admin-shadow: 0 28px 70px -34px rgba(0, 0, 0, .82), inset 0 1px 0 rgba(255, 255, 255, .1);
         --admin-focus: 0 0 0 3px rgba(129, 140, 248, .34);
     }
 
-    .admin-main {
+    .admin-shell .admin-main {
         position: relative;
         isolation: isolate;
         color: var(--admin-text);
@@ -254,9 +272,11 @@
     }
 
     .admin-shell .admin-button-primary {
+        border: 1px solid #6366f1;
         border: 1px solid color-mix(in srgb, var(--admin-primary) 82%, white);
-        background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover)) !important;
+        background: linear-gradient(135deg, #4f46e5, #4338ca) !important;
         color: #ffffff !important;
+        box-shadow: 0 12px 24px -14px rgba(79, 70, 229, .72);
         box-shadow: 0 12px 24px -14px color-mix(in srgb, var(--admin-primary) 72%, transparent);
     }
 
@@ -268,7 +288,7 @@
 
     .admin-shell .admin-button-success {
         border: 1px solid #059669;
-        background: #059669 !important;
+        background: #047857 !important;
         color: #ffffff !important;
     }
 
@@ -288,7 +308,7 @@
     }
 
     .admin-shell .admin-button-primary:hover:not(:disabled):not([aria-disabled="true"]) {
-        background: linear-gradient(135deg, var(--admin-primary-hover), var(--admin-primary)) !important;
+        background: linear-gradient(135deg, #4338ca, #4f46e5) !important;
     }
 
     .admin-shell .admin-button-secondary:hover:not(:disabled):not([aria-disabled="true"]) {
@@ -297,7 +317,7 @@
     }
 
     .admin-shell .admin-button-success:hover:not(:disabled):not([aria-disabled="true"]) {
-        background: #047857 !important;
+        background: #065f46 !important;
     }
 
     .admin-shell .admin-button-danger:hover:not(:disabled):not([aria-disabled="true"]) {
@@ -315,28 +335,37 @@
         align-items: center;
         border: 1px solid currentColor !important;
         border-radius: 999px;
-        background: color-mix(in srgb, currentColor 12%, transparent) !important;
         font-weight: 700;
     }
 
     .admin-shell .admin-status-success {
         color: var(--admin-success) !important;
+        background: var(--admin-success-soft) !important;
+        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-status-warning {
         color: var(--admin-warning) !important;
+        background: var(--admin-warning-soft) !important;
+        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-status-info {
         color: var(--admin-info) !important;
+        background: var(--admin-info-soft) !important;
+        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-status-danger {
         color: var(--admin-danger) !important;
+        background: var(--admin-danger-soft) !important;
+        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-status-neutral {
         color: var(--admin-neutral) !important;
+        background: var(--admin-neutral-soft) !important;
+        background: color-mix(in srgb, currentColor 12%, transparent) !important;
     }
 
     .admin-shell .admin-table {
@@ -366,11 +395,14 @@
     }
 
     .admin-shell .admin-table tbody tr:hover > * {
+        background: var(--admin-primary-soft) !important;
         background: color-mix(in srgb, var(--admin-primary) 6%, transparent) !important;
     }
 
     .admin-shell .admin-alert-success {
+        border: 1px solid var(--admin-success-border-soft);
         border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent);
+        background: var(--admin-success-alert-soft) !important;
         background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;
         color: var(--admin-success);
         -webkit-backdrop-filter: blur(16px);
@@ -378,7 +410,8 @@
     }
 
     .admin-shell :is(a, button, input, select, textarea):focus-visible {
-        outline: none;
+        outline: 2px solid var(--admin-primary) !important;
+        outline-offset: 2px;
         box-shadow: var(--admin-focus) !important;
     }
 
@@ -386,29 +419,30 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid var(--admin-border-soft);
-        background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft));
-        color: var(--admin-primary);
+        border: 1px solid var(--admin-border-soft) !important;
+        background: var(--admin-primary-soft) !important;
+        background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft)) !important;
+        color: var(--admin-primary) !important;
     }
 
     .admin-shell .custom-file-input::before {
         min-height: 44px;
-        border-color: var(--admin-border-soft);
-        background: var(--admin-glass-soft);
-        color: var(--admin-text);
+        border-color: var(--admin-border-soft) !important;
+        background: var(--admin-glass-soft) !important;
+        color: var(--admin-text) !important;
     }
 
     .admin-shell .admin-checkbox {
-        border-color: var(--admin-border-soft);
-        background-color: var(--admin-glass-soft);
-        color: var(--admin-primary);
-        accent-color: var(--admin-primary);
+        border-color: var(--admin-border-soft) !important;
+        background-color: var(--admin-glass-soft) !important;
+        color: var(--admin-primary) !important;
+        accent-color: var(--admin-primary) !important;
     }
 
     .admin-shell .admin-toggle:checked + span {
-        border-color: var(--admin-primary);
-        background-color: var(--admin-primary);
-        color: #ffffff;
+        border-color: var(--admin-primary) !important;
+        background-color: var(--admin-primary) !important;
+        color: #ffffff !important;
     }
 
     .admin-shell :disabled,
@@ -418,7 +452,8 @@
     }
 
     .admin-shell .custom-scrollbar::-webkit-scrollbar-thumb {
-        background-color: color-mix(in srgb, var(--admin-muted) 42%, transparent);
+        background-color: var(--admin-scrollbar-thumb) !important;
+        background-color: color-mix(in srgb, var(--admin-muted) 42%, transparent) !important;
         border-radius: 999px;
     }
 

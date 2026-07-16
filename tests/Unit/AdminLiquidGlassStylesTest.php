@@ -2,7 +2,32 @@
 
 function adminStyles(): string
 {
-    return file_get_contents(dirname(__DIR__, 2).'/resources/css/app.css');
+    $styles = file_get_contents(dirname(__DIR__, 2).'/resources/css/app.css');
+
+    if (! is_string($styles)) {
+        throw new RuntimeException('Unable to read the admin stylesheet.');
+    }
+
+    $styles = preg_replace('/\/\*.*?\*\//s', '', $styles);
+
+    if (! is_string($styles)) {
+        throw new RuntimeException('Unable to strip stylesheet comments.');
+    }
+
+    return $styles;
+}
+
+function adminRule(string $selector): string
+{
+    $matched = preg_match(
+        '/'.preg_quote($selector, '/').'\s*\{([^{}]*)\}/s',
+        adminStyles(),
+        $matches,
+    );
+
+    expect($matched, "Missing admin rule: {$selector}")->toBe(1);
+
+    return $matches[1];
 }
 
 test('admin stylesheet defines the complete semantic glass system', function () {
@@ -84,7 +109,123 @@ test('admin table and success alert use exact semantic values', function () {
 
 test('admin icon and scrollbar helpers use their semantic tokens', function () {
     expect(adminStyles())->toContain(
-        'background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft));',
-        'background-color: color-mix(in srgb, var(--admin-muted) 42%, transparent);',
+        'background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft)) !important;',
+        'background-color: color-mix(in srgb, var(--admin-muted) 42%, transparent) !important;',
     );
+});
+
+test('admin shell tokens and compatibility rules stay in their scoped blocks', function () {
+    expect(adminRule('.admin-shell'))->toContain(
+        '--admin-canvas: #eef2ff;',
+        '--admin-primary-soft:',
+        '--admin-success-soft:',
+        '--admin-warning-soft:',
+        '--admin-danger-soft:',
+        '--admin-info-soft:',
+        '--admin-neutral-soft:',
+        '--admin-success-border-soft:',
+        '--admin-success-alert-soft:',
+        '--admin-scrollbar-thumb:',
+    );
+
+    expect(adminRule('.dark .admin-shell'))->toContain(
+        '--admin-canvas: #080e1c;',
+        '--admin-primary-soft:',
+        '--admin-success-soft:',
+        '--admin-warning-soft:',
+        '--admin-danger-soft:',
+        '--admin-info-soft:',
+        '--admin-neutral-soft:',
+        '--admin-success-border-soft:',
+        '--admin-success-alert-soft:',
+        '--admin-scrollbar-thumb:',
+    );
+
+    expect(adminStyles())
+        ->toMatch('/@supports not \(\(-webkit-backdrop-filter: blur\(1px\)\) or \(backdrop-filter: blur\(1px\)\)\)\s*\{.*?\.admin-shell \.admin-glass-panel,.*?background: var\(--admin-glass-strong\) !important;.*?\}/s')
+        ->toMatch('/@media \(prefers-reduced-motion: reduce\)\s*\{.*?\.admin-shell,.*?transition-duration: \.01ms !important;.*?animation-iteration-count: 1 !important;.*?\}/s');
+});
+
+test('admin controls use scoped cascade-safe semantic tokens', function () {
+    expect(adminRule('.admin-shell .custom-file-input::before'))->toContain(
+        'border-color: var(--admin-border-soft) !important;',
+        'background: var(--admin-glass-soft) !important;',
+        'color: var(--admin-text) !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-icon'))->toContain(
+        'border: 1px solid var(--admin-border-soft) !important;',
+        'background: var(--admin-primary-soft) !important;',
+        'background: color-mix(in srgb, var(--admin-primary) 10%, var(--admin-glass-soft)) !important;',
+        'color: var(--admin-primary) !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-checkbox'))->toContain(
+        'border-color: var(--admin-border-soft) !important;',
+        'background-color: var(--admin-glass-soft) !important;',
+        'color: var(--admin-primary) !important;',
+        'accent-color: var(--admin-primary) !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-toggle:checked + span'))->toContain(
+        'border-color: var(--admin-primary) !important;',
+        'background-color: var(--admin-primary) !important;',
+        'color: #ffffff !important;',
+    );
+
+    expect(adminRule('.admin-shell .custom-scrollbar::-webkit-scrollbar-thumb'))->toContain(
+        'background-color: var(--admin-scrollbar-thumb) !important;',
+        'background-color: color-mix(in srgb, var(--admin-muted) 42%, transparent) !important;',
+    );
+});
+
+test('admin actions use contrast-safe fills and a visible focus indicator', function () {
+    expect(adminRule('.admin-shell .admin-button-primary'))->toContain(
+        'background: linear-gradient(135deg, #4f46e5, #4338ca) !important;',
+        'color: #ffffff !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-button-success'))->toContain(
+        'background: #047857 !important;',
+        'color: #ffffff !important;',
+    );
+
+    expect(adminRule('.admin-shell :is(a, button, input, select, textarea):focus-visible'))->toContain(
+        'outline: 2px solid var(--admin-primary) !important;',
+        'outline-offset: 2px;',
+        'box-shadow: var(--admin-focus) !important;',
+    );
+});
+
+test('admin color mixes retain static semantic fallbacks', function () {
+    expect(adminRule('.admin-shell .admin-status-success'))->toContain(
+        'background: var(--admin-success-soft) !important;',
+        'background: color-mix(in srgb, currentColor 12%, transparent) !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-status-warning'))->toContain(
+        'background: var(--admin-warning-soft) !important;',
+        'background: color-mix(in srgb, currentColor 12%, transparent) !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-table tbody tr:hover > *'))->toContain(
+        'background: var(--admin-primary-soft) !important;',
+        'background: color-mix(in srgb, var(--admin-primary) 6%, transparent) !important;',
+    );
+
+    expect(adminRule('.admin-shell .admin-alert-success'))->toContain(
+        'border: 1px solid var(--admin-success-border-soft);',
+        'border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent);',
+        'background: var(--admin-success-alert-soft) !important;',
+        'background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;',
+    );
+});
+
+test('admin main and accessibility selectors remain route scoped', function () {
+    expect(adminRule('.admin-shell .admin-main'))->toContain(
+        'position: relative;',
+        'background-color: var(--admin-canvas) !important;',
+    );
+
+    expect(adminStyles())->not->toMatch('/(?:^|\})\s*(?:\.dark\s+)?main(?:\s|[.#:\[>+~])/m');
 });
