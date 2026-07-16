@@ -127,3 +127,76 @@ test('icon-only admin actions use fixed accessible targets', function (string $v
             ->toContain('p-0');
     }
 })->with('admin icon action views');
+
+dataset('admin form surface views', [
+    'academic year create' => 'admin/academic-years/create.blade.php',
+    'academic year edit' => 'admin/academic-years/edit.blade.php',
+    'announcement create' => 'admin/announcements/create.blade.php',
+    'announcement edit' => 'admin/announcements/edit.blade.php',
+    'office create' => 'admin/offices/create.blade.php',
+    'office edit' => 'admin/offices/edit.blade.php',
+    'role create' => 'admin/roles/create.blade.php',
+    'role edit' => 'admin/roles/edit.blade.php',
+    'user create' => 'admin/users/create.blade.php',
+    'user edit' => 'admin/users/edit.blade.php',
+    'work schedule edit' => 'admin/work-schedules/edit.blade.php',
+]);
+
+test('admin form views adopt semantic glass surfaces', function (string $view) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+
+    expect($source)
+        ->toContain('admin-page-header')
+        ->toContain('admin-glass-panel');
+})->with('admin form surface views');
+
+dataset('admin form field views', [
+    'academic year create' => 'admin/academic-years/create.blade.php',
+    'academic year edit' => 'admin/academic-years/edit.blade.php',
+    'announcement fields' => 'admin/announcements/_form.blade.php',
+    'office create' => 'admin/offices/create.blade.php',
+    'office edit' => 'admin/offices/edit.blade.php',
+    'role create' => 'admin/roles/create.blade.php',
+    'role edit' => 'admin/roles/edit.blade.php',
+    'user create' => 'admin/users/create.blade.php',
+    'user edit' => 'admin/users/edit.blade.php',
+    'work schedule edit' => 'admin/work-schedules/edit.blade.php',
+]);
+
+test('admin form controls adopt semantic field classes', function (string $view) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+
+    preg_match_all('/<(?:input|select|textarea)\b(?:(?:{{.*?}})|(?:\?->|->)|[^>])*>/s', $source, $controls);
+
+    expect($controls[0])->not->toBeEmpty();
+
+    foreach ($controls[0] as $control) {
+        if (preg_match('/<input\b[^>]*\btype=["\']hidden["\']/i', $control)) {
+            continue;
+        }
+
+        if (preg_match('/<input\b[^>]*\btype=["\']checkbox["\']/i', $control)) {
+            test()->assertMatchesRegularExpression(
+                '/\badmin-(?:checkbox|toggle)\b/',
+                $control,
+                "{$view}: checkbox is missing an admin checkbox/toggle class: {$control}",
+            );
+
+            continue;
+        }
+
+        test()->assertStringContainsString(
+            'admin-field',
+            $control,
+            "{$view}: form control is missing admin-field: {$control}",
+        );
+    }
+})->with('admin form field views');
+
+test('admin form views adopt semantic action classes', function (string $view) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+
+    expect($source)
+        ->toContain('admin-button-primary')
+        ->toContain('admin-button-secondary');
+})->with('admin form surface views');

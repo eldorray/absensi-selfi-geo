@@ -1,8 +1,8 @@
 <x-layouts.app>
     <div class="max-w-2xl mx-auto">
         <!-- Header -->
-        <div class="mb-8">
-            <a href="{{ route('admin.offices.index') }}" class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-4">
+        <div class="mb-8 admin-page-header">
+            <a href="{{ route('admin.offices.index') }}" class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-4 admin-button-secondary">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
@@ -13,7 +13,7 @@
         </div>
 
         <!-- Form -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <div class="admin-glass-panel rounded-2xl p-6">
             <form method="POST" action="{{ route('admin.offices.update', $office) }}">
                 @csrf
                 @method('PUT')
@@ -24,7 +24,7 @@
                         Nama Kantor
                     </label>
                     <input type="text" name="name" id="name" value="{{ old('name', $office->name) }}"
-                        class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 admin-field">
                     @error('name')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
@@ -37,7 +37,7 @@
                             Latitude
                         </label>
                         <input type="text" name="latitude" id="latitude" value="{{ old('latitude', $office->latitude) }}"
-                            class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 admin-field">
                         @error('latitude')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
@@ -47,7 +47,7 @@
                             Longitude
                         </label>
                         <input type="text" name="longitude" id="longitude" value="{{ old('longitude', $office->longitude) }}"
-                            class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 admin-field">
                         @error('longitude')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
@@ -60,7 +60,7 @@
                         Radius (meter)
                     </label>
                     <input type="number" name="radius_meters" id="radius_meters" value="{{ old('radius_meters', $office->radius_meters) }}"
-                        class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        class="w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 admin-field"
                         min="10" max="5000">
                     @error('radius_meters')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -70,11 +70,11 @@
                 <!-- Submit -->
                 <div class="flex items-center justify-end space-x-3">
                     <a href="{{ route('admin.offices.index') }}"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors">
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors admin-button-secondary">
                         Batal
                     </a>
                     <button type="submit"
-                        class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
+                        class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors admin-button-primary">
                         Perbarui
                     </button>
                 </div>

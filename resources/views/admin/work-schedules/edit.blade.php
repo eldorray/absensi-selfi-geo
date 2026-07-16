@@ -1,9 +1,9 @@
 <x-layouts.app>
     <div class="max-w-3xl mx-auto">
         <!-- Header -->
-        <div class="mb-8">
+        <div class="mb-8 admin-page-header">
             <a href="{{ route('admin.work-schedules.index') }}"
-                class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-4">
+                class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-4 admin-button-secondary">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
@@ -15,7 +15,7 @@
         </div>
 
         <!-- Form -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <div class="admin-glass-panel rounded-2xl p-6">
             <form method="POST" action="{{ route('admin.work-schedules.update', $user) }}">
                 @csrf
                 @method('PUT')
@@ -32,7 +32,7 @@
                                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Jam Masuk</label>
                                 <input type="time" name="schedules[{{ $key }}][check_in_time]"
                                     value="{{ $schedule ? \Carbon\Carbon::parse($schedule->check_in_time)->format('H:i') : '07:00' }}"
-                                    class="w-full p-2 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                    class="w-full p-2 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500 admin-field">
                             </div>
 
                             <!-- Check Out Time -->
@@ -40,7 +40,7 @@
                                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Jam Pulang</label>
                                 <input type="time" name="schedules[{{ $key }}][check_out_time]"
                                     value="{{ $schedule ? \Carbon\Carbon::parse($schedule->check_out_time)->format('H:i') : '16:00' }}"
-                                    class="w-full p-2 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                                    class="w-full p-2 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500 admin-field">
                             </div>
 
                             <!-- Active Toggle -->
@@ -49,7 +49,7 @@
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" name="schedules[{{ $key }}][is_active]"
                                         value="1" {{ !$schedule || $schedule->is_active ? 'checked' : '' }}
-                                        class="sr-only peer">
+                                        class="sr-only peer admin-checkbox">
                                     <div
                                         class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 dark:peer-focus:ring-sky-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-500 peer-checked:bg-sky-600">
                                     </div>
@@ -73,11 +73,11 @@
                 <!-- Submit -->
                 <div class="flex items-center justify-end space-x-3 mt-6">
                     <a href="{{ route('admin.work-schedules.index') }}"
-                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors">
+                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors admin-button-secondary">
                         Batal
                     </a>
                     <button type="submit"
-                        class="px-6 py-2 bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-xl transition-colors">
+                        class="px-6 py-2 bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-xl transition-colors admin-button-primary">
                         Simpan Jadwal
                     </button>
                 </div>
