@@ -117,6 +117,7 @@ test('admin icon and scrollbar helpers use their semantic tokens', function () {
 test('admin shell tokens and compatibility rules stay in their scoped blocks', function () {
     expect(adminRule('.admin-shell'))->toContain(
         '--admin-canvas: #eef2ff;',
+        '--admin-nav-active: #4f46e5;',
         '--admin-primary-soft:',
         '--admin-success-soft:',
         '--admin-warning-soft:',
@@ -130,6 +131,7 @@ test('admin shell tokens and compatibility rules stay in their scoped blocks', f
 
     expect(adminRule('.dark .admin-shell'))->toContain(
         '--admin-canvas: #080e1c;',
+        '--admin-nav-active: #a5b4fc;',
         '--admin-primary-soft:',
         '--admin-success-soft:',
         '--admin-warning-soft:',
@@ -141,8 +143,14 @@ test('admin shell tokens and compatibility rules stay in their scoped blocks', f
         '--admin-scrollbar-thumb:',
     );
 
+    expect(adminRule('.admin-shell .admin-nav-active'))->toContain(
+        'background: var(--admin-primary-soft) !important;',
+        'background: color-mix(in srgb, var(--admin-primary) 12%, transparent) !important;',
+        'color: var(--admin-nav-active) !important;',
+    );
+
     expect(adminStyles())
-        ->toMatch('/@supports not \(\(-webkit-backdrop-filter: blur\(1px\)\) or \(backdrop-filter: blur\(1px\)\)\)\s*\{.*?\.admin-shell \.admin-glass-panel,.*?background: var\(--admin-glass-strong\) !important;.*?\}/s')
+        ->toMatch('/@supports not \(\(-webkit-backdrop-filter: blur\(1px\)\) or \(backdrop-filter: blur\(1px\)\)\)\s*\{.*?\.admin-shell \.admin-header,.*?\.admin-shell \.admin-sidebar,.*?\.admin-shell \.admin-glass-panel,.*?background: var\(--admin-glass-strong\) !important;.*?\}/s')
         ->toMatch('/@media \(prefers-reduced-motion: reduce\)\s*\{.*?\.admin-shell,.*?transition-duration: \.01ms !important;.*?animation-iteration-count: 1 !important;.*?\}/s');
 });
 

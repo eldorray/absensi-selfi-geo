@@ -16,6 +16,7 @@ function liquidGlassUser(bool $admin): User
 
 test('admin routes expose the liquid glass shell', function () {
     $this->actingAs(liquidGlassUser(admin: true));
+    session()->flash('status', 'Admin settings updated.');
 
     $this->get(route('admin.dashboard'))
         ->assertOk()
@@ -24,7 +25,9 @@ test('admin routes expose the liquid glass shell', function () {
         ->assertSee('admin-header', escape: false)
         ->assertSee('admin-sidebar', escape: false)
         ->assertSee('admin-nav-link', escape: false)
-        ->assertSee('admin-glass-popover', escape: false);
+        ->assertSee('admin-glass-popover', escape: false)
+        ->assertSee('aria-current="page"', escape: false)
+        ->assertSee('admin-alert-success', escape: false);
 });
 
 test('shared non-admin pages do not expose the admin shell', function () {
@@ -36,5 +39,6 @@ test('shared non-admin pages do not expose the admin shell', function () {
         ->assertDontSee('admin-main', escape: false)
         ->assertDontSee('admin-header', escape: false)
         ->assertDontSee('admin-sidebar', escape: false)
-        ->assertDontSee('admin-nav-link', escape: false);
+        ->assertDontSee('admin-nav-link', escape: false)
+        ->assertDontSee('admin-glass-popover', escape: false);
 });
