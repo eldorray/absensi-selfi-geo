@@ -41,7 +41,9 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'avatar' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
+            // Large originals are fine: they get downscaled/compressed on save.
+            // The cap only guards server memory during GD processing.
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:8192'],
         ], [
             'name.required' => 'Nama harus diisi.',
             'email.required' => 'Email harus diisi.',
@@ -49,7 +51,7 @@ class ProfileController extends Controller
             'email.unique' => 'Email sudah digunakan.',
             'avatar.image' => 'File harus berupa gambar.',
             'avatar.mimes' => 'Format gambar harus jpeg, jpg, png, atau webp.',
-            'avatar.max' => 'Ukuran gambar maksimal 2MB.',
+            'avatar.max' => 'Ukuran gambar maksimal 8MB.',
         ]);
 
         if ($request->hasFile('avatar')) {

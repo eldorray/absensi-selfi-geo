@@ -55,7 +55,7 @@
                                 @change="preview = $event.target.files.length ? URL.createObjectURL($event.target.files[0]) : null">
                         </label>
                     </div>
-                    <p class="mt-1.5 text-[9px] theme-text-muted">JPG/PNG/WEBP, maks 2MB.</p>
+                    <p class="mt-1.5 text-[9px] theme-text-muted">JPG/PNG/WEBP, maks 8MB. Otomatis dikompres.</p>
                     @error('avatar')
                         <p class="mt-1.5 text-xs text-red-500 font-medium">{{ $message }}</p>
                     @enderror
