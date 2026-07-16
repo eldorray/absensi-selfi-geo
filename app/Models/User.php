@@ -71,7 +71,13 @@ class User extends Authenticatable
      */
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->avatar_path ? route('avatar.show', $this) : null;
+        if (! $this->avatar_path) {
+            return null;
+        }
+
+        // Version by the stored path so a new upload busts the browser cache
+        // (the route URL is otherwise identical across uploads).
+        return route('avatar.show', ['user' => $this, 'v' => substr(md5($this->avatar_path), 0, 8)]);
     }
 
     /**

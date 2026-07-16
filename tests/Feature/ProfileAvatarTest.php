@@ -65,6 +65,16 @@ test('avatar route serves the stored file', function () {
         ->assertStatus(200);
 });
 
+test('avatar url changes when the photo changes (cache-busting)', function () {
+    $user = User::factory()->create(['avatar_path' => 'avatars/one.jpg']);
+    $first = $user->avatar_url;
+
+    $user->update(['avatar_path' => 'avatars/two.jpg']);
+    $second = $user->refresh()->avatar_url;
+
+    expect($first)->not->toBe($second);
+});
+
 test('avatar route 404s when user has no avatar', function () {
     $user = User::factory()->create();
 
