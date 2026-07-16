@@ -104,7 +104,7 @@
                         </form>
                     </div>
 
-                    <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">
+                    <div class="admin-alert-danger mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">
                         <form action="{{ route('admin.leaves.reject', $leave) }}" method="POST">
                             @csrf
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -146,7 +146,7 @@
                     </div>
 
                     @if ($leave->isRejected() && $leave->rejection_reason)
-                        <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">
+                        <div class="admin-alert-danger mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">
                             <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-1">Alasan Penolakan:</p>
                             <p class="text-sm text-red-700 dark:text-red-400">{{ $leave->rejection_reason }}</p>
                         </div>

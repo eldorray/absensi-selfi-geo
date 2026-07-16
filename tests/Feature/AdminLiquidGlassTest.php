@@ -316,3 +316,18 @@ test('direct admin feedback containers use semantic alert classes', function (st
     expect($matched, "Missing direct feedback container in {$view}")->toBe(1);
     expect($alert['classes'])->toContain($semanticClass);
 })->with('direct admin feedback containers');
+
+test('leave rejection feedback panels use the semantic danger alert', function () {
+    $source = file_get_contents(resource_path('views/admin/leaves/show.blade.php'));
+    $matched = preg_match_all(
+        '/<div\b[^>]*class="(?<classes>[^"]*\bbg-red-50\b[^"]*\bdark:bg-red-900\/20\b[^"]*)"[^>]*>/s',
+        $source,
+        $panels,
+    );
+
+    expect($matched)->toBe(2);
+
+    foreach ($panels['classes'] as $classes) {
+        expect($classes)->toContain('admin-alert-danger');
+    }
+});
