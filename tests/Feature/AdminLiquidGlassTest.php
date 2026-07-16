@@ -20,7 +20,11 @@ test('admin routes expose the liquid glass shell', function () {
     $this->get(route('admin.dashboard'))
         ->assertOk()
         ->assertSee('admin-shell', escape: false)
-        ->assertSee('admin-main', escape: false);
+        ->assertSee('admin-main', escape: false)
+        ->assertSee('admin-header', escape: false)
+        ->assertSee('admin-sidebar', escape: false)
+        ->assertSee('admin-nav-link', escape: false)
+        ->assertSee('admin-glass-popover', escape: false);
 });
 
 test('shared non-admin pages do not expose the admin shell', function () {
@@ -29,5 +33,8 @@ test('shared non-admin pages do not expose the admin shell', function () {
     $this->get(route('settings.profile.edit'))
         ->assertOk()
         ->assertDontSee('admin-shell', escape: false)
-        ->assertDontSee('admin-main', escape: false);
+        ->assertDontSee('admin-main', escape: false)
+        ->assertDontSee('admin-header', escape: false)
+        ->assertDontSee('admin-sidebar', escape: false)
+        ->assertDontSee('admin-nav-link', escape: false);
 });

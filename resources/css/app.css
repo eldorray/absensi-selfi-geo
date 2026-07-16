@@ -204,6 +204,31 @@
             radial-gradient(circle at 94% 92%, rgba(56, 189, 248, 0.14), transparent 31rem) !important;
     }
 
+    .admin-shell .admin-header,
+    .admin-shell .admin-sidebar {
+        border-color: var(--admin-border-soft) !important;
+        background: var(--admin-glass) !important;
+        -webkit-backdrop-filter: blur(22px) saturate(135%);
+        backdrop-filter: blur(22px) saturate(135%);
+    }
+
+    .admin-shell .admin-nav-link {
+        min-height: 44px;
+        color: var(--admin-muted) !important;
+    }
+
+    .admin-shell .admin-nav-link:hover {
+        background: var(--admin-glass-soft) !important;
+        color: var(--admin-text) !important;
+    }
+
+    .admin-shell .admin-nav-link[aria-current="page"],
+    .admin-shell .admin-nav-active {
+        background: var(--admin-primary-soft) !important;
+        background: color-mix(in srgb, var(--admin-primary) 12%, transparent) !important;
+        color: var(--admin-primary) !important;
+    }
+
     .admin-shell .admin-glass-panel,
     .admin-shell .admin-glass-popover,
     .admin-shell .admin-glass-modal {

@@ -1,5 +1,8 @@
 <!-- Header -->
-<header class="bg-white/85 dark:bg-gray-900/80 backdrop-blur-md z-20 border-b border-slate-100 dark:border-slate-800/80">
+<header @class([
+    'bg-white/85 dark:bg-gray-900/80 backdrop-blur-md z-20 border-b border-slate-100 dark:border-slate-800/80',
+    'admin-header' => request()->routeIs('admin.*'),
+])>
     <div class="flex items-center justify-between h-16 px-4">
         <!-- Left side: Logo and toggle -->
         <div class="flex items-center">
@@ -32,7 +35,10 @@
                 </button>
 
                 <div x-show="open" @click.away="open = false" :class="{ 'block': open, 'hidden': !open }"
-                    class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
+                    @class([
+                        'hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700',
+                        'admin-glass-popover' => request()->routeIs('admin.*'),
+                    ])>
                     <a href="{{ route('settings.profile.edit') }}"
                         class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <div class="flex items-center">

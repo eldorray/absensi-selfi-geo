@@ -183,7 +183,10 @@
                             x-transition:leave="transition ease-in duration-300"
                             x-transition:leave-start="opacity-100 transform translate-y-0"
                             x-transition:leave-end="opacity-0 transform -translate-y-2"
-                            class="mb-6 bg-green-50 dark:bg-green-900 border-l-4 border-green-500 p-4 rounded-md">
+                            @class([
+                                'mb-6 bg-green-50 dark:bg-green-900 border-l-4 border-green-500 p-4 rounded-md',
+                                'admin-alert-success' => $isAdminRoute,
+                            ])>
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
                                     <svg class="h-5 w-5 text-green-500 dark:text-green-400"

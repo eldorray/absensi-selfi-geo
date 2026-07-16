@@ -12,6 +12,8 @@
         'flex items-center w-full px-4 py-2.5 text-xs rounded-xl transition-all duration-200 font-semibold',
         'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold' => $active,
         'hover:bg-slate-500/5 hover:text-slate-800 dark:hover:text-slate-200 text-slate-600 dark:text-slate-400' => !$active,
+        'admin-nav-link' => request()->routeIs('admin.*'),
+        'admin-nav-active' => request()->routeIs('admin.*') && $active,
     ])
     :class="{ 'justify-center': !sidebarOpen, 'justify-between': sidebarOpen }">
         <div class="flex items-center" :class="{ 'justify-center': !sidebarOpen }">
