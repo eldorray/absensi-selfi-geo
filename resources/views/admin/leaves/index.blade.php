@@ -58,13 +58,13 @@
 
     <!-- Success/Error Messages -->
     @if (session('success'))
-        <div class="mb-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded-xl">
+        <div class="admin-alert-success mb-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded-xl">
             {{ session('success') }}
         </div>
     @endif
 
     @if (session('error'))
-        <div class="mb-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded-xl">
+        <div class="admin-alert-danger mb-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded-xl">
             {{ session('error') }}
         </div>
     @endif

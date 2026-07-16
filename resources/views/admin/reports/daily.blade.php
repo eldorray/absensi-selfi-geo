@@ -278,7 +278,7 @@
              @open-photo-modal.window="open = true; imageUrl = $event.detail.url; title = $event.detail.title"
              x-show="open"
              x-cloak
-             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm"
+             class="admin-modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
@@ -287,7 +287,7 @@
              x-transition:leave-end="opacity-0">
              
              <!-- Modal Box -->
-             <div class="relative bg-white dark:bg-gray-800 rounded-[28px] max-w-md w-full overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800/80 p-5 text-left"
+             <div class="admin-glass-modal relative bg-white dark:bg-gray-800 rounded-[28px] max-w-md w-full overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800/80 p-5 text-left"
                   @click.away="open = false"
                   x-transition:enter="transition ease-out duration-300 transform"
                   x-transition:enter-start="opacity-0 translate-y-4 scale-95"
@@ -299,7 +299,7 @@
                   <!-- Header -->
                   <div class="flex items-center justify-between mb-4">
                       <h3 class="text-xs font-bold text-slate-850 dark:text-white font-display uppercase tracking-wider" x-text="title">Foto Absensi</h3>
-                      <button @click="open = false" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-700 text-slate-400 hover:text-slate-600 transition-colors">
+                      <button @click="open = false" class="admin-button-secondary size-11 p-0 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-700 text-slate-400 hover:text-slate-600 transition-colors">
                           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                           </svg>

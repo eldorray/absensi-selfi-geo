@@ -237,3 +237,82 @@ test('admin form views adopt semantic action classes', function (string $view) {
         ->toContain('admin-button-primary')
         ->toContain('admin-button-secondary');
 })->with('admin form surface views');
+
+dataset('admin detail views', [
+    'attendance detail' => 'admin/attendances/show.blade.php',
+    'leave detail' => 'admin/leaves/show.blade.php',
+]);
+
+test('admin detail views adopt semantic glass surfaces', function (string $view) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+
+    expect($source)
+        ->toContain('admin-page-header')
+        ->toContain('admin-glass-panel')
+        ->not->toContain('bg-white dark:bg-gray-800');
+})->with('admin detail views');
+
+test('daily report photo modal adopts semantic glass classes and an accessible close target', function () {
+    $source = file_get_contents(resource_path('views/admin/reports/daily.blade.php'));
+
+    expect($source)
+        ->toContain('admin-modal-overlay')
+        ->toContain('admin-glass-modal')
+        ->toContain('@open-photo-modal.window="open = true; imageUrl = $event.detail.url; title = $event.detail.title"')
+        ->toContain('@click.away="open = false"')
+        ->toContain('x-text="title"')
+        ->toContain(':src="imageUrl"');
+
+    $matched = preg_match(
+        '/<button\b[^>]*@click="open = false"[^>]*class="(?<classes>[^"]*)"[^>]*>/s',
+        $source,
+        $closeButton,
+    );
+
+    expect($matched)->toBe(1);
+    expect($closeButton['classes'])
+        ->toContain('admin-button-secondary')
+        ->toContain('size-11')
+        ->toContain('p-0');
+});
+
+dataset('admin pdf report views', [
+    'daily PDF' => 'admin/reports/daily-pdf.blade.php',
+    'monthly PDF' => 'admin/reports/monthly-pdf.blade.php',
+]);
+
+test('pdf report templates stay isolated from admin screen classes', function (string $view) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+
+    expect($source)->not->toContain(
+        'admin-glass',
+        'admin-field',
+        'admin-table',
+    );
+})->with('admin pdf report views');
+
+dataset('direct admin feedback containers', [
+    'leaves index success' => ['admin/leaves/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
+    'leaves index error' => ['admin/leaves/index.blade.php', "session\\('error'\\)", 'admin-alert-danger'],
+    'leave detail success' => ['admin/leaves/show.blade.php', "session\\('success'\\)", 'admin-alert-success'],
+    'leave detail error' => ['admin/leaves/show.blade.php', "session\\('error'\\)", 'admin-alert-danger'],
+    'users success' => ['admin/users/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
+    'users error' => ['admin/users/index.blade.php', "session\\('error'\\)", 'admin-alert-danger'],
+    'offices success' => ['admin/offices/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
+    'roles success' => ['admin/roles/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
+    'roles errors' => ['admin/roles/index.blade.php', '\\$errors->any\\(\\)', 'admin-alert-danger'],
+    'work schedules success' => ['admin/work-schedules/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
+    'work schedule edit errors' => ['admin/work-schedules/edit.blade.php', '\\$errors->any\\(\\)', 'admin-alert-danger'],
+]);
+
+test('direct admin feedback containers use semantic alert classes', function (string $view, string $condition, string $semanticClass) {
+    $source = file_get_contents(resource_path("views/{$view}"));
+    $matched = preg_match(
+        "/@if\\s*\\(\\s*{$condition}\\s*\\)\\s*<div\\b[^>]*class=\"(?<classes>[^\"]*)\"/s",
+        $source,
+        $alert,
+    );
+
+    expect($matched, "Missing direct feedback container in {$view}")->toBe(1);
+    expect($alert['classes'])->toContain($semanticClass);
+})->with('direct admin feedback containers');

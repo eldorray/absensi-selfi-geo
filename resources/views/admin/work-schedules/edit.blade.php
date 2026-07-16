@@ -61,7 +61,7 @@
 
                 @if ($errors->any())
                     <div
-                        class="mt-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-4">
+                        class="admin-alert-danger mt-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-4">
                         <ul class="text-red-700 dark:text-red-300 text-sm list-disc list-inside space-y-1">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>

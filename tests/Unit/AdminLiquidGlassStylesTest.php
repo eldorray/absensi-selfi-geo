@@ -48,7 +48,9 @@ test('admin stylesheet defines the complete semantic glass system', function () 
         '.admin-table',
         '.admin-glass-popover',
         '.admin-glass-modal',
+        '.admin-modal-overlay',
         '.admin-alert-success',
+        '.admin-alert-danger',
     );
 });
 
@@ -104,6 +106,26 @@ test('admin table and success alert use exact semantic values', function () {
         'transition: background-color 180ms ease;',
         'border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent);',
         'background: color-mix(in srgb, var(--admin-success) 10%, var(--admin-glass)) !important;',
+    );
+});
+
+test('admin modal overlay uses the exact scoped dimming and blur values', function () {
+    expect(adminRule('.admin-shell .admin-modal-overlay'))->toContain(
+        'background: rgba(4, 8, 20, .58) !important;',
+        '-webkit-backdrop-filter: blur(10px);',
+        'backdrop-filter: blur(10px);',
+    );
+});
+
+test('admin danger alert uses semantic color with static glass fallbacks', function () {
+    expect(adminRule('.admin-shell .admin-alert-danger'))->toContain(
+        'border: 1px solid var(--admin-danger-border-soft);',
+        'border: 1px solid color-mix(in srgb, var(--admin-danger) 30%, transparent);',
+        'background: var(--admin-danger-alert-soft) !important;',
+        'background: color-mix(in srgb, var(--admin-danger) 10%, var(--admin-glass)) !important;',
+        'color: var(--admin-danger);',
+        '-webkit-backdrop-filter: blur(16px);',
+        'backdrop-filter: blur(16px);',
     );
 });
 

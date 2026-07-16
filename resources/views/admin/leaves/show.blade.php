@@ -17,13 +17,13 @@
 
     <!-- Success/Error Messages -->
     @if (session('success'))
-        <div class="mb-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded-xl">
+        <div class="admin-alert-success mb-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded-xl">
             {{ session('success') }}
         </div>
     @endif
 
     @if (session('error'))
-        <div class="mb-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded-xl">
+        <div class="admin-alert-danger mb-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded-xl">
             {{ session('error') }}
         </div>
     @endif
@@ -32,14 +32,14 @@
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
             <!-- Leave Info -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <div class="flex items-center justify-between mb-4">
+            <div class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <div class="admin-page-header flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Detail Pengajuan</h2>
                     <div class="flex gap-2">
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full {{ $leave->type_badge_class }}">
+                        <span class="{{ $leave->type === 'sakit' ? 'admin-status-danger' : 'admin-status-info' }} px-3 py-1 text-sm font-semibold rounded-full {{ $leave->type_badge_class }}">
                             {{ $leave->type_label }}
                         </span>
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full {{ $leave->status_badge_class }}">
+                        <span class="{{ match ($leave->status) { 'pending' => 'admin-status-warning', 'approved' => 'admin-status-success', 'rejected' => 'admin-status-danger', default => 'admin-status-neutral' } }} px-3 py-1 text-sm font-semibold rounded-full {{ $leave->status_badge_class }}">
                             {{ $leave->status_label }}
                         </span>
                     </div>
@@ -78,7 +78,7 @@
             <!-- Attachment -->
             @if ($leave->attachment)
                 <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Lampiran</h2>
                     <a href="{{ $leave->attachment_url }}" target="_blank">
                         <img src="{{ $leave->attachment_url }}" alt="Lampiran"
@@ -90,14 +90,14 @@
             <!-- Approval Actions -->
             @if ($leave->isPending())
                 <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Tindakan</h2>
 
                     <div class="flex gap-4">
                         <form action="{{ route('admin.leaves.approve', $leave) }}" method="POST" class="flex-1">
                             @csrf
                             <button type="submit"
-                                class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors"
+                                class="admin-button-success w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors"
                                 onclick="return confirm('Setujui pengajuan ini?')">
                                 ✓ Setujui
                             </button>
@@ -111,10 +111,10 @@
                                 Tolak dengan alasan:
                             </label>
                             <textarea name="rejection_reason" rows="2"
-                                class="w-full p-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white mb-3"
+                                class="admin-field w-full p-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white mb-3"
                                 placeholder="Masukkan alasan penolakan..."></textarea>
                             <button type="submit"
-                                class="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-colors"
+                                class="admin-button-danger w-full py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-colors"
                                 onclick="return confirm('Tolak pengajuan ini?')">
                                 ✕ Tolak
                             </button>
@@ -126,7 +126,7 @@
             <!-- Approval Info -->
             @if (!$leave->isPending())
                 <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
                         {{ $leave->isApproved() ? 'Disetujui' : 'Ditolak' }}
                     </h2>
@@ -157,7 +157,7 @@
 
         <!-- Sidebar - Employee Info -->
         <div class="space-y-6">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Info Karyawan</h2>
 
                 <div class="text-center mb-4">
@@ -186,7 +186,7 @@
             </div>
 
             <a href="{{ route('admin.leaves.index') }}"
-                class="block w-full py-3 text-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors">
+                class="admin-button-secondary block w-full py-3 text-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors">
                 ← Kembali ke Daftar
             </a>
         </div>
