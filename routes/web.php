@@ -42,6 +42,9 @@ Route::middleware(['auth'])->group(function () {
     // Employee announcement (Informasi) detail
     Route::get('attendance/information/{announcement}', [Employee\AnnouncementController::class, 'show'])->name('attendance.information.show');
 
+    // Serve avatars via the app (avoids reliance on the public/storage symlink)
+    Route::get('avatar/{user}', [Employee\AvatarController::class, 'show'])->name('avatar.show');
+
     // Employee profile routes (SRP - separate controller)
     Route::get('attendance/profile', [Employee\ProfileController::class, 'show'])->name('attendance.profile');
     Route::put('attendance/profile', [Employee\ProfileController::class, 'update'])->name('attendance.profile.update');

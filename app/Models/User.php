@@ -64,13 +64,14 @@ class User extends Authenticatable
     }
 
     /**
-     * Public URL for the uploaded avatar, or null when none set.
+     * URL for the uploaded avatar, or null when none set.
+     *
+     * Served through a route (avatar.show) rather than the public/storage
+     * symlink, which some hosts (e.g. Hostinger LiteSpeed) do not serve.
      */
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->avatar_path
-            ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar_path)
-            : null;
+        return $this->avatar_path ? route('avatar.show', $this) : null;
     }
 
     /**

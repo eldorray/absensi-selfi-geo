@@ -56,6 +56,22 @@ test('avatar must be an image', function () {
     expect($user->refresh()->avatar_path)->toBeNull();
 });
 
+test('avatar route serves the stored file', function () {
+    Storage::fake('public');
+    $user = User::factory()->create(['avatar_path' => 'avatars/a.jpg']);
+    Storage::disk('public')->put('avatars/a.jpg', 'imagebytes');
+
+    $this->actingAs($user)->get(route('avatar.show', $user))
+        ->assertStatus(200);
+});
+
+test('avatar route 404s when user has no avatar', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->get(route('avatar.show', $user))
+        ->assertNotFound();
+});
+
 test('profile still updates without an avatar', function () {
     $user = User::factory()->create();
 
