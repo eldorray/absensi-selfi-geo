@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,10 +53,14 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $stored = app(ImageService::class)->compressAndStore($file, 'avatars')
+                ?? $file->store('avatars', 'public');
+
             if ($user->avatar_path) {
                 Storage::disk('public')->delete($user->avatar_path);
             }
-            $validated['avatar_path'] = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar_path'] = $stored;
         }
 
         unset($validated['avatar']);
