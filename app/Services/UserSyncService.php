@@ -18,7 +18,7 @@ use RuntimeException;
 class UserSyncService
 {
     /** @var list<string> */
-    private const SOURCES = ['guru-mi', 'guru-smp'];
+    public const SOURCES = ['guru-mi', 'guru-smp'];
 
     private const EMAIL_DOMAIN = '@guru.local';
 
@@ -27,10 +27,17 @@ class UserSyncService
     private const REQUEST_TIMEOUT = 60;
 
     /**
+     * Sync employees from a single data-induk source.
+     *
+     * @param  string  $source  one of self::SOURCES
      * @return array{created:int, updated:int, failed:int, errors:list<string>}
      */
-    public function sync(): array
+    public function sync(string $source): array
     {
+        if (! in_array($source, self::SOURCES, true)) {
+            throw new RuntimeException("Sumber sync tidak valid: {$source}.");
+        }
+
         $guruRole = Role::where('slug', 'guru')->first();
 
         if (! $guruRole) {
@@ -43,50 +50,47 @@ class UserSyncService
         $errors = [];
 
         $baseUrl = (string) config('services.data_induk.base_url');
+        $page = 1;
 
-        foreach (self::SOURCES as $source) {
-            $page = 1;
+        while (true) {
+            $response = Http::timeout(self::REQUEST_TIMEOUT)
+                ->get("{$baseUrl}/api/{$source}/all", ['page' => $page]);
 
-            while (true) {
-                $response = Http::timeout(self::REQUEST_TIMEOUT)
-                    ->get("{$baseUrl}/api/{$source}/all", ['page' => $page]);
+            if (! $response->successful()) {
+                throw new RuntimeException(
+                    "Gagal mengambil data dari API ({$source}). Status: {$response->status()}"
+                );
+            }
 
-                if (! $response->successful()) {
-                    throw new RuntimeException(
-                        "Gagal mengambil data dari API ({$source}). Status: {$response->status()}"
-                    );
-                }
+            $data = $response->json();
+            $rows = $data['data'] ?? $data;
 
-                $data = $response->json();
-                $rows = $data['data'] ?? $data;
+            if (! is_array($rows)) {
+                throw new RuntimeException('Format response API tidak valid.');
+            }
 
-                if (! is_array($rows)) {
-                    throw new RuntimeException('Format response API tidak valid.');
-                }
+            foreach ($rows as $row) {
+                $outcome = $this->upsertRow($row, $guruRole->id, $errors);
 
-                foreach ($rows as $row) {
-                    $outcome = $this->upsertRow($row, $guruRole->id, $errors);
+                match ($outcome) {
+                    'created' => $created++,
+                    'updated' => $updated++,
+                    default => $failed++,
+                };
+            }
 
-                    match ($outcome) {
-                        'created' => $created++,
-                        'updated' => $updated++,
-                        default => $failed++,
-                    };
-                }
+            $lastPage = (int) ($data['last_page'] ?? 1);
+            $currentPage = (int) ($data['current_page'] ?? $page);
+            $nextPageUrl = $data['next_page_url'] ?? null;
 
-                $lastPage = (int) ($data['last_page'] ?? 1);
-                $currentPage = (int) ($data['current_page'] ?? $page);
-                $nextPageUrl = $data['next_page_url'] ?? null;
+            if ($nextPageUrl === null && $currentPage >= $lastPage) {
+                break;
+            }
 
-                if ($nextPageUrl === null && $currentPage >= $lastPage) {
-                    break;
-                }
+            $page++;
 
-                $page++;
-
-                if ($page > self::MAX_PAGES) {
-                    break;
-                }
+            if ($page > self::MAX_PAGES) {
+                break;
             }
         }
 

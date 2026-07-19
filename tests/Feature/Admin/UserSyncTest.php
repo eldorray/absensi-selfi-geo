@@ -41,7 +41,7 @@ function adminUser(): User
     return User::factory()->create(['role_id' => $role->id]);
 }
 
-test('sync creates new users from both sources with guru role and nip password', function () {
+test('sync creates new users from the selected source with guru role and nip password', function () {
     guruRole();
 
     Http::fake([
@@ -61,12 +61,16 @@ test('sync creates new users from both sources with guru role and nip password',
         ], 200),
     ]);
 
-    $result = app(UserSyncService::class)->sync();
+    $result = app(UserSyncService::class)->sync('guru-mi');
 
     expect($result)
-        ->created->toBe(2)
+        ->created->toBe(1)
         ->updated->toBe(0)
         ->failed->toBe(0);
+
+    // Only the requested source is fetched.
+    Http::assertSent(fn ($request) => str_contains($request->url(), '/api/guru-mi/all'));
+    Http::assertNotSent(fn ($request) => str_contains($request->url(), '/api/guru-smp/all'));
 
     $budi = User::where('nip', '3201010101900001')->first();
     expect($budi)->not->toBeNull()
@@ -75,7 +79,34 @@ test('sync creates new users from both sources with guru role and nip password',
         ->and($budi->role->slug)->toBe('guru')
         ->and($budi->office_id)->toBeNull()
         ->and(Hash::check('3201010101900001', $budi->password))->toBeTrue();
+
+    // The other unit is untouched.
+    expect(User::where('nip', '3201010101900002')->exists())->toBeFalse();
 });
+
+test('sync only fetches the guru-smp source when selected', function () {
+    guruRole();
+
+    Http::fake([
+        '*/api/guru-smp/all*' => Http::response([
+            'data' => [['full_name' => 'Siti SMP', 'nik' => '3201010101900002']],
+            'current_page' => 1, 'last_page' => 1,
+        ], 200),
+    ]);
+
+    $result = app(UserSyncService::class)->sync('guru-smp');
+
+    expect($result['created'])->toBe(1);
+    Http::assertSent(fn ($request) => str_contains($request->url(), '/api/guru-smp/all'));
+    Http::assertNotSent(fn ($request) => str_contains($request->url(), '/api/guru-mi/all'));
+    expect(User::where('nip', '3201010101900002')->exists())->toBeTrue();
+});
+
+test('sync throws on an invalid source', function () {
+    guruRole();
+
+    app(UserSyncService::class)->sync('siswa-mi');
+})->throws(RuntimeException::class);
 
 test('re-sync updates existing user by nip without duplicating', function () {
     guruRole();
@@ -94,14 +125,11 @@ test('re-sync updates existing user by nip without duplicating', function () {
                 'data' => [['full_name' => 'Budi Revisi', 'nik' => '3201010101900001']],
                 'current_page' => 1, 'last_page' => 1,
             ]),
-        '*/api/guru-smp/all*' => Http::response([
-            'data' => [], 'current_page' => 1, 'last_page' => 1,
-        ], 200),
     ]);
 
-    app(UserSyncService::class)->sync();
+    app(UserSyncService::class)->sync('guru-mi');
 
-    $result = app(UserSyncService::class)->sync();
+    $result = app(UserSyncService::class)->sync('guru-mi');
 
     expect(User::where('nip', '3201010101900001')->count())->toBe(1)
         ->and($result['created'])->toBe(0)
@@ -134,12 +162,9 @@ test('re-sync does not overwrite manually assigned role and office', function ()
             'data' => [['full_name' => 'Budi Baru', 'nik' => '3201010101900001']],
             'current_page' => 1, 'last_page' => 1,
         ], 200),
-        '*/api/guru-smp/all*' => Http::response([
-            'data' => [], 'current_page' => 1, 'last_page' => 1,
-        ], 200),
     ]);
 
-    app(UserSyncService::class)->sync();
+    app(UserSyncService::class)->sync('guru-mi');
 
     $existing->refresh();
     expect($existing->name)->toBe('Budi Baru')
@@ -149,7 +174,7 @@ test('re-sync does not overwrite manually assigned role and office', function ()
         ->and(Hash::check('rahasia', $existing->password))->toBeTrue();
 });
 
-test('admin can trigger user sync and sees a success flash', function () {
+test('admin can trigger user sync for a chosen source and sees a success flash', function () {
     guruRole();
 
     Http::fake([
@@ -157,17 +182,31 @@ test('admin can trigger user sync and sees a success flash', function () {
             'data' => [['full_name' => 'Budi MI', 'nik' => '3201010101900001']],
             'current_page' => 1, 'last_page' => 1,
         ], 200),
-        '*/api/guru-smp/all*' => Http::response([
-            'data' => [], 'current_page' => 1, 'last_page' => 1,
-        ], 200),
     ]);
 
     $this->actingAs(adminUser())
-        ->post(route('admin.users.sync'))
+        ->post(route('admin.users.sync'), ['source' => 'guru-mi'])
         ->assertRedirect()
         ->assertSessionHas('success');
 
     expect(User::where('nip', '3201010101900001')->exists())->toBeTrue();
+    Http::assertNotSent(fn ($request) => str_contains($request->url(), '/api/guru-smp/all'));
+});
+
+test('sync request is rejected without a valid source', function () {
+    guruRole();
+    Http::fake();
+
+    $this->actingAs(adminUser())
+        ->post(route('admin.users.sync'), ['source' => 'siswa-mi'])
+        ->assertSessionHasErrors('source');
+
+    $this->actingAs(adminUser())
+        ->post(route('admin.users.sync'))
+        ->assertSessionHasErrors('source');
+
+    Http::assertNothingSent();
+    expect(User::whereNotNull('nip')->count())->toBe(0);
 });
 
 test('non-admin cannot trigger user sync', function () {
@@ -178,7 +217,7 @@ test('non-admin cannot trigger user sync', function () {
     ]);
 
     $this->actingAs($employee)
-        ->post(route('admin.users.sync'))
+        ->post(route('admin.users.sync'), ['source' => 'guru-mi'])
         ->assertRedirect(route('attendance.dashboard'));
 
     Http::assertNothingSent();
@@ -192,7 +231,7 @@ test('connection failure shows an error flash and creates no users', function ()
     });
 
     $this->actingAs(adminUser())
-        ->post(route('admin.users.sync'))
+        ->post(route('admin.users.sync'), ['source' => 'guru-mi'])
         ->assertRedirect()
         ->assertSessionHas('error');
 

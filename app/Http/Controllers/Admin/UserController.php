@@ -23,6 +23,16 @@ use Illuminate\View\View;
 class UserController extends Controller
 {
     /**
+     * Human-readable labels for each sync source.
+     *
+     * @var array<string, string>
+     */
+    private const SOURCE_LABELS = [
+        'guru-mi' => 'Guru MI',
+        'guru-smp' => 'Guru SMP',
+    ];
+
+    /**
      * Display a listing of users.
      */
     public function index(Request $request): View
@@ -110,10 +120,20 @@ class UserController extends Controller
     /**
      * Sync users from the data induk API.
      */
-    public function syncFromApi(UserSyncService $service): RedirectResponse
+    public function syncFromApi(Request $request, UserSyncService $service): RedirectResponse
     {
+        $validated = $request->validate([
+            'source' => ['required', Rule::in(UserSyncService::SOURCES)],
+        ], [
+            'source.required' => 'Pilih unit sumber terlebih dahulu.',
+            'source.in' => 'Unit sumber tidak valid.',
+        ]);
+
+        $source = $validated['source'];
+        $unitLabel = self::SOURCE_LABELS[$source] ?? $source;
+
         try {
-            $result = $service->sync();
+            $result = $service->sync($source);
         } catch (ConnectionException $e) {
             Log::error('User sync connection error: '.$e->getMessage());
 
@@ -124,7 +144,7 @@ class UserController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-        $message = "Sync selesai: {$result['created']} user baru, {$result['updated']} diperbarui";
+        $message = "Sync {$unitLabel} selesai: {$result['created']} user baru, {$result['updated']} diperbarui";
         $message .= $result['failed'] > 0 ? ", {$result['failed']} gagal." : '.';
 
         return back()->with('success', $message);
