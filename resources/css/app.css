@@ -508,6 +508,302 @@
         border-radius: 999px;
     }
 
+    /* ── Glass Editorial v2: structural layer ─────────────────────────── */
+
+    .admin-shell .admin-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        font: 700 .68rem/1 "Outfit", sans-serif;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: var(--admin-nav-active);
+    }
+
+    .admin-shell .admin-kicker::before {
+        content: "";
+        width: 1.25rem;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--admin-primary), var(--admin-sky));
+    }
+
+    .admin-shell .admin-page-header h1 {
+        font-size: clamp(1.55rem, 2.4vw, 1.95rem);
+        line-height: 1.12;
+    }
+
+    .admin-shell .admin-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .32rem .7rem;
+        border: 1px solid var(--admin-border-soft);
+        border-radius: 999px;
+        background: var(--admin-glass-soft);
+        font: 600 .72rem/1 "Outfit", sans-serif;
+        color: var(--admin-muted);
+        white-space: nowrap;
+    }
+
+    .admin-shell .admin-chip-time {
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+        color: var(--admin-text);
+    }
+
+    .admin-shell .admin-label {
+        display: block;
+        margin-bottom: .45rem;
+        font: 700 .7rem/1.2 "Outfit", sans-serif;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--admin-muted);
+    }
+
+    .admin-shell .admin-hint {
+        margin-top: .45rem;
+        font-size: .75rem;
+        line-height: 1.4;
+        color: var(--admin-muted);
+    }
+
+    .admin-shell .admin-divider {
+        border: 0;
+        border-top: 1px solid var(--admin-border-soft);
+        margin: 1.75rem 0;
+    }
+
+    .admin-shell .admin-stat-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem 1.4rem;
+    }
+
+    .admin-shell .admin-stat-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        flex: none;
+        border: 1px solid transparent;
+        border-radius: 1rem;
+    }
+
+    .admin-shell .admin-stat-value {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: 1.9rem;
+        font-weight: 800;
+        letter-spacing: -.02em;
+        line-height: 1.05;
+        font-variant-numeric: tabular-nums;
+        color: var(--admin-text);
+    }
+
+    .admin-shell .admin-tone-indigo { color: #4f46e5; border-color: rgba(99, 102, 241, .28); background: rgba(99, 102, 241, .12); }
+    .admin-shell .admin-tone-sky { color: #0369a1; border-color: rgba(56, 189, 248, .3); background: rgba(56, 189, 248, .14); }
+    .admin-shell .admin-tone-emerald { color: #047857; border-color: rgba(16, 185, 129, .3); background: rgba(16, 185, 129, .13); }
+    .admin-shell .admin-tone-amber { color: #a16207; border-color: rgba(245, 158, 11, .32); background: rgba(245, 158, 11, .14); }
+    .admin-shell .admin-tone-rose { color: #be123c; border-color: rgba(244, 63, 94, .3); background: rgba(244, 63, 94, .12); }
+    .admin-shell .admin-tone-violet { color: #6d28d9; border-color: rgba(139, 92, 246, .3); background: rgba(139, 92, 246, .13); }
+
+    .dark .admin-shell .admin-tone-indigo { color: #a5b4fc; }
+    .dark .admin-shell .admin-tone-sky { color: #7dd3fc; }
+    .dark .admin-shell .admin-tone-emerald { color: #34d399; }
+    .dark .admin-shell .admin-tone-amber { color: #fbbf24; }
+    .dark .admin-shell .admin-tone-rose { color: #fb7185; }
+    .dark .admin-shell .admin-tone-violet { color: #c4b5fd; }
+
+    .admin-shell .admin-meter {
+        display: flex;
+        height: .65rem;
+        overflow: hidden;
+        border: 1px solid var(--admin-border-soft);
+        border-radius: 999px;
+        background: var(--admin-glass-soft);
+    }
+
+    .admin-shell .admin-meter-seg {
+        height: 100%;
+        min-width: 0;
+    }
+
+    .admin-shell .admin-meter-dot {
+        display: inline-block;
+        width: .55rem;
+        height: .55rem;
+        border-radius: 999px;
+        flex: none;
+    }
+
+    .admin-shell :is(.admin-meter-seg, .admin-meter-dot).admin-meter-success { background: #10b981; }
+    .admin-shell :is(.admin-meter-seg, .admin-meter-dot).admin-meter-warning { background: #f59e0b; }
+    .admin-shell :is(.admin-meter-seg, .admin-meter-dot).admin-meter-idle { background: transparent; border: 1px dashed var(--admin-border-soft); }
+
+    .admin-shell .admin-avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        flex: none;
+        overflow: hidden;
+        border: 1px solid var(--admin-border);
+        border-radius: 999px;
+        background: var(--admin-primary-soft);
+        color: var(--admin-nav-active);
+        font: 700 .78rem/1 "Outfit", sans-serif;
+        box-shadow: 0 6px 14px -9px rgba(44, 52, 92, .55);
+    }
+
+    .admin-shell .admin-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .admin-shell .admin-icon-action.admin-button-primary {
+        border: 1px solid var(--admin-border-soft);
+        background: var(--admin-primary-soft) !important;
+        color: var(--admin-nav-active) !important;
+        box-shadow: none;
+    }
+
+    .admin-shell .admin-icon-action.admin-button-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+        background: linear-gradient(135deg, #4f46e5, #4338ca) !important;
+        color: #ffffff !important;
+    }
+
+    .admin-shell .admin-icon-action.admin-button-success {
+        border: 1px solid var(--admin-border-soft);
+        background: var(--admin-success-soft) !important;
+        color: var(--admin-success) !important;
+    }
+
+    .admin-shell .admin-icon-action.admin-button-success:hover:not(:disabled):not([aria-disabled="true"]) {
+        background: #047857 !important;
+        color: #ffffff !important;
+    }
+
+    .admin-shell .admin-icon-action.admin-button-danger {
+        border: 1px solid var(--admin-border-soft);
+        background: var(--admin-danger-soft) !important;
+        color: var(--admin-danger) !important;
+    }
+
+    .admin-shell .admin-icon-action.admin-button-danger:hover:not(:disabled):not([aria-disabled="true"]) {
+        background: #e11d48 !important;
+        color: #ffffff !important;
+    }
+
+    .admin-shell .admin-empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .45rem;
+        padding: 3rem 1.5rem;
+        text-align: center;
+    }
+
+    .admin-shell .admin-empty-state-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.25rem;
+        height: 3.25rem;
+        margin-bottom: .3rem;
+        border: 1px dashed var(--admin-border-soft);
+        border-radius: 999px;
+        background: var(--admin-glass-soft);
+        color: var(--admin-muted);
+    }
+
+    .admin-shell .admin-empty-state-title {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: .95rem;
+        font-weight: 700;
+        color: var(--admin-text);
+    }
+
+    .admin-shell .admin-empty-state p:not(.admin-empty-state-title) {
+        max-width: 26rem;
+        font-size: .8rem;
+        color: var(--admin-muted);
+    }
+
+    .admin-shell .admin-nav-section {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        padding: 1.15rem .9rem .5rem;
+        font: 700 .6rem/1 "Outfit", sans-serif;
+        letter-spacing: .17em;
+        text-transform: uppercase;
+        color: var(--admin-muted);
+        white-space: nowrap;
+    }
+
+    .admin-shell .admin-nav-section::after {
+        content: "";
+        height: 1px;
+        flex: 1;
+        background: var(--admin-border-soft);
+    }
+
+    .admin-shell .admin-dl {
+        display: grid;
+        gap: .9rem;
+    }
+
+    .admin-shell .admin-dl > div {
+        display: flex;
+        flex-direction: column;
+        gap: .3rem;
+        padding-bottom: .9rem;
+        border-bottom: 1px dashed var(--admin-border-soft);
+    }
+
+    .admin-shell .admin-dl > div:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    .admin-shell .admin-dl dt {
+        font: 700 .68rem/1.2 "Outfit", sans-serif;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        color: var(--admin-muted);
+    }
+
+    .admin-shell .admin-dl dd {
+        font-size: .9rem;
+        color: var(--admin-text);
+        overflow-wrap: anywhere;
+    }
+
+    .admin-shell nav[role="navigation"] p {
+        color: var(--admin-muted) !important;
+    }
+
+    .admin-shell nav[role="navigation"] :is(a, span > span, button) {
+        border-color: var(--admin-border-soft) !important;
+        background: var(--admin-glass-soft) !important;
+        color: var(--admin-text) !important;
+    }
+
+    .admin-shell nav[role="navigation"] span[aria-current="page"] > span {
+        border-color: var(--admin-border-soft) !important;
+        background: var(--admin-primary-soft) !important;
+        color: var(--admin-nav-active) !important;
+        font-weight: 700;
+    }
+
+    .admin-shell nav[role="navigation"] span[aria-disabled="true"] > span {
+        opacity: .5;
+    }
+
     @supports (color: color-mix(in srgb, red, blue)) {
         .admin-shell .admin-nav-link[aria-current="page"],
         .admin-shell .admin-nav-active {
