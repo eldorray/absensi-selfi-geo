@@ -14,7 +14,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
-            <div class="app-brand ml-4 font-semibold text-xl text-blue-600 dark:text-blue-400">{{ config('app.name') }}</div>
+            <div class="app-brand ml-4 font-semibold text-xl text-blue-600 dark:text-blue-400">{{ config('app.name') }}
+            </div>
             @if (request()->routeIs('admin.*'))
                 <span class="admin-chip ml-3 hidden sm:inline-flex">Admin</span>
             @endif

@@ -15,8 +15,10 @@
                     <select id="filter-status" name="status" class="admin-field p-2.5">
                         <option value="">Semua Status</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Menunggu</option>
-                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Disetujui</option>
-                        <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Disetujui
+                        </option>
+                        <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Ditolak
+                        </option>
                     </select>
                 </div>
                 <div>
@@ -91,7 +93,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span
-                                        class="{{ match ($leave->status) { 'approved' => 'admin-status-success', 'pending' => 'admin-status-warning', 'rejected' => 'admin-status-danger', default => 'admin-status-neutral' } }} px-2.5 py-1 text-xs">
+                                        class="{{ match ($leave->status) {'approved' => 'admin-status-success','pending' => 'admin-status-warning','rejected' => 'admin-status-danger',default => 'admin-status-neutral'} }} px-2.5 py-1 text-xs">
                                         {{ $leave->status_label }}
                                     </span>
                                 </td>

@@ -267,7 +267,7 @@ test('admin detail views retain semantic status and approval mappings', function
         ->toMatch('/<button\b[^>]*class="[^"]*\badmin-button-danger\b[^"]*"[^>]*onclick="return confirm\(\'Tolak pengajuan ini\?\'\)"/s');
 
     $matched = preg_match(
-        '/<a href="\{\{ route\(\'admin\.attendances\.index\'\) \}\}" class="(?<classes>[^"]*)"/s',
+        '/<a href="\{\{ route\(\'admin\.attendances\.index\'\) \}\}"\s+class="(?<classes>[^"]*)"/s',
         $attendance,
         $backLink,
     );

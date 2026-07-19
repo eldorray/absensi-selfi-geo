@@ -13,8 +13,7 @@
 <div>
     <label for="summary" class="admin-label">Ringkasan</label>
     <input type="text" name="summary" id="summary" value="{{ old('summary', $a?->summary) }}"
-        placeholder="Ringkasan singkat 1 baris"
-        class="admin-field p-2.5 @error('summary') border-red-500 @enderror">
+        placeholder="Ringkasan singkat 1 baris" class="admin-field p-2.5 @error('summary') border-red-500 @enderror">
     <p class="admin-hint">Tampil di kartu, opsional.</p>
     @error('summary')
         <p class="admin-hint admin-text-danger">{{ $message }}</p>
@@ -33,8 +32,7 @@
 <div>
     <label for="image" class="admin-label">Gambar</label>
     @if ($a?->image_url)
-        <img src="{{ $a->image_url }}" alt=""
-            class="mb-2 h-28 w-auto rounded-xl border object-cover"
+        <img src="{{ $a->image_url }}" alt="" class="mb-2 h-28 w-auto rounded-xl border object-cover"
             style="border-color: var(--admin-border-soft)">
         <p class="admin-hint mb-2" style="margin-top: 0">Unggah gambar baru untuk mengganti yang lama.</p>
     @endif

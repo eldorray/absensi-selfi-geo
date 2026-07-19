@@ -39,8 +39,10 @@
                             <tr>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <span class="admin-stat-icon admin-stat-icon-sm admin-tone-sky" aria-hidden="true">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <span class="admin-stat-icon admin-stat-icon-sm admin-tone-sky"
+                                            aria-hidden="true">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
                                                 </path>
@@ -54,7 +56,8 @@
                                         {{ number_format($office->longitude, 6) }}</span>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="admin-status-info px-2.5 py-1 text-xs">{{ $office->radius_meters }} m</span>
+                                    <span class="admin-status-info px-2.5 py-1 text-xs">{{ $office->radius_meters }}
+                                        m</span>
                                 </td>
                                 <td class="admin-muted whitespace-nowrap px-6 py-4 text-sm">
                                     {{ $office->users_count }} orang
@@ -62,8 +65,10 @@
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.offices.edit', $office) }}"
-                                            class="admin-button-primary admin-icon-action size-11 p-0" title="Edit kantor">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="admin-button-primary admin-icon-action size-11 p-0"
+                                            title="Edit kantor">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>
@@ -74,9 +79,12 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="admin-button-danger admin-icon-action size-11 p-0" title="Hapus kantor">
-                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                class="admin-button-danger admin-icon-action size-11 p-0"
+                                                title="Hapus kantor">
+                                                <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                                     </path>
                                                 </svg>

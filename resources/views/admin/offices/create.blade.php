@@ -19,8 +19,8 @@
                 <!-- Name -->
                 <div>
                     <label for="name" class="admin-label">Nama Kantor</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" class="admin-field p-2.5"
-                        placeholder="Contoh: Kantor Pusat Jakarta">
+                    <input type="text" name="name" id="name" value="{{ old('name') }}"
+                        class="admin-field p-2.5" placeholder="Contoh: Kantor Pusat Jakarta">
                     @error('name')
                         <p class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror

@@ -59,8 +59,9 @@
                             </div>
                             <div>
                                 <label for="fine_tier1_max_minutes" class="admin-label">Batas Menit Tier 1</label>
-                                <input id="fine_tier1_max_minutes" type="number" name="fine_tier1_max_minutes" min="1"
-                                    value="{{ $settings->fine_tier1_max_minutes }}" class="admin-field p-2.5">
+                                <input id="fine_tier1_max_minutes" type="number" name="fine_tier1_max_minutes"
+                                    min="1" value="{{ $settings->fine_tier1_max_minutes }}"
+                                    class="admin-field p-2.5">
                                 <p class="admin-hint">Telat &le; menit ini kena Tier 1, di atasnya Tier 2.</p>
                             </div>
                             <div>
@@ -111,8 +112,8 @@
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="flex items-center">
                                         <svg class="admin-muted mr-2 h-4 w-4 transition-transform"
-                                            :class="{ 'rotate-90': expandedRow === {{ $user->id }} }" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            :class="{ 'rotate-90': expandedRow === {{ $user->id }} }"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 5l7 7-7 7"></path>
                                         </svg>
@@ -134,7 +135,8 @@
                                 <td class="whitespace-nowrap px-6 py-4 text-right" @click.stop>
                                     <a href="{{ route('admin.work-schedules.edit', $user) }}"
                                         class="admin-button-primary admin-icon-action inline-flex items-center gap-1.5 px-3 text-xs">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                             </path>
@@ -160,7 +162,8 @@
                                                 @foreach (['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'] as $day)
                                                     @php $schedule = $user->workSchedules->firstWhere('day', $day); @endphp
                                                     <tr>
-                                                        <td class="py-2 text-sm font-semibold">{{ ucfirst($day) }}</td>
+                                                        <td class="py-2 text-sm font-semibold">{{ ucfirst($day) }}
+                                                        </td>
                                                         <td class="py-2">
                                                             <span class="admin-chip admin-chip-time">
                                                                 {{ $schedule ? \Carbon\Carbon::parse($schedule->check_in_time)->format('H:i') : '07:00' }}
@@ -173,9 +176,11 @@
                                                         </td>
                                                         <td class="py-2">
                                                             @if ($schedule && $schedule->is_active)
-                                                                <span class="admin-status-success px-2.5 py-1 text-xs">Active</span>
+                                                                <span
+                                                                    class="admin-status-success px-2.5 py-1 text-xs">Active</span>
                                                             @else
-                                                                <span class="admin-status-neutral px-2.5 py-1 text-xs">Inactive</span>
+                                                                <span
+                                                                    class="admin-status-neutral px-2.5 py-1 text-xs">Inactive</span>
                                                             @endif
                                                         </td>
                                                     </tr>

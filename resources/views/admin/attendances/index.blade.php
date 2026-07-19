@@ -1,7 +1,7 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <x-admin.page-header kicker="Kehadiran" title="Laporan Absensi"
-            description="Lihat semua data absensi karyawan" :count="$attendances->total() . ' catatan'" />
+        <x-admin.page-header kicker="Kehadiran" title="Laporan Absensi" description="Lihat semua data absensi karyawan"
+            :count="$attendances->total() . ' catatan'" />
 
         <!-- Filters -->
         <div class="admin-glass-panel p-6">
@@ -59,11 +59,13 @@
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <span class="admin-avatar">
-                                            <img src="{{ $attendance->image_url }}" alt="Selfie {{ $attendance->user->name }}">
+                                            <img src="{{ $attendance->image_url }}"
+                                                alt="Selfie {{ $attendance->user->name }}">
                                         </span>
                                         <span class="min-w-0">
                                             <span class="block text-sm font-bold">{{ $attendance->user->name }}</span>
-                                            <span class="admin-muted block text-xs">{{ $attendance->user->email }}</span>
+                                            <span
+                                                class="admin-muted block text-xs">{{ $attendance->user->email }}</span>
                                         </span>
                                     </div>
                                 </td>
@@ -80,8 +82,10 @@
                                     {{ number_format($attendance->distance_meters, 0) }} m
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="admin-chip admin-chip-time">{{ $attendance->created_at->format('H:i') }}</span>
-                                    <span class="admin-muted ml-2 text-xs">{{ $attendance->created_at->format('d M Y') }}</span>
+                                    <span
+                                        class="admin-chip admin-chip-time">{{ $attendance->created_at->format('H:i') }}</span>
+                                    <span
+                                        class="admin-muted ml-2 text-xs">{{ $attendance->created_at->format('d M Y') }}</span>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     <a href="{{ route('admin.attendances.show', $attendance) }}"

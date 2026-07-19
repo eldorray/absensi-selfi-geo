@@ -1,7 +1,6 @@
 <x-layouts.app>
     <div class="mx-auto max-w-2xl space-y-6">
-        <x-admin.page-header kicker="Master Data" title="Edit Tahun Ajaran"
-            description="Perbarui periode tahun ajaran" />
+        <x-admin.page-header kicker="Master Data" title="Edit Tahun Ajaran" description="Perbarui periode tahun ajaran" />
 
         <!-- Form -->
         <div class="admin-glass-panel p-6 md:p-8">

@@ -19,7 +19,8 @@
                 <!-- Name -->
                 <div>
                     <label for="name" class="admin-label">Nama</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" class="admin-field p-2.5">
+                    <input type="text" name="name" id="name" value="{{ old('name') }}"
+                        class="admin-field p-2.5">
                     @error('name')
                         <p class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
@@ -28,7 +29,8 @@
                 <!-- Email -->
                 <div>
                     <label for="email" class="admin-label">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" class="admin-field p-2.5">
+                    <input type="email" name="email" id="email" value="{{ old('email') }}"
+                        class="admin-field p-2.5">
                     @error('email')
                         <p class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
@@ -76,7 +78,8 @@
                     <select name="office_id" id="office_id" class="admin-field p-2.5">
                         <option value="">-- Pilih Kantor --</option>
                         @foreach ($offices as $office)
-                            <option value="{{ $office->id }}" {{ old('office_id') == $office->id ? 'selected' : '' }}>
+                            <option value="{{ $office->id }}"
+                                {{ old('office_id') == $office->id ? 'selected' : '' }}>
                                 {{ $office->name }}
                             </option>
                         @endforeach

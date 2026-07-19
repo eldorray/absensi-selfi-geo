@@ -24,7 +24,8 @@
         @if (session('error'))
             <div class="admin-alert-danger flex items-center gap-3 rounded-2xl p-4">
                 <svg class="h-5 w-5 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
                 <span class="text-sm font-semibold">{{ session('error') }}</span>
             </div>
@@ -95,7 +96,7 @@
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <span
-                                        class="{{ $user->role?->is_admin ? 'admin-status-danger' : match ($user->role?->slug) { 'tendik' => 'admin-status-success', 'kepala-sekolah', 'guru' => 'admin-status-info', default => 'admin-status-neutral' } }} px-2.5 py-1 text-xs">
+                                        class="{{ $user->role?->is_admin? 'admin-status-danger': match ($user->role?->slug) {'tendik' => 'admin-status-success','kepala-sekolah', 'guru' => 'admin-status-info',default => 'admin-status-neutral'} }} px-2.5 py-1 text-xs">
                                         {{ $user->role?->name ?? 'No Role' }}
                                     </span>
                                 </td>
@@ -105,8 +106,10 @@
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.users.edit', $user) }}"
-                                            class="admin-button-primary admin-icon-action size-11 p-0" title="Edit user">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="admin-button-primary admin-icon-action size-11 p-0"
+                                            title="Edit user">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>

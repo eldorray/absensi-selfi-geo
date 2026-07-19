@@ -1,8 +1,7 @@
 <x-layouts.app>
     <div class="space-y-6">
         <x-admin.page-header kicker="Master Data" title="Tahun Ajaran"
-            description="Kelola periode tahun ajaran untuk sistem absensi"
-            :count="$academicYears->total() . ' periode'">
+            description="Kelola periode tahun ajaran untuk sistem absensi" :count="$academicYears->total() . ' periode'">
             <a href="{{ route('admin.academic-years.create') }}"
                 class="admin-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,11 +38,13 @@
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-center">
                                     @if ($year->is_active)
-                                        <span class="admin-status-success px-2.5 py-1 text-[10px] uppercase tracking-wider">
+                                        <span
+                                            class="admin-status-success px-2.5 py-1 text-[10px] uppercase tracking-wider">
                                             Aktif
                                         </span>
                                     @else
-                                        <span class="admin-status-neutral px-2.5 py-1 text-[10px] uppercase tracking-wider">
+                                        <span
+                                            class="admin-status-neutral px-2.5 py-1 text-[10px] uppercase tracking-wider">
                                             Tidak Aktif
                                         </span>
                                     @endif
@@ -69,7 +70,8 @@
                                         <a href="{{ route('admin.academic-years.edit', $year) }}"
                                             class="admin-button-primary admin-icon-action size-11 p-0"
                                             title="Edit tahun ajaran">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>

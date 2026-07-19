@@ -42,7 +42,7 @@
                             <tr>
                                 <td class="px-6 py-4">
                                     <span
-                                        class="{{ $role->is_admin ? 'admin-status-danger' : match ($role->slug) { 'tendik' => 'admin-status-success', 'kepala-sekolah', 'guru' => 'admin-status-info', default => 'admin-status-neutral' } }} px-2.5 py-1 text-xs">
+                                        class="{{ $role->is_admin? 'admin-status-danger': match ($role->slug) {'tendik' => 'admin-status-success','kepala-sekolah', 'guru' => 'admin-status-info',default => 'admin-status-neutral'} }} px-2.5 py-1 text-xs">
                                         {{ $role->name }}
                                     </span>
                                     @if ($role->description)

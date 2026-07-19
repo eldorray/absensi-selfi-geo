@@ -7,7 +7,7 @@
         @endif
         <div class="mt-1.5 flex flex-wrap items-center gap-3">
             <h1>{{ $title }}</h1>
-            @if (! is_null($count))
+            @if (!is_null($count))
                 <span class="admin-chip">{{ $count }}</span>
             @endif
         </div>

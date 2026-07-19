@@ -1,7 +1,6 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <x-admin.page-header kicker="Kehadiran" title="Rekap Absensi Harian"
-            :description="$activeYear ? 'Tahun Ajaran ' . $activeYear->name : null">
+        <x-admin.page-header kicker="Kehadiran" title="Rekap Absensi Harian" :description="$activeYear ? 'Tahun Ajaran ' . $activeYear->name : null">
             @unless ($activeYear)
                 <span class="admin-status-warning px-3 py-1.5 text-xs">Belum ada tahun ajaran aktif</span>
             @endunless
@@ -49,7 +48,8 @@
 
             <x-admin.stat-card tone="emerald" label="Sudah Absen Masuk" :value="$stats['checked_in']">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </x-admin.stat-card>
 
@@ -90,7 +90,8 @@
                                     <div class="text-sm font-bold">{{ $data['user']->name }}</div>
                                     <div class="admin-muted text-xs">{{ $data['user']->role?->name ?? '-' }}</div>
                                 </td>
-                                <td class="admin-muted whitespace-nowrap px-4 py-3 text-sm" style="font-variant-numeric: tabular-nums">
+                                <td class="admin-muted whitespace-nowrap px-4 py-3 text-sm"
+                                    style="font-variant-numeric: tabular-nums">
                                     @if ($data['work_schedule'])
                                         {{ $data['work_schedule']->start_time }} s/d
                                         {{ $data['work_schedule']->end_time }}
@@ -138,8 +139,8 @@
                                         <button type="button"
                                             @click="$dispatch('open-photo-modal', { url: '{{ $data['attendance']->check_out_image_url }}', title: 'Foto Pulang - {{ $data['user']->name }}' })"
                                             class="admin-chip inline-flex items-center gap-1 text-xs">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-                                                viewBox="0 0 24 24">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor"
+                                                stroke-width="2" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                                 </path>
@@ -165,78 +166,82 @@
                                         @break
 
                                         @case('no_schedule')
-                                            <span class="admin-status-neutral px-2.5 py-1 text-xs">Libur / Tidak Ada Jadwal</span>
+                                            <span class="admin-status-neutral px-2.5 py-1 text-xs">Libur / Tidak Ada
+                                                Jadwal</span>
                                         @break
 
                                         @default
-                                            <span class="admin-status-neutral px-2.5 py-1 text-xs">{{ $data['status'] }}</span>
+                                            <span
+                                                class="admin-status-neutral px-2.5 py-1 text-xs">{{ $data['status'] }}</span>
                                     @endswitch
                                 </td>
                                 <td class="px-4 py-3 text-right text-sm">
                                     @if ($data['fine'] > 0)
-                                        <span class="admin-text-danger font-semibold">Rp
-                                            {{ number_format($data['fine'], 0, ',', '.') }}</span>
-                                        <div class="admin-muted text-[10px]">telat {{ $data['late_minutes'] }} mnt</div>
+                                        <span
+                                            class="admin-text-danger font-semibold">{{ 'Rp ' . number_format($data['fine'], 0, ',', '.') }}</span>
+                                        <div class="admin-muted text-[10px]">telat {{ $data['late_minutes'] }} mnt
+                                        </div>
                                     @else
                                         <span class="admin-muted">-</span>
                                     @endif
                                 </td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="9">
-                                    <x-admin.empty-state icon="fas-users" title="Tidak ada data pegawai"
-                                        hint="Pegawai aktif akan tampil di rekap harian ini." />
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                    @if ($reportData->isNotEmpty())
-                        <tfoot>
-                            <tr>
-                                <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold">Total Denda</td>
-                                <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold">Rp
-                                    {{ number_format($stats['total_fine'], 0, ',', '.') }}</td>
-                            </tr>
-                        </tfoot>
-                    @endif
-                </table>
+                            @empty
+                                <tr>
+                                    <td colspan="9">
+                                        <x-admin.empty-state icon="fas-users" title="Tidak ada data pegawai"
+                                            hint="Pegawai aktif akan tampil di rekap harian ini." />
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                        @if ($reportData->isNotEmpty())
+                            <tfoot>
+                                <tr>
+                                    <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold">Total Denda</td>
+                                    <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold">
+                                        {{ 'Rp ' . number_format($stats['total_fine'], 0, ',', '.') }}</td>
+                                </tr>
+                            </tfoot>
+                        @endif
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Photo Modal Overlay -->
-    <div x-data="{ open: false, imageUrl: '', title: '' }"
-        @open-photo-modal.window="open = true; imageUrl = $event.detail.url; title = $event.detail.title" x-show="open"
-        x-cloak class="admin-modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"
-        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <!-- Photo Modal Overlay -->
+        <div x-data="{ open: false, imageUrl: '', title: '' }"
+            @open-photo-modal.window="open = true; imageUrl = $event.detail.url; title = $event.detail.title"
+            x-show="open" x-cloak class="admin-modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"
+            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
 
-        <!-- Modal Box -->
-        <div class="admin-glass-modal relative w-full max-w-md overflow-hidden p-5 text-left" @click.away="open = false"
-            x-transition:enter="transition ease-out duration-300 transform"
-            x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-            x-transition:leave="transition ease-in duration-200 transform"
-            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-            x-transition:leave-end="opacity-0 translate-y-4 scale-95">
+            <!-- Modal Box -->
+            <div class="admin-glass-modal relative w-full max-w-md overflow-hidden p-5 text-left"
+                @click.away="open = false" x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-200 transform"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 scale-95">
 
-            <!-- Header -->
-            <div class="mb-4 flex items-center justify-between gap-3">
-                <span class="admin-label" style="margin-bottom: 0" x-text="title">Foto Absensi</span>
-                <button @click="open = false" class="admin-button-secondary admin-icon-action size-11 p-0"
-                    aria-label="Tutup pratinjau foto">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
+                <!-- Header -->
+                <div class="mb-4 flex items-center justify-between gap-3">
+                    <span class="admin-label" style="margin-bottom: 0" x-text="title">Foto Absensi</span>
+                    <button @click="open = false" class="admin-button-secondary admin-icon-action size-11 p-0"
+                        aria-label="Tutup pratinjau foto">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
 
-            <!-- Image Container -->
-            <div class="flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-slate-900">
-                <img :src="imageUrl" alt="Foto Absensi" class="h-full w-full object-contain">
+                <!-- Image Container -->
+                <div class="flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-slate-900">
+                    <img :src="imageUrl" alt="Foto Absensi" class="h-full w-full object-contain">
+                </div>
             </div>
         </div>
-    </div>
-</x-layouts.app>
+    </x-layouts.app>

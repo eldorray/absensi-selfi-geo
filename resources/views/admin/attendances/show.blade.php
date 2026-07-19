@@ -1,8 +1,8 @@
 <x-layouts.app>
     <div class="mx-auto max-w-4xl space-y-6">
-        <x-admin.page-header kicker="Kehadiran" title="Detail Absensi"
-            description="Bukti selfie dan data lokasi absensi">
-            <a href="{{ route('admin.attendances.index') }}" class="admin-button-secondary px-3 py-2 inline-flex items-center gap-1.5 text-sm">
+        <x-admin.page-header kicker="Kehadiran" title="Detail Absensi" description="Bukti selfie dan data lokasi absensi">
+            <a href="{{ route('admin.attendances.index') }}"
+                class="admin-button-secondary px-3 py-2 inline-flex items-center gap-1.5 text-sm">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
@@ -56,8 +56,10 @@
                     <div>
                         <dt>Waktu Check-in</dt>
                         <dd>
-                            <span class="admin-chip admin-chip-time">{{ $attendance->created_at->format('H:i:s') }}</span>
-                            <span class="admin-muted ml-2 text-xs">{{ $attendance->created_at->format('d M Y') }}</span>
+                            <span
+                                class="admin-chip admin-chip-time">{{ $attendance->created_at->format('H:i:s') }}</span>
+                            <span
+                                class="admin-muted ml-2 text-xs">{{ $attendance->created_at->format('d M Y') }}</span>
                         </dd>
                     </div>
                 </dl>

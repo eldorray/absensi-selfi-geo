@@ -1,7 +1,6 @@
 <x-layouts.app :title="'Edit Role'">
     <div class="mx-auto max-w-2xl space-y-6">
-        <x-admin.page-header kicker="Master Data" title="Edit Role"
-            description="Ubah data role: {{ $role->name }}">
+        <x-admin.page-header kicker="Master Data" title="Edit Role" description="Ubah data role: {{ $role->name }}">
             <a href="{{ route('admin.roles.index') }}"
                 class="admin-button-secondary inline-flex items-center gap-1.5 px-4 py-2 text-sm">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,8 +36,7 @@
 
                 <div>
                     <label for="description" class="admin-label">Deskripsi</label>
-                    <textarea name="description" id="description" rows="3"
-                        class="admin-field p-2.5">{{ old('description', $role->description) }}</textarea>
+                    <textarea name="description" id="description" rows="3" class="admin-field p-2.5">{{ old('description', $role->description) }}</textarea>
                     @error('description')
                         <p class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror

@@ -26,8 +26,8 @@
 
                 <div>
                     <label for="slug" class="admin-label">Slug (opsional)</label>
-                    <input type="text" name="slug" id="slug" value="{{ old('slug') }}" class="admin-field p-2.5"
-                        placeholder="kepala-sekolah">
+                    <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
+                        class="admin-field p-2.5" placeholder="kepala-sekolah">
                     <p class="admin-hint">Akan dibuat otomatis dari nama role jika dikosongkan.</p>
                     @error('slug')
                         <p class="admin-hint admin-text-danger">{{ $message }}</p>

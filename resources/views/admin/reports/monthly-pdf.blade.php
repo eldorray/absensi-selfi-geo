@@ -184,7 +184,8 @@
             <tfoot>
                 <tr>
                     <td colspan="8" class="text-right" style="font-weight: bold;">Total Denda Keseluruhan</td>
-                    <td class="text-center" style="font-weight: bold;">Rp {{ number_format($totalFine, 0, ',', '.') }}</td>
+                    <td class="text-center" style="font-weight: bold;">Rp {{ number_format($totalFine, 0, ',', '.') }}
+                    </td>
                 </tr>
             </tfoot>
         @endif

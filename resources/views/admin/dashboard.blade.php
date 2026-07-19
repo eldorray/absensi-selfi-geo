@@ -28,7 +28,8 @@
                 <div class="w-full lg:max-w-sm">
                     <div class="flex items-baseline justify-between gap-4">
                         <span class="admin-label">Kehadiran hari ini</span>
-                        <span class="admin-chip admin-chip-time">{{ $todayAttendances }}/{{ $totalEmployees }} &middot; {{ $presentPct }}%</span>
+                        <span class="admin-chip admin-chip-time">{{ $todayAttendances }}/{{ $totalEmployees }} &middot;
+                            {{ $presentPct }}%</span>
                     </div>
                     <div class="admin-meter mt-1" role="img"
                         aria-label="{{ $presentOnTime }} hadir tepat waktu, {{ $todayLate }} terlambat, {{ $notYet }} belum absen">
@@ -68,13 +69,15 @@
 
             <x-admin.stat-card tone="emerald" label="Absensi Hari Ini" :value="$todayAttendances">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </x-admin.stat-card>
 
             <x-admin.stat-card tone="amber" label="Terlambat Hari Ini" :value="$todayLate">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </x-admin.stat-card>
         </div>
@@ -93,8 +96,8 @@
                     <span class="block text-sm font-bold">Kelola Kantor</span>
                     <span class="admin-muted mt-1 block text-xs">Tambah, edit, dan hapus lokasi kantor</span>
                 </span>
-                <svg class="admin-muted h-4 w-4 flex-none transition-transform group-hover:translate-x-0.5" fill="none"
-                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="admin-muted h-4 w-4 flex-none transition-transform group-hover:translate-x-0.5"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
             </a>
@@ -111,8 +114,8 @@
                     <span class="block text-sm font-bold">Kelola User</span>
                     <span class="admin-muted mt-1 block text-xs">Manajemen akun karyawan dan admin</span>
                 </span>
-                <svg class="admin-muted h-4 w-4 flex-none transition-transform group-hover:translate-x-0.5" fill="none"
-                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="admin-muted h-4 w-4 flex-none transition-transform group-hover:translate-x-0.5"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
             </a>
@@ -129,8 +132,8 @@
                     <span class="block text-sm font-bold">Laporan Absensi</span>
                     <span class="admin-muted mt-1 block text-xs">Lihat semua rekap absensi</span>
                 </span>
-                <svg class="admin-muted h-4 w-4 flex-none transition-transform group-hover:translate-x-0.5" fill="none"
-                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="admin-muted h-4 w-4 flex-none transition-transform group-hover:translate-x-0.5"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
             </a>
@@ -159,11 +162,13 @@
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <span class="admin-avatar">
-                                            <img src="{{ $attendance->image_url }}" alt="Selfie {{ $attendance->user->name }}">
+                                            <img src="{{ $attendance->image_url }}"
+                                                alt="Selfie {{ $attendance->user->name }}">
                                         </span>
                                         <span class="min-w-0">
                                             <span class="block text-sm font-bold">{{ $attendance->user->name }}</span>
-                                            <span class="admin-muted block text-xs">{{ $attendance->user->email }}</span>
+                                            <span
+                                                class="admin-muted block text-xs">{{ $attendance->user->email }}</span>
                                         </span>
                                     </div>
                                 </td>
@@ -177,8 +182,11 @@
                                     </span>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="admin-chip admin-chip-time">{{ $attendance->created_at->format('H:i') }} WIB</span>
-                                    <span class="admin-muted ml-2 text-xs">{{ $attendance->created_at->format('d M Y') }}</span>
+                                    <span
+                                        class="admin-chip admin-chip-time">{{ $attendance->created_at->format('H:i') }}
+                                        WIB</span>
+                                    <span
+                                        class="admin-muted ml-2 text-xs">{{ $attendance->created_at->format('d M Y') }}</span>
                                 </td>
                             </tr>
                         @empty

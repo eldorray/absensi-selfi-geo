@@ -1,7 +1,6 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <x-admin.page-header kicker="Kehadiran" title="Rekap Absensi"
-            :description="$activeYear ? 'Tahun Ajaran ' . $activeYear->name : null">
+        <x-admin.page-header kicker="Kehadiran" title="Rekap Absensi" :description="$activeYear ? 'Tahun Ajaran ' . $activeYear->name : null">
             @unless ($activeYear)
                 <span class="admin-status-warning px-3 py-1.5 text-xs">Belum ada tahun ajaran aktif</span>
             @endunless
@@ -17,7 +16,8 @@
                 </div>
                 <div>
                     <label for="filter-end" class="admin-label">Tanggal Akhir</label>
-                    <input id="filter-end" type="date" name="end_date" value="{{ $endDate }}" class="admin-field p-2.5">
+                    <input id="filter-end" type="date" name="end_date" value="{{ $endDate }}"
+                        class="admin-field p-2.5">
                 </div>
                 <div class="flex items-end gap-2">
                     <button type="submit"
@@ -84,13 +84,16 @@
                                     <span class="admin-text-success font-semibold">{{ $data['total_present'] }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <span class="admin-status-success px-2.5 py-1 text-xs">{{ $data['total_on_time'] }}</span>
+                                    <span
+                                        class="admin-status-success px-2.5 py-1 text-xs">{{ $data['total_on_time'] }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <span class="admin-status-warning px-2.5 py-1 text-xs">{{ $data['total_late'] }}</span>
+                                    <span
+                                        class="admin-status-warning px-2.5 py-1 text-xs">{{ $data['total_late'] }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <span class="admin-status-danger px-2.5 py-1 text-xs">{{ max(0, $data['total_alpha']) }}</span>
+                                    <span
+                                        class="admin-status-danger px-2.5 py-1 text-xs">{{ max(0, $data['total_alpha']) }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     @php
@@ -104,16 +107,18 @@
                                     @endphp
                                     <div class="inline-flex items-center gap-2">
                                         <span class="admin-meter w-14">
-                                            <span class="admin-meter-seg {{ $rate >= 90 ? 'admin-meter-success' : 'admin-meter-warning' }}"
+                                            <span
+                                                class="admin-meter-seg {{ $rate >= 90 ? 'admin-meter-success' : 'admin-meter-warning' }}"
                                                 style="width: {{ min($rate, 100) }}%"></span>
                                         </span>
-                                        <span class="{{ $rateClass }} font-semibold" style="font-variant-numeric: tabular-nums">{{ $rate }}%</span>
+                                        <span class="{{ $rateClass }} font-semibold"
+                                            style="font-variant-numeric: tabular-nums">{{ $rate }}%</span>
                                     </div>
                                 </td>
                                 <td class="px-4 py-3 text-right text-sm">
                                     @if ($data['total_fine'] > 0)
-                                        <span class="admin-text-danger font-semibold">Rp
-                                            {{ number_format($data['total_fine'], 0, ',', '.') }}</span>
+                                        <span
+                                            class="admin-text-danger font-semibold">{{ 'Rp ' . number_format($data['total_fine'], 0, ',', '.') }}</span>
                                     @else
                                         <span class="admin-muted">-</span>
                                     @endif
@@ -131,9 +136,10 @@
                     @if ($reportData->isNotEmpty())
                         <tfoot>
                             <tr>
-                                <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold">Total Denda Keseluruhan</td>
-                                <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold">Rp
-                                    {{ number_format($totalFine, 0, ',', '.') }}</td>
+                                <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold">Total Denda
+                                    Keseluruhan</td>
+                                <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold">
+                                    {{ 'Rp ' . number_format($totalFine, 0, ',', '.') }}</td>
                             </tr>
                         </tfoot>
                     @endif

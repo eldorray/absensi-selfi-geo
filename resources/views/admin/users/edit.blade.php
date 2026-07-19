@@ -1,7 +1,6 @@
 <x-layouts.app>
     <div class="mx-auto max-w-2xl space-y-6">
-        <x-admin.page-header kicker="Master Data" title="Edit User"
-            description="Perbarui akun {{ $user->name }}">
+        <x-admin.page-header kicker="Master Data" title="Edit User" description="Perbarui akun {{ $user->name }}">
             <a href="{{ route('admin.users.index') }}"
                 class="admin-button-secondary inline-flex items-center gap-1.5 px-4 py-2 text-sm">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

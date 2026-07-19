@@ -37,7 +37,7 @@
                                 {{ $leave->type_label }}
                             </span>
                             <span
-                                class="{{ match ($leave->status) { 'pending' => 'admin-status-warning', 'approved' => 'admin-status-success', 'rejected' => 'admin-status-danger', default => 'admin-status-neutral' } }} px-3 py-1 text-xs">
+                                class="{{ match ($leave->status) {'pending' => 'admin-status-warning','approved' => 'admin-status-success','rejected' => 'admin-status-danger',default => 'admin-status-neutral'} }} px-3 py-1 text-xs">
                                 {{ $leave->status_label }}
                             </span>
                         </div>
