@@ -1,67 +1,70 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <!-- Header -->
-        <div class="admin-page-header flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Informasi</h1>
-                <p class="admin-muted mt-1 text-sm text-gray-600 dark:text-gray-400">Kartu informasi geser yang tampil di beranda guru</p>
-            </div>
+        <x-admin.page-header kicker="Komunikasi" title="Informasi"
+            description="Kartu informasi geser yang tampil di beranda guru" :count="$announcements->total() . ' kartu'">
             <a href="{{ route('admin.announcements.create') }}"
-                class="admin-button-primary inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="admin-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 Tambah Informasi
             </a>
-        </div>
+        </x-admin.page-header>
 
         <!-- Table -->
-        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="admin-glass-panel overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="admin-table w-full">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
+                    <thead>
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Informasi</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Urutan</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Status</th>
-                            <th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Aksi</th>
+                            <th class="px-6 py-4 text-left">Informasi</th>
+                            <th class="px-6 py-4 text-center">Urutan</th>
+                            <th class="px-6 py-4 text-center">Status</th>
+                            <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse($announcements as $item)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <tbody>
+                        @forelse ($announcements as $item)
+                            <tr>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         @if ($item->image_url)
-                                            <img src="{{ $item->image_url }}" alt="" class="h-12 w-12 rounded-lg object-cover flex-shrink-0">
+                                            <img src="{{ $item->image_url }}" alt=""
+                                                class="h-12 w-12 flex-shrink-0 rounded-xl object-cover">
                                         @else
-                                            <div class="h-12 w-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex-shrink-0"></div>
+                                            <div
+                                                class="h-12 w-12 flex-shrink-0 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
+                                            </div>
                                         @endif
                                         <div class="min-w-0">
-                                            <p class="font-semibold text-gray-900 dark:text-white truncate max-w-xs">{{ $item->title }}</p>
-                                            <p class="admin-muted text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">{{ $item->summary }}</p>
+                                            <p class="max-w-xs truncate text-sm font-bold">{{ $item->title }}</p>
+                                            <p class="admin-muted max-w-xs truncate text-xs">{{ $item->summary }}</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500 dark:text-gray-400">{{ $item->sort_order }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <form action="{{ route('admin.announcements.toggle', $item) }}" method="POST" class="inline">
+                                <td class="whitespace-nowrap px-6 py-4 text-center">
+                                    <span class="admin-chip admin-chip-time">{{ $item->sort_order }}</span>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-center">
+                                    <form action="{{ route('admin.announcements.toggle', $item) }}" method="POST"
+                                        class="inline">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit"
-                                            class="px-3 py-1 text-xs font-semibold rounded-full transition-colors {{ $item->is_active ? 'admin-status-success bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'admin-status-neutral bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}"
+                                            class="{{ $item->is_active ? 'admin-status-success' : 'admin-status-neutral' }} cursor-pointer px-3 py-1 text-xs transition-colors"
                                             title="Klik untuk ubah status">
                                             {{ $item->is_active ? 'Aktif' : 'Tidak Aktif' }}
                                         </button>
                                     </form>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <div class="flex items-center justify-end space-x-2">
+                                <td class="whitespace-nowrap px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.announcements.edit', $item) }}"
-                                            class="admin-button-primary size-11 p-0 text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors" title="Edit">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="admin-button-primary admin-icon-action size-11 p-0" title="Edit informasi">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                                </path>
                                             </svg>
                                         </a>
                                         <form action="{{ route('admin.announcements.destroy', $item) }}" method="POST"
@@ -69,10 +72,11 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="admin-button-danger size-11 p-0 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors" title="Hapus">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                class="admin-button-danger admin-icon-action size-11 p-0" title="Hapus informasi">
+                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                    </path>
                                                 </svg>
                                             </button>
                                         </form>
@@ -81,8 +85,14 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="admin-muted px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                                    Belum ada informasi. Silakan tambahkan.
+                                <td colspan="4">
+                                    <x-admin.empty-state icon="fas-bullhorn" title="Belum ada informasi"
+                                        hint="Kartu informasi yang aktif akan tampil di beranda guru.">
+                                        <a href="{{ route('admin.announcements.create') }}"
+                                            class="admin-button-secondary inline-flex items-center px-4 py-2 text-sm">
+                                            Tambah Informasi
+                                        </a>
+                                    </x-admin.empty-state>
                                 </td>
                             </tr>
                         @endforelse
@@ -90,7 +100,7 @@
                 </table>
             </div>
             @if ($announcements->hasPages())
-                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="admin-panel-footer">
                     {{ $announcements->links() }}
                 </div>
             @endif

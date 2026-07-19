@@ -1,36 +1,28 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <!-- Header -->
-        <div class="admin-page-header flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Rekap Absensi</h1>
-                <p class="admin-muted mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    @if ($activeYear)
-                        Tahun Ajaran {{ $activeYear->name }}
-                    @else
-                        <span class="text-amber-600">Belum ada tahun ajaran aktif</span>
-                    @endif
-                </p>
-            </div>
-        </div>
+        <x-admin.page-header kicker="Kehadiran" title="Rekap Absensi"
+            :description="$activeYear ? 'Tahun Ajaran ' . $activeYear->name : null">
+            @unless ($activeYear)
+                <span class="admin-status-warning px-3 py-1.5 text-xs">Belum ada tahun ajaran aktif</span>
+            @endunless
+        </x-admin.page-header>
 
         <!-- Filters -->
-        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="admin-glass-panel p-6">
+            <form method="GET" class="grid grid-cols-1 gap-4 md:grid-cols-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tanggal Awal</label>
-                    <input type="date" name="start_date" value="{{ $startDate }}"
-                        class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <label for="filter-start" class="admin-label">Tanggal Awal</label>
+                    <input id="filter-start" type="date" name="start_date" value="{{ $startDate }}"
+                        class="admin-field p-2.5">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tanggal Akhir</label>
-                    <input type="date" name="end_date" value="{{ $endDate }}"
-                        class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <label for="filter-end" class="admin-label">Tanggal Akhir</label>
+                    <input id="filter-end" type="date" name="end_date" value="{{ $endDate }}" class="admin-field p-2.5">
                 </div>
                 <div class="flex items-end gap-2">
                     <button type="submit"
-                        class="admin-button-primary flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors flex items-center justify-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="admin-button-primary flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
                             </path>
@@ -38,8 +30,8 @@
                         Refresh
                     </button>
                     <a href="{{ route('admin.reports.monthly.export-pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
-                        class="admin-button-danger px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-colors flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="admin-button-danger flex items-center gap-2 px-4 py-2.5 text-sm">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                             </path>
@@ -50,119 +42,98 @@
             </form>
         </div>
 
-        <!-- Title -->
-        <div class="text-center py-4">
-            <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Rekap Kehadiran</h2>
-            <p class="admin-muted text-gray-500 dark:text-gray-400">
-                {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} -
-                {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}
-            </p>
-            <p class="admin-muted text-sm text-gray-400 dark:text-gray-500">Total {{ $workDays }} Hari Kerja</p>
-        </div>
-
         <!-- Table -->
-        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="admin-glass-panel overflow-hidden">
+            <div class="admin-panel-header flex-wrap">
+                <span class="admin-label">Rekap Kehadiran</span>
+                <span class="flex flex-wrap items-center gap-2">
+                    <span class="admin-chip admin-chip-time">
+                        {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} -
+                        {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}
+                    </span>
+                    <span class="admin-chip">{{ $workDays }} hari kerja</span>
+                </span>
+            </div>
             <div class="overflow-x-auto">
                 <table class="admin-table w-full">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
+                    <thead>
                         <tr>
-                            <th
-                                class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                No.</th>
-                            <th
-                                class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Nama</th>
-                            <th
-                                class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Hari Kerja</th>
-                            <th
-                                class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Total Hadir</th>
-                            <th
-                                class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Tepat Waktu</th>
-                            <th
-                                class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Terlambat</th>
-                            <th
-                                class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Alpha</th>
-                            <th
-                                class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Persentase</th>
-                            <th
-                                class="px-4 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Total Denda</th>
+                            <th class="px-4 py-3 text-left">No.</th>
+                            <th class="px-4 py-3 text-left">Nama</th>
+                            <th class="px-4 py-3 text-center">Hari Kerja</th>
+                            <th class="px-4 py-3 text-center">Total Hadir</th>
+                            <th class="px-4 py-3 text-center">Tepat Waktu</th>
+                            <th class="px-4 py-3 text-center">Terlambat</th>
+                            <th class="px-4 py-3 text-center">Alpha</th>
+                            <th class="px-4 py-3 text-center">Persentase</th>
+                            <th class="px-4 py-3 text-right">Total Denda</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse($reportData as $index => $data)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                <td class="admin-muted px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $index + 1 }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">
-                                    <div class="font-medium text-gray-900 dark:text-white">{{ $data['user']->name }}
-                                    </div>
-                                    <div class="admin-muted text-xs text-gray-500 dark:text-gray-400">
-                                        {{ $data['user']->role?->name ?? '-' }}</div>
+                    <tbody>
+                        @forelse ($reportData as $index => $data)
+                            <tr>
+                                <td class="admin-muted px-4 py-3 text-sm">{{ $index + 1 }}</td>
+                                <td class="whitespace-nowrap px-4 py-3">
+                                    <div class="text-sm font-bold">{{ $data['user']->name }}</div>
+                                    <div class="admin-muted text-xs">{{ $data['user']->role?->name ?? '-' }}</div>
                                 </td>
-                                <td class="admin-muted px-4 py-3 text-sm text-center text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted px-4 py-3 text-center text-sm">
                                     {{ $data['work_days'] }}
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <span
-                                        class="font-semibold text-green-600 dark:text-green-400">{{ $data['total_present'] }}</span>
+                                    <span class="admin-text-success font-semibold">{{ $data['total_present'] }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <span
-                                        class="admin-status-success px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                        {{ $data['total_on_time'] }}
-                                    </span>
+                                    <span class="admin-status-success px-2.5 py-1 text-xs">{{ $data['total_on_time'] }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <span
-                                        class="admin-status-warning px-2 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                                        {{ $data['total_late'] }}
-                                    </span>
+                                    <span class="admin-status-warning px-2.5 py-1 text-xs">{{ $data['total_late'] }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <span
-                                        class="admin-status-danger px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                        {{ max(0, $data['total_alpha']) }}
-                                    </span>
+                                    <span class="admin-status-danger px-2.5 py-1 text-xs">{{ max(0, $data['total_alpha']) }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     @php
                                         $rate = $data['attendance_rate'];
-                                        $colorClass =
+                                        $rateClass =
                                             $rate >= 90
-                                                ? 'text-green-600 dark:text-green-400'
+                                                ? 'admin-text-success'
                                                 : ($rate >= 75
-                                                    ? 'text-amber-600 dark:text-amber-400'
-                                                    : 'text-red-600 dark:text-red-400');
+                                                    ? 'admin-text-warning'
+                                                    : 'admin-text-danger');
                                     @endphp
-                                    <span class="font-semibold {{ $colorClass }}">{{ $rate }}%</span>
+                                    <div class="inline-flex items-center gap-2">
+                                        <span class="admin-meter w-14">
+                                            <span class="admin-meter-seg {{ $rate >= 90 ? 'admin-meter-success' : 'admin-meter-warning' }}"
+                                                style="width: {{ min($rate, 100) }}%"></span>
+                                        </span>
+                                        <span class="{{ $rateClass }} font-semibold" style="font-variant-numeric: tabular-nums">{{ $rate }}%</span>
+                                    </div>
                                 </td>
                                 <td class="px-4 py-3 text-right text-sm">
                                     @if ($data['total_fine'] > 0)
-                                        <span class="font-semibold text-red-600 dark:text-red-400">Rp {{ number_format($data['total_fine'], 0, ',', '.') }}</span>
+                                        <span class="admin-text-danger font-semibold">Rp
+                                            {{ number_format($data['total_fine'], 0, ',', '.') }}</span>
                                     @else
-                                        <span class="admin-muted text-gray-400">-</span>
+                                        <span class="admin-muted">-</span>
                                     @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="admin-muted px-4 py-12 text-center text-gray-500 dark:text-gray-400">
-                                    Tidak ada data pegawai.
+                                <td colspan="9">
+                                    <x-admin.empty-state icon="fas-chart-bar" title="Tidak ada data pegawai"
+                                        hint="Pegawai aktif akan tampil di rekap kehadiran ini." />
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                     @if ($reportData->isNotEmpty())
-                        <tfoot class="bg-gray-50 dark:bg-gray-700">
+                        <tfoot>
                             <tr>
-                                <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Total Denda Keseluruhan</td>
-                                <td class="px-4 py-3 text-right text-sm font-bold text-red-600 dark:text-red-400">Rp {{ number_format($totalFine, 0, ',', '.') }}</td>
+                                <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold">Total Denda Keseluruhan</td>
+                                <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold">Rp
+                                    {{ number_format($totalFine, 0, ',', '.') }}</td>
                             </tr>
                         </tfoot>
                     @endif

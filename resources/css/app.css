@@ -552,6 +552,33 @@
         color: var(--admin-text);
     }
 
+    .admin-shell :is(button, a).admin-chip {
+        cursor: pointer;
+        transition: border-color 180ms ease, color 180ms ease, background-color 180ms ease;
+    }
+
+    .admin-shell :is(button, a).admin-chip:hover {
+        border-color: var(--admin-primary);
+        color: var(--admin-nav-active);
+        background: var(--admin-primary-soft);
+    }
+
+    .admin-shell .admin-text-danger {
+        color: var(--admin-danger) !important;
+    }
+
+    .admin-shell .admin-text-success {
+        color: var(--admin-success) !important;
+    }
+
+    .admin-shell .admin-text-warning {
+        color: var(--admin-warning) !important;
+    }
+
+    .admin-shell .admin-table tfoot {
+        background: var(--admin-glass-soft) !important;
+    }
+
     .admin-shell .admin-label {
         display: block;
         margin-bottom: .45rem;
