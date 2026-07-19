@@ -61,7 +61,7 @@ test('admin index views adopt semantic glass surfaces', function (string $view) 
     $source = file_get_contents(resource_path("views/{$view}"));
 
     expect($source)
-        ->toContain('admin-page-header')
+        ->toMatch('/admin-page-header|<x-admin\.page-header\b/')
         ->toContain('admin-glass-panel');
 
     preg_match_all('/<table\b[^>]*>/s', $source, $tables);
@@ -146,7 +146,7 @@ test('admin form views adopt semantic glass surfaces', function (string $view) {
     $source = file_get_contents(resource_path("views/{$view}"));
 
     expect($source)
-        ->toContain('admin-page-header')
+        ->toMatch('/admin-page-header|<x-admin\.page-header\b/')
         ->toContain('admin-glass-panel');
 })->with('admin form surface views');
 
@@ -247,7 +247,7 @@ test('admin detail views adopt semantic glass surfaces', function (string $view)
     $source = file_get_contents(resource_path("views/{$view}"));
 
     expect($source)
-        ->toContain('admin-page-header')
+        ->toMatch('/admin-page-header|<x-admin\.page-header\b/')
         ->toContain('admin-glass-panel')
         ->not->toContain('bg-white dark:bg-gray-800');
 })->with('admin detail views');

@@ -138,8 +138,8 @@
 
         <!-- Recent attendance -->
         <div class="admin-glass-panel overflow-hidden">
-            <div class="flex items-center justify-between gap-4 px-6 py-4">
-                <span class="admin-label" style="margin-bottom: 0">Absensi Terbaru</span>
+            <div class="admin-panel-header">
+                <span class="admin-label">Absensi Terbaru</span>
                 <a href="{{ route('admin.attendances.index') }}"
                     class="admin-muted text-xs font-semibold hover:underline">Lihat semua</a>
             </div>

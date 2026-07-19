@@ -592,6 +592,12 @@
         border-radius: 1rem;
     }
 
+    .admin-shell .admin-stat-icon-sm {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: .75rem;
+    }
+
     .admin-shell .admin-stat-value {
         font-family: "Bricolage Grotesque", sans-serif;
         font-size: 1.9rem;
@@ -802,6 +808,24 @@
 
     .admin-shell nav[role="navigation"] span[aria-disabled="true"] > span {
         opacity: .5;
+    }
+
+    .admin-shell .admin-panel-footer {
+        border-top: 1px solid var(--admin-border-soft);
+        padding: 1rem 1.5rem;
+    }
+
+    .admin-shell .admin-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--admin-border-soft);
+    }
+
+    .admin-shell .admin-panel-header .admin-label {
+        margin-bottom: 0;
     }
 
     .admin-shell .admin-header .app-brand {

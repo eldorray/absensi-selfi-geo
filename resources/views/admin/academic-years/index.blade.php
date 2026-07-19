@@ -1,80 +1,64 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <!-- Header -->
-        <div class="admin-page-header flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Tahun Ajaran</h1>
-                <p class="admin-muted mt-1 text-sm text-gray-600 dark:text-gray-400">Kelola periode tahun ajaran untuk sistem absensi
-                </p>
-            </div>
+        <x-admin.page-header kicker="Master Data" title="Tahun Ajaran"
+            description="Kelola periode tahun ajaran untuk sistem absensi"
+            :count="$academicYears->total() . ' periode'">
             <a href="{{ route('admin.academic-years.create') }}"
-                class="admin-button-primary inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="admin-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 Tambah Tahun Ajaran
             </a>
-        </div>
+        </x-admin.page-header>
 
         <!-- Table -->
-        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="admin-glass-panel overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="admin-table w-full">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
+                    <thead>
                         <tr>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Nama</th>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Tanggal Mulai</th>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Tanggal Selesai</th>
-                            <th
-                                class="px-6 py-4 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Status</th>
-                            <th
-                                class="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Aksi</th>
+                            <th class="px-6 py-4 text-left">Nama</th>
+                            <th class="px-6 py-4 text-left">Tanggal Mulai</th>
+                            <th class="px-6 py-4 text-left">Tanggal Selesai</th>
+                            <th class="px-6 py-4 text-center">Status</th>
+                            <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse($academicYears as $year)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="font-semibold text-gray-900 dark:text-white">{{ $year->name }}</span>
+                    <tbody>
+                        @forelse ($academicYears as $year)
+                            <tr>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <span class="text-sm font-bold">{{ $year->name }}</span>
                                 </td>
-                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted whitespace-nowrap px-6 py-4 text-sm">
                                     {{ $year->start_date->format('d M Y') }}
                                 </td>
-                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted whitespace-nowrap px-6 py-4 text-sm">
                                     {{ $year->end_date->format('d M Y') }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <td class="whitespace-nowrap px-6 py-4 text-center">
                                     @if ($year->is_active)
-                                        <span
-                                            class="admin-status-success px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                        <span class="admin-status-success px-2.5 py-1 text-[10px] uppercase tracking-wider">
                                             Aktif
                                         </span>
                                     @else
-                                        <span
-                                            class="admin-status-neutral px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                        <span class="admin-status-neutral px-2.5 py-1 text-[10px] uppercase tracking-wider">
                                             Tidak Aktif
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <div class="flex items-center justify-end space-x-2">
+                                <td class="whitespace-nowrap px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
                                         @if (!$year->is_active)
                                             <form action="{{ route('admin.academic-years.activate', $year) }}"
                                                 method="POST"
                                                 onsubmit="return confirm('Aktifkan tahun ajaran ini? Jadwal kerja akan di-reset.')">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="admin-button-success size-11 p-0 text-gray-600 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400 transition-colors"
+                                                    class="admin-button-success admin-icon-action size-11 p-0"
                                                     title="Aktifkan">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -83,9 +67,9 @@
                                             </form>
                                         @endif
                                         <a href="{{ route('admin.academic-years.edit', $year) }}"
-                                            class="admin-button-primary size-11 p-0 text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
+                                            class="admin-button-primary admin-icon-action size-11 p-0"
+                                            title="Edit tahun ajaran">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>
@@ -98,8 +82,9 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="admin-button-danger size-11 p-0 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    class="admin-button-danger admin-icon-action size-11 p-0"
+                                                    title="Hapus tahun ajaran">
+                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2"
@@ -114,8 +99,14 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="admin-muted px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                                    Belum ada tahun ajaran. Silakan tambahkan tahun ajaran baru.
+                                <td colspan="5">
+                                    <x-admin.empty-state icon="fas-calendar" title="Belum ada tahun ajaran"
+                                        hint="Tambahkan tahun ajaran pertama untuk memulai penjadwalan absensi.">
+                                        <a href="{{ route('admin.academic-years.create') }}"
+                                            class="admin-button-secondary inline-flex items-center px-4 py-2 text-sm">
+                                            Tambah Tahun Ajaran
+                                        </a>
+                                    </x-admin.empty-state>
                                 </td>
                             </tr>
                         @endforelse
@@ -123,7 +114,7 @@
                 </table>
             </div>
             @if ($academicYears->hasPages())
-                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="admin-panel-footer">
                     {{ $academicYears->links() }}
                 </div>
             @endif

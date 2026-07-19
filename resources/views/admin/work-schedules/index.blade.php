@@ -1,106 +1,86 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <!-- Header -->
-        <div class="admin-page-header flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Jam Kerja</h1>
-                <p class="admin-muted mt-1 text-sm text-gray-600 dark:text-gray-400">Pengaturan jadwal kerja dan toleransi absensi
-                </p>
-            </div>
-        </div>
+        <x-admin.page-header kicker="Master Data" title="Jam Kerja"
+            description="Pengaturan jadwal kerja dan toleransi absensi" />
 
         <!-- Messages -->
         @if (session('success'))
-            <div
-                class="admin-alert-success bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-4 flex items-center">
-                <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="admin-alert-success flex items-center gap-3 rounded-2xl p-4">
+                <svg class="h-5 w-5 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span class="text-green-700 dark:text-green-300">{{ session('success') }}</span>
+                <span class="text-sm font-semibold">{{ session('success') }}</span>
             </div>
         @endif
 
         <!-- Tolerance Settings Card -->
-        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-sky-50 dark:bg-sky-900/30">
-                <h2 class="text-lg font-semibold text-sky-700 dark:text-sky-300">Toleransi Jam Kerja</h2>
+        <div class="admin-glass-panel overflow-hidden">
+            <div class="admin-panel-header">
+                <span class="admin-label">Toleransi Jam Kerja</span>
             </div>
             <div class="p-6">
                 <form method="POST" action="{{ route('admin.work-schedules.settings') }}">
                     @csrf
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Sebelum Masuk (Menit)
-                            </label>
-                            <input type="number" name="before_check_in" value="{{ $settings->before_check_in }}"
-                                class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                            <label for="before_check_in" class="admin-label">Sebelum Masuk (Menit)</label>
+                            <input id="before_check_in" type="number" name="before_check_in"
+                                value="{{ $settings->before_check_in }}" class="admin-field p-2.5">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Sesudah Masuk (Menit)
-                            </label>
-                            <input type="number" name="after_check_in" value="{{ $settings->after_check_in }}"
-                                class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                            <label for="after_check_in" class="admin-label">Sesudah Masuk (Menit)</label>
+                            <input id="after_check_in" type="number" name="after_check_in"
+                                value="{{ $settings->after_check_in }}" class="admin-field p-2.5">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Limit Sesudah Masuk (Menit)
-                            </label>
-                            <input type="number" name="late_limit" value="{{ $settings->late_limit }}"
-                                class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                            <label for="late_limit" class="admin-label">Limit Sesudah Masuk (Menit)</label>
+                            <input id="late_limit" type="number" name="late_limit" value="{{ $settings->late_limit }}"
+                                class="admin-field p-2.5">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Sebelum Pulang (Menit)
-                            </label>
-                            <input type="number" name="before_check_out" value="{{ $settings->before_check_out }}"
-                                class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                            <label for="before_check_out" class="admin-label">Sebelum Pulang (Menit)</label>
+                            <input id="before_check_out" type="number" name="before_check_out"
+                                value="{{ $settings->before_check_out }}" class="admin-field p-2.5">
                         </div>
                     </div>
 
-                    <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Denda Keterlambatan</h3>
-                        <p class="admin-muted text-xs text-gray-500 dark:text-gray-400 mb-4">Denda dihitung dari menit telat setelah batas toleransi (Sesudah Masuk). Hanya untuk status Terlambat.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <hr class="admin-divider">
+
+                    <div class="mb-6">
+                        <h3 class="text-sm font-bold">Denda Keterlambatan</h3>
+                        <p class="admin-muted admin-hint mb-4">Denda dihitung dari menit telat setelah batas toleransi
+                            (Sesudah Masuk). Hanya untuk status Terlambat.</p>
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Denda Tier 1 (Rp)
-                                </label>
-                                <input type="number" name="fine_tier1_amount" min="0" value="{{ $settings->fine_tier1_amount }}"
-                                    class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                                <p class="admin-muted mt-1 text-xs text-gray-400">Telat 1 s/d batas menit di bawah.</p>
+                                <label for="fine_tier1_amount" class="admin-label">Denda Tier 1 (Rp)</label>
+                                <input id="fine_tier1_amount" type="number" name="fine_tier1_amount" min="0"
+                                    value="{{ $settings->fine_tier1_amount }}" class="admin-field p-2.5">
+                                <p class="admin-hint">Telat 1 s/d batas menit di bawah.</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Batas Menit Tier 1
-                                </label>
-                                <input type="number" name="fine_tier1_max_minutes" min="1" value="{{ $settings->fine_tier1_max_minutes }}"
-                                    class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                                <p class="admin-muted mt-1 text-xs text-gray-400">Telat &le; menit ini kena Tier 1, di atasnya Tier 2.</p>
+                                <label for="fine_tier1_max_minutes" class="admin-label">Batas Menit Tier 1</label>
+                                <input id="fine_tier1_max_minutes" type="number" name="fine_tier1_max_minutes" min="1"
+                                    value="{{ $settings->fine_tier1_max_minutes }}" class="admin-field p-2.5">
+                                <p class="admin-hint">Telat &le; menit ini kena Tier 1, di atasnya Tier 2.</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Denda Tier 2 (Rp)
-                                </label>
-                                <input type="number" name="fine_tier2_amount" min="0" value="{{ $settings->fine_tier2_amount }}"
-                                    class="admin-field w-full p-2 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                                <p class="admin-muted mt-1 text-xs text-gray-400">Telat di atas batas menit Tier 1.</p>
+                                <label for="fine_tier2_amount" class="admin-label">Denda Tier 2 (Rp)</label>
+                                <input id="fine_tier2_amount" type="number" name="fine_tier2_amount" min="0"
+                                    value="{{ $settings->fine_tier2_amount }}" class="admin-field p-2.5">
+                                <p class="admin-hint">Telat di atas batas menit Tier 1.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
                         <label class="flex items-center">
                             <input type="checkbox" name="require_check_in" value="1"
-                                {{ $settings->require_check_in ? 'checked' : '' }}
-                                class="rounded border-gray-300 text-sky-600 shadow-sm focus:ring-sky-500">
-                            <span class="admin-muted ml-2 text-sm text-gray-600 dark:text-gray-400">
+                                {{ $settings->require_check_in ? 'checked' : '' }} class="admin-checkbox rounded">
+                            <span class="admin-muted ml-2 text-sm">
                                 Wajib Absen Masuk - Jika dicentang, maka absen pulang harus absen masuk terlebih dahulu.
                             </span>
                         </label>
-                        <button type="submit"
-                            class="admin-button-success px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-colors">
+                        <button type="submit" class="admin-button-success px-4 py-2 text-sm">
                             Update Toleransi
                         </button>
                     </div>
@@ -109,38 +89,28 @@
         </div>
 
         <!-- List Data Jam Kerja -->
-        <div class="admin-glass-panel bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">List Data Jam Kerja</h2>
+        <div class="admin-glass-panel overflow-hidden">
+            <div class="admin-panel-header">
+                <span class="admin-label">List Data Jam Kerja</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="admin-table w-full">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
+                    <thead>
                         <tr>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                No.</th>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Nama</th>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Kantor</th>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Jadwal Aktif</th>
-                            <th
-                                class="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                                Aksi</th>
+                            <th class="px-6 py-4 text-left">No.</th>
+                            <th class="px-6 py-4 text-left">Nama</th>
+                            <th class="px-6 py-4 text-left">Kantor</th>
+                            <th class="px-6 py-4 text-left">Jadwal Aktif</th>
+                            <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700" x-data="{ expandedRow: null }">
-                        @forelse($users as $index => $user)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer"
+                    <tbody x-data="{ expandedRow: null }">
+                        @forelse ($users as $index => $user)
+                            <tr class="cursor-pointer"
                                 @click="expandedRow = expandedRow === {{ $user->id }} ? null : {{ $user->id }}">
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="whitespace-nowrap px-6 py-4">
                                     <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-2 text-gray-400 transition-transform"
+                                        <svg class="admin-muted mr-2 h-4 w-4 transition-transform"
                                             :class="{ 'rotate-90': expandedRow === {{ $user->id }} }" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -149,24 +119,22 @@
                                         {{ ($users->currentPage() - 1) * $users->perPage() + $index + 1 }}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <p class="font-medium text-gray-900 dark:text-white">{{ $user->name }}</p>
-                                    <p class="admin-muted text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</p>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <p class="text-sm font-bold">{{ $user->name }}</p>
+                                    <p class="admin-muted text-xs">{{ $user->email }}</p>
                                 </td>
-                                <td class="admin-muted px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td class="admin-muted whitespace-nowrap px-6 py-4 text-sm">
                                     {{ $user->office?->name ?? '-' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span
-                                        class="admin-status-info px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <span class="admin-status-info px-2.5 py-1 text-xs">
                                         {{ $user->workSchedules->where('is_active', true)->count() }} Hari
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right" @click.stop>
+                                <td class="whitespace-nowrap px-6 py-4 text-right" @click.stop>
                                     <a href="{{ route('admin.work-schedules.edit', $user) }}"
-                                        class="admin-button-primary inline-flex items-center px-3 py-1.5 bg-sky-100 hover:bg-sky-200 text-sky-700 font-medium rounded-lg text-sm transition-colors">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
+                                        class="admin-button-primary admin-icon-action inline-flex items-center gap-1.5 px-3 text-xs">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                             </path>
@@ -176,38 +144,38 @@
                                 </td>
                             </tr>
                             <!-- Expanded Row - Schedule Details -->
-                            <tr x-show="expandedRow === {{ $user->id }}" x-collapse
-                                class="bg-gray-50 dark:bg-gray-700/30">
+                            <tr x-show="expandedRow === {{ $user->id }}" x-collapse>
                                 <td colspan="5" class="px-6 py-4">
                                     <div class="overflow-x-auto">
                                         <table class="admin-table w-full text-sm">
                                             <thead>
-                                                <tr class="text-left text-gray-500 dark:text-gray-400">
-                                                    <th class="pb-2 font-semibold">Hari</th>
-                                                    <th class="pb-2 font-semibold">Jam Masuk</th>
-                                                    <th class="pb-2 font-semibold">Jam Pulang</th>
-                                                    <th class="pb-2 font-semibold">Status</th>
+                                                <tr class="text-left">
+                                                    <th class="pb-2">Hari</th>
+                                                    <th class="pb-2">Jam Masuk</th>
+                                                    <th class="pb-2">Jam Pulang</th>
+                                                    <th class="pb-2">Status</th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+                                            <tbody>
                                                 @foreach (['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'] as $day)
                                                     @php $schedule = $user->workSchedules->firstWhere('day', $day); @endphp
                                                     <tr>
-                                                        <td class="py-2 font-medium text-gray-900 dark:text-white">
-                                                            {{ ucfirst($day) }}</td>
-                                                        <td class="admin-muted py-2 text-gray-600 dark:text-gray-300">
-                                                            {{ $schedule ? \Carbon\Carbon::parse($schedule->check_in_time)->format('H:i') : '07:00' }}
+                                                        <td class="py-2 text-sm font-semibold">{{ ucfirst($day) }}</td>
+                                                        <td class="py-2">
+                                                            <span class="admin-chip admin-chip-time">
+                                                                {{ $schedule ? \Carbon\Carbon::parse($schedule->check_in_time)->format('H:i') : '07:00' }}
+                                                            </span>
                                                         </td>
-                                                        <td class="admin-muted py-2 text-gray-600 dark:text-gray-300">
-                                                            {{ $schedule ? \Carbon\Carbon::parse($schedule->check_out_time)->format('H:i') : '16:00' }}
+                                                        <td class="py-2">
+                                                            <span class="admin-chip admin-chip-time">
+                                                                {{ $schedule ? \Carbon\Carbon::parse($schedule->check_out_time)->format('H:i') : '16:00' }}
+                                                            </span>
                                                         </td>
                                                         <td class="py-2">
                                                             @if ($schedule && $schedule->is_active)
-                                                                <span
-                                                                    class="admin-status-success px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Active</span>
+                                                                <span class="admin-status-success px-2.5 py-1 text-xs">Active</span>
                                                             @else
-                                                                <span
-                                                                    class="admin-status-neutral px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-500">Inactive</span>
+                                                                <span class="admin-status-neutral px-2.5 py-1 text-xs">Inactive</span>
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -219,8 +187,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="admin-muted px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                                    Belum ada data karyawan.
+                                <td colspan="5">
+                                    <x-admin.empty-state icon="fas-clock" title="Belum ada data karyawan"
+                                        hint="Karyawan yang terdaftar akan muncul di sini beserta jadwal kerjanya." />
                                 </td>
                             </tr>
                         @endforelse
@@ -228,7 +197,7 @@
                 </table>
             </div>
             @if ($users->hasPages())
-                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="admin-panel-footer">
                     {{ $users->links() }}
                 </div>
             @endif
