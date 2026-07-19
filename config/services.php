@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'data_induk' => [
+        'base_url' => env('SYNC_API_BASE_URL', 'https://datainduk.ypdhalmadani.sch.id'),
+    ],
+
 ];
