@@ -27,7 +27,12 @@ test('admin routes expose the liquid glass shell', function () {
         ->assertSee('admin-nav-link', escape: false)
         ->assertSee('admin-glass-popover', escape: false)
         ->assertSee('aria-current="page"', escape: false)
-        ->assertSee('admin-alert-success', escape: false);
+        ->assertSee('admin-alert-success', escape: false)
+        // The glass confirm modal is mounted once on admin routes, and the
+        // Alpine event binding survives Blade compilation (not eaten as a
+        // directive).
+        ->assertSee('@admin-confirm.window', escape: false)
+        ->assertSee('x-ref="confirmBtn"', escape: false);
 });
 
 test('shared non-admin pages do not expose the admin shell', function () {
@@ -40,7 +45,8 @@ test('shared non-admin pages do not expose the admin shell', function () {
         ->assertDontSee('admin-header', escape: false)
         ->assertDontSee('admin-sidebar', escape: false)
         ->assertDontSee('admin-nav-link', escape: false)
-        ->assertDontSee('admin-glass-popover', escape: false);
+        ->assertDontSee('admin-glass-popover', escape: false)
+        ->assertDontSee('x-ref="confirmBtn"', escape: false);
 });
 
 dataset('admin index views', [
