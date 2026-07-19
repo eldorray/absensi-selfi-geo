@@ -2,6 +2,19 @@
     <div class="space-y-6">
         <x-admin.page-header kicker="Master Data" title="Kelola User"
             description="Manajemen akun karyawan dan administrator" :count="$users->total() . ' user'">
+            <form action="{{ route('admin.users.sync') }}" method="POST"
+                onsubmit="return confirm('Tarik data pegawai dari API data induk? Ini membuat/memperbarui user.')">
+                @csrf
+                <button type="submit"
+                    class="admin-button-secondary inline-flex items-center gap-2 px-4 py-2 text-sm">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
+                    </svg>
+                    Sync Data Induk
+                </button>
+            </form>
             <a href="{{ route('admin.users.create') }}"
                 class="admin-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

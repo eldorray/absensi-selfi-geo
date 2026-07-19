@@ -79,6 +79,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('attendances/{attendance}', [Admin\AttendanceController::class, 'show'])->name('attendances.show');
 
     // User management
+    Route::post('users/sync', [Admin\UserController::class, 'syncFromApi'])->name('users.sync');
     Route::resource('users', Admin\UserController::class)->except(['show']);
 
     // Role management

@@ -10,6 +10,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
+/**
+ * @property-read ?string $nip
+ * @property-read ?string $nik
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -27,6 +31,8 @@ class User extends Authenticatable
         'office_id',
         'role_id',
         'avatar_path',
+        'nip',
+        'nik',
     ];
 
     /**
