@@ -1,59 +1,67 @@
 <x-layouts.app>
-    <div class="max-w-2xl mx-auto">
-        <!-- Header -->
-        <div class="admin-page-header mb-8">
-            <a href="{{ route('admin.attendances.index') }}" class="admin-button-secondary px-3 inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-4">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="mx-auto max-w-4xl space-y-6">
+        <x-admin.page-header kicker="Kehadiran" title="Detail Absensi"
+            description="Bukti selfie dan data lokasi absensi">
+            <a href="{{ route('admin.attendances.index') }}" class="admin-button-secondary px-3 py-2 inline-flex items-center gap-1.5 text-sm">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
                 Kembali
             </a>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Detail Absensi</h1>
-        </div>
+        </x-admin.page-header>
 
-        <!-- Selfie Image -->
-        <div class="admin-glass-panel rounded-2xl shadow-lg overflow-hidden mb-6">
-            <img src="{{ $attendance->image_url }}" alt="Selfie Absensi" class="w-full aspect-video object-cover">
-        </div>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <!-- Selfie Image -->
+            <div class="admin-glass-panel overflow-hidden">
+                <div class="admin-panel-header">
+                    <span class="admin-label">Foto Selfie</span>
+                    <span
+                        class="{{ $attendance->status->value === 'present' ? 'admin-status-success' : 'admin-status-warning' }} px-2.5 py-1 text-xs">
+                        {{ $attendance->status->label() }}
+                    </span>
+                </div>
+                <img src="{{ $attendance->image_url }}" alt="Selfie Absensi {{ $attendance->user->name }}"
+                    class="aspect-square w-full object-cover">
+            </div>
 
-        <!-- Details -->
-        <div class="admin-glass-panel rounded-2xl shadow-lg p-6">
-            <dl class="space-y-4">
-                <div class="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700">
-                    <dt class="admin-muted text-sm font-medium text-gray-500 dark:text-gray-400">Karyawan</dt>
-                    <dd class="text-sm text-gray-900 dark:text-white">{{ $attendance->user->name }}</dd>
-                </div>
-                <div class="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700">
-                    <dt class="admin-muted text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
-                    <dd class="text-sm text-gray-900 dark:text-white">{{ $attendance->user->email }}</dd>
-                </div>
-                <div class="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700">
-                    <dt class="admin-muted text-sm font-medium text-gray-500 dark:text-gray-400">Kantor</dt>
-                    <dd class="text-sm text-gray-900 dark:text-white">{{ $attendance->user->office?->name ?? '-' }}</dd>
-                </div>
-                <div class="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700">
-                    <dt class="admin-muted text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
-                    <dd>
-                        <span class="{{ $attendance->status->value === 'present' ? 'admin-status-success' : 'admin-status-warning' }} px-3 py-1 text-xs font-semibold rounded-full {{ $attendance->status->badgeClass() }}">
-                            {{ $attendance->status->label() }}
-                        </span>
-                    </dd>
-                </div>
-                <div class="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700">
-                    <dt class="admin-muted text-sm font-medium text-gray-500 dark:text-gray-400">Koordinat</dt>
-                    <dd class="text-sm text-gray-900 dark:text-white font-mono">
-                        {{ number_format($attendance->check_in_lat, 8) }}, {{ number_format($attendance->check_in_long, 8) }}
-                    </dd>
-                </div>
-                <div class="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700">
-                    <dt class="admin-muted text-sm font-medium text-gray-500 dark:text-gray-400">Jarak dari Kantor</dt>
-                    <dd class="text-sm text-gray-900 dark:text-white">{{ number_format($attendance->distance_meters, 0) }} meter</dd>
-                </div>
-                <div class="flex justify-between py-3">
-                    <dt class="admin-muted text-sm font-medium text-gray-500 dark:text-gray-400">Waktu Check-in</dt>
-                    <dd class="text-sm text-gray-900 dark:text-white">{{ $attendance->created_at->format('d M Y H:i:s') }}</dd>
-                </div>
-            </dl>
+            <!-- Details -->
+            <div class="admin-glass-panel p-6">
+                <dl class="admin-dl">
+                    <div>
+                        <dt>Karyawan</dt>
+                        <dd class="font-semibold">{{ $attendance->user->name }}</dd>
+                    </div>
+                    <div>
+                        <dt>Email</dt>
+                        <dd>{{ $attendance->user->email }}</dd>
+                    </div>
+                    <div>
+                        <dt>Kantor</dt>
+                        <dd>{{ $attendance->user->office?->name ?? '-' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Koordinat</dt>
+                        <dd class="font-mono text-xs">
+                            <a href="https://www.google.com/maps?q={{ $attendance->check_in_lat }},{{ $attendance->check_in_long }}"
+                                target="_blank" rel="noopener" class="hover:underline">
+                                {{ number_format($attendance->check_in_lat, 8) }},
+                                {{ number_format($attendance->check_in_long, 8) }}
+                            </a>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Jarak dari Kantor</dt>
+                        <dd>{{ number_format($attendance->distance_meters, 0) }} meter</dd>
+                    </div>
+                    <div>
+                        <dt>Waktu Check-in</dt>
+                        <dd>
+                            <span class="admin-chip admin-chip-time">{{ $attendance->created_at->format('H:i:s') }}</span>
+                            <span class="admin-muted ml-2 text-xs">{{ $attendance->created_at->format('d M Y') }}</span>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
         </div>
     </div>
 </x-layouts.app>

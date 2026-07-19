@@ -697,6 +697,18 @@
         object-fit: cover;
     }
 
+    .admin-shell .admin-avatar-md {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1rem;
+    }
+
+    .admin-shell .admin-avatar-lg {
+        width: 5rem;
+        height: 5rem;
+        font-size: 1.5rem;
+    }
+
     .admin-shell .admin-icon-action.admin-button-primary {
         border: 1px solid var(--admin-border-soft);
         background: var(--admin-primary-soft) !important;

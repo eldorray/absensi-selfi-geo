@@ -1,194 +1,171 @@
 <x-layouts.app>
-    <!-- Breadcrumbs -->
-    <div class="mb-6 flex items-center text-sm">
-        <a href="{{ route('admin.dashboard') }}" class="text-blue-600 dark:text-blue-400 hover:underline">Dashboard</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-        <a href="{{ route('admin.leaves.index') }}"
-            class="text-blue-600 dark:text-blue-400 hover:underline">Perizinan</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-        <span class="text-gray-500 dark:text-gray-400">Detail</span>
-    </div>
+    <div class="space-y-6">
+        <x-admin.page-header kicker="Kehadiran" title="Detail Pengajuan"
+            description="Tinjau dan proses pengajuan perizinan">
+            <a href="{{ route('admin.leaves.index') }}"
+                class="admin-button-secondary inline-flex items-center gap-1.5 px-4 py-2 text-sm">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Kembali
+            </a>
+        </x-admin.page-header>
 
-    <!-- Success/Error Messages -->
-    @if (session('success'))
-        <div class="admin-alert-success mb-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded-xl">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="admin-alert-danger mb-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded-xl">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Main Content -->
-        <div class="lg:col-span-2 space-y-6">
-            <!-- Leave Info -->
-            <div class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <div class="admin-page-header flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Detail Pengajuan</h2>
-                    <div class="flex gap-2">
-                        <span class="{{ $leave->type === 'sakit' ? 'admin-status-danger' : 'admin-status-info' }} px-3 py-1 text-sm font-semibold rounded-full {{ $leave->type_badge_class }}">
-                            {{ $leave->type_label }}
-                        </span>
-                        <span class="{{ match ($leave->status) { 'pending' => 'admin-status-warning', 'approved' => 'admin-status-success', 'rejected' => 'admin-status-danger', default => 'admin-status-neutral' } }} px-3 py-1 text-sm font-semibold rounded-full {{ $leave->status_badge_class }}">
-                            {{ $leave->status_label }}
-                        </span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Tanggal Mulai</p>
-                        <p class="font-medium text-gray-800 dark:text-gray-200">
-                            {{ $leave->start_date->format('d M Y') }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Tanggal Selesai</p>
-                        <p class="font-medium text-gray-800 dark:text-gray-200">{{ $leave->end_date->format('d M Y') }}
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Durasi</p>
-                        <p class="font-medium text-gray-800 dark:text-gray-200">{{ $leave->duration }} hari</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Diajukan</p>
-                        <p class="font-medium text-gray-800 dark:text-gray-200">
-                            {{ $leave->created_at->format('d M Y, H:i') }}</p>
-                    </div>
-                </div>
-
-                <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Alasan</p>
-                    <p class="text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
-                        {{ $leave->reason }}
-                    </p>
-                </div>
+        <!-- Success/Error Messages -->
+        @if (session('success'))
+            <div class="admin-alert-success rounded-2xl p-4 text-sm font-semibold">
+                {{ session('success') }}
             </div>
+        @endif
 
-            <!-- Attachment -->
-            @if ($leave->attachment)
-                <div
-                    class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Lampiran</h2>
-                    <a href="{{ $leave->attachment_url }}" target="_blank">
-                        <img src="{{ $leave->attachment_url }}" alt="Lampiran"
-                            class="w-full max-h-96 object-contain rounded-xl">
-                    </a>
-                </div>
-            @endif
+        @if (session('error'))
+            <div class="admin-alert-danger rounded-2xl p-4 text-sm font-semibold">
+                {{ session('error') }}
+            </div>
+        @endif
 
-            <!-- Approval Actions -->
-            @if ($leave->isPending())
-                <div
-                    class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Tindakan</h2>
-
-                    <div class="flex gap-4">
-                        <form action="{{ route('admin.leaves.approve', $leave) }}" method="POST" class="flex-1">
-                            @csrf
-                            <button type="submit"
-                                class="admin-button-success w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors"
-                                onclick="return confirm('Setujui pengajuan ini?')">
-                                ✓ Setujui
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="admin-alert-danger mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                        <form action="{{ route('admin.leaves.reject', $leave) }}" method="POST">
-                            @csrf
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Tolak dengan alasan:
-                            </label>
-                            <textarea name="rejection_reason" rows="2"
-                                class="admin-field w-full p-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white mb-3"
-                                placeholder="Masukkan alasan penolakan..."></textarea>
-                            <button type="submit"
-                                class="admin-button-danger w-full py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-colors"
-                                onclick="return confirm('Tolak pengajuan ini?')">
-                                ✕ Tolak
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Approval Info -->
-            @if (!$leave->isPending())
-                <div
-                    class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-                        {{ $leave->isApproved() ? 'Disetujui' : 'Ditolak' }}
-                    </h2>
-                    <div class="flex items-center">
-                        <div
-                            class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center mr-4">
-                            <span class="font-medium text-gray-600 dark:text-gray-300">
-                                {{ $leave->approver ? substr($leave->approver->name, 0, 1) : '?' }}
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <!-- Main Content -->
+            <div class="space-y-6 lg:col-span-2">
+                <!-- Leave Info -->
+                <div class="admin-glass-panel p-6">
+                    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+                        <span class="admin-label" style="margin-bottom: 0">Detail Pengajuan</span>
+                        <div class="flex gap-2">
+                            <span
+                                class="{{ $leave->type === 'sakit' ? 'admin-status-danger' : 'admin-status-info' }} px-3 py-1 text-xs">
+                                {{ $leave->type_label }}
+                            </span>
+                            <span
+                                class="{{ match ($leave->status) { 'pending' => 'admin-status-warning', 'approved' => 'admin-status-success', 'rejected' => 'admin-status-danger', default => 'admin-status-neutral' } }} px-3 py-1 text-xs">
+                                {{ $leave->status_label }}
                             </span>
                         </div>
+                    </div>
+
+                    <dl class="admin-dl mb-6 grid-cols-2">
                         <div>
-                            <p class="font-medium text-gray-800 dark:text-gray-200">
-                                {{ $leave->approver?->name ?? '-' }}</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ $leave->approved_at?->format('d M Y, H:i') }}</p>
+                            <dt>Tanggal Mulai</dt>
+                            <dd class="font-semibold">{{ $leave->start_date->format('d M Y') }}</dd>
+                        </div>
+                        <div>
+                            <dt>Tanggal Selesai</dt>
+                            <dd class="font-semibold">{{ $leave->end_date->format('d M Y') }}</dd>
+                        </div>
+                        <div>
+                            <dt>Durasi</dt>
+                            <dd class="font-semibold">{{ $leave->duration }} hari</dd>
+                        </div>
+                        <div>
+                            <dt>Diajukan</dt>
+                            <dd class="font-semibold">{{ $leave->created_at->format('d M Y, H:i') }}</dd>
+                        </div>
+                    </dl>
+
+                    <div>
+                        <span class="admin-label">Alasan</span>
+                        <p class="rounded-2xl border p-4 text-sm"
+                            style="border-color: var(--admin-border-soft); background: var(--admin-glass-soft)">
+                            {{ $leave->reason }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Attachment -->
+                @if ($leave->attachment)
+                    <div class="admin-glass-panel p-6">
+                        <span class="admin-label">Lampiran</span>
+                        <a href="{{ $leave->attachment_url }}" target="_blank">
+                            <img src="{{ $leave->attachment_url }}" alt="Lampiran"
+                                class="max-h-96 w-full rounded-2xl object-contain">
+                        </a>
+                    </div>
+                @endif
+
+                <!-- Approval Actions -->
+                @if ($leave->isPending())
+                    <div class="admin-glass-panel p-6">
+                        <span class="admin-label">Tindakan</span>
+
+                        <div class="flex gap-4">
+                            <form action="{{ route('admin.leaves.approve', $leave) }}" method="POST" class="flex-1">
+                                @csrf
+                                <button type="submit" class="admin-button-success w-full py-3 text-sm"
+                                    onclick="return confirm('Setujui pengajuan ini?')">
+                                    &#10003; Setujui
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="admin-alert-danger mt-4 rounded-2xl bg-red-50 dark:bg-red-900/20 p-4">
+                            <form action="{{ route('admin.leaves.reject', $leave) }}" method="POST">
+                                @csrf
+                                <label for="rejection_reason" class="admin-label">Tolak dengan alasan:</label>
+                                <textarea name="rejection_reason" id="rejection_reason" rows="2" class="admin-field mb-3 p-3"
+                                    placeholder="Masukkan alasan penolakan..."></textarea>
+                                <button type="submit" class="admin-button-danger w-full py-2 text-sm"
+                                    onclick="return confirm('Tolak pengajuan ini?')">
+                                    &#10005; Tolak
+                                </button>
+                            </form>
                         </div>
                     </div>
+                @endif
 
-                    @if ($leave->isRejected() && $leave->rejection_reason)
-                        <div class="admin-alert-danger mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                            <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-1">Alasan Penolakan:</p>
-                            <p class="text-sm text-red-700 dark:text-red-400">{{ $leave->rejection_reason }}</p>
+                <!-- Approval Info -->
+                @if (!$leave->isPending())
+                    <div class="admin-glass-panel p-6">
+                        <span class="admin-label">{{ $leave->isApproved() ? 'Disetujui' : 'Ditolak' }}</span>
+                        <div class="flex items-center gap-4">
+                            <span class="admin-avatar admin-avatar-md">
+                                {{ $leave->approver ? substr($leave->approver->name, 0, 1) : '?' }}
+                            </span>
+                            <div>
+                                <p class="text-sm font-bold">{{ $leave->approver?->name ?? '-' }}</p>
+                                <p class="admin-muted text-xs">{{ $leave->approved_at?->format('d M Y, H:i') }}</p>
+                            </div>
                         </div>
-                    @endif
-                </div>
-            @endif
-        </div>
 
-        <!-- Sidebar - Employee Info -->
-        <div class="space-y-6">
-            <div class="admin-glass-panel rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Info Karyawan</h2>
-
-                <div class="text-center mb-4">
-                    <div
-                        class="w-20 h-20 mx-auto rounded-full bg-sky-100 dark:bg-sky-900 flex items-center justify-center mb-3">
-                        <span class="text-2xl font-bold text-sky-600 dark:text-sky-400">
-                            {{ $leave->user->initials() }}
-                        </span>
+                        @if ($leave->isRejected() && $leave->rejection_reason)
+                            <div class="admin-alert-danger mt-4 rounded-2xl bg-red-50 dark:bg-red-900/20 p-4">
+                                <p class="mb-1 text-sm font-bold">Alasan Penolakan:</p>
+                                <p class="text-sm">{{ $leave->rejection_reason }}</p>
+                            </div>
+                        @endif
                     </div>
-                    <h3 class="font-semibold text-gray-800 dark:text-gray-100">{{ $leave->user->name }}</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $leave->user->email }}</p>
-                </div>
-
-                <div class="space-y-3 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-gray-500 dark:text-gray-400">Role</span>
-                        <span
-                            class="font-medium text-gray-800 dark:text-gray-200">{{ $leave->user->role?->name ?? '-' }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500 dark:text-gray-400">Kantor</span>
-                        <span
-                            class="font-medium text-gray-800 dark:text-gray-200">{{ $leave->user->office?->name ?? '-' }}</span>
-                    </div>
-                </div>
+                @endif
             </div>
 
-            <a href="{{ route('admin.leaves.index') }}"
-                class="admin-button-secondary block w-full py-3 text-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors">
-                ← Kembali ke Daftar
-            </a>
+            <!-- Sidebar - Employee Info -->
+            <div class="space-y-6">
+                <div class="admin-glass-panel p-6">
+                    <span class="admin-label">Info Karyawan</span>
+
+                    <div class="mb-4 text-center">
+                        <span class="admin-avatar admin-avatar-lg mx-auto mb-3">
+                            {{ $leave->user->initials() }}
+                        </span>
+                        <h3 class="text-sm font-bold">{{ $leave->user->name }}</h3>
+                        <p class="admin-muted text-xs">{{ $leave->user->email }}</p>
+                    </div>
+
+                    <dl class="admin-dl text-sm">
+                        <div>
+                            <dt>Role</dt>
+                            <dd class="font-semibold">{{ $leave->user->role?->name ?? '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt>Kantor</dt>
+                            <dd class="font-semibold">{{ $leave->user->office?->name ?? '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <a href="{{ route('admin.leaves.index') }}"
+                    class="admin-button-secondary block w-full py-3 text-center text-sm">
+                    &larr; Kembali ke Daftar
+                </a>
+            </div>
         </div>
     </div>
 </x-layouts.app>
