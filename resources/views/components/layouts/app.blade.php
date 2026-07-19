@@ -15,7 +15,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script>
         window.setAppearance = function(appearance) {
             let setDark = () => document.documentElement.classList.add('dark')
@@ -182,8 +184,7 @@
                             x-transition:enter-end="opacity-100 transform translate-y-0"
                             x-transition:leave="transition ease-in duration-300"
                             x-transition:leave-start="opacity-100 transform translate-y-0"
-                            x-transition:leave-end="opacity-0 transform -translate-y-2"
-                            @class([
+                            x-transition:leave-end="opacity-0 transform -translate-y-2" @class([
                                 'mb-6 bg-green-50 dark:bg-green-900 border-l-4 border-green-500 p-4 rounded-md',
                                 'admin-alert-success' => $isAdminRoute,
                             ])>
@@ -223,6 +224,10 @@
             </main>
         </div>
     </div>
+
+    @if ($isAdminRoute)
+        <x-admin.confirm-modal />
+    @endif
 
     @include('partials.pwa-update')
 </body>

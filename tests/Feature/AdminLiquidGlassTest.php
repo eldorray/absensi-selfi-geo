@@ -27,7 +27,12 @@ test('admin routes expose the liquid glass shell', function () {
         ->assertSee('admin-nav-link', escape: false)
         ->assertSee('admin-glass-popover', escape: false)
         ->assertSee('aria-current="page"', escape: false)
-        ->assertSee('admin-alert-success', escape: false);
+        ->assertSee('admin-alert-success', escape: false)
+        // The glass confirm modal is mounted once on admin routes, and the
+        // Alpine event binding survives Blade compilation (not eaten as a
+        // directive).
+        ->assertSee('@admin-confirm.window', escape: false)
+        ->assertSee('x-ref="confirmBtn"', escape: false);
 });
 
 test('shared non-admin pages do not expose the admin shell', function () {
@@ -40,7 +45,8 @@ test('shared non-admin pages do not expose the admin shell', function () {
         ->assertDontSee('admin-header', escape: false)
         ->assertDontSee('admin-sidebar', escape: false)
         ->assertDontSee('admin-nav-link', escape: false)
-        ->assertDontSee('admin-glass-popover', escape: false);
+        ->assertDontSee('admin-glass-popover', escape: false)
+        ->assertDontSee('x-ref="confirmBtn"', escape: false);
 });
 
 dataset('admin index views', [
@@ -263,8 +269,15 @@ test('admin detail views retain semantic status and approval mappings', function
         ->toContain("'pending' => 'admin-status-warning'")
         ->toContain("'approved' => 'admin-status-success'")
         ->toContain("'rejected' => 'admin-status-danger'")
-        ->toMatch('/<button\b[^>]*class="[^"]*\badmin-button-success\b[^"]*"[^>]*onclick="return confirm\(\'Setujui pengajuan ini\?\'\)"/s')
-        ->toMatch('/<button\b[^>]*class="[^"]*\badmin-button-danger\b[^"]*"[^>]*onclick="return confirm\(\'Tolak pengajuan ini\?\'\)"/s');
+        // Approve/reject confirmation now runs through the glass confirm modal
+        // (form-level admin-confirm dispatch) instead of native onclick confirm.
+        ->toContain("message: 'Setujui pengajuan ini?'")
+        ->toContain("message: 'Tolak pengajuan ini?'")
+        ->toMatch("/leaves\\.approve.*?admin-confirm.*?variant: 'success'/s")
+        ->toMatch("/leaves\\.reject.*?admin-confirm.*?variant: 'danger'/s")
+        ->toContain('admin-button-success')
+        ->toContain('admin-button-danger')
+        ->not->toContain('onclick="return confirm');
 
     $matched = preg_match(
         '/<a href="\{\{ route\(\'admin\.attendances\.index\'\) \}\}"\s+class="(?<classes>[^"]*)"/s',

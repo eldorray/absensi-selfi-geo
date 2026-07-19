@@ -88,23 +88,37 @@
                         <span class="admin-label">Tindakan</span>
 
                         <div class="flex gap-4">
-                            <form action="{{ route('admin.leaves.approve', $leave) }}" method="POST" class="flex-1">
+                            <form action="{{ route('admin.leaves.approve', $leave) }}" method="POST" class="flex-1"
+                                x-data="{}"
+                                @submit.prevent="$dispatch('admin-confirm', {
+                                    title: 'Setujui Pengajuan',
+                                    message: 'Setujui pengajuan ini?',
+                                    confirmText: 'Setujui',
+                                    variant: 'success',
+                                    form: $el,
+                                })">
                                 @csrf
-                                <button type="submit" class="admin-button-success w-full py-3 text-sm"
-                                    onclick="return confirm('Setujui pengajuan ini?')">
+                                <button type="submit" class="admin-button-success w-full py-3 text-sm">
                                     &#10003; Setujui
                                 </button>
                             </form>
                         </div>
 
                         <div class="admin-alert-danger mt-4 rounded-2xl bg-red-50 dark:bg-red-900/20 p-4">
-                            <form action="{{ route('admin.leaves.reject', $leave) }}" method="POST">
+                            <form action="{{ route('admin.leaves.reject', $leave) }}" method="POST"
+                                x-data="{}"
+                                @submit.prevent="$dispatch('admin-confirm', {
+                                    title: 'Tolak Pengajuan',
+                                    message: 'Tolak pengajuan ini?',
+                                    confirmText: 'Tolak',
+                                    variant: 'danger',
+                                    form: $el,
+                                })">
                                 @csrf
                                 <label for="rejection_reason" class="admin-label">Tolak dengan alasan:</label>
                                 <textarea name="rejection_reason" id="rejection_reason" rows="2" class="admin-field mb-3 p-3"
                                     placeholder="Masukkan alasan penolakan..."></textarea>
-                                <button type="submit" class="admin-button-danger w-full py-2 text-sm"
-                                    onclick="return confirm('Tolak pengajuan ini?')">
+                                <button type="submit" class="admin-button-danger w-full py-2 text-sm">
                                     &#10005; Tolak
                                 </button>
                             </form>

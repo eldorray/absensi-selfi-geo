@@ -68,8 +68,14 @@
                                             class="admin-button-primary admin-icon-action px-3 text-xs">Edit</a>
                                         @if ($role->users_count === 0)
                                             <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
-                                                class="inline"
-                                                onsubmit="return confirm('Yakin ingin menghapus role ini?')">
+                                                class="inline" x-data="{}"
+                                                @submit.prevent="$dispatch('admin-confirm', {
+                                                    title: 'Hapus Role',
+                                                    message: 'Yakin ingin menghapus role ini?',
+                                                    confirmText: 'Hapus',
+                                                    variant: 'danger',
+                                                    form: $el,
+                                                })">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
