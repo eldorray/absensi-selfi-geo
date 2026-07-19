@@ -53,8 +53,14 @@
                                     <div class="flex items-center justify-end gap-2">
                                         @if (!$year->is_active)
                                             <form action="{{ route('admin.academic-years.activate', $year) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('Aktifkan tahun ajaran ini? Jadwal kerja akan di-reset.')">
+                                                method="POST" x-data="{}"
+                                                @submit.prevent="$dispatch('admin-confirm', {
+                                                    title: 'Aktifkan Tahun Ajaran',
+                                                    message: 'Aktifkan tahun ajaran ini? Jadwal kerja akan di-reset.',
+                                                    confirmText: 'Aktifkan',
+                                                    variant: 'primary',
+                                                    form: $el,
+                                                })">
                                                 @csrf
                                                 <button type="submit"
                                                     class="admin-button-success admin-icon-action size-11 p-0"
@@ -79,8 +85,14 @@
                                         </a>
                                         @if (!$year->is_active)
                                             <form action="{{ route('admin.academic-years.destroy', $year) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('Yakin ingin menghapus tahun ajaran ini?')">
+                                                method="POST" x-data="{}"
+                                                @submit.prevent="$dispatch('admin-confirm', {
+                                                    title: 'Hapus Tahun Ajaran',
+                                                    message: 'Yakin ingin menghapus tahun ajaran ini?',
+                                                    confirmText: 'Hapus',
+                                                    variant: 'danger',
+                                                    form: $el,
+                                                })">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"

@@ -263,8 +263,15 @@ test('admin detail views retain semantic status and approval mappings', function
         ->toContain("'pending' => 'admin-status-warning'")
         ->toContain("'approved' => 'admin-status-success'")
         ->toContain("'rejected' => 'admin-status-danger'")
-        ->toMatch('/<button\b[^>]*class="[^"]*\badmin-button-success\b[^"]*"[^>]*onclick="return confirm\(\'Setujui pengajuan ini\?\'\)"/s')
-        ->toMatch('/<button\b[^>]*class="[^"]*\badmin-button-danger\b[^"]*"[^>]*onclick="return confirm\(\'Tolak pengajuan ini\?\'\)"/s');
+        // Approve/reject confirmation now runs through the glass confirm modal
+        // (form-level admin-confirm dispatch) instead of native onclick confirm.
+        ->toContain("message: 'Setujui pengajuan ini?'")
+        ->toContain("message: 'Tolak pengajuan ini?'")
+        ->toMatch("/leaves\\.approve.*?admin-confirm.*?variant: 'success'/s")
+        ->toMatch("/leaves\\.reject.*?admin-confirm.*?variant: 'danger'/s")
+        ->toContain('admin-button-success')
+        ->toContain('admin-button-danger')
+        ->not->toContain('onclick="return confirm');
 
     $matched = preg_match(
         '/<a href="\{\{ route\(\'admin\.attendances\.index\'\) \}\}"\s+class="(?<classes>[^"]*)"/s',

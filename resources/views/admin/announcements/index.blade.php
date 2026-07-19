@@ -70,7 +70,14 @@
                                             </svg>
                                         </a>
                                         <form action="{{ route('admin.announcements.destroy', $item) }}" method="POST"
-                                            onsubmit="return confirm('Yakin ingin menghapus informasi ini?')">
+                                            x-data="{}"
+                                            @submit.prevent="$dispatch('admin-confirm', {
+                                                title: 'Hapus Informasi',
+                                                message: 'Yakin ingin menghapus informasi ini?',
+                                                confirmText: 'Hapus',
+                                                variant: 'danger',
+                                                form: $el,
+                                            })">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
