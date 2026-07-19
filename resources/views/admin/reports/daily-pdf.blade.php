@@ -225,8 +225,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="6" class="text-right" style="font-weight: bold;">Total Denda</td>
-                        <td class="text-center" style="font-weight: bold;">Rp
-                            {{ number_format($stats['total_fine'], 0, ',', '.') }}</td>
+                        <td class="text-center" style="font-weight: bold;">Rp {{ number_format($stats['total_fine'], 0, ',', '.') }}</td>
                     </tr>
                 </tfoot>
             @endif
