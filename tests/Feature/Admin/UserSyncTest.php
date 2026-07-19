@@ -31,6 +31,16 @@ function guruRole(): Role
     );
 }
 
+function adminUser(): User
+{
+    $role = Role::firstOrCreate(
+        ['slug' => 'administrator'],
+        ['name' => 'Administrator', 'is_admin' => true],
+    );
+
+    return User::factory()->create(['role_id' => $role->id]);
+}
+
 test('sync creates new users from both sources with guru role and nip password', function () {
     guruRole();
 
@@ -137,4 +147,54 @@ test('re-sync does not overwrite manually assigned role and office', function ()
         ->and($existing->office_id)->toBe($office->id)
         ->and($existing->email)->toBe('budi.custom@sekolah.id')
         ->and(Hash::check('rahasia', $existing->password))->toBeTrue();
+});
+
+test('admin can trigger user sync and sees a success flash', function () {
+    guruRole();
+
+    Http::fake([
+        '*/api/guru-mi/all*' => Http::response([
+            'data' => [['full_name' => 'Budi MI', 'nik' => '3201010101900001']],
+            'current_page' => 1, 'last_page' => 1,
+        ], 200),
+        '*/api/guru-smp/all*' => Http::response([
+            'data' => [], 'current_page' => 1, 'last_page' => 1,
+        ], 200),
+    ]);
+
+    $this->actingAs(adminUser())
+        ->post(route('admin.users.sync'))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect(User::where('nip', '3201010101900001')->exists())->toBeTrue();
+});
+
+test('non-admin cannot trigger user sync', function () {
+    guruRole();
+
+    $employee = User::factory()->create([
+        'role_id' => Role::create(['name' => 'Guru2', 'slug' => 'guru2', 'is_admin' => false])->id,
+    ]);
+
+    $this->actingAs($employee)
+        ->post(route('admin.users.sync'))
+        ->assertRedirect(route('attendance.dashboard'));
+
+    Http::assertNothingSent();
+});
+
+test('connection failure shows an error flash and creates no users', function () {
+    guruRole();
+
+    Http::fake(function () {
+        throw new \Illuminate\Http\Client\ConnectionException('down');
+    });
+
+    $this->actingAs(adminUser())
+        ->post(route('admin.users.sync'))
+        ->assertRedirect()
+        ->assertSessionHas('error');
+
+    expect(User::whereNotNull('nip')->count())->toBe(0);
 });

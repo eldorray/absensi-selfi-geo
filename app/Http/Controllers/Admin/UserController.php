@@ -8,9 +8,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Office;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\UserSyncService;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -102,6 +105,29 @@ class UserController extends Controller
         return redirect()
             ->route('admin.users.index')
             ->with('success', 'User berhasil ditambahkan.');
+    }
+
+    /**
+     * Sync users from the data induk API.
+     */
+    public function syncFromApi(UserSyncService $service): RedirectResponse
+    {
+        try {
+            $result = $service->sync();
+        } catch (ConnectionException $e) {
+            Log::error('User sync connection error: '.$e->getMessage());
+
+            return back()->with('error', 'Tidak dapat terhubung ke API data induk.');
+        } catch (\RuntimeException $e) {
+            Log::error('User sync error: '.$e->getMessage());
+
+            return back()->with('error', $e->getMessage());
+        }
+
+        $message = "Sync selesai: {$result['created']} user baru, {$result['updated']} diperbarui";
+        $message .= $result['failed'] > 0 ? ", {$result['failed']} gagal." : '.';
+
+        return back()->with('success', $message);
     }
 
     /**
