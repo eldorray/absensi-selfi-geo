@@ -804,6 +804,58 @@
         opacity: .5;
     }
 
+    .admin-shell .admin-header .app-brand {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-weight: 800;
+        letter-spacing: -.02em;
+        color: var(--admin-text) !important;
+    }
+
+    .admin-shell .admin-header .sidebar-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+        border: 1px solid var(--admin-border-soft);
+        border-radius: .875rem !important;
+        background: var(--admin-glass-soft);
+        color: var(--admin-muted) !important;
+        transition: background-color 180ms ease, color 180ms ease;
+    }
+
+    .admin-shell .admin-header .sidebar-toggle:hover {
+        background: var(--admin-primary-soft);
+        color: var(--admin-nav-active) !important;
+    }
+
+    .admin-shell .admin-header .profile-trigger {
+        min-height: 44px;
+        padding: .3rem .65rem;
+        border: 1px solid var(--admin-border-soft);
+        border-radius: .875rem;
+        background: var(--admin-glass-soft);
+        transition: background-color 180ms ease, border-color 180ms ease;
+    }
+
+    .admin-shell .admin-header .profile-trigger:hover {
+        border-color: var(--admin-primary);
+        background: var(--admin-glass);
+    }
+
+    .admin-shell .admin-glass-popover :is(a, button) {
+        color: var(--admin-text) !important;
+    }
+
+    .admin-shell .admin-glass-popover :is(a, button):hover {
+        background: var(--admin-primary-soft) !important;
+        color: var(--admin-nav-active) !important;
+    }
+
+    .admin-shell .admin-glass-popover .border-t {
+        border-color: var(--admin-border-soft) !important;
+    }
+
     @supports (color: color-mix(in srgb, red, blue)) {
         .admin-shell .admin-nav-link[aria-current="page"],
         .admin-shell .admin-nav-active {

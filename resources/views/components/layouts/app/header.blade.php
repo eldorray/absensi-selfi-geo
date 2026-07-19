@@ -7,20 +7,24 @@
         <!-- Left side: Logo and toggle -->
         <div class="flex items-center">
             <button @click="toggleSidebar"
-                class="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none">
+                class="sidebar-toggle p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
+                aria-label="Buka atau tutup menu samping">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
-            <div class="ml-4 font-semibold text-xl text-blue-600 dark:text-blue-400">{{ config('app.name') }}</div>
+            <div class="app-brand ml-4 font-semibold text-xl text-blue-600 dark:text-blue-400">{{ config('app.name') }}</div>
+            @if (request()->routeIs('admin.*'))
+                <span class="admin-chip ml-3 hidden sm:inline-flex">Admin</span>
+            @endif
         </div>
 
         <!-- Right side: Search, notifications, profile -->
         <div class="flex items-center space-x-4">
             <!-- Profile -->
             <div x-data="{ open: false }" class="relative">
-                <button @click="open = !open" class="flex items-center focus:outline-none">
+                <button @click="open = !open" class="profile-trigger flex items-center focus:outline-none">
                     <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
                         <span
                             class="flex h-full w-full items-center justify-center rounded-lg bg-gray-200 text-black dark:bg-gray-700 dark:text-white">

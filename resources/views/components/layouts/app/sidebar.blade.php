@@ -13,6 +13,8 @@
                                 <x-layouts.sidebar-link href="{{ route('admin.dashboard') }}" icon='fas-house'
                                     :active="request()->routeIs('admin.dashboard')">Dashboard</x-layouts.sidebar-link>
 
+                                <li class="admin-nav-section" x-show="sidebarOpen">Master Data</li>
+
                                 <x-layouts.sidebar-link href="{{ route('admin.academic-years.index') }}"
                                     icon='fas-calendar' :active="request()->routeIs('admin.academic-years.*')">Tahun Ajaran</x-layouts.sidebar-link>
 
@@ -28,23 +30,21 @@
                                 <x-layouts.sidebar-link href="{{ route('admin.work-schedules.index') }}"
                                     icon='fas-clock' :active="request()->routeIs('admin.work-schedules.*')">Jam Kerja</x-layouts.sidebar-link>
 
-                                <!-- Laporan Dropdown -->
-                                <x-layouts.sidebar-two-level-link-parent title="Laporan" icon="fas-chart-bar"
-                                    :active="request()->routeIs('admin.reports.*') ||
-                                        request()->routeIs('admin.attendances.*')">
-                                    <x-layouts.sidebar-two-level-link href="{{ route('admin.reports.daily') }}"
-                                        icon='fas-calendar-day' :active="request()->routeIs('admin.reports.daily')">Rekap
-                                        Harian</x-layouts.sidebar-two-level-link>
-                                    <x-layouts.sidebar-two-level-link href="{{ route('admin.reports.monthly') }}"
-                                        icon='fas-calendar-alt' :active="request()->routeIs('admin.reports.monthly')">Rekap
-                                        Bulanan</x-layouts.sidebar-two-level-link>
-                                    <x-layouts.sidebar-two-level-link href="{{ route('admin.attendances.index') }}"
-                                        icon='fas-clipboard-list' :active="request()->routeIs('admin.attendances.*')">Detail
-                                        Absensi</x-layouts.sidebar-two-level-link>
-                                </x-layouts.sidebar-two-level-link-parent>
+                                <li class="admin-nav-section" x-show="sidebarOpen">Kehadiran</li>
+
+                                <x-layouts.sidebar-link href="{{ route('admin.reports.daily') }}"
+                                    icon='fas-calendar-day' :active="request()->routeIs('admin.reports.daily')">Rekap Harian</x-layouts.sidebar-link>
+
+                                <x-layouts.sidebar-link href="{{ route('admin.reports.monthly') }}"
+                                    icon='fas-calendar-alt' :active="request()->routeIs('admin.reports.monthly')">Rekap Bulanan</x-layouts.sidebar-link>
+
+                                <x-layouts.sidebar-link href="{{ route('admin.attendances.index') }}"
+                                    icon='fas-clipboard-list' :active="request()->routeIs('admin.attendances.*')">Detail Absensi</x-layouts.sidebar-link>
 
                                 <x-layouts.sidebar-link href="{{ route('admin.leaves.index') }}" icon='fas-file-alt'
                                     :active="request()->routeIs('admin.leaves.*')">Perizinan</x-layouts.sidebar-link>
+
+                                <li class="admin-nav-section" x-show="sidebarOpen">Komunikasi</li>
 
                                 <x-layouts.sidebar-link href="{{ route('admin.announcements.index') }}"
                                     icon='fas-bullhorn' :active="request()->routeIs('admin.announcements.*')">Informasi</x-layouts.sidebar-link>
