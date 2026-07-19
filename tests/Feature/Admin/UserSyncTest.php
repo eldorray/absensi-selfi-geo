@@ -193,6 +193,30 @@ test('admin can trigger user sync for a chosen source and sees a success flash',
     Http::assertNotSent(fn ($request) => str_contains($request->url(), '/api/guru-smp/all'));
 });
 
+test('a fully failed sync surfaces an error flash with a sample reason', function () {
+    guruRole();
+
+    // Rows without a nik fail the completeness check inside the service.
+    Http::fake([
+        '*/api/guru-mi/all*' => Http::response([
+            'data' => [
+                ['full_name' => 'Tanpa NIK'],
+                ['full_name' => 'Juga Tanpa NIK'],
+            ],
+            'current_page' => 1, 'last_page' => 1,
+        ], 200),
+    ]);
+
+    $this->actingAs(adminUser())
+        ->post(route('admin.users.sync'), ['source' => 'guru-mi'])
+        ->assertRedirect()
+        ->assertSessionHas('error', fn (string $message): bool => str_contains($message, 'gagal')
+            && str_contains($message, 'Data tidak lengkap'))
+        ->assertSessionMissing('success');
+
+    expect(User::whereNotNull('nip')->count())->toBe(0);
+});
+
 test('sync request is rejected without a valid source', function () {
     guruRole();
     Http::fake();

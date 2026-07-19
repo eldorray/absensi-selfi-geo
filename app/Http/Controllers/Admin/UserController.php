@@ -144,6 +144,28 @@ class UserController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
+        if ($result['failed'] > 0) {
+            Log::warning('User sync had row failures', [
+                'source' => $source,
+                'created' => $result['created'],
+                'updated' => $result['updated'],
+                'failed' => $result['failed'],
+                'errors' => array_slice($result['errors'], 0, 5),
+            ]);
+        }
+
+        // A run where every row failed is a failure, not a success — surface
+        // it as an error with a sample reason so the admin can act on it.
+        if ($result['created'] === 0 && $result['updated'] === 0 && $result['failed'] > 0) {
+            $sample = $result['errors'][0] ?? '';
+
+            return back()->with(
+                'error',
+                "Sync {$unitLabel} gagal: semua {$result['failed']} data gagal diproses."
+                    .($sample !== '' ? " Contoh: {$sample}" : '')
+            );
+        }
+
         $message = "Sync {$unitLabel} selesai: {$result['created']} user baru, {$result['updated']} diperbarui";
         $message .= $result['failed'] > 0 ? ", {$result['failed']} gagal." : '.';
 
