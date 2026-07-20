@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Office;
 use App\Models\User;
 use App\Models\WorkSchedule;
 use App\Models\WorkSetting;
@@ -20,20 +21,30 @@ class WorkScheduleController extends Controller
     /**
      * Display work schedules listing with tolerance settings.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
         $settings = WorkSetting::current();
-        // Get all non-admin users (users with roles where is_admin = false)
-        $users = User::with(['workSchedules', 'role'])
+
+        $officeId = $request->input('office_id');
+        $selectedOffice = $officeId ? Office::find((int) $officeId) : null;
+
+        // Get all non-admin users (users with roles where is_admin = false),
+        // optionally scoped to a single office.
+        $users = User::with(['workSchedules', 'role', 'office'])
             ->whereHas('role', function ($query) {
                 $query->where('is_admin', false);
             })
+            ->when($selectedOffice, fn ($query) => $query->where('office_id', $selectedOffice->id))
             ->orderBy('name')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.work-schedules.index', [
             'settings' => $settings,
             'users' => $users,
+            'offices' => Office::orderBy('name')->get(),
+            'selectedOffice' => $selectedOffice,
+            'officeId' => $selectedOffice?->id,
         ]);
     }
 

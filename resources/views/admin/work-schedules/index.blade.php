@@ -91,8 +91,25 @@
 
         <!-- List Data Jam Kerja -->
         <div class="admin-glass-panel overflow-hidden">
-            <div class="admin-panel-header">
-                <span class="admin-label">List Data Jam Kerja</span>
+            <div class="admin-panel-header flex-wrap gap-3">
+                <span class="flex items-center gap-2">
+                    <span class="admin-label">List Data Jam Kerja</span>
+                    @if ($selectedOffice)
+                        <span class="admin-chip">{{ $selectedOffice->name }}</span>
+                    @endif
+                </span>
+                <form method="GET" class="flex items-end gap-2">
+                    <select name="office_id" class="admin-field !w-auto p-2.5 text-sm"
+                        onchange="this.form.submit()">
+                        <option value="">Semua Kantor</option>
+                        @foreach ($offices as $office)
+                            <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
+                        @endforeach
+                    </select>
+                    <noscript>
+                        <button type="submit" class="admin-button-primary px-3 py-2 text-sm">Filter</button>
+                    </noscript>
+                </form>
             </div>
             <div class="overflow-x-auto">
                 <table class="admin-table w-full">
