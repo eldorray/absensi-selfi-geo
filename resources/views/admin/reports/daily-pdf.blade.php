@@ -123,6 +123,9 @@
     <div class="header">
         <h1>DAFTAR HADIR</h1>
         <p>{{ $selectedDate->translatedFormat('l, d F Y') }}</p>
+        @if ($selectedOffice)
+            <p><strong>Kantor: {{ $selectedOffice->name }}</strong></p>
+        @endif
         @if ($activeYear)
             <p>Tahun Ajaran {{ $activeYear->name }}</p>
         @endif

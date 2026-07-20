@@ -19,6 +19,15 @@
                     <input id="filter-end" type="date" name="end_date" value="{{ $endDate }}"
                         class="admin-field p-2.5">
                 </div>
+                <div>
+                    <label for="filter-office" class="admin-label">Kantor</label>
+                    <select id="filter-office" name="office_id" class="admin-field p-2.5">
+                        <option value="">Semua Kantor</option>
+                        @foreach ($offices as $office)
+                            <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="flex items-end gap-2">
                     <button type="submit"
                         class="admin-button-primary flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm">
@@ -29,7 +38,7 @@
                         </svg>
                         Refresh
                     </button>
-                    <a href="{{ route('admin.reports.monthly.export-pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
+                    <a href="{{ route('admin.reports.monthly.export-pdf', ['start_date' => $startDate, 'end_date' => $endDate, 'office_id' => $officeId]) }}"
                         class="admin-button-danger flex items-center gap-2 px-4 py-2.5 text-sm">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -51,6 +60,9 @@
                         {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} -
                         {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}
                     </span>
+                    @if ($selectedOffice)
+                        <span class="admin-chip">{{ $selectedOffice->name }}</span>
+                    @endif
                     <span class="admin-chip">{{ $workDays }} hari kerja</span>
                 </span>
             </div>

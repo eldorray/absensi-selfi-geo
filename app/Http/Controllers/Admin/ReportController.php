@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Attendance;
+use App\Models\Office;
 use App\Models\User;
 use App\Models\WorkSetting;
 use App\Support\FineCalculator;
@@ -31,6 +32,7 @@ class ReportController extends Controller
     {
         $data = $this->getDailyReportData($request);
         $data['academicYears'] = AcademicYear::orderByDesc('start_date')->get();
+        $data['offices'] = Office::orderBy('name')->get();
 
         return view('admin.reports.daily', $data);
     }
@@ -55,6 +57,7 @@ class ReportController extends Controller
     {
         $data = $this->getMonthlyReportData($request);
         $data['academicYears'] = AcademicYear::orderByDesc('start_date')->get();
+        $data['offices'] = Office::orderBy('name')->get();
 
         return view('admin.reports.monthly', $data);
     }
@@ -89,10 +92,19 @@ class ReportController extends Controller
 
         $activeYear = AcademicYear::getActive();
         $settings = WorkSetting::current();
-        $users = $this->getEmployees(withSchedules: true);
+        $selectedOffice = $this->resolveOffice($request);
+        $users = $this->getEmployees(withSchedules: true, officeId: $selectedOffice?->id);
         $attendances = $this->getDailyAttendances($selectedDate, $activeYear);
 
+        // Scope attendances to the filtered employees so the stat cards match
+        // the table rows. Eloquent Collection::only() filters by primary key,
+        // not the user_id array key, so filter explicitly.
+        $userIds = $users->pluck('id')->all();
+        $attendances = $attendances->filter(fn ($a) => in_array($a->user_id, $userIds, true));
+
         $reportData = $users->map(fn ($user) => $this->buildDailyUserReport($user, $attendances, $selectedDate, $settings));
+
+        $officeId = $selectedOffice?->id;
 
         $stats = [
             'total_employees' => $users->count(),
@@ -101,7 +113,7 @@ class ReportController extends Controller
             'total_fine' => (int) $reportData->sum('fine'),
         ];
 
-        return compact('reportData', 'stats', 'selectedDate', 'activeYear', 'settings');
+        return compact('reportData', 'stats', 'selectedDate', 'activeYear', 'settings', 'selectedOffice', 'officeId');
     }
 
     /**
@@ -121,21 +133,33 @@ class ReportController extends Controller
 
         $activeYear = AcademicYear::getActive();
         $settings = WorkSetting::current();
-        $users = $this->getEmployees(withSchedules: true);
+        $selectedOffice = $this->resolveOffice($request);
+        $users = $this->getEmployees(withSchedules: true, officeId: $selectedOffice?->id);
         $attendances = $this->getRangeAttendances($start, $end, $activeYear);
         $workDays = $this->countWorkDaysInRange($start, $end);
 
         $reportData = $users->map(fn ($user) => $this->buildMonthlyUserReport($user, $attendances, $workDays, $settings));
 
         $totalFine = (int) $reportData->sum('total_fine');
+        $officeId = $selectedOffice?->id;
 
-        return compact('reportData', 'startDate', 'endDate', 'activeYear', 'workDays', 'settings', 'totalFine');
+        return compact('reportData', 'startDate', 'endDate', 'activeYear', 'workDays', 'settings', 'totalFine', 'selectedOffice', 'officeId');
     }
 
     /**
-     * Get all employees (non-admin users).
+     * Resolve the office filter from the request, or null when absent/invalid.
      */
-    private function getEmployees(bool $withSchedules = false): Collection
+    private function resolveOffice(Request $request): ?Office
+    {
+        $officeId = $request->input('office_id');
+
+        return $officeId ? Office::find((int) $officeId) : null;
+    }
+
+    /**
+     * Get all employees (non-admin users), optionally scoped to one office.
+     */
+    private function getEmployees(bool $withSchedules = false, ?int $officeId = null): Collection
     {
         $relations = ['role', 'office'];
         if ($withSchedules) {
@@ -144,6 +168,7 @@ class ReportController extends Controller
 
         return User::with($relations)
             ->whereHas('role', fn ($q) => $q->where('is_admin', false))
+            ->when($officeId, fn ($q) => $q->where('office_id', $officeId))
             ->orderBy('name')
             ->get();
     }

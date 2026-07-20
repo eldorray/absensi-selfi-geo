@@ -114,6 +114,9 @@
         <h1>REKAP KEHADIRAN</h1>
         <p>{{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} -
             {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}</p>
+        @if ($selectedOffice)
+            <p><strong>Kantor: {{ $selectedOffice->name }}</strong></p>
+        @endif
         @if ($activeYear)
             <p>Tahun Ajaran {{ $activeYear->name }}</p>
         @endif
