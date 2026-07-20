@@ -229,11 +229,23 @@
 
             <!-- Office Location Selection Card -->
             <div class="glass-card theme-border rounded-[22px] p-4 text-left">
-                <label class="block text-[10px] font-bold tracking-wide uppercase theme-text-muted mb-2 font-outfit">Pilih Kantor Tujuan</label>
+                <label class="block text-[10px] font-bold tracking-wide uppercase theme-text-muted mb-2 font-outfit">
+                    Kantor Tujuan
+                    @if ($user->office_id)
+                        <span class="ml-1 inline-flex items-center gap-1 text-[9px] normal-case text-emerald-500">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                            Terkunci oleh admin
+                        </span>
+                    @endif
+                </label>
                 <div class="relative">
-                    <select x-model="officeId" @change="calculateDistance()"
-                        class="w-full theme-input rounded-xl px-4 py-3 text-xs font-semibold appearance-none cursor-pointer">
-                        <option value="">-- Pilih Lokasi Kerja --</option>
+                    <select x-model="officeId" @change="calculateDistance()" @if ($user->office_id) disabled @endif
+                        class="w-full theme-input rounded-xl px-4 py-3 text-xs font-semibold appearance-none {{ $user->office_id ? 'cursor-not-allowed opacity-80' : 'cursor-pointer' }}">
+                        @unless ($user->office_id)
+                            <option value="">-- Pilih Lokasi Kerja --</option>
+                        @endunless
                         @foreach ($offices as $office)
                             <option value="{{ $office->id }}" data-lat="{{ $office->latitude }}"
                                 data-lng="{{ $office->longitude }}" data-radius="{{ $office->radius_meters }}">
@@ -392,7 +404,7 @@
                 locationError: null,
                 latitude: '',
                 longitude: '',
-                officeId: '',
+                officeId: '{{ $user->office_id }}',
                 isSubmitting: false,
                 currentDistance: 0,
                 maxDistance: 0,

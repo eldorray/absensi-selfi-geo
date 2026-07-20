@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Attendance;
 use App\Models\Office;
+use App\Models\User;
 use App\Models\WorkSchedule;
 use App\Models\WorkSetting;
 use App\Services\ImageService;
@@ -40,7 +41,7 @@ class AttendanceController extends Controller
     public function selfie(): View
     {
         $user = Auth::user();
-        $offices = Office::all();
+        $offices = $this->officesForUser($user);
 
         $todayAttendance = Attendance::where('user_id', $user->id)
             ->whereDate('created_at', today())
@@ -59,7 +60,7 @@ class AttendanceController extends Controller
     public function create(): View
     {
         $user = Auth::user();
-        $offices = Office::all();
+        $offices = $this->officesForUser($user);
 
         $todayAttendance = Attendance::where('user_id', $user->id)
             ->whereDate('created_at', today())
@@ -111,8 +112,12 @@ class AttendanceController extends Controller
             'image_base64.required' => 'Foto selfie diperlukan.',
         ]);
 
-        // Get office and validate geofencing
-        $office = Office::findOrFail($validated['office_id']);
+        // Get office and validate geofencing. When the employee is assigned to
+        // an office, that office is authoritative — a tampered office_id in the
+        // request is ignored so attendance cannot be recorded elsewhere.
+        $office = $user->office_id
+            ? Office::findOrFail($user->office_id)
+            : Office::findOrFail($validated['office_id']);
         $distance = $this->calculateHaversineDistance(
             (float) $validated['latitude'],
             (float) $validated['longitude'],
@@ -160,7 +165,7 @@ class AttendanceController extends Controller
     public function checkout(): View
     {
         $user = Auth::user();
-        $offices = Office::all();
+        $offices = $this->officesForUser($user);
 
         $todayAttendance = Attendance::where('user_id', $user->id)
             ->whereDate('created_at', today())
@@ -223,8 +228,12 @@ class AttendanceController extends Controller
             'image_base64.required' => 'Foto selfie diperlukan.',
         ]);
 
-        // Get office and validate geofencing
-        $office = Office::findOrFail($validated['office_id']);
+        // Get office and validate geofencing. When the employee is assigned to
+        // an office, that office is authoritative — a tampered office_id in the
+        // request is ignored so attendance cannot be recorded elsewhere.
+        $office = $user->office_id
+            ? Office::findOrFail($user->office_id)
+            : Office::findOrFail($validated['office_id']);
         $distance = $this->calculateHaversineDistance(
             (float) $validated['latitude'],
             (float) $validated['longitude'],
@@ -336,6 +345,21 @@ class AttendanceController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Offices selectable by the user. When the user is assigned to an office,
+     * only that office is returned so the picker is locked to it.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, Office>
+     */
+    private function officesForUser(User $user): \Illuminate\Database\Eloquent\Collection
+    {
+        if ($user->office_id) {
+            return Office::where('id', $user->office_id)->get();
+        }
+
+        return Office::all();
     }
 
     /**
