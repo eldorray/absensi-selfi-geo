@@ -10,9 +10,11 @@ use App\Models\Attendance;
 use App\Models\Office;
 use App\Models\User;
 use App\Models\WorkSetting;
+use App\Services\ImageService;
 use App\Support\FineCalculator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -48,6 +50,23 @@ class ReportController extends Controller
         $pdf->setPaper('a4', 'landscape');
 
         return $pdf->download("rekap-harian-{$data['selectedDate']->format('Y-m-d')}.pdf");
+    }
+
+    /**
+     * Reset (delete) a single attendance record and its selfie images, so the
+     * employee can record their attendance for that day again.
+     */
+    public function resetAttendance(Attendance $attendance, ImageService $imageService): RedirectResponse
+    {
+        $user = $attendance->user;
+        $name = $user instanceof User ? $user->name : 'guru';
+
+        $imageService->deleteImage($attendance->image_path);
+        $imageService->deleteImage($attendance->check_out_image_path);
+
+        $attendance->delete();
+
+        return back()->with('success', "Absensi {$name} berhasil direset.");
     }
 
     /**

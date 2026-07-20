@@ -109,6 +109,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Reports
     Route::get('reports/daily', [Admin\ReportController::class, 'daily'])->name('reports.daily');
     Route::get('reports/daily/export-pdf', [Admin\ReportController::class, 'exportDailyPdf'])->name('reports.daily.export-pdf');
+    Route::delete('reports/daily/reset/{attendance}', [Admin\ReportController::class, 'resetAttendance'])->name('reports.daily.reset');
     Route::get('reports/monthly', [Admin\ReportController::class, 'monthly'])->name('reports.monthly');
     Route::get('reports/monthly/export-pdf', [Admin\ReportController::class, 'exportMonthlyPdf'])->name('reports.monthly.export-pdf');
 });

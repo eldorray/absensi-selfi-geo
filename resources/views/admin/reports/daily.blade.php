@@ -6,6 +6,12 @@
             @endunless
         </x-admin.page-header>
 
+        @if (session('success'))
+            <div class="admin-alert-success rounded-2xl px-4 py-3 text-sm font-semibold">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <!-- Filters -->
         <div class="admin-glass-panel p-6">
             <form method="GET" class="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -94,6 +100,7 @@
                             <th class="px-4 py-3 text-center">Foto Pulang</th>
                             <th class="px-4 py-3 text-center">Keterangan</th>
                             <th class="px-4 py-3 text-right">Denda</th>
+                            <th class="px-4 py-3 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -199,10 +206,30 @@
                                         <span class="admin-muted">-</span>
                                     @endif
                                 </td>
+                                <td class="px-4 py-3 text-center">
+                                    @if ($data['attendance'])
+                                        <form action="{{ route('admin.reports.daily.reset', $data['attendance']) }}"
+                                            method="POST" class="inline" x-data="{}"
+                                            @submit.prevent="$dispatch('admin-confirm', {
+                                                title: 'Reset Absensi',
+                                                message: 'Reset absensi ' + @js($data['user']->name) + ' hari ini? Data absen masuk & pulang akan dihapus.',
+                                                confirmText: 'Reset',
+                                                variant: 'danger',
+                                                form: $el,
+                                            })">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="admin-button-danger admin-icon-action px-3 text-xs">Reset</button>
+                                        </form>
+                                    @else
+                                        <span class="admin-muted">-</span>
+                                    @endif
+                                </td>
                             </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9">
+                                    <td colspan="10">
                                         <x-admin.empty-state icon="fas-users" title="Tidak ada data pegawai"
                                             hint="Pegawai aktif akan tampil di rekap harian ini." />
                                     </td>
@@ -215,6 +242,7 @@
                                     <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold">Total Denda</td>
                                     <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold">
                                         {{ 'Rp ' . number_format($stats['total_fine'], 0, ',', '.') }}</td>
+                                    <td></td>
                                 </tr>
                             </tfoot>
                         @endif
