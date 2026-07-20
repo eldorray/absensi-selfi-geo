@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,6 +54,22 @@ class WorkSchedule extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Default check-out time used when a day has no active schedule.
+     */
+    public const DEFAULT_CHECK_OUT_TIME = '16:00:00';
+
+    /**
+     * The earliest moment check-out is allowed for today: the schedule's
+     * check-out time minus the "before check-out" window (in minutes).
+     */
+    public static function checkoutOpensAt(?self $schedule, int $beforeMinutes): Carbon
+    {
+        $checkOutTime = $schedule ? $schedule->check_out_time : self::DEFAULT_CHECK_OUT_TIME;
+
+        return Carbon::parse($checkOutTime)->subMinutes($beforeMinutes);
     }
 
     /**

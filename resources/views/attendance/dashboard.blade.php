@@ -742,7 +742,7 @@
                     <!-- Pulang (Checkout) -->
                     <a href="{{ route('attendance.checkout') }}" class="flex-1 flex flex-col items-center -mt-4">
                         @php
-                            $canCheckout = $todayAttendance && !$todayAttendance->hasCheckedOut();
+                            $canCheckout = $todayAttendance && !$todayAttendance->hasCheckedOut() && ($checkoutTimeReached ?? false);
                         @endphp
                         @if ($canCheckout)
                             <!-- Ready to Check Out -->

@@ -22,7 +22,7 @@ use Illuminate\View\View;
 
 /**
  * AttendanceController - Handle employee attendance operations.
- * 
+ *
  * Focuses only on check-in, check-out, and attendance history.
  * Follows Single Responsibility Principle.
  */
@@ -122,6 +122,7 @@ class AttendanceController extends Controller
 
         if ($distance > $office->radius_meters) {
             $msg = sprintf('Anda berada %.0f meter dari kantor. Jarak maksimal yang diizinkan adalah %d meter.', $distance, $office->radius_meters);
+
             return $this->errorResponse($msg, 'location', $isAjax, true);
         }
 
@@ -144,7 +145,7 @@ class AttendanceController extends Controller
             'distance_meters' => $distance,
         ]);
 
-        $successMessage = 'Absensi masuk berhasil dicatat! Status: ' . $status->label();
+        $successMessage = 'Absensi masuk berhasil dicatat! Status: '.$status->label();
 
         if ($isAjax) {
             return response()->json(['success' => true, 'message' => $successMessage]);
@@ -165,10 +166,20 @@ class AttendanceController extends Controller
             ->whereDate('created_at', today())
             ->first();
 
+        $schedule = WorkSchedule::where('user_id', $user->id)
+            ->where('day', $this->todayDayName())
+            ->where('is_active', true)
+            ->first();
+
+        $checkoutOpensAt = WorkSchedule::checkoutOpensAt($schedule, WorkSetting::current()->before_check_out);
+        $checkoutTimeReached = now()->gte($checkoutOpensAt);
+
         return view('attendance.checkout', [
             'offices' => $offices,
             'user' => $user,
             'todayAttendance' => $todayAttendance,
+            'checkoutOpensAt' => $checkoutOpensAt,
+            'checkoutTimeReached' => $checkoutTimeReached,
         ]);
     }
 
@@ -185,12 +196,18 @@ class AttendanceController extends Controller
             ->whereDate('created_at', today())
             ->first();
 
-        if (!$attendance) {
+        if (! $attendance) {
             return $this->errorResponse('Anda belum melakukan absensi masuk hari ini.', 'attendance', $isAjax);
         }
 
         if ($attendance->check_out_at) {
             return $this->errorResponse('Anda sudah melakukan absensi pulang hari ini.', 'attendance', $isAjax);
+        }
+
+        // Enforce the check-out time window (schedule end - "before check-out").
+        $timeError = $this->validateCheckoutTimeWindow($user->id);
+        if ($timeError !== null) {
+            return $this->errorResponse($timeError, 'time', $isAjax);
         }
 
         // Validate request
@@ -217,6 +234,7 @@ class AttendanceController extends Controller
 
         if ($distance > $office->radius_meters) {
             $msg = sprintf('Anda berada %.0f meter dari kantor. Jarak maksimal yang diizinkan adalah %d meter.', $distance, $office->radius_meters);
+
             return $this->errorResponse($msg, 'location', $isAjax, true);
         }
 
@@ -267,7 +285,7 @@ class AttendanceController extends Controller
 
     /**
      * Validate work schedule for today.
-     * 
+     *
      * @return array{message: string, key: string}|null
      */
     private function validateSchedule(int $userId): ?array
@@ -279,7 +297,7 @@ class AttendanceController extends Controller
             ->first();
 
         // Skip schedule check on Sunday if no schedule defined
-        if (!$schedule && $todayDay === 'minggu') {
+        if (! $schedule && $todayDay === 'minggu') {
             return ['message' => 'Hari ini (Minggu) adalah hari libur.', 'key' => 'schedule'];
         }
 
@@ -288,7 +306,7 @@ class AttendanceController extends Controller
 
     /**
      * Validate check-in time window.
-     * 
+     *
      * @return string|null Error message if invalid, null if valid
      */
     private function validateTimeWindow(): ?string
@@ -310,11 +328,46 @@ class AttendanceController extends Controller
         $now = now();
 
         if ($now->lt($earliestCheckIn)) {
-            return 'Anda belum dapat absen. Waktu absen dimulai pukul ' . $earliestCheckIn->format('H:i') . '.';
+            return 'Anda belum dapat absen. Waktu absen dimulai pukul '.$earliestCheckIn->format('H:i').'.';
         }
 
         if ($now->gt($latestCheckIn)) {
-            return 'Waktu absen sudah berakhir. Batas absen adalah pukul ' . $latestCheckIn->format('H:i') . '.';
+            return 'Waktu absen sudah berakhir. Batas absen adalah pukul '.$latestCheckIn->format('H:i').'.';
+        }
+
+        return null;
+    }
+
+    /**
+     * The lowercase Indonesian name of today's day (e.g. "senin").
+     */
+    private function todayDayName(): string
+    {
+        $now = now();
+        $now->locale('id');
+
+        return strtolower($now->dayName);
+    }
+
+    /**
+     * Validate the check-out time window.
+     *
+     * Check-out only opens at (schedule check-out time - "before check-out"
+     * window). Returns an error message when it is still too early, else null.
+     */
+    private function validateCheckoutTimeWindow(int $userId): ?string
+    {
+        $settings = WorkSetting::current();
+
+        $schedule = WorkSchedule::where('user_id', $userId)
+            ->where('day', $this->todayDayName())
+            ->where('is_active', true)
+            ->first();
+
+        $opensAt = WorkSchedule::checkoutOpensAt($schedule, $settings->before_check_out);
+
+        if (now()->lt($opensAt)) {
+            return 'Belum waktunya absen pulang. Absen pulang dibuka pukul '.$opensAt->format('H:i').'.';
         }
 
         return null;
@@ -351,6 +404,7 @@ class AttendanceController extends Controller
         }
 
         $response = back()->withErrors([$key => $message]);
+
         return $withInput ? $response->withInput() : $response;
     }
 }

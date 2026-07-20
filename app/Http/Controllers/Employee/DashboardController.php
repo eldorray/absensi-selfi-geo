@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\Attendance;
 use App\Models\WorkSchedule;
+use App\Models\WorkSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -38,6 +39,10 @@ class DashboardController extends Controller
             ->where('is_active', true)
             ->first();
 
+        // Check-out only opens at (schedule end - "before check-out" window).
+        $checkoutOpensAt = WorkSchedule::checkoutOpensAt($todaySchedule, WorkSetting::current()->before_check_out);
+        $checkoutTimeReached = now()->gte($checkoutOpensAt);
+
         // Monthly stats - hadir includes both present and late
         $monthStart = now()->startOfMonth();
         $monthlyPresent = Attendance::where('user_id', $user->id)
@@ -58,6 +63,8 @@ class DashboardController extends Controller
         return view('attendance.dashboard', [
             'todayAttendance' => $todayAttendance,
             'todaySchedule' => $todaySchedule,
+            'checkoutOpensAt' => $checkoutOpensAt,
+            'checkoutTimeReached' => $checkoutTimeReached,
             'monthlyPresent' => $monthlyPresent,
             'monthlyLate' => $monthlyLate,
             'totalAttendance' => $totalAttendance,

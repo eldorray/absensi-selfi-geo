@@ -70,6 +70,28 @@
                 </a>
             </div>
 
+        @elseif (!($checkoutTimeReached ?? true) && !$todayAttendance->hasCheckedOut())
+            <!-- Too Early To Check Out Screen -->
+            <div class="rounded-3xl p-6 text-center theme-status-late-card theme-status-late-text relative overflow-hidden">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-white/10 flex items-center justify-center">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-black font-display mb-1">Belum Waktunya Pulang</h2>
+                <p class="text-xs theme-text-muted">Absen pulang baru dapat dilakukan mulai pukul
+                    <span class="font-bold theme-text-main">{{ $checkoutOpensAt->format('H:i') }} WIB</span>.
+                </p>
+
+                <a href="{{ route('attendance.dashboard') }}"
+                    class="mt-6 flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/15 theme-text-main font-bold text-xs uppercase tracking-wider transition-all duration-300 font-outfit border border-white/5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Kembali ke Beranda
+                </a>
+            </div>
+
         @elseif ($todayAttendance->hasCheckedOut())
             <!-- Already Checked Out Screen -->
             <div class="rounded-3xl p-6 text-center theme-status-ok-card theme-status-ok-text relative overflow-hidden">
