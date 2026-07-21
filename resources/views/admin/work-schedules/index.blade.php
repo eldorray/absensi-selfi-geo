@@ -90,7 +90,15 @@
         </div>
 
         <!-- List Data Jam Kerja -->
-        <div class="admin-glass-panel overflow-hidden">
+        <div class="admin-glass-panel overflow-hidden"
+            x-data="{
+                q: '',
+                expandedRow: null,
+                names: @js($users->map(fn ($u) => \Illuminate\Support\Str::lower($u->name . ' ' . ($u->email ?? '')))->values()),
+                get needle() { return this.q.toLowerCase().trim() },
+                match(i) { return this.needle === '' || this.names[i].includes(this.needle) },
+                get anyMatch() { return this.needle === '' || this.names.some(n => n.includes(this.needle)) },
+            }">
             <div class="admin-panel-header flex-wrap gap-3">
                 <span class="flex items-center gap-2">
                     <span class="admin-label">List Data Jam Kerja</span>
@@ -98,18 +106,28 @@
                         <span class="admin-chip">{{ $selectedOffice->name }}</span>
                     @endif
                 </span>
-                <form method="GET" class="flex items-end gap-2">
-                    <select name="office_id" class="admin-field !w-auto p-2.5 text-sm"
-                        onchange="this.form.submit()">
-                        <option value="">Semua Kantor</option>
-                        @foreach ($offices as $office)
-                            <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
-                        @endforeach
-                    </select>
-                    <noscript>
-                        <button type="submit" class="admin-button-primary px-3 py-2 text-sm">Filter</button>
-                    </noscript>
-                </form>
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="relative">
+                        <svg class="admin-muted pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                        </svg>
+                        <input type="search" x-model="q" placeholder="Cari nama / email..."
+                            class="admin-field !w-auto py-2.5 pl-9 pr-3 text-sm" aria-label="Cari karyawan">
+                    </div>
+                    <form method="GET" class="flex items-end gap-2">
+                        <select name="office_id" class="admin-field !w-auto p-2.5 text-sm" onchange="this.form.submit()">
+                            <option value="">Semua Kantor</option>
+                            @foreach ($offices as $office)
+                                <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
+                            @endforeach
+                        </select>
+                        <noscript>
+                            <button type="submit" class="admin-button-primary px-3 py-2 text-sm">Filter</button>
+                        </noscript>
+                    </form>
+                </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="admin-table w-full">
@@ -122,9 +140,9 @@
                             <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody x-data="{ expandedRow: null }">
+                    <tbody>
                         @forelse ($users as $index => $user)
-                            <tr class="cursor-pointer"
+                            <tr class="cursor-pointer" x-show="match({{ $loop->index }})"
                                 @click="expandedRow = expandedRow === {{ $user->id }} ? null : {{ $user->id }}">
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="flex items-center">
@@ -134,7 +152,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 5l7 7-7 7"></path>
                                         </svg>
-                                        {{ ($users->currentPage() - 1) * $users->perPage() + $index + 1 }}
+                                        {{ $loop->iteration }}
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
@@ -163,7 +181,7 @@
                                 </td>
                             </tr>
                             <!-- Expanded Row - Schedule Details -->
-                            <tr x-show="expandedRow === {{ $user->id }}" x-collapse>
+                            <tr x-show="expandedRow === {{ $user->id }} && match({{ $loop->index }})" x-collapse>
                                 <td colspan="5" class="px-6 py-4">
                                     <div class="overflow-x-auto">
                                         <table class="admin-table w-full text-sm">
@@ -215,14 +233,16 @@
                                 </td>
                             </tr>
                         @endforelse
+                        {{-- No live-search match --}}
+                        <tr x-show="!anyMatch" x-cloak>
+                            <td colspan="5">
+                                <x-admin.empty-state icon="fas-magnifying-glass" title="Tidak ditemukan"
+                                    hint="Tidak ada karyawan yang cocok dengan pencarian." />
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            @if ($users->hasPages())
-                <div class="admin-panel-footer">
-                    {{ $users->links() }}
-                </div>
-            @endif
         </div>
     </div>
 </x-layouts.app>

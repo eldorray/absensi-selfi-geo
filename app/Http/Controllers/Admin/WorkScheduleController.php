@@ -29,15 +29,16 @@ class WorkScheduleController extends Controller
         $selectedOffice = $officeId ? Office::find((int) $officeId) : null;
 
         // Get all non-admin users (users with roles where is_admin = false),
-        // optionally scoped to a single office.
+        // optionally scoped to a single office. Not paginated: the list is
+        // filtered live (client-side) by the search box, which needs every
+        // row present at once.
         $users = User::with(['workSchedules', 'role', 'office'])
             ->whereHas('role', function ($query) {
                 $query->where('is_admin', false);
             })
             ->when($selectedOffice, fn ($query) => $query->where('office_id', $selectedOffice->id))
             ->orderBy('name')
-            ->paginate(10)
-            ->withQueryString();
+            ->get();
 
         return view('admin.work-schedules.index', [
             'settings' => $settings,
