@@ -462,7 +462,7 @@
                     <!-- Actions Layout: Theme Toggle & Logout -->
                     <div class="flex items-center gap-2.5">
                         @if ($linkedAccounts->isNotEmpty())
-                            <div x-data="{ open: false }" class="relative">
+                            <div x-data="{ open: false, confirmOpen: false, target: null }" class="relative">
                                 <button type="button" @click="open = !open"
                                     class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center theme-text-muted hover:theme-text-main hover:scale-105 active:scale-95 transition-all duration-300"
                                     aria-label="Ganti Akun">
@@ -470,27 +470,63 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
                                     </svg>
                                 </button>
+
+                                <!-- Dropdown: solid (opaque) surface, not glass -->
                                 <div x-show="open" x-cloak @click.away="open = false"
-                                    class="absolute right-0 mt-2 w-56 rounded-xl glass-card theme-border p-2 z-30 text-left">
+                                    x-transition:enter="transition ease-out duration-150"
+                                    x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+                                    class="solid-panel absolute right-0 mt-2 w-60 rounded-2xl p-2 z-40 text-left">
                                     <p class="px-2 py-1 text-[9px] uppercase tracking-wider theme-text-muted font-outfit">Ganti Akun</p>
                                     @foreach ($linkedAccounts as $account)
-                                        <form method="POST" action="{{ route('account.switch') }}"
-                                            @submit.prevent="if (confirm('Ganti ke akun {{ $account->name }}?')) $el.submit()">
-                                            @csrf
-                                            <input type="hidden" name="target_id" value="{{ $account->id }}">
-                                            <button type="submit"
-                                                class="w-full flex items-center gap-2 rounded-lg px-2 py-2 text-xs theme-text-main hover:bg-white/5 transition-colors">
-                                                <span class="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-400 to-emerald-400 flex items-center justify-center text-[9px] font-bold text-slate-950">
-                                                    {{ $account->initials() }}
-                                                </span>
-                                                <span class="truncate text-left">
-                                                    {{ $account->name }}
-                                                    <span class="block text-[9px] theme-text-muted">{{ $account->office?->name ?? 'Tanpa kantor' }}</span>
-                                                </span>
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                            @click="target = { id: {{ $account->id }}, name: @js($account->name) }; open = false; confirmOpen = true"
+                                            class="w-full flex items-center gap-2 rounded-xl px-2 py-2 text-xs theme-text-main hover:bg-cyan-500/10 transition-colors">
+                                            <span class="w-7 h-7 flex-none rounded-full bg-gradient-to-tr from-cyan-400 to-emerald-400 flex items-center justify-center text-[9px] font-bold text-slate-950">
+                                                {{ $account->initials() }}
+                                            </span>
+                                            <span class="min-w-0 flex-1 truncate text-left">
+                                                {{ $account->name }}
+                                                <span class="block text-[9px] theme-text-muted">{{ $account->office?->name ?? 'Tanpa kantor' }}</span>
+                                            </span>
+                                        </button>
                                     @endforeach
                                 </div>
+
+                                <!-- Confirmation modal (teleported to body so header stacking/overflow can't clip it) -->
+                                <template x-teleport="body">
+                                    <div x-show="confirmOpen" x-cloak @keydown.escape.window="confirmOpen = false"
+                                        class="fixed inset-0 z-[60] flex items-center justify-center p-5"
+                                        x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                                        <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]" @click="confirmOpen = false"></div>
+                                        <div class="solid-panel relative w-full max-w-xs rounded-3xl p-6 text-center"
+                                            x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+                                            <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-cyan-500/15 flex items-center justify-center text-cyan-400">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                                                </svg>
+                                            </div>
+                                            <h3 class="text-base font-black font-display theme-text-main">Ganti Akun</h3>
+                                            <p class="mt-1 text-xs theme-text-muted">Berpindah ke akun
+                                                <span class="font-bold theme-text-main" x-text="target?.name"></span>?
+                                                Sesi akun ini akan diganti.
+                                            </p>
+                                            <div class="mt-5 flex gap-2.5">
+                                                <button type="button" @click="confirmOpen = false"
+                                                    class="flex-1 py-3 rounded-xl glass-card theme-border theme-text-main text-xs font-bold uppercase tracking-wider font-outfit hover:scale-[1.02] active:scale-95 transition-transform">
+                                                    Batal
+                                                </button>
+                                                <form method="POST" action="{{ route('account.switch') }}" class="flex-1">
+                                                    @csrf
+                                                    <input type="hidden" name="target_id" :value="target?.id">
+                                                    <button type="submit"
+                                                        class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-950 text-xs font-bold uppercase tracking-wider font-outfit shadow-[0_8px_20px_rgba(6,182,212,0.28)] hover:scale-[1.02] active:scale-95 transition-transform">
+                                                        Ganti
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
                         @endif
                         <!-- Theme Toggle Button -->

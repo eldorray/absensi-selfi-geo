@@ -50,6 +50,9 @@
             --glass-card-bg: rgba(255, 255, 255, 0.02);
             --glass-card-border: rgba(255, 255, 255, 0.08);
             --glass-card-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            /* Solid (opaque) surface for menus/modals — not glass */
+            --menu-bg: #16151f;
+            --menu-border: rgba(255, 255, 255, 0.10);
             --grid-line-color: rgba(255, 255, 255, 0.012);
             --blob-opacity: 0.12;
             --phone-shell-bg: #000000;
@@ -107,6 +110,9 @@
             --glass-card-bg: rgba(255, 255, 255, 0.55);
             --glass-card-border: rgba(255, 255, 255, 0.65);
             --glass-card-shadow: 0 2px 10px rgba(100, 116, 139, 0.01), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+            /* Solid (opaque) surface for menus/modals — not glass */
+            --menu-bg: #ffffff;
+            --menu-border: rgba(15, 23, 42, 0.10);
             
             --grid-line-color: rgba(0, 0, 0, 0.015);
             --blob-opacity: 0.16;
@@ -227,6 +233,14 @@
             border: 1px solid var(--glass-card-border);
             box-shadow: var(--glass-card-shadow);
             transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        /* Opaque surface for popovers/modals — readable over the busy dashboard */
+        .solid-panel {
+            background: var(--menu-bg);
+            border: 1px solid var(--menu-border);
+            box-shadow: var(--glass-shadow);
+            transition: background 0.5s ease, border-color 0.5s ease;
         }
 
         /* Forms inputs theme mapping */
