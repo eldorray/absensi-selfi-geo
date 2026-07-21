@@ -1,6 +1,7 @@
 /.phpunit.cache
 /node_modules
-/public/build
+# /public/build is committed: prod (Hostinger) has no Node/npm, so built
+# assets ship in git. Run `npm run build` locally before committing UI changes.
 /public/hot
 /public/storage
 /storage/*.key
