@@ -180,10 +180,18 @@ class UserController extends Controller
         $offices = Office::orderBy('name')->get();
         $roles = Role::orderBy('name')->get();
 
+        // Only non-admin accounts (other than this one) can be switch targets.
+        $linkableUsers = User::whereKeyNot($user->id)
+            ->whereHas('role', fn ($q) => $q->where('is_admin', false))
+            ->orderBy('name')
+            ->get();
+
         return view('admin.users.edit', [
             'user' => $user,
             'offices' => $offices,
             'roles' => $roles,
+            'linkableUsers' => $linkableUsers,
+            'linkedIds' => $user->linkedAccounts()->pluck('users.id')->all(),
         ]);
     }
 
@@ -198,18 +206,44 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'role_id' => 'required|exists:roles,id',
             'office_id' => 'nullable|exists:offices,id',
+            'linked_accounts' => ['array'],
+            'linked_accounts.*' => [
+                'integer',
+                Rule::exists('users', 'id')->whereNot('id', $user->id),
+                Rule::notIn([$user->id]),
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if (User::whereKey($value)->whereHas('role', fn ($q) => $q->where('is_admin', true))->exists()) {
+                        $fail('Akun admin tidak dapat dijadikan akun terkait.');
+                    }
+                },
+            ],
         ]);
 
         $user->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role_id' => $validated['role_id'],
-            'office_id' => $validated['office_id'],
+            'office_id' => $validated['office_id'] ?? null,
         ]);
 
         // Update password if provided
         if (! empty($validated['password'])) {
             $user->update(['password' => Hash::make($validated['password'])]);
+        }
+
+        $linkedIds = collect((array) ($validated['linked_accounts'] ?? []))
+            ->map(fn (mixed $id): int => (int) $id)
+            ->all();
+
+        $previous = array_map('intval', $user->linkedAccounts()->pluck('users.id')->all());
+        $user->linkedAccounts()->sync($linkedIds);
+
+        // Mirror the change on the other side so links stay symmetric.
+        foreach (array_diff($linkedIds, $previous) as $id) {
+            User::find($id)?->linkedAccounts()->syncWithoutDetaching([$user->id]);
+        }
+        foreach (array_diff($previous, $linkedIds) as $id) {
+            User::find($id)?->linkedAccounts()->detach($user->id);
         }
 
         return redirect()

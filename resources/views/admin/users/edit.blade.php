@@ -91,6 +91,33 @@
                     @enderror
                 </div>
 
+                @unless ($user->isAdmin())
+                    <hr class="admin-divider">
+
+                    <!-- Linked Accounts -->
+                    <div>
+                        <label class="admin-label">Akun Terkait (Ganti Akun Cepat)</label>
+                        <p class="admin-hint mb-2">Akun non-admin yang boleh saling berpindah tanpa login ulang.</p>
+                        <div class="max-h-56 space-y-1.5 overflow-y-auto rounded-xl border border-white/10 p-3">
+                            @forelse ($linkableUsers as $candidate)
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" name="linked_accounts[]" value="{{ $candidate->id }}"
+                                        class="admin-checkbox rounded"
+                                        {{ in_array($candidate->id, old('linked_accounts', $linkedIds)) ? 'checked' : '' }}>
+                                    <span>{{ $candidate->name }}
+                                        <span class="admin-muted">— {{ $candidate->office?->name ?? 'Tanpa kantor' }}</span>
+                                    </span>
+                                </label>
+                            @empty
+                                <p class="admin-muted text-sm">Belum ada akun non-admin lain.</p>
+                            @endforelse
+                        </div>
+                        @error('linked_accounts.0')
+                            <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endunless
+
                 <!-- Submit -->
                 <div class="flex items-center justify-end gap-3 pt-2">
                     <a href="{{ route('admin.users.index') }}" class="admin-button-secondary px-4 py-2 text-sm">
