@@ -48,6 +48,9 @@
 
                                 <x-layouts.sidebar-link href="{{ route('admin.announcements.index') }}"
                                     icon='fas-bullhorn' :active="request()->routeIs('admin.announcements.*')">Informasi</x-layouts.sidebar-link>
+
+                                <x-layouts.sidebar-link href="{{ route('admin.account-switches.index') }}"
+                                    icon='fas-right-left' :active="request()->routeIs('admin.account-switches.*')">Riwayat Ganti Akun</x-layouts.sidebar-link>
                             @else
                                 <!-- Employee Menu -->
                                 <x-layouts.sidebar-link href="{{ route('attendance.dashboard') }}" icon='fas-house'
