@@ -77,6 +77,8 @@
             --glass-shadow: 0 24px 80px -15px rgba(0, 0, 0, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
             --glass-card-bg: rgba(255, 255, 255, 0.02);
             --glass-card-border: rgba(255, 255, 255, 0.08);
+            --menu-bg: #16151f;
+            --menu-border: rgba(255, 255, 255, 0.10);
             --glass-card-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
             --grid-line-color: rgba(255, 255, 255, 0.012);
             --blob-opacity: 0.12;
@@ -124,6 +126,8 @@
             
             --glass-card-bg: rgba(255, 255, 255, 0.55);
             --glass-card-border: rgba(255, 255, 255, 0.65);
+            --menu-bg: #ffffff;
+            --menu-border: rgba(15, 23, 42, 0.10);
             --glass-card-shadow: 0 2px 10px rgba(100, 116, 139, 0.01), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
             
             --grid-line-color: rgba(0, 0, 0, 0.015);
@@ -235,6 +239,14 @@
             border: 1px solid var(--glass-card-border);
             box-shadow: var(--glass-card-shadow);
             transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        /* Opaque surface for popovers/modals — readable over the busy dashboard */
+        .solid-panel {
+            background: var(--menu-bg);
+            border: 1px solid var(--menu-border);
+            box-shadow: var(--glass-shadow);
+            transition: background 0.5s ease, border-color 0.5s ease;
         }
 
         .footer-nav-item {
@@ -462,7 +474,7 @@
                     <!-- Actions Layout: Theme Toggle & Logout -->
                     <div class="flex items-center gap-2.5">
                         @if ($linkedAccounts->isNotEmpty())
-                            <div x-data="{ open: false, confirmOpen: false, target: null }" class="relative">
+                            <div x-data="{ open: false, confirmOpen: false, target: null }">
                                 <button type="button" @click="open = !open"
                                     class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center theme-text-muted hover:theme-text-main hover:scale-105 active:scale-95 transition-all duration-300"
                                     aria-label="Ganti Akun">
@@ -471,11 +483,11 @@
                                     </svg>
                                 </button>
 
-                                <!-- Dropdown: solid (opaque) surface, not glass -->
+                                <!-- Dropdown: solid (opaque) surface, anchored to the header's right edge -->
                                 <div x-show="open" x-cloak @click.away="open = false"
                                     x-transition:enter="transition ease-out duration-150"
                                     x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
-                                    class="solid-panel absolute right-0 mt-2 w-60 rounded-2xl p-2 z-40 text-left">
+                                    class="solid-panel absolute right-0 top-14 w-64 rounded-2xl p-2 z-40 text-left">
                                     <p class="px-2 py-1 text-[9px] uppercase tracking-wider theme-text-muted font-outfit">Ganti Akun</p>
                                     @foreach ($linkedAccounts as $account)
                                         <button type="button"
