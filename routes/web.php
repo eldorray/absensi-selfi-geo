@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Employee;
+use App\Http\Controllers\Employee\AccountSwitchController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Settings;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Employee dashboard (SRP - separate controller)
     Route::get('attendance/dashboard', [Employee\DashboardController::class, 'index'])->name('attendance.dashboard');
+
+    // Fast, password-less account switching (linked, non-admin accounts only)
+    Route::post('account/switch', [AccountSwitchController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('account.switch');
 
     // Employee attendance routes (SRP - separate controller)
     Route::get('attendance/selfie', [Employee\AttendanceController::class, 'selfie'])->name('attendance.selfie');
