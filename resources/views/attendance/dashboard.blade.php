@@ -461,6 +461,38 @@
 
                     <!-- Actions Layout: Theme Toggle & Logout -->
                     <div class="flex items-center gap-2.5">
+                        @if ($linkedAccounts->isNotEmpty())
+                            <div x-data="{ open: false }" class="relative">
+                                <button type="button" @click="open = !open"
+                                    class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center theme-text-muted hover:theme-text-main hover:scale-105 active:scale-95 transition-all duration-300"
+                                    aria-label="Ganti Akun">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                                    </svg>
+                                </button>
+                                <div x-show="open" x-cloak @click.away="open = false"
+                                    class="absolute right-0 mt-2 w-56 rounded-xl glass-card theme-border p-2 z-30 text-left">
+                                    <p class="px-2 py-1 text-[9px] uppercase tracking-wider theme-text-muted font-outfit">Ganti Akun</p>
+                                    @foreach ($linkedAccounts as $account)
+                                        <form method="POST" action="{{ route('account.switch') }}"
+                                            @submit.prevent="if (confirm('Ganti ke akun {{ $account->name }}?')) $el.submit()">
+                                            @csrf
+                                            <input type="hidden" name="target_id" value="{{ $account->id }}">
+                                            <button type="submit"
+                                                class="w-full flex items-center gap-2 rounded-lg px-2 py-2 text-xs theme-text-main hover:bg-white/5 transition-colors">
+                                                <span class="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-400 to-emerald-400 flex items-center justify-center text-[9px] font-bold text-slate-950">
+                                                    {{ $account->initials() }}
+                                                </span>
+                                                <span class="truncate text-left">
+                                                    {{ $account->name }}
+                                                    <span class="block text-[9px] theme-text-muted">{{ $account->office?->name ?? 'Tanpa kantor' }}</span>
+                                                </span>
+                                            </button>
+                                        </form>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                         <!-- Theme Toggle Button -->
                         <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Toggle Theme">
                             <!-- Sun Icon (for dark mode) -->

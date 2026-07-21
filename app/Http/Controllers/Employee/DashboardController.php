@@ -69,6 +69,7 @@ class DashboardController extends Controller
             'monthlyLate' => $monthlyLate,
             'totalAttendance' => $totalAttendance,
             'announcements' => $announcements,
+            'linkedAccounts' => $user->linkedAccounts()->with('office')->orderBy('name')->get(),
         ]);
     }
 }

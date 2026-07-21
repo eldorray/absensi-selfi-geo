@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -132,5 +133,13 @@ class User extends Authenticatable
     public function workSchedules(): HasMany
     {
         return $this->hasMany(WorkSchedule::class);
+    }
+
+    /**
+     * Accounts this user may switch to (admin-linked, symmetric).
+     */
+    public function linkedAccounts(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'account_links', 'user_id', 'linked_user_id');
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Employee;
+use App\Http\Controllers\Employee\AccountSwitchController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Settings;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Employee dashboard (SRP - separate controller)
     Route::get('attendance/dashboard', [Employee\DashboardController::class, 'index'])->name('attendance.dashboard');
+
+    // Fast, password-less account switching (linked, non-admin accounts only)
+    Route::post('account/switch', [AccountSwitchController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('account.switch');
 
     // Employee attendance routes (SRP - separate controller)
     Route::get('attendance/selfie', [Employee\AttendanceController::class, 'selfie'])->name('attendance.selfie');
@@ -112,6 +118,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('reports/daily/reset/{attendance}', [Admin\ReportController::class, 'resetAttendance'])->name('reports.daily.reset');
     Route::get('reports/monthly', [Admin\ReportController::class, 'monthly'])->name('reports.monthly');
     Route::get('reports/monthly/export-pdf', [Admin\ReportController::class, 'exportMonthlyPdf'])->name('reports.monthly.export-pdf');
+
+    Route::get('account-switches', [Admin\AccountSwitchLogController::class, 'index'])->name('account-switches.index');
 });
 
 require __DIR__.'/auth.php';
