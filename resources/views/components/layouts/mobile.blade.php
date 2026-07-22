@@ -40,22 +40,22 @@
     <style>
         :root {
             /* Colors - Dark Theme (Default) */
-            --bg-color: #050409;
-            --screen-bg: #080711;
-            --text-main: #f1f5f9;
+            --bg-color: #0d0f14;
+            --screen-bg: #12141b;
+            --text-main: #dfe4ec;
             --text-muted: #94a3b8;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.12);
             --glass-shadow: 0 24px 80px -15px rgba(0, 0, 0, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
-            --glass-card-bg: rgba(255, 255, 255, 0.02);
-            --glass-card-border: rgba(255, 255, 255, 0.08);
+            --glass-card-bg: rgba(255, 255, 255, 0.04);
+            --glass-card-border: rgba(255, 255, 255, 0.10);
             --glass-card-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
             /* Solid (opaque) surface for menus/modals — not glass */
             --menu-bg: #16151f;
             --menu-border: rgba(255, 255, 255, 0.10);
             --grid-line-color: rgba(255, 255, 255, 0.012);
             --blob-opacity: 0.12;
-            --phone-shell-bg: #000000;
+            --phone-shell-bg: #0a0b0f;
             --phone-shell-border: rgba(255, 255, 255, 0.12);
             --footer-icon-color: #64748b;
             --active-nav-color: #22d3ee;
@@ -98,16 +98,16 @@
 
         body.light-theme {
             /* Colors - Light Theme (Polished iOS style) */
-            --bg-color: #edf0f5;
-            --screen-bg: #f4f6fa;
-            --text-main: #475569;
-            --text-muted: #64748b;
+            --bg-color: #e4e7ee;
+            --screen-bg: #eceff5;
+            --text-main: #1e293b;
+            --text-muted: #5b6472;
             
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.85);
             --glass-shadow: 0 12px 36px -8px rgba(100, 116, 139, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
             
-            --glass-card-bg: rgba(255, 255, 255, 0.55);
+            --glass-card-bg: rgba(255, 255, 255, 0.72);
             --glass-card-border: rgba(255, 255, 255, 0.65);
             --glass-card-shadow: 0 2px 10px rgba(100, 116, 139, 0.01), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
             /* Solid (opaque) surface for menus/modals — not glass */
@@ -117,7 +117,7 @@
             --grid-line-color: rgba(0, 0, 0, 0.015);
             --blob-opacity: 0.16;
             
-            --phone-shell-bg: #e2e4ed;
+            --phone-shell-bg: #d8dce6;
             --phone-shell-border: rgba(0, 0, 0, 0.04);
             
             --footer-icon-color: #94a3b8;
