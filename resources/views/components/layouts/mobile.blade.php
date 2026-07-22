@@ -393,18 +393,17 @@
         }
     </style>
 
-    <!-- Theme Restore (Prevents Flash of Unthemed Content) -->
+</head>
+
+<body class="antialiased theme-bg flex items-center justify-center">
+    <!-- Theme Restore (runs as body's first child: document.body exists here, unlike in <head>) -->
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('welcome-theme');
-            if (savedTheme === 'light') {
+            if (localStorage.getItem('welcome-theme') === 'light') {
                 document.body.classList.add('light-theme');
             }
         })();
     </script>
-</head>
-
-<body class="antialiased theme-bg flex items-center justify-center">
 
     <!-- ════════ Background Liquid Layer ════════ -->
     <div class="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
