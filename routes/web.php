@@ -96,6 +96,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('work-schedules/settings', [Admin\WorkScheduleController::class, 'updateSettings'])->name('work-schedules.settings');
     Route::get('work-schedules/{user}/edit', [Admin\WorkScheduleController::class, 'edit'])->name('work-schedules.edit');
     Route::put('work-schedules/{user}', [Admin\WorkScheduleController::class, 'update'])->name('work-schedules.update');
+    Route::post('work-schedules/{user}/copy-previous', [Admin\WorkScheduleController::class, 'copyFromPrevious'])->name('work-schedules.copy-previous');
     Route::patch('work-schedules/{schedule}/toggle', [Admin\WorkScheduleController::class, 'toggleStatus'])->name('work-schedules.toggle');
 
     // Leave management

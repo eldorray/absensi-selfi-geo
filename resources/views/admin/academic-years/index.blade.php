@@ -56,7 +56,7 @@
                                                 method="POST" x-data="{}"
                                                 @submit.prevent="$dispatch('admin-confirm', {
                                                     title: 'Aktifkan Tahun Ajaran',
-                                                    message: 'Aktifkan tahun ajaran ini? Jadwal kerja akan di-reset.',
+                                                    message: 'Aktifkan tahun ajaran ini? Jadwal kerja tiap tahun tersimpan terpisah.',
                                                     confirmText: 'Aktifkan',
                                                     variant: 'primary',
                                                     form: $el,

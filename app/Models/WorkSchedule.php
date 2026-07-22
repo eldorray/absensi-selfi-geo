@@ -38,11 +38,24 @@ class WorkSchedule extends Model
      */
     protected $fillable = [
         'user_id',
+        'academic_year_id',
         'day',
         'check_in_time',
         'check_out_time',
         'is_active',
     ];
+
+    /**
+     * Stamp the active academic year on new schedules that don't specify one.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (self $schedule): void {
+            if ($schedule->academic_year_id === null) {
+                $schedule->setAttribute('academic_year_id', AcademicYear::getActive()?->id);
+            }
+        });
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -78,6 +91,16 @@ class WorkSchedule extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the academic year this schedule belongs to.
+     *
+     * @return BelongsTo<AcademicYear, $this>
+     */
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class);
     }
 
     /**

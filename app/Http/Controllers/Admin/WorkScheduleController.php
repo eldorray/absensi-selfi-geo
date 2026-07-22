@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AcademicYear;
 use App\Models\Office;
 use App\Models\User;
 use App\Models\WorkSchedule;
@@ -27,12 +28,18 @@ class WorkScheduleController extends Controller
 
         $officeId = $request->input('office_id');
         $selectedOffice = $officeId ? Office::find((int) $officeId) : null;
+        $activeYear = AcademicYear::getActive();
 
         // Get all non-admin users (users with roles where is_admin = false),
-        // optionally scoped to a single office. Not paginated: the list is
-        // filtered live (client-side) by the search box, which needs every
-        // row present at once.
-        $users = User::with(['workSchedules', 'role', 'office'])
+        // optionally scoped to a single office. Schedules are eager-loaded only
+        // for the active academic year so the "X Hari" count reflects the year
+        // being viewed. Not paginated: the list is filtered live (client-side)
+        // by the search box, which needs every row present at once.
+        $users = User::with([
+            'workSchedules' => fn ($query) => $query->where('academic_year_id', $activeYear?->id),
+            'role',
+            'office',
+        ])
             ->whereHas('role', function ($query) {
                 $query->where('is_admin', false);
             })
@@ -46,6 +53,7 @@ class WorkScheduleController extends Controller
             'offices' => Office::orderBy('name')->get(),
             'selectedOffice' => $selectedOffice,
             'officeId' => $selectedOffice?->id,
+            'activeYear' => $activeYear,
         ]);
     }
 
@@ -81,25 +89,45 @@ class WorkScheduleController extends Controller
     }
 
     /**
-     * Show form to edit user's work schedules.
+     * Show form to edit user's work schedules for the active academic year.
      */
-    public function edit(User $user): View
+    public function edit(User $user): View|RedirectResponse
     {
-        $schedules = $user->workSchedules()->get()->keyBy('day');
-        $days = WorkSchedule::DAYS;
+        $activeYear = AcademicYear::getActive();
+
+        if ($activeYear === null) {
+            return redirect()
+                ->route('admin.work-schedules.index')
+                ->with('error', 'Aktifkan tahun ajaran terlebih dahulu sebelum mengatur jam kerja.');
+        }
+
+        $schedules = $user->workSchedules()
+            ->where('academic_year_id', $activeYear->id)
+            ->get()
+            ->keyBy('day');
 
         return view('admin.work-schedules.edit', [
             'user' => $user,
             'schedules' => $schedules,
-            'days' => $days,
+            'days' => WorkSchedule::DAYS,
+            'activeYear' => $activeYear,
+            'previousYear' => $this->previousYearWithSchedules($user, $activeYear),
         ]);
     }
 
     /**
-     * Update user's work schedules.
+     * Update user's work schedules for the active academic year.
      */
     public function update(Request $request, User $user): RedirectResponse
     {
+        $activeYear = AcademicYear::getActive();
+
+        if ($activeYear === null) {
+            return redirect()
+                ->route('admin.work-schedules.index')
+                ->with('error', 'Aktifkan tahun ajaran terlebih dahulu sebelum mengatur jam kerja.');
+        }
+
         $validated = $request->validate([
             'schedules' => 'required|array',
             'schedules.*.check_in_time' => 'required|date_format:H:i',
@@ -109,7 +137,7 @@ class WorkScheduleController extends Controller
 
         foreach ($validated['schedules'] as $day => $data) {
             WorkSchedule::updateOrCreate(
-                ['user_id' => $user->id, 'day' => $day],
+                ['user_id' => $user->id, 'day' => $day, 'academic_year_id' => $activeYear->id],
                 [
                     'check_in_time' => $data['check_in_time'],
                     'check_out_time' => $data['check_out_time'],
@@ -121,6 +149,64 @@ class WorkScheduleController extends Controller
         return redirect()
             ->route('admin.work-schedules.index')
             ->with('success', 'Jadwal kerja '.$user->name.' berhasil diperbarui.');
+    }
+
+    /**
+     * Copy this user's schedules from the most recent prior academic year into
+     * the active year, so the admin doesn't have to re-enter them each year.
+     */
+    public function copyFromPrevious(User $user): RedirectResponse
+    {
+        $activeYear = AcademicYear::getActive();
+
+        if ($activeYear === null) {
+            return redirect()
+                ->route('admin.work-schedules.index')
+                ->with('error', 'Aktifkan tahun ajaran terlebih dahulu sebelum mengatur jam kerja.');
+        }
+
+        $previousYear = $this->previousYearWithSchedules($user, $activeYear);
+
+        if ($previousYear === null) {
+            return back()->with('error', 'Tidak ada jadwal tahun sebelumnya untuk disalin.');
+        }
+
+        $sourceSchedules = WorkSchedule::where('user_id', $user->id)
+            ->where('academic_year_id', $previousYear->id)
+            ->get();
+
+        foreach ($sourceSchedules as $source) {
+            WorkSchedule::updateOrCreate(
+                ['user_id' => $user->id, 'day' => $source->day, 'academic_year_id' => $activeYear->id],
+                [
+                    'check_in_time' => $source->check_in_time,
+                    'check_out_time' => $source->check_out_time,
+                    'is_active' => $source->is_active,
+                ]
+            );
+        }
+
+        return redirect()
+            ->route('admin.work-schedules.edit', $user)
+            ->with('success', 'Jadwal disalin dari tahun ajaran '.$previousYear->name.'.');
+    }
+
+    /**
+     * The most recent academic year before the active one that has any
+     * schedules for this user, or null if there is none to copy from.
+     */
+    private function previousYearWithSchedules(User $user, AcademicYear $activeYear): ?AcademicYear
+    {
+        $yearIds = $user->workSchedules()
+            ->whereNotNull('academic_year_id')
+            ->distinct()
+            ->pluck('academic_year_id');
+
+        return AcademicYear::query()
+            ->whereIn('id', $yearIds)
+            ->where('start_date', '<', $activeYear->start_date)
+            ->orderByDesc('start_date')
+            ->first();
     }
 
     /**

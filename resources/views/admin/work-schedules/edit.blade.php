@@ -1,14 +1,37 @@
 <x-layouts.app>
     <div class="mx-auto max-w-3xl space-y-6">
-        <x-admin.page-header kicker="Master Data" title="Edit Jadwal Kerja"
+        <x-admin.page-header kicker="Master Data · Tahun Ajaran {{ $activeYear->name }}" title="Edit Jadwal Kerja"
             description="{{ $user->name }} - {{ $user->office?->name ?? 'Tidak ada kantor' }}">
-            <a href="{{ route('admin.work-schedules.index') }}"
-                class="admin-button-secondary inline-flex items-center gap-1.5 px-4 py-2 text-sm">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-                Kembali
-            </a>
+            <div class="flex flex-wrap items-center gap-2">
+                @if ($previousYear)
+                    <form method="POST" action="{{ route('admin.work-schedules.copy-previous', $user) }}" x-data="{}"
+                        @submit.prevent="$dispatch('admin-confirm', {
+                            title: 'Salin Jadwal',
+                            message: 'Salin jadwal dari tahun ajaran {{ $previousYear->name }} ke {{ $activeYear->name }}? Jadwal {{ $activeYear->name }} yang ada akan ditimpa.',
+                            confirmText: 'Salin',
+                            variant: 'primary',
+                            form: $el,
+                        })">
+                        @csrf
+                        <button type="submit"
+                            class="admin-button-secondary inline-flex items-center gap-1.5 px-4 py-2 text-sm">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Salin dari {{ $previousYear->name }}
+                        </button>
+                    </form>
+                @endif
+                <a href="{{ route('admin.work-schedules.index') }}"
+                    class="admin-button-secondary inline-flex items-center gap-1.5 px-4 py-2 text-sm">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Kembali
+                </a>
+            </div>
         </x-admin.page-header>
 
         <!-- Form -->

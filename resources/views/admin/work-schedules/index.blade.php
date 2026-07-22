@@ -13,6 +13,26 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="admin-alert-danger flex items-center gap-3 rounded-2xl p-4">
+                <svg class="h-5 w-5 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-sm font-semibold">{{ session('error') }}</span>
+            </div>
+        @endif
+
+        @if (!$activeYear)
+            <div class="admin-alert-danger flex items-center gap-3 rounded-2xl p-4">
+                <svg class="h-5 w-5 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-sm font-semibold">Belum ada tahun ajaran aktif. Aktifkan tahun ajaran dulu untuk mengatur jam kerja.</span>
+            </div>
+        @endif
+
         <!-- Tolerance Settings Card -->
         <div class="admin-glass-panel overflow-hidden">
             <div class="admin-panel-header">
@@ -102,6 +122,9 @@
             <div class="admin-panel-header flex-wrap gap-3">
                 <span class="flex items-center gap-2">
                     <span class="admin-label">List Data Jam Kerja</span>
+                    @if ($activeYear)
+                        <span class="admin-chip">TA {{ $activeYear->name }}</span>
+                    @endif
                     @if ($selectedOffice)
                         <span class="admin-chip">{{ $selectedOffice->name }}</span>
                     @endif

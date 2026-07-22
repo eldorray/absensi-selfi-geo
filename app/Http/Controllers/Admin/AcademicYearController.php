@@ -65,7 +65,7 @@ class AcademicYearController extends Controller
     public function update(Request $request, AcademicYear $academicYear): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:20', 'unique:academic_years,name,' . $academicYear->id],
+            'name' => ['required', 'string', 'max:20', 'unique:academic_years,name,'.$academicYear->id],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after:start_date'],
         ]);
@@ -98,10 +98,10 @@ class AcademicYearController extends Controller
      */
     public function activate(AcademicYear $academicYear): RedirectResponse
     {
-        $academicYear->activate(resetSchedules: true);
+        $academicYear->activate();
 
         return redirect()
             ->route('admin.academic-years.index')
-            ->with('status', "Tahun ajaran {$academicYear->name} berhasil diaktifkan. Jadwal kerja telah di-reset.");
+            ->with('status', "Tahun ajaran {$academicYear->name} berhasil diaktifkan.");
     }
 }

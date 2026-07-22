@@ -112,7 +112,7 @@ class ReportController extends Controller
         $activeYear = AcademicYear::getActive();
         $settings = WorkSetting::current();
         $selectedOffice = $this->resolveOffice($request);
-        $users = $this->getEmployees(withSchedules: true, officeId: $selectedOffice?->id);
+        $users = $this->getEmployees(withSchedules: true, officeId: $selectedOffice?->id, academicYearId: $activeYear?->id);
         $attendances = $this->getDailyAttendances($selectedDate, $activeYear);
 
         // Scope attendances to the filtered employees so the stat cards match
@@ -153,7 +153,7 @@ class ReportController extends Controller
         $activeYear = AcademicYear::getActive();
         $settings = WorkSetting::current();
         $selectedOffice = $this->resolveOffice($request);
-        $users = $this->getEmployees(withSchedules: true, officeId: $selectedOffice?->id);
+        $users = $this->getEmployees(withSchedules: true, officeId: $selectedOffice?->id, academicYearId: $activeYear?->id);
         $attendances = $this->getRangeAttendances($start, $end, $activeYear);
         $workDays = $this->countWorkDaysInRange($start, $end);
 
@@ -177,12 +177,14 @@ class ReportController extends Controller
 
     /**
      * Get all employees (non-admin users), optionally scoped to one office.
+     * When schedules are loaded, they are scoped to the given academic year so
+     * fines/statuses use the schedule of the year being reported on.
      */
-    private function getEmployees(bool $withSchedules = false, ?int $officeId = null): Collection
+    private function getEmployees(bool $withSchedules = false, ?int $officeId = null, ?int $academicYearId = null): Collection
     {
         $relations = ['role', 'office'];
         if ($withSchedules) {
-            $relations[] = 'workSchedules';
+            $relations['workSchedules'] = fn ($q) => $q->where('academic_year_id', $academicYearId);
         }
 
         return User::with($relations)

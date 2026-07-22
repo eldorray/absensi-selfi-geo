@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Employee;
 
 use App\Enums\AttendanceStatus;
 use App\Http\Controllers\Controller;
+use App\Models\AcademicYear;
 use App\Models\Announcement;
 use App\Models\Attendance;
 use App\Models\WorkSchedule;
@@ -32,12 +33,16 @@ class DashboardController extends Controller
             ->whereDate('created_at', today())
             ->first();
 
-        // Get today's work schedule
+        // Get today's work schedule, scoped to the active academic year.
         $todayDay = strtolower(now()->locale('id')->dayName);
-        $todaySchedule = WorkSchedule::where('user_id', $user->id)
-            ->where('day', $todayDay)
-            ->where('is_active', true)
-            ->first();
+        $activeYearId = AcademicYear::getActive()?->id;
+        $todaySchedule = $activeYearId
+            ? WorkSchedule::where('user_id', $user->id)
+                ->where('academic_year_id', $activeYearId)
+                ->where('day', $todayDay)
+                ->where('is_active', true)
+                ->first()
+            : null;
 
         // Check-out only opens at (schedule end - "before check-out" window).
         $checkoutOpensAt = WorkSchedule::checkoutOpensAt($todaySchedule, WorkSetting::current()->before_check_out);

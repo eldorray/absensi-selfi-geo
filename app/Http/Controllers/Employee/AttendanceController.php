@@ -171,10 +171,7 @@ class AttendanceController extends Controller
             ->whereDate('created_at', today())
             ->first();
 
-        $schedule = WorkSchedule::where('user_id', $user->id)
-            ->where('day', $this->todayDayName())
-            ->where('is_active', true)
-            ->first();
+        $schedule = $this->scheduleForToday($user->id);
 
         $checkoutOpensAt = WorkSchedule::checkoutOpensAt($schedule, WorkSetting::current()->before_check_out);
         $checkoutTimeReached = now()->gte($checkoutOpensAt);
@@ -299,14 +296,10 @@ class AttendanceController extends Controller
      */
     private function validateSchedule(int $userId): ?array
     {
-        $todayDay = strtolower(now()->locale('id')->dayName);
-        $schedule = WorkSchedule::where('user_id', $userId)
-            ->where('day', $todayDay)
-            ->where('is_active', true)
-            ->first();
+        $schedule = $this->scheduleForToday($userId);
 
         // Skip schedule check on Sunday if no schedule defined
-        if (! $schedule && $todayDay === 'minggu') {
+        if (! $schedule && $this->todayDayName() === 'minggu') {
             return ['message' => 'Hari ini (Minggu) adalah hari libur.', 'key' => 'schedule'];
         }
 
@@ -321,13 +314,8 @@ class AttendanceController extends Controller
     private function validateTimeWindow(): ?string
     {
         $workSettings = WorkSetting::current();
-        $todayDay = strtolower(now()->locale('id')->dayName);
-        $userId = Auth::id();
 
-        $schedule = WorkSchedule::where('user_id', $userId)
-            ->where('day', $todayDay)
-            ->where('is_active', true)
-            ->first();
+        $schedule = $this->scheduleForToday((int) Auth::id());
 
         $checkInTime = $schedule?->check_in_time ?? '07:00:00';
         $scheduleCheckIn = Carbon::parse($checkInTime);
@@ -374,6 +362,26 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Today's active work schedule for a user, scoped to the active academic
+     * year. Returns null when there is no active year or no matching schedule
+     * (the caller then falls back to default times).
+     */
+    private function scheduleForToday(int $userId): ?WorkSchedule
+    {
+        $activeYearId = AcademicYear::getActive()?->id;
+
+        if ($activeYearId === null) {
+            return null;
+        }
+
+        return WorkSchedule::where('user_id', $userId)
+            ->where('academic_year_id', $activeYearId)
+            ->where('day', $this->todayDayName())
+            ->where('is_active', true)
+            ->first();
+    }
+
+    /**
      * Validate the check-out time window.
      *
      * Check-out only opens at (schedule check-out time - "before check-out"
@@ -383,10 +391,7 @@ class AttendanceController extends Controller
     {
         $settings = WorkSetting::current();
 
-        $schedule = WorkSchedule::where('user_id', $userId)
-            ->where('day', $this->todayDayName())
-            ->where('is_active', true)
-            ->first();
+        $schedule = $this->scheduleForToday($userId);
 
         $opensAt = WorkSchedule::checkoutOpensAt($schedule, $settings->before_check_out);
 
@@ -403,13 +408,8 @@ class AttendanceController extends Controller
     private function determineAttendanceStatus(): AttendanceStatus
     {
         $workSettings = WorkSetting::current();
-        $todayDay = strtolower(now()->locale('id')->dayName);
-        $userId = Auth::id();
 
-        $schedule = WorkSchedule::where('user_id', $userId)
-            ->where('day', $todayDay)
-            ->where('is_active', true)
-            ->first();
+        $schedule = $this->scheduleForToday((int) Auth::id());
 
         $checkInTime = $schedule?->check_in_time ?? '07:00:00';
         $scheduleCheckIn = Carbon::parse($checkInTime);

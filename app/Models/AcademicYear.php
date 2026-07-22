@@ -67,20 +67,16 @@ class AcademicYear extends Model
 
     /**
      * Activate this academic year and deactivate all others.
-     * Optionally reset work schedules for the new year.
+     *
+     * Work schedules are scoped per academic year (via academic_year_id), so
+     * switching years never touches another year's schedules — each year keeps
+     * its own set.
      */
-    public function activate(bool $resetSchedules = true): void
+    public function activate(): void
     {
-        // Deactivate all other academic years
         static::where('id', '!=', $this->id)->update(['is_active' => false]);
-        
-        // Activate this one
+
         $this->update(['is_active' => true]);
-        
-        // Reset work schedules if requested
-        if ($resetSchedules) {
-            WorkSchedule::query()->update(['is_active' => false]);
-        }
     }
 
     /**
@@ -89,6 +85,7 @@ class AcademicYear extends Model
     public function containsDate($date): bool
     {
         $date = $date instanceof \Carbon\Carbon ? $date : \Carbon\Carbon::parse($date);
+
         return $date->between($this->start_date, $this->end_date);
     }
 }
