@@ -85,6 +85,15 @@ test('admin can target an announcement at a specific office', function () {
     expect(Announcement::where('title', 'Rapat SMP')->value('office_id'))->toBe($smp->id);
 });
 
+test('the image url is a request-relative storage path, not APP_URL bound', function () {
+    $ann = Announcement::create([
+        'title' => 'Ada Gambar', 'body' => 'x', 'is_active' => true,
+        'image_path' => 'announcements/foto.jpg',
+    ]);
+
+    expect($ann->image_url)->toContain('/storage/announcements/foto.jpg');
+});
+
 test('an empty office selection stores a global announcement', function () {
     actingAs(annAdmin())->post(route('admin.announcements.store'), [
         'title' => 'Untuk Semua',

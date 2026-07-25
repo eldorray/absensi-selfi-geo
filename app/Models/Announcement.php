@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Announcement Model - Dynamic info cards shown to employees on their dashboard.
@@ -84,9 +83,13 @@ class Announcement extends Model
 
     /**
      * Public URL for the card image, or null when none uploaded.
+     *
+     * Uses asset() (request-relative) rather than Storage::url(), which is
+     * bound to a possibly-misconfigured APP_URL — this matches how selfie and
+     * leave images are served and works regardless of the APP_URL value.
      */
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image_path ? Storage::disk('public')->url($this->image_path) : null;
+        return $this->image_path ? asset('storage/'.$this->image_path) : null;
     }
 }
