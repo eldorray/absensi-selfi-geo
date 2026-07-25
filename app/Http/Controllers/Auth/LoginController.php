@@ -40,14 +40,14 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        // Redirect based on user role
+        // Always land on the role's home ("beranda") after login — never a
+        // previously-intended deep URL.
         $user = Auth::user();
 
         if ($user->isAdmin()) {
-            return redirect()->intended(route('admin.dashboard'));
+            return redirect()->route('admin.dashboard');
         }
 
-        // Employee/Teacher goes directly to dashboard
         return redirect()->route('attendance.dashboard');
     }
 

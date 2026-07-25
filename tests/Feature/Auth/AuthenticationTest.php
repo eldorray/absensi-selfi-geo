@@ -21,6 +21,17 @@ test('users can authenticate using the login screen', function () {
     $response->assertRedirect(route('attendance.dashboard', absolute: false));
 });
 
+test('admin login lands on the admin dashboard and ignores an intended url', function () {
+    $role = \App\Models\Role::firstOrCreate(['slug' => 'administrator'], ['name' => 'Administrator', 'is_admin' => true]);
+    $admin = User::factory()->create(['role_id' => $role->id]);
+
+    $response = $this->withSession(['url.intended' => route('admin.users.index')])
+        ->post('/login', ['email' => $admin->email, 'password' => 'password']);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('admin.dashboard', absolute: false));
+});
+
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
