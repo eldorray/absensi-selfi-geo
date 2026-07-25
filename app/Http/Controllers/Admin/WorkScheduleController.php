@@ -97,7 +97,7 @@ class WorkScheduleController extends Controller
 
         if ($activeYear === null) {
             return redirect()
-                ->route('admin.work-schedules.index')
+                ->route('admin.work-schedules.index', request()->query())
                 ->with('error', 'Aktifkan tahun ajaran terlebih dahulu sebelum mengatur jam kerja.');
         }
 
@@ -124,7 +124,7 @@ class WorkScheduleController extends Controller
 
         if ($activeYear === null) {
             return redirect()
-                ->route('admin.work-schedules.index')
+                ->route('admin.work-schedules.index', $request->query())
                 ->with('error', 'Aktifkan tahun ajaran terlebih dahulu sebelum mengatur jam kerja.');
         }
 
@@ -147,7 +147,7 @@ class WorkScheduleController extends Controller
         }
 
         return redirect()
-            ->route('admin.work-schedules.index')
+            ->route('admin.work-schedules.index', $request->query())
             ->with('success', 'Jadwal kerja '.$user->name.' berhasil diperbarui.');
     }
 
@@ -155,13 +155,13 @@ class WorkScheduleController extends Controller
      * Copy this user's schedules from the most recent prior academic year into
      * the active year, so the admin doesn't have to re-enter them each year.
      */
-    public function copyFromPrevious(User $user): RedirectResponse
+    public function copyFromPrevious(Request $request, User $user): RedirectResponse
     {
         $activeYear = AcademicYear::getActive();
 
         if ($activeYear === null) {
             return redirect()
-                ->route('admin.work-schedules.index')
+                ->route('admin.work-schedules.index', $request->query())
                 ->with('error', 'Aktifkan tahun ajaran terlebih dahulu sebelum mengatur jam kerja.');
         }
 
@@ -187,7 +187,7 @@ class WorkScheduleController extends Controller
         }
 
         return redirect()
-            ->route('admin.work-schedules.edit', $user)
+            ->route('admin.work-schedules.edit', ['user' => $user] + $request->query())
             ->with('success', 'Jadwal disalin dari tahun ajaran '.$previousYear->name.'.');
     }
 

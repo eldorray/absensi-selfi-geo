@@ -191,7 +191,7 @@
                                     </span>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-right" @click.stop>
-                                    <a href="{{ route('admin.work-schedules.edit', $user) }}"
+                                    <a href="{{ route('admin.work-schedules.edit', ['user' => $user] + request()->query()) }}"
                                         class="admin-button-primary admin-icon-action inline-flex items-center gap-1.5 px-3 text-xs">
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">

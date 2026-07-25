@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AcademicYear;
 use App\Models\Office;
 use App\Models\Role;
 use App\Models\User;
@@ -94,4 +95,28 @@ test('work schedules page renders a live search input', function () {
         ->get(route('admin.work-schedules.index'))
         ->assertStatus(200)
         ->assertSee('Cari nama');
+});
+
+test('saving a schedule returns to the active office filter', function () {
+    $mi = jadwalOffice('MI Daarul Hikmah');
+    $guru = jadwalGuru('Guru MI', $mi);
+    AcademicYear::create([
+        'name' => '2025/2026', 'start_date' => '2025-07-01', 'end_date' => '2026-06-30', 'is_active' => true,
+    ]);
+
+    $this->actingAs(jadwalAdmin())
+        ->put(route('admin.work-schedules.update', ['user' => $guru, 'office_id' => $mi->id]), [
+            'schedules' => ['senin' => ['check_in_time' => '07:00', 'check_out_time' => '12:00', 'is_active' => '1']],
+        ])
+        ->assertRedirect(route('admin.work-schedules.index', ['office_id' => $mi->id]));
+});
+
+test('the schedule edit link carries the active office filter', function () {
+    $mi = jadwalOffice('MI Daarul Hikmah');
+    $guru = jadwalGuru('Guru MI', $mi);
+
+    $this->actingAs(jadwalAdmin())
+        ->get(route('admin.work-schedules.index', ['office_id' => $mi->id]))
+        ->assertStatus(200)
+        ->assertSee(route('admin.work-schedules.edit', ['user' => $guru, 'office_id' => $mi->id]), false);
 });
