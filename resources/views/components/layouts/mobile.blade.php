@@ -311,7 +311,99 @@
             color: var(--nav-btn-inactive-text);
             transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
         }
-        
+
+        /* Reference-style bottom navigation bar (elevated center actions) */
+        .footer-nav {
+            background: #12141b;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.28);
+        }
+        body.light-theme .footer-nav {
+            background: #ffffff;
+            border-top: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            text-decoration: none;
+        }
+        .nav-pill {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 18px;
+            border-radius: 14px;
+            color: var(--footer-icon-color);
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        .nav-item.is-active .nav-pill {
+            background: rgba(34, 211, 238, 0.15);
+            color: var(--active-nav-color);
+        }
+        body.light-theme .nav-item.is-active .nav-pill {
+            background: rgba(99, 102, 241, 0.12);
+        }
+        .nav-label {
+            font-size: 8px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.02em;
+            color: var(--footer-icon-color);
+        }
+        .nav-item.is-active .nav-label {
+            color: var(--active-nav-color);
+        }
+        .nav-fab {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 9999px;
+            border: 3px solid #12141b;
+            margin-top: -20px;
+            transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        body.light-theme .nav-fab {
+            border-color: #ffffff;
+        }
+        .nav-fab svg {
+            width: 22px;
+            height: 22px;
+        }
+        .nav-fab:active {
+            transform: scale(0.93);
+        }
+        .nav-fab-masuk {
+            background: linear-gradient(135deg, #34d399, #059669);
+            color: #04291a;
+            box-shadow: 0 10px 22px rgba(16, 185, 129, 0.45);
+        }
+        .nav-fab-pulang {
+            background: linear-gradient(135deg, #fbbf24, #ea580c);
+            color: #3a1c00;
+            box-shadow: 0 10px 22px rgba(234, 88, 12, 0.42);
+        }
+        .nav-fab-off {
+            background: var(--nav-btn-inactive-bg);
+            color: var(--nav-btn-inactive-text);
+            box-shadow: none;
+        }
+        .nav-fab.is-ring {
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.45);
+        }
+        .nav-label--ok {
+            color: #10b981;
+        }
+        .nav-label--late {
+            color: #f59e0b;
+        }
+
         /* Statuses Theme Mapping */
         .theme-status-ok-text {
             color: var(--status-ok-text);
@@ -486,63 +578,63 @@
 
                 <!-- 3. Bottom Navigation Bar (Fixed at bottom) -->
                 @if($showNav)
-                    <nav class="theme-border-t relative z-10 flex items-center justify-between pt-3 pb-1 mt-1 w-full bg-transparent px-3">
+                    <nav class="footer-nav relative z-10 flex items-end justify-between w-full px-2 pt-2 pb-1 mt-1">
                         <!-- Beranda -->
-                        <a href="{{ route('attendance.dashboard') }}" class="footer-nav-item @if($activeTab === 'beranda') active @endif flex-1 flex flex-col items-center gap-0.5">
-                            <svg class="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                            </svg>
-                            <span class="text-[7.5px] font-bold font-outfit">Beranda</span>
+                        <a href="{{ route('attendance.dashboard') }}" class="nav-item @if($activeTab === 'beranda') is-active @endif">
+                            <span class="nav-pill">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                                </svg>
+                            </span>
+                            <span class="nav-label">Beranda</span>
                         </a>
 
                         <!-- Masuk (Selfie) -->
-                        <a href="{{ route('attendance.selfie') }}" class="flex-1 flex flex-col items-center -mt-4">
+                        <a href="{{ route('attendance.selfie') }}" class="nav-item">
                             @if ($todayAttendance)
-                                <!-- Already Checked In -->
-                                <div class="theme-nav-inactive w-10.5 h-10.5 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <span class="nav-fab nav-fab-off">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                                     </svg>
-                                </div>
-                                <span class="text-[7.5px] font-bold theme-text-muted mt-1 font-outfit">Masuk</span>
+                                </span>
+                                <span class="nav-label">Masuk</span>
                             @else
-                                <!-- Ready to Check In -->
-                                <div class="w-10.5 h-10.5 rounded-full flex items-center justify-center bg-gradient-to-r from-green-400 to-emerald-400 shadow-[0_6px_16px_rgba(16,185,129,0.25)] hover:scale-105 active:scale-95 transition-transform duration-300 @if($activeTab === 'masuk') ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-900 @endif">
-                                    <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <span class="nav-fab nav-fab-masuk @if($activeTab === 'masuk') is-ring @endif">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                                     </svg>
-                                </div>
-                                <span class="text-[7.5px] font-bold theme-status-ok-text mt-1 font-outfit">Masuk</span>
+                                </span>
+                                <span class="nav-label nav-label--ok">Masuk</span>
                             @endif
                         </a>
 
                         <!-- Pulang (Checkout) -->
-                        <a href="{{ route('attendance.checkout') }}" class="flex-1 flex flex-col items-center -mt-4">
+                        <a href="{{ route('attendance.checkout') }}" class="nav-item">
                             @if ($canCheckout)
-                                <!-- Ready to Check Out -->
-                                <div class="w-10.5 h-10.5 rounded-full flex items-center justify-center bg-gradient-to-r from-amber-400 to-orange-400 shadow-[0_6px_16px_rgba(245,158,11,0.25)] hover:scale-105 active:scale-95 transition-transform duration-300 @if($activeTab === 'pulang') ring-2 ring-amber-500 ring-offset-2 ring-offset-slate-900 @endif">
-                                    <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <span class="nav-fab nav-fab-pulang @if($activeTab === 'pulang') is-ring @endif">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                     </svg>
-                                </div>
-                                <span class="text-[7.5px] font-bold theme-status-late-text mt-1 font-outfit">Pulang</span>
+                                </span>
+                                <span class="nav-label nav-label--late">Pulang</span>
                             @else
-                                <!-- Cannot Check Out -->
-                                <div class="theme-nav-inactive w-10.5 h-10.5 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <span class="nav-fab nav-fab-off">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                     </svg>
-                                </div>
-                                <span class="text-[7.5px] font-bold theme-text-muted mt-1 font-outfit">Pulang</span>
+                                </span>
+                                <span class="nav-label">Pulang</span>
                             @endif
                         </a>
 
                         <!-- Riwayat -->
-                        <a href="{{ route('attendance.index') }}" class="footer-nav-item @if($activeTab === 'riwayat') active @endif flex-1 flex flex-col items-center gap-0.5 hover:text-slate-400 transition-colors">
-                            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                            </svg>
-                            <span class="text-[7.5px] font-bold font-outfit">Riwayat</span>
+                        <a href="{{ route('attendance.index') }}" class="nav-item @if($activeTab === 'riwayat') is-active @endif">
+                            <span class="nav-pill">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                </svg>
+                            </span>
+                            <span class="nav-label">Riwayat</span>
                         </a>
                     </nav>
                 @endif
