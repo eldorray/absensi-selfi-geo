@@ -107,7 +107,7 @@ test('dashboard hides the check-out button before the window opens', function ()
     $this->actingAs($user)
         ->get(route('attendance.dashboard'))
         ->assertStatus(200)
-        ->assertDontSee('from-amber-400 to-orange-400');
+        ->assertDontSee('nav-fab nav-fab-pulang');
 });
 
 test('dashboard shows the check-out button once the window opens', function () {
@@ -121,5 +121,5 @@ test('dashboard shows the check-out button once the window opens', function () {
     $this->actingAs($user)
         ->get(route('attendance.dashboard'))
         ->assertStatus(200)
-        ->assertSee('from-amber-400 to-orange-400');
+        ->assertSee('nav-fab nav-fab-pulang');
 });
