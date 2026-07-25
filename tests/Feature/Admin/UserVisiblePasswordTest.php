@@ -136,3 +136,22 @@ test('non-admin cannot reset a password', function () {
 
     expect(Hash::check('Guru12345', $target->fresh()->password))->toBeFalse();
 });
+
+test('editing a user returns to the same list page instead of page 1', function () {
+    $guru = vpGuru();
+
+    actingAs(vpAdmin())->put(route('admin.users.update', ['user' => $guru, 'page' => 3]), [
+        'name' => 'Nama Baru',
+        'email' => $guru->email,
+        'role_id' => $guru->role_id,
+    ])->assertRedirect(route('admin.users.index', ['page' => 3]));
+});
+
+test('the edit link carries the current list query', function () {
+    $guru = vpGuru(['name' => 'Guru Halaman']);
+
+    // Same `['user' => $user] + request()->query()` threading carries page too.
+    actingAs(vpAdmin())->get(route('admin.users.index', ['search' => 'Halaman']))
+        ->assertStatus(200)
+        ->assertSee(route('admin.users.edit', ['user' => $guru, 'search' => 'Halaman']), false);
+});

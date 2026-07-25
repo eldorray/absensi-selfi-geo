@@ -190,7 +190,7 @@
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('admin.users.edit', $user) }}"
+                                        <a href="{{ route('admin.users.edit', ['user' => $user] + request()->query()) }}"
                                             class="admin-button-primary admin-icon-action size-11 p-0"
                                             title="Edit user">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor"

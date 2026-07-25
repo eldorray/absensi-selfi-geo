@@ -275,7 +275,7 @@ class UserController extends Controller
         }
 
         return redirect()
-            ->route('admin.users.index')
+            ->route('admin.users.index', $request->query())
             ->with('success', 'User berhasil diperbarui.');
     }
 
@@ -305,8 +305,8 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'User berhasil dihapus.');
+        // back() returns to the same paginated/filtered list the delete was
+        // triggered from, instead of jumping to page 1.
+        return back()->with('success', 'User berhasil dihapus.');
     }
 }

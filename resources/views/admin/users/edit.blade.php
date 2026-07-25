@@ -1,7 +1,7 @@
 <x-layouts.app>
     <div class="mx-auto max-w-2xl space-y-6">
         <x-admin.page-header kicker="Master Data" title="Edit User" description="Perbarui akun {{ $user->name }}">
-            <a href="{{ route('admin.users.index') }}"
+            <a href="{{ route('admin.users.index', request()->query()) }}"
                 class="admin-button-secondary inline-flex items-center gap-1.5 px-4 py-2 text-sm">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -12,7 +12,7 @@
 
         <!-- Form -->
         <div class="admin-glass-panel p-6 md:p-8">
-            <form method="POST" action="{{ route('admin.users.update', $user) }}" class="space-y-6">
+            <form method="POST" action="{{ route('admin.users.update', ['user' => $user] + request()->query()) }}" class="space-y-6">
                 @csrf
                 @method('PUT')
 
@@ -120,7 +120,7 @@
 
                 <!-- Submit -->
                 <div class="flex items-center justify-end gap-3 pt-2">
-                    <a href="{{ route('admin.users.index') }}" class="admin-button-secondary px-4 py-2 text-sm">
+                    <a href="{{ route('admin.users.index', request()->query()) }}" class="admin-button-secondary px-4 py-2 text-sm">
                         Batal
                     </a>
                     <button type="submit" class="admin-button-primary px-6 py-2 text-sm">
