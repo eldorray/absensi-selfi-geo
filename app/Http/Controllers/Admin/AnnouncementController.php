@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
+use App\Models\Office;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -21,7 +22,8 @@ class AnnouncementController extends Controller
      */
     public function index(): View
     {
-        $announcements = Announcement::orderBy('sort_order')
+        $announcements = Announcement::with('office')
+            ->orderBy('sort_order')
             ->orderByDesc('created_at')
             ->paginate(15);
 
@@ -33,7 +35,9 @@ class AnnouncementController extends Controller
      */
     public function create(): View
     {
-        return view('admin.announcements.create');
+        return view('admin.announcements.create', [
+            'offices' => Office::orderBy('name')->get(),
+        ]);
     }
 
     /**
@@ -59,7 +63,10 @@ class AnnouncementController extends Controller
      */
     public function edit(Announcement $announcement): View
     {
-        return view('admin.announcements.edit', compact('announcement'));
+        return view('admin.announcements.edit', [
+            'announcement' => $announcement,
+            'offices' => Office::orderBy('name')->get(),
+        ]);
     }
 
     /**
@@ -120,12 +127,15 @@ class AnnouncementController extends Controller
             'title' => ['required', 'string', 'max:150'],
             'summary' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string'],
+            'office_id' => ['nullable', 'exists:offices,id'],
             'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = (int) $request->input('sort_order', 0);
+        // Empty select ("Semua Kantor") => global announcement.
+        $validated['office_id'] = $request->input('office_id') ?: null;
         unset($validated['image']);
 
         return $validated;

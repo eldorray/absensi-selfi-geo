@@ -63,7 +63,9 @@ class DashboardController extends Controller
         $totalAttendance = $monthlyPresent;
 
         // Active info cards for the swipeable "Informasi" section
-        $announcements = Announcement::activeOrdered()->get();
+        $announcements = Announcement::activeOrdered()
+            ->visibleToOffice($user->office_id)
+            ->get();
 
         return view('attendance.dashboard', [
             'todayAttendance' => $todayAttendance,

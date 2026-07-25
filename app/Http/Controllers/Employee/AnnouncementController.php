@@ -19,7 +19,12 @@ class AnnouncementController extends Controller
      */
     public function show(Announcement $announcement): View
     {
-        if (! $announcement->is_active) {
+        $officeId = auth()->user()?->office_id;
+
+        // Not visible if inactive, or targeted at a different office than the
+        // viewer's (null office_id = global, visible to everyone).
+        if (! $announcement->is_active
+            || ($announcement->office_id !== null && $announcement->office_id !== $officeId)) {
             throw new NotFoundHttpException;
         }
 

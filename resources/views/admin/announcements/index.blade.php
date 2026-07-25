@@ -39,6 +39,7 @@
                                         <div class="min-w-0">
                                             <p class="max-w-xs truncate text-sm font-bold">{{ $item->title }}</p>
                                             <p class="admin-muted max-w-xs truncate text-xs">{{ $item->summary }}</p>
+                                            <span class="admin-chip mt-1 inline-block">{{ $item->office?->name ?? 'Semua Kantor' }}</span>
                                         </div>
                                     </div>
                                 </td>

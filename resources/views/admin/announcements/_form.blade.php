@@ -30,6 +30,22 @@
 </div>
 
 <div>
+    <label for="office_id" class="admin-label">Kantor</label>
+    <select name="office_id" id="office_id"
+        class="admin-field p-2.5 @error('office_id') border-red-500 @enderror">
+        <option value="">Semua Kantor</option>
+        @foreach ($offices as $office)
+            <option value="{{ $office->id }}" @selected(old('office_id', $a?->office_id) == $office->id)>{{ $office->name }}
+            </option>
+        @endforeach
+    </select>
+    <p class="admin-hint">Pilih kantor tujuan, atau "Semua Kantor" agar tampil ke semua guru.</p>
+    @error('office_id')
+        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
     <label for="image" class="admin-label">Gambar</label>
     @if ($a?->image_url)
         <img src="{{ $a->image_url }}" alt="" class="mb-2 h-28 w-auto rounded-xl border object-cover"
