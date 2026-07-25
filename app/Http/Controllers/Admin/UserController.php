@@ -35,6 +35,12 @@ class UserController extends Controller
     ];
 
     /**
+     * Shared default password applied by the admin "reset password" action.
+     * The teacher is expected to change it after logging in.
+     */
+    private const DEFAULT_RESET_PASSWORD = 'Guru12345';
+
+    /**
      * Display a listing of users.
      */
     public function index(Request $request): View
@@ -271,6 +277,20 @@ class UserController extends Controller
         return redirect()
             ->route('admin.users.index')
             ->with('success', 'User berhasil diperbarui.');
+    }
+
+    /**
+     * Reset a user's password to the shared default ("Guru12345"). The visible
+     * copy follows automatically. The teacher should change it after logging in.
+     */
+    public function resetPassword(User $user): RedirectResponse
+    {
+        $user->update([
+            'password' => Hash::make(self::DEFAULT_RESET_PASSWORD),
+            'visible_password' => self::DEFAULT_RESET_PASSWORD,
+        ]);
+
+        return back()->with('success', 'Password '.$user->name.' direset ke "'.self::DEFAULT_RESET_PASSWORD.'".');
     }
 
     /**

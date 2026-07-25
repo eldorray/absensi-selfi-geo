@@ -201,6 +201,30 @@
                                             </svg>
                                         </a>
                                         @if ($user->id !== auth()->id())
+                                            <form action="{{ route('admin.users.reset-password', $user) }}"
+                                                method="POST" x-data="{}"
+                                                @submit.prevent="$dispatch('admin-confirm', {
+                                                    title: 'Reset Password',
+                                                    message: 'Reset password user ini ke default Guru12345? Password lama akan diganti.',
+                                                    confirmText: 'Reset',
+                                                    variant: 'primary',
+                                                    form: $el,
+                                                })">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="admin-button-secondary admin-icon-action size-11 p-0"
+                                                    title="Reset password ke Guru12345">
+                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M15 7a2 2 0 012 2m4-2a6 6 0 01-7.743 5.743L11 14H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
+                                                        </path>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        @endif
+                                        @if ($user->id !== auth()->id())
                                             <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
                                                 x-data="{}"
                                                 @submit.prevent="$dispatch('admin-confirm', {

@@ -115,3 +115,24 @@ test('non-admin cannot export the password PDF', function () {
     actingAs(vpGuru())->get(route('admin.users.export-pdf'))
         ->assertRedirect();
 });
+
+test('admin resets a password to the default and the visible copy follows', function () {
+    $guru = vpGuru();
+    $guru->update(['password' => Hash::make('sesuatu123'), 'visible_password' => 'sesuatu123']);
+
+    actingAs(vpAdmin())->post(route('admin.users.reset-password', $guru))
+        ->assertRedirect();
+
+    $guru->refresh();
+    expect(Hash::check('Guru12345', $guru->password))->toBeTrue();
+    expect($guru->visible_password)->toBe('Guru12345');
+});
+
+test('non-admin cannot reset a password', function () {
+    $target = vpGuru();
+
+    actingAs(vpGuru())->post(route('admin.users.reset-password', $target))
+        ->assertRedirect();
+
+    expect(Hash::check('Guru12345', $target->fresh()->password))->toBeFalse();
+});
