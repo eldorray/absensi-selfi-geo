@@ -308,11 +308,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             border-radius: 9999px;
-            margin-top: -18px;
-            transition: transform 0.2s ease, box-shadow 0.25s ease;
+            border: 3px solid #12141b;
+            margin-top: -20px;
+            transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        body.light-theme .nav-fab {
+            border-color: #ffffff;
         }
         .nav-fab svg {
             width: 22px;
@@ -333,7 +337,6 @@
         }
         .nav-fab-off {
             background: var(--nav-btn-inactive-bg);
-            border: 1px solid var(--nav-btn-inactive-border);
             color: var(--nav-btn-inactive-text);
             box-shadow: none;
         }
