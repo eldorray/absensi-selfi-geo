@@ -80,6 +80,9 @@
 <body>
     <div class="header">
         <h1>Daftar Kredensial Guru</h1>
+        @if ($selectedOffice)
+            <p><strong>Kantor: {{ $selectedOffice->name }}</strong></p>
+        @endif
         <p>Username &amp; password untuk login. Dokumen rahasia — simpan dengan aman.</p>
     </div>
 

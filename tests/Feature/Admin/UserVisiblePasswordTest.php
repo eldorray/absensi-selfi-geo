@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Office;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -145,6 +146,25 @@ test('editing a user returns to the same list page instead of page 1', function 
         'email' => $guru->email,
         'role_id' => $guru->role_id,
     ])->assertRedirect(route('admin.users.index', ['page' => 3]));
+});
+
+test('the password PDF export honours the office filter', function () {
+    $smp = Office::create(['name' => 'Kantor SMP', 'latitude' => -6.2, 'longitude' => 106.8, 'radius_meters' => 100]);
+    $mi = Office::create(['name' => 'Kantor MI', 'latitude' => -7.0, 'longitude' => 107.0, 'radius_meters' => 100]);
+    vpGuru(['name' => 'Guru SMP', 'office_id' => $smp->id])->update(['visible_password' => 'smp12345']);
+    vpGuru(['name' => 'Guru MI', 'office_id' => $mi->id])->update(['visible_password' => 'mi123456']);
+
+    actingAs(vpAdmin())->get(route('admin.users.export-pdf', ['office_id' => $smp->id]))
+        ->assertStatus(200)
+        ->assertDownload('kredensial-guru.pdf');
+});
+
+test('the PDF export button carries the active office filter', function () {
+    $smp = Office::create(['name' => 'Kantor SMP', 'latitude' => -6.2, 'longitude' => 106.8, 'radius_meters' => 100]);
+
+    actingAs(vpAdmin())->get(route('admin.users.index', ['office_id' => $smp->id]))
+        ->assertStatus(200)
+        ->assertSee(route('admin.users.export-pdf', ['office_id' => $smp->id]), false);
 });
 
 test('the edit link carries the current list query', function () {

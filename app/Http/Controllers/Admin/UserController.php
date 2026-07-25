@@ -81,14 +81,29 @@ class UserController extends Controller
      * Export a credential list (name / username / password) for teachers as PDF.
      * Admin-only (whole admin area is behind AdminMiddleware).
      */
-    public function exportPasswordsPdf(): Response
+    public function exportPasswordsPdf(Request $request): Response
     {
+        $officeId = $request->input('office_id');
+        $selectedOffice = $officeId ? Office::find((int) $officeId) : null;
+
+        // Honour the same office / role / search filters shown on the list, so
+        // the PDF matches what the admin is currently viewing.
         $users = User::with('office')
             ->whereHas('role', fn ($q) => $q->where('is_admin', false))
+            ->when($selectedOffice, fn ($q) => $q->where('office_id', $selectedOffice->id))
+            ->when($request->filled('role_id'), fn ($q) => $q->where('role_id', $request->input('role_id')))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $search = $request->input('search');
+                $q->where(fn ($w) => $w->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%"));
+            })
             ->orderBy('name')
             ->get();
 
-        $pdf = Pdf::loadView('admin.users.passwords-pdf', ['users' => $users]);
+        $pdf = Pdf::loadView('admin.users.passwords-pdf', [
+            'users' => $users,
+            'selectedOffice' => $selectedOffice,
+        ]);
 
         return $pdf->download('kredensial-guru.pdf');
     }
