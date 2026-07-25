@@ -373,9 +373,9 @@
                             <!-- Options Layer -->
                             <div class="flex items-center justify-between gap-3 pt-1">
                                 <label class="flex items-center gap-2 text-xs theme-text-muted cursor-pointer select-none">
-                                    <input type="checkbox" name="remember"
+                                    <input type="checkbox" name="remember" checked
                                         class="rounded border-slate-500/20 text-cyan-600 focus:ring-cyan-500/20 bg-transparent w-4 h-4">
-                                    <span>Ingat saya</span>
+                                    <span>Ingat saya <span class="opacity-60">(30 hari)</span></span>
                                 </label>
 
                                 @if (Route::has('password.request'))
