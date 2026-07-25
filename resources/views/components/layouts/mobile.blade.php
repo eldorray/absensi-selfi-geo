@@ -5,15 +5,6 @@
     'showNav' => true,
 ])
 
-@php
-    $user = auth()->user();
-    // Resolve today's attendance status if not passed
-    $todayAttendance = $todayAttendance ?? ($user ? \App\Models\Attendance::where('user_id', $user->id)
-        ->whereDate('created_at', today())
-        ->first() : null);
-    $canCheckout = $todayAttendance && !$todayAttendance->hasCheckedOut();
-@endphp
-
 <!DOCTYPE html>
 <html lang="id" class="h-full overflow-hidden">
 
@@ -389,19 +380,8 @@
             color: #3a1c00;
             box-shadow: 0 10px 22px rgba(234, 88, 12, 0.42);
         }
-        .nav-fab-off {
-            background: var(--nav-btn-inactive-bg);
-            color: var(--nav-btn-inactive-text);
-            box-shadow: none;
-        }
         .nav-fab.is-ring {
             box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.45);
-        }
-        .nav-label--ok {
-            color: #10b981;
-        }
-        .nav-label--late {
-            color: #f59e0b;
         }
 
         /* Statuses Theme Mapping */
@@ -591,40 +571,22 @@
 
                         <!-- Masuk (Selfie) -->
                         <a href="{{ route('attendance.selfie') }}" class="nav-item">
-                            @if ($todayAttendance)
-                                <span class="nav-fab nav-fab-off">
-                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                                    </svg>
-                                </span>
-                                <span class="nav-label">Masuk</span>
-                            @else
-                                <span class="nav-fab nav-fab-masuk @if($activeTab === 'masuk') is-ring @endif">
-                                    <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                                    </svg>
-                                </span>
-                                <span class="nav-label nav-label--ok">Masuk</span>
-                            @endif
+                            <span class="nav-fab nav-fab-masuk @if($activeTab === 'masuk') is-ring @endif">
+                                <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                                </svg>
+                            </span>
+                            <span class="nav-label">Masuk</span>
                         </a>
 
                         <!-- Pulang (Checkout) -->
                         <a href="{{ route('attendance.checkout') }}" class="nav-item">
-                            @if ($canCheckout)
-                                <span class="nav-fab nav-fab-pulang @if($activeTab === 'pulang') is-ring @endif">
-                                    <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                    </svg>
-                                </span>
-                                <span class="nav-label nav-label--late">Pulang</span>
-                            @else
-                                <span class="nav-fab nav-fab-off">
-                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                    </svg>
-                                </span>
-                                <span class="nav-label">Pulang</span>
-                            @endif
+                            <span class="nav-fab nav-fab-pulang @if($activeTab === 'pulang') is-ring @endif">
+                                <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                            </span>
+                            <span class="nav-label">Pulang</span>
                         </a>
 
                         <!-- Riwayat -->

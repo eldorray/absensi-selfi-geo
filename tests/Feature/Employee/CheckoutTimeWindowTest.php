@@ -96,7 +96,10 @@ test('checkout passes the time gate once the window opens', function () {
     expect($errors['time'] ?? null)->toBeNull();
 });
 
-test('dashboard hides the check-out button before the window opens', function () {
+// The nav action buttons carry a fixed colour: green for Masuk, amber for
+// Pulang, whatever today's attendance state is. Availability is enforced
+// server-side (see the 422 tests above), not signalled by a muted button.
+test('dashboard shows the check-out button in its static colour before the window opens', function () {
     $today = Carbon::parse('2026-07-20');
     WorkSetting::current()->update(['before_check_out' => 30]);
 
@@ -107,10 +110,11 @@ test('dashboard hides the check-out button before the window opens', function ()
     $this->actingAs($user)
         ->get(route('attendance.dashboard'))
         ->assertStatus(200)
-        ->assertDontSee('nav-fab nav-fab-pulang');
+        ->assertSee('nav-fab nav-fab-pulang')
+        ->assertDontSee('nav-fab-off');
 });
 
-test('dashboard shows the check-out button once the window opens', function () {
+test('dashboard shows the check-out button in its static colour once the window opens', function () {
     $today = Carbon::parse('2026-07-20');
     WorkSetting::current()->update(['before_check_out' => 30]);
 
@@ -121,5 +125,20 @@ test('dashboard shows the check-out button once the window opens', function () {
     $this->actingAs($user)
         ->get(route('attendance.dashboard'))
         ->assertStatus(200)
-        ->assertSee('nav-fab nav-fab-pulang');
+        ->assertSee('nav-fab nav-fab-pulang')
+        ->assertDontSee('nav-fab-off');
+});
+
+test('dashboard shows the check-in button in its static colour after checking in', function () {
+    $today = Carbon::parse('2026-07-20');
+
+    $user = checkedInEmployee($today);
+
+    Carbon::setTestNow($today->copy()->setTime(9, 0));
+
+    $this->actingAs($user)
+        ->get(route('attendance.dashboard'))
+        ->assertStatus(200)
+        ->assertSee('nav-fab nav-fab-masuk')
+        ->assertDontSee('nav-fab-off');
 });

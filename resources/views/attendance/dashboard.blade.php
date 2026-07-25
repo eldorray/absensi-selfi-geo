@@ -335,20 +335,6 @@
             color: #3a1c00;
             box-shadow: 0 10px 22px rgba(234, 88, 12, 0.42);
         }
-        .nav-fab-off {
-            background: var(--nav-btn-inactive-bg);
-            color: var(--nav-btn-inactive-text);
-            box-shadow: none;
-        }
-        .nav-fab.is-ring {
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.45);
-        }
-        .nav-label--ok {
-            color: #10b981;
-        }
-        .nav-label--late {
-            color: #f59e0b;
-        }
 
         /* Custom Theme Borders to prevent black-line specificity issues */
         .theme-border {
@@ -881,9 +867,6 @@
                 </div>
 
                 <!-- 3. Bottom Navigation Bar (Fixed at bottom) -->
-                @php
-                    $canCheckout = $todayAttendance && !$todayAttendance->hasCheckedOut() && ($checkoutTimeReached ?? false);
-                @endphp
                 <nav class="footer-nav relative z-10 flex items-end justify-between w-full px-2 pt-2 pb-1 mt-1">
                     <!-- Beranda (Active) -->
                     <a href="{{ route('attendance.dashboard') }}" class="nav-item is-active">
@@ -897,40 +880,22 @@
 
                     <!-- Masuk (Selfie) -->
                     <a href="{{ route('attendance.selfie') }}" class="nav-item">
-                        @if ($todayAttendance)
-                            <span class="nav-fab nav-fab-off">
-                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Masuk</span>
-                        @else
-                            <span class="nav-fab nav-fab-masuk">
-                                <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label nav-label--ok">Masuk</span>
-                        @endif
+                        <span class="nav-fab nav-fab-masuk">
+                            <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                            </svg>
+                        </span>
+                        <span class="nav-label">Masuk</span>
                     </a>
 
                     <!-- Pulang (Checkout) -->
                     <a href="{{ route('attendance.checkout') }}" class="nav-item">
-                        @if ($canCheckout)
-                            <span class="nav-fab nav-fab-pulang">
-                                <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label nav-label--late">Pulang</span>
-                        @else
-                            <span class="nav-fab nav-fab-off">
-                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Pulang</span>
-                        @endif
+                        <span class="nav-fab nav-fab-pulang">
+                            <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                        </span>
+                        <span class="nav-label">Pulang</span>
                     </a>
 
                     <!-- Riwayat -->
