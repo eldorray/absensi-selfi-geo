@@ -35,8 +35,8 @@ test('the status banner dismisses itself after 10 seconds and on tap when late',
     $this->actingAs($user)
         ->get(route('attendance.dashboard'))
         ->assertStatus(200)
-        ->assertSee('setTimeout(() => show = false, 10000)', false)
-        ->assertSee('@click="show = false"', false);
+        ->assertSee('setTimeout(() => dismiss(), 10000)', false)
+        ->assertSee('@click="dismiss()"', false);
 });
 
 test('the status banner dismisses itself after 10 seconds and on tap when present on time', function () {
@@ -45,6 +45,20 @@ test('the status banner dismisses itself after 10 seconds and on tap when presen
     $this->actingAs($user)
         ->get(route('attendance.dashboard'))
         ->assertStatus(200)
-        ->assertSee('setTimeout(() => show = false, 10000)', false)
-        ->assertSee('@click="show = false"', false);
+        ->assertSee('setTimeout(() => dismiss(), 10000)', false)
+        ->assertSee('@click="dismiss()"', false);
+});
+
+// Leaving beranda and coming back must not bring it back, so the dismissal is
+// remembered against today's attendance record. Tomorrow's check-in is a new
+// record, so the banner shows once again.
+test('the status banner remembers its dismissal against the attendance record', function () {
+    $user = bannerEmployeeCheckedIn(AttendanceStatus::Late);
+    $id = Attendance::where('user_id', $user->id)->value('id');
+
+    $this->actingAs($user)
+        ->get(route('attendance.dashboard'))
+        ->assertStatus(200)
+        ->assertSee("localStorage.getItem('statusBannerSeen') !== '{$id}'", false)
+        ->assertSee("localStorage.setItem('statusBannerSeen', '{$id}')", false);
 });

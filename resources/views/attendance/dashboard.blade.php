@@ -658,10 +658,15 @@
                         </div>
                     </div>
 
-                    <!-- Today Status check-in badge (a notice: clears after 10s, or on tap) -->
+                    <!-- Today Status check-in badge (a notice: clears after 10s, or on tap,
+                         and stays cleared until the next check-in) -->
                     @if ($todayAttendance)
-                        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show"
-                            @click="show = false" x-transition.opacity.duration.500ms
+                        <div x-data="{
+                                show: localStorage.getItem('statusBannerSeen') !== '{{ $todayAttendance->id }}',
+                                dismiss() { this.show = false; localStorage.setItem('statusBannerSeen', '{{ $todayAttendance->id }}'); },
+                            }"
+                            x-init="if (show) setTimeout(() => dismiss(), 10000)" x-show="show" x-cloak
+                            @click="dismiss()" x-transition.opacity.duration.500ms
                             class="rounded-2xl p-3.5 relative overflow-hidden cursor-pointer {{ $todayAttendance->status->value === 'late' ? 'theme-status-late-card theme-status-late-text' : 'theme-status-ok-card theme-status-ok-text' }}">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl overflow-hidden border border-white/20 flex-none bg-slate-900">
