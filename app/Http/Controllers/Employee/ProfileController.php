@@ -97,6 +97,7 @@ class ProfileController extends Controller
 
         Auth::user()->update([
             'password' => Hash::make($validated['password']),
+            'visible_password' => $validated['password'],
         ]);
 
         return back()->with('success', 'Password berhasil diubah.');

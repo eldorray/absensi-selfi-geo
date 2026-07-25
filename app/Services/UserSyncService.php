@@ -132,6 +132,7 @@ class UserSyncService
                 'name' => $nama,
                 'email' => Str::slug($nip, '.').self::EMAIL_DOMAIN,
                 'password' => Hash::make($nip),
+                'visible_password' => $nip,
                 'role_id' => $guruRoleId,
                 'office_id' => null,
                 'nip' => $nip,

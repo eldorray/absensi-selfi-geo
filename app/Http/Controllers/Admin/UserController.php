@@ -9,9 +9,11 @@ use App\Models\Office;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\UserSyncService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -70,6 +72,22 @@ class UserController extends Controller
     }
 
     /**
+     * Export a credential list (name / username / password) for teachers as PDF.
+     * Admin-only (whole admin area is behind AdminMiddleware).
+     */
+    public function exportPasswordsPdf(): Response
+    {
+        $users = User::with('office')
+            ->whereHas('role', fn ($q) => $q->where('is_admin', false))
+            ->orderBy('name')
+            ->get();
+
+        $pdf = Pdf::loadView('admin.users.passwords-pdf', ['users' => $users]);
+
+        return $pdf->download('kredensial-guru.pdf');
+    }
+
+    /**
      * Show the form for creating a new user.
      */
     public function create(): View
@@ -108,8 +126,9 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'visible_password' => $validated['password'],
             'role_id' => $validated['role_id'],
-            'office_id' => $validated['office_id'],
+            'office_id' => $validated['office_id'] ?? null,
         ]);
 
         return redirect()
@@ -228,7 +247,10 @@ class UserController extends Controller
 
         // Update password if provided
         if (! empty($validated['password'])) {
-            $user->update(['password' => Hash::make($validated['password'])]);
+            $user->update([
+                'password' => Hash::make($validated['password']),
+                'visible_password' => $validated['password'],
+            ]);
         }
 
         $linkedIds = collect((array) ($validated['linked_accounts'] ?? []))

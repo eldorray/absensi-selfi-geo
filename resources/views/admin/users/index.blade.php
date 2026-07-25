@@ -25,6 +25,15 @@
                     Sync Data Induk
                 </button>
             </form>
+            <a href="{{ route('admin.users.export-pdf') }}"
+                class="admin-button-secondary inline-flex items-center gap-2 px-4 py-2 text-sm">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+                </svg>
+                Cetak PDF Password
+            </a>
             <a href="{{ route('admin.users.create') }}"
                 class="admin-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,6 +111,7 @@
                             <th class="px-6 py-4 text-left">Email</th>
                             <th class="px-6 py-4 text-left">Role</th>
                             <th class="px-6 py-4 text-left">Kantor</th>
+                            <th class="px-6 py-4 text-left">Password</th>
                             <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -125,6 +135,58 @@
                                 </td>
                                 <td class="admin-muted whitespace-nowrap px-6 py-4 text-sm">
                                     {{ $user->office?->name ?? '-' }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    @if ($user->visible_password)
+                                        <div class="flex items-center gap-1.5"
+                                            x-data="{
+                                                show: false,
+                                                pw: @js($user->visible_password),
+                                                copied: false,
+                                                copy() {
+                                                    navigator.clipboard.writeText(this.pw);
+                                                    this.copied = true;
+                                                    setTimeout(() => this.copied = false, 1500);
+                                                },
+                                            }">
+                                            <span class="font-mono text-sm" x-text="show ? pw : '••••••••'"></span>
+                                            <button type="button" @click="show = !show"
+                                                class="admin-icon-action size-8 p-0"
+                                                :title="show ? 'Sembunyikan' : 'Lihat password'">
+                                                <svg x-show="!show" class="h-4 w-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                <svg x-show="show" x-cloak class="h-4 w-4" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                                </svg>
+                                            </button>
+                                            <button type="button" @click="copy()"
+                                                class="admin-icon-action size-8 p-0"
+                                                :title="copied ? 'Tersalin' : 'Salin password'">
+                                                <svg x-show="!copied" class="h-4 w-4" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                </svg>
+                                                <svg x-show="copied" x-cloak class="h-4 w-4 text-green-500"
+                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    @else
+                                        <span class="admin-muted text-xs italic">belum di-set</span>
+                                    @endif
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
@@ -168,7 +230,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5">
+                                <td colspan="6">
                                     <x-admin.empty-state icon="fas-users" title="Tidak ada user yang ditemukan"
                                         hint="Ubah kata kunci atau filter, atau tambahkan user baru." />
                                 </td>

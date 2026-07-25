@@ -86,6 +86,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // User management
     Route::post('users/sync', [Admin\UserController::class, 'syncFromApi'])->name('users.sync');
+    Route::get('users/export-pdf', [Admin\UserController::class, 'exportPasswordsPdf'])->name('users.export-pdf');
     Route::resource('users', Admin\UserController::class)->except(['show']);
 
     // Role management
