@@ -15,3 +15,18 @@ test('service worker precaches the dashboard beranda for offline launch', functi
 
     expect($sw)->toContain("'/attendance/dashboard'");
 });
+
+// Installed PWAs cache the manifest they were installed with, so an older
+// install still launches at /attendance. Nothing in the app links there —
+// every "Masuk" button uses attendance.selfie — so send it to beranda.
+test('the legacy /attendance url redirects to beranda instead of opening the camera', function () {
+    $role = App\Models\Role::firstOrCreate(
+        ['slug' => 'guru'],
+        ['name' => 'Guru', 'is_admin' => false],
+    );
+    $user = App\Models\User::factory()->create(['role_id' => $role->id]);
+
+    $this->actingAs($user)
+        ->get('/attendance')
+        ->assertRedirect('/attendance/dashboard');
+});

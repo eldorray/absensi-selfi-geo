@@ -55,25 +55,6 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Display the attendance check-in form (legacy).
-     */
-    public function create(): View
-    {
-        $user = Auth::user();
-        $offices = $this->officesForUser($user);
-
-        $todayAttendance = Attendance::where('user_id', $user->id)
-            ->whereDate('created_at', today())
-            ->first();
-
-        return view('attendance.selfie', [
-            'offices' => $offices,
-            'user' => $user,
-            'todayAttendance' => $todayAttendance,
-        ]);
-    }
-
-    /**
      * Store a new attendance record.
      */
     public function store(Request $request): RedirectResponse|JsonResponse

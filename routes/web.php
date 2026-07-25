@@ -41,7 +41,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('attendance/selfie', [Employee\AttendanceController::class, 'selfie'])->name('attendance.selfie');
     Route::get('attendance/checkout', [Employee\AttendanceController::class, 'checkout'])->name('attendance.checkout');
     Route::post('attendance/checkout', [Employee\AttendanceController::class, 'storeCheckout'])->name('attendance.checkout.store');
-    Route::get('attendance', [Employee\AttendanceController::class, 'create'])->name('attendance.create');
+    // Legacy check-in url, and the start_url of older PWA installs. Installed
+    // PWAs keep the manifest they were installed with, so this must land on
+    // beranda rather than opening the camera on launch.
+    Route::redirect('attendance', '/attendance/dashboard')->name('attendance.create');
     Route::post('attendance', [Employee\AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('attendance/history', [Employee\AttendanceController::class, 'index'])->name('attendance.index');
 
