@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#080710">
     <meta name="description" content="Halaman reset password aplikasi absensi digital MI Daarul Hikmah.">
-    <link rel="manifest" href="/manifest.json?v=2">
+    <link rel="manifest" href="/manifest.json?v=3">
     <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png?v=2">
     <title>Lupa Password - Absensi</title>
     
