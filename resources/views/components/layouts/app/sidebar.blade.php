@@ -13,44 +13,45 @@
                                 <x-layouts.sidebar-link href="{{ route('admin.dashboard') }}" icon='fas-house'
                                     :active="request()->routeIs('admin.dashboard')">Dashboard</x-layouts.sidebar-link>
 
-                                <li class="admin-nav-section" x-show="sidebarOpen">Master Data</li>
+                                @php
+                                    $masterActive = request()->routeIs('admin.academic-years.*', 'admin.offices.*', 'admin.users.*', 'admin.roles.*', 'admin.work-schedules.*');
+                                    $hadirActive = request()->routeIs('admin.reports.*', 'admin.attendances.*', 'admin.leaves.*');
+                                    $infoActive = request()->routeIs('admin.announcements.*', 'admin.account-switches.*');
+                                @endphp
 
-                                <x-layouts.sidebar-link href="{{ route('admin.academic-years.index') }}"
-                                    icon='fas-calendar' :active="request()->routeIs('admin.academic-years.*')">Tahun Ajaran</x-layouts.sidebar-link>
+                                {{-- Master Data --}}
+                                <x-layouts.sidebar-dropdown label="Master Data" icon="fas-database" :active="$masterActive">
+                                    <x-layouts.sidebar-link href="{{ route('admin.academic-years.index') }}"
+                                        icon='fas-calendar' :active="request()->routeIs('admin.academic-years.*')">Tahun Ajaran</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.offices.index') }}" icon='fas-building'
+                                        :active="request()->routeIs('admin.offices.*')">Kelola Kantor</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.users.index') }}" icon='fas-users'
+                                        :active="request()->routeIs('admin.users.*')">Kelola User</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.roles.index') }}" icon='fas-user-tag'
+                                        :active="request()->routeIs('admin.roles.*')">Kelola Role</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.work-schedules.index') }}"
+                                        icon='fas-clock' :active="request()->routeIs('admin.work-schedules.*')">Jam Kerja</x-layouts.sidebar-link>
+                                </x-layouts.sidebar-dropdown>
 
-                                <x-layouts.sidebar-link href="{{ route('admin.offices.index') }}" icon='fas-building'
-                                    :active="request()->routeIs('admin.offices.*')">Kelola Kantor</x-layouts.sidebar-link>
+                                {{-- Kehadiran --}}
+                                <x-layouts.sidebar-dropdown label="Kehadiran" icon="fas-calendar-check" :active="$hadirActive">
+                                    <x-layouts.sidebar-link href="{{ route('admin.reports.daily') }}"
+                                        icon='fas-calendar-day' :active="request()->routeIs('admin.reports.daily')">Rekap Harian</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.reports.monthly') }}"
+                                        icon='fas-calendar-alt' :active="request()->routeIs('admin.reports.monthly')">Rekap Bulanan</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.attendances.index') }}"
+                                        icon='fas-clipboard-list' :active="request()->routeIs('admin.attendances.*')">Detail Absensi</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.leaves.index') }}" icon='fas-file-alt'
+                                        :active="request()->routeIs('admin.leaves.*')">Perizinan</x-layouts.sidebar-link>
+                                </x-layouts.sidebar-dropdown>
 
-                                <x-layouts.sidebar-link href="{{ route('admin.users.index') }}" icon='fas-users'
-                                    :active="request()->routeIs('admin.users.*')">Kelola User</x-layouts.sidebar-link>
-
-                                <x-layouts.sidebar-link href="{{ route('admin.roles.index') }}" icon='fas-user-tag'
-                                    :active="request()->routeIs('admin.roles.*')">Kelola Role</x-layouts.sidebar-link>
-
-                                <x-layouts.sidebar-link href="{{ route('admin.work-schedules.index') }}"
-                                    icon='fas-clock' :active="request()->routeIs('admin.work-schedules.*')">Jam Kerja</x-layouts.sidebar-link>
-
-                                <li class="admin-nav-section" x-show="sidebarOpen">Kehadiran</li>
-
-                                <x-layouts.sidebar-link href="{{ route('admin.reports.daily') }}"
-                                    icon='fas-calendar-day' :active="request()->routeIs('admin.reports.daily')">Rekap Harian</x-layouts.sidebar-link>
-
-                                <x-layouts.sidebar-link href="{{ route('admin.reports.monthly') }}"
-                                    icon='fas-calendar-alt' :active="request()->routeIs('admin.reports.monthly')">Rekap Bulanan</x-layouts.sidebar-link>
-
-                                <x-layouts.sidebar-link href="{{ route('admin.attendances.index') }}"
-                                    icon='fas-clipboard-list' :active="request()->routeIs('admin.attendances.*')">Detail Absensi</x-layouts.sidebar-link>
-
-                                <x-layouts.sidebar-link href="{{ route('admin.leaves.index') }}" icon='fas-file-alt'
-                                    :active="request()->routeIs('admin.leaves.*')">Perizinan</x-layouts.sidebar-link>
-
-                                <li class="admin-nav-section" x-show="sidebarOpen">Komunikasi</li>
-
-                                <x-layouts.sidebar-link href="{{ route('admin.announcements.index') }}"
-                                    icon='fas-bullhorn' :active="request()->routeIs('admin.announcements.*')">Informasi</x-layouts.sidebar-link>
-
-                                <x-layouts.sidebar-link href="{{ route('admin.account-switches.index') }}"
-                                    icon='fas-right-left' :active="request()->routeIs('admin.account-switches.*')">Riwayat Ganti Akun</x-layouts.sidebar-link>
+                                {{-- Informasi --}}
+                                <x-layouts.sidebar-dropdown label="Informasi" icon="fas-bell" :active="$infoActive">
+                                    <x-layouts.sidebar-link href="{{ route('admin.announcements.index') }}"
+                                        icon='fas-bullhorn' :active="request()->routeIs('admin.announcements.*')">Informasi</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.account-switches.index') }}"
+                                        icon='fas-right-left' :active="request()->routeIs('admin.account-switches.*')">Riwayat Ganti Akun</x-layouts.sidebar-link>
+                                </x-layouts.sidebar-dropdown>
                             @else
                                 <!-- Employee Menu -->
                                 <x-layouts.sidebar-link href="{{ route('attendance.dashboard') }}" icon='fas-house'
