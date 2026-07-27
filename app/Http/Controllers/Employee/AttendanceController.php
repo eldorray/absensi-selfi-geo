@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Employee;
 
-use App\Enums\AttendanceStatus;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Attendance;
@@ -12,9 +11,8 @@ use App\Models\Office;
 use App\Models\User;
 use App\Models\WorkSchedule;
 use App\Models\WorkSetting;
+use App\Services\AttendanceService;
 use App\Services\ImageService;
-use App\Traits\HasHaversineCalculation;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,10 +27,9 @@ use Illuminate\View\View;
  */
 class AttendanceController extends Controller
 {
-    use HasHaversineCalculation;
-
     public function __construct(
-        private readonly ImageService $imageService
+        private readonly ImageService $imageService,
+        private readonly AttendanceService $attendance,
     ) {}
 
     /**
@@ -63,18 +60,18 @@ class AttendanceController extends Controller
         $isAjax = $request->expectsJson() || $request->ajax();
 
         // Check if already checked in today
-        if ($this->hasCheckedInToday($user->id)) {
+        if ($this->attendance->hasCheckedInToday($user)) {
             return $this->errorResponse('Anda sudah melakukan absensi hari ini.', 'attendance', $isAjax);
         }
 
         // Validate schedule
-        $scheduleValidation = $this->validateSchedule($user->id);
-        if ($scheduleValidation !== null) {
-            return $this->errorResponse($scheduleValidation['message'], $scheduleValidation['key'], $isAjax);
+        $dayOff = $this->attendance->dayOffError($user);
+        if ($dayOff !== null) {
+            return $this->errorResponse($dayOff, 'schedule', $isAjax);
         }
 
         // Validate time window
-        $timeValidation = $this->validateTimeWindow();
+        $timeValidation = $this->attendance->checkInWindowError($user);
         if ($timeValidation !== null) {
             return $this->errorResponse($timeValidation, 'time', $isAjax);
         }
@@ -96,20 +93,19 @@ class AttendanceController extends Controller
         // Get office and validate geofencing. When the employee is assigned to
         // an office, that office is authoritative — a tampered office_id in the
         // request is ignored so attendance cannot be recorded elsewhere.
+        /** @var Office $office */
         $office = $user->office_id
             ? Office::findOrFail($user->office_id)
             : Office::findOrFail($validated['office_id']);
-        $distance = $this->calculateHaversineDistance(
+        $distance = $this->attendance->distanceFrom(
+            $office,
             (float) $validated['latitude'],
             (float) $validated['longitude'],
-            (float) $office->latitude,
-            (float) $office->longitude
         );
 
-        if ($distance > $office->radius_meters) {
-            $msg = sprintf('Anda berada %.0f meter dari kantor. Jarak maksimal yang diizinkan adalah %d meter.', $distance, $office->radius_meters);
-
-            return $this->errorResponse($msg, 'location', $isAjax, true);
+        $outOfRange = $this->attendance->outOfRangeError($office, $distance);
+        if ($outOfRange !== null) {
+            return $this->errorResponse($outOfRange, 'location', $isAjax, true);
         }
 
         // Save image
@@ -119,7 +115,7 @@ class AttendanceController extends Controller
         }
 
         // Determine status and create attendance
-        $status = $this->determineAttendanceStatus();
+        $status = $this->attendance->statusNow($user);
 
         Attendance::create([
             'user_id' => $user->id,
@@ -152,7 +148,7 @@ class AttendanceController extends Controller
             ->whereDate('created_at', today())
             ->first();
 
-        $schedule = $this->scheduleForToday($user->id);
+        $schedule = WorkSchedule::todayFor((int) $user->id);
 
         $checkoutOpensAt = WorkSchedule::checkoutOpensAt($schedule, WorkSetting::current()->before_check_out);
         $checkoutTimeReached = now()->gte($checkoutOpensAt);
@@ -188,7 +184,7 @@ class AttendanceController extends Controller
         }
 
         // Enforce the check-out time window (schedule end - "before check-out").
-        $timeError = $this->validateCheckoutTimeWindow($user->id);
+        $timeError = $this->attendance->checkOutWindowError($user);
         if ($timeError !== null) {
             return $this->errorResponse($timeError, 'time', $isAjax);
         }
@@ -209,20 +205,19 @@ class AttendanceController extends Controller
         // Get office and validate geofencing. When the employee is assigned to
         // an office, that office is authoritative — a tampered office_id in the
         // request is ignored so attendance cannot be recorded elsewhere.
+        /** @var Office $office */
         $office = $user->office_id
             ? Office::findOrFail($user->office_id)
             : Office::findOrFail($validated['office_id']);
-        $distance = $this->calculateHaversineDistance(
+        $distance = $this->attendance->distanceFrom(
+            $office,
             (float) $validated['latitude'],
             (float) $validated['longitude'],
-            (float) $office->latitude,
-            (float) $office->longitude
         );
 
-        if ($distance > $office->radius_meters) {
-            $msg = sprintf('Anda berada %.0f meter dari kantor. Jarak maksimal yang diizinkan adalah %d meter.', $distance, $office->radius_meters);
-
-            return $this->errorResponse($msg, 'location', $isAjax, true);
+        $outOfRange = $this->attendance->outOfRangeError($office, $distance);
+        if ($outOfRange !== null) {
+            return $this->errorResponse($outOfRange, 'location', $isAjax, true);
         }
 
         // Save image
@@ -261,62 +256,6 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Check if user has already checked in today.
-     */
-    private function hasCheckedInToday(int $userId): bool
-    {
-        return Attendance::where('user_id', $userId)
-            ->whereDate('created_at', today())
-            ->exists();
-    }
-
-    /**
-     * Validate work schedule for today.
-     *
-     * @return array{message: string, key: string}|null
-     */
-    private function validateSchedule(int $userId): ?array
-    {
-        $schedule = $this->scheduleForToday($userId);
-
-        // Skip schedule check on Sunday if no schedule defined
-        if (! $schedule && $this->todayDayName() === 'minggu') {
-            return ['message' => 'Hari ini (Minggu) adalah hari libur.', 'key' => 'schedule'];
-        }
-
-        return null;
-    }
-
-    /**
-     * Validate check-in time window.
-     *
-     * @return string|null Error message if invalid, null if valid
-     */
-    private function validateTimeWindow(): ?string
-    {
-        $workSettings = WorkSetting::current();
-
-        $schedule = $this->scheduleForToday((int) Auth::id());
-
-        $checkInTime = $schedule?->check_in_time ?? '07:00:00';
-        $scheduleCheckIn = Carbon::parse($checkInTime);
-        $earliestCheckIn = $scheduleCheckIn->copy()->subMinutes($workSettings->before_check_in);
-        $latestCheckIn = $scheduleCheckIn->copy()->addMinutes($workSettings->late_limit);
-
-        $now = now();
-
-        if ($now->lt($earliestCheckIn)) {
-            return 'Anda belum dapat absen. Waktu absen dimulai pukul '.$earliestCheckIn->format('H:i').'.';
-        }
-
-        if ($now->gt($latestCheckIn)) {
-            return 'Waktu absen sudah berakhir. Batas absen adalah pukul '.$latestCheckIn->format('H:i').'.';
-        }
-
-        return null;
-    }
-
-    /**
      * Offices selectable by the user. When the user is assigned to an office,
      * only that office is returned so the picker is locked to it.
      *
@@ -329,74 +268,6 @@ class AttendanceController extends Controller
         }
 
         return Office::all();
-    }
-
-    /**
-     * The lowercase Indonesian name of today's day (e.g. "senin").
-     */
-    private function todayDayName(): string
-    {
-        $now = now();
-        $now->locale('id');
-
-        return strtolower($now->dayName);
-    }
-
-    /**
-     * Today's active work schedule for a user, scoped to the active academic
-     * year. Returns null when there is no active year or no matching schedule
-     * (the caller then falls back to default times).
-     */
-    private function scheduleForToday(int $userId): ?WorkSchedule
-    {
-        $activeYearId = AcademicYear::getActive()?->id;
-
-        if ($activeYearId === null) {
-            return null;
-        }
-
-        return WorkSchedule::where('user_id', $userId)
-            ->where('academic_year_id', $activeYearId)
-            ->where('day', $this->todayDayName())
-            ->where('is_active', true)
-            ->first();
-    }
-
-    /**
-     * Validate the check-out time window.
-     *
-     * Check-out only opens at (schedule check-out time - "before check-out"
-     * window). Returns an error message when it is still too early, else null.
-     */
-    private function validateCheckoutTimeWindow(int $userId): ?string
-    {
-        $settings = WorkSetting::current();
-
-        $schedule = $this->scheduleForToday($userId);
-
-        $opensAt = WorkSchedule::checkoutOpensAt($schedule, $settings->before_check_out);
-
-        if (now()->lt($opensAt)) {
-            return 'Belum waktunya absen pulang. Absen pulang dibuka pukul '.$opensAt->format('H:i').'.';
-        }
-
-        return null;
-    }
-
-    /**
-     * Determine attendance status based on time.
-     */
-    private function determineAttendanceStatus(): AttendanceStatus
-    {
-        $workSettings = WorkSetting::current();
-
-        $schedule = $this->scheduleForToday((int) Auth::id());
-
-        $checkInTime = $schedule?->check_in_time ?? '07:00:00';
-        $scheduleCheckIn = Carbon::parse($checkInTime);
-        $lateThreshold = $scheduleCheckIn->copy()->addMinutes($workSettings->after_check_in);
-
-        return now()->gt($lateThreshold) ? AttendanceStatus::Late : AttendanceStatus::Present;
     }
 
     /**

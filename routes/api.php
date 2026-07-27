@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Support\Facades\Route;
@@ -24,4 +25,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('logout', [AuthController::class, 'logout'])->name('api.logout');
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('api.dashboard');
+
+    Route::post('attendance', [AttendanceController::class, 'store'])->name('api.attendance.store');
+    Route::post('attendance/checkout', [AttendanceController::class, 'checkout'])->name('api.attendance.checkout');
 });
