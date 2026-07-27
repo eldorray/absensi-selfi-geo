@@ -86,6 +86,39 @@ class WorkSchedule extends Model
     }
 
     /**
+     * The lowercase Indonesian name of today's day (e.g. "senin").
+     */
+    public static function todayDayName(): string
+    {
+        $now = now();
+        $now->locale('id');
+
+        return strtolower($now->dayName);
+    }
+
+    /**
+     * A user's active schedule for today, scoped to the active academic year.
+     *
+     * Returns null when there is no active year or no matching schedule; the
+     * caller then falls back to the default times above.
+     */
+    public static function todayFor(int $userId): ?self
+    {
+        $activeYearId = AcademicYear::getActive()?->id;
+
+        if ($activeYearId === null) {
+            return null;
+        }
+
+        return self::query()
+            ->where('user_id', $userId)
+            ->where('academic_year_id', $activeYearId)
+            ->where('day', self::todayDayName())
+            ->where('is_active', true)
+            ->first();
+    }
+
+    /**
      * Get the user that owns this schedule.
      */
     public function user(): BelongsTo

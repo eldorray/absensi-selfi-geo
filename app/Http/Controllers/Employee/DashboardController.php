@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Employee;
 
-use App\Enums\AttendanceStatus;
 use App\Http\Controllers\Controller;
-use App\Models\AcademicYear;
-use App\Models\Announcement;
-use App\Models\Attendance;
-use App\Models\WorkSchedule;
-use App\Models\WorkSetting;
+use App\Services\EmployeeDashboardService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -21,6 +16,10 @@ use Illuminate\View\View;
  */
 class DashboardController extends Controller
 {
+    public function __construct(
+        private readonly EmployeeDashboardService $dashboard,
+    ) {}
+
     /**
      * Display the employee dashboard with attendance summary.
      */
@@ -28,54 +27,17 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Get today's attendance
-        $todayAttendance = Attendance::where('user_id', $user->id)
-            ->whereDate('created_at', today())
-            ->first();
-
-        // Get today's work schedule, scoped to the active academic year.
-        $todayDay = strtolower(now()->locale('id')->dayName);
-        $activeYearId = AcademicYear::getActive()?->id;
-        $todaySchedule = $activeYearId
-            ? WorkSchedule::where('user_id', $user->id)
-                ->where('academic_year_id', $activeYearId)
-                ->where('day', $todayDay)
-                ->where('is_active', true)
-                ->first()
-            : null;
-
-        // Check-out only opens at (schedule end - "before check-out" window).
-        $checkoutOpensAt = WorkSchedule::checkoutOpensAt($todaySchedule, WorkSetting::current()->before_check_out);
-        $checkoutTimeReached = now()->gte($checkoutOpensAt);
-
-        // Monthly stats - hadir includes both present and late
-        $monthStart = now()->startOfMonth();
-        $monthlyPresent = Attendance::where('user_id', $user->id)
-            ->whereIn('status', [AttendanceStatus::Present, AttendanceStatus::Late])
-            ->whereBetween('created_at', [$monthStart, now()])
-            ->count();
-
-        $monthlyLate = Attendance::where('user_id', $user->id)
-            ->where('status', AttendanceStatus::Late)
-            ->whereBetween('created_at', [$monthStart, now()])
-            ->count();
-
-        $totalAttendance = $monthlyPresent;
-
-        // Active info cards for the swipeable "Informasi" section
-        $announcements = Announcement::activeOrdered()
-            ->visibleToOffice($user->office_id)
-            ->get();
+        $data = $this->dashboard->for($user);
 
         return view('attendance.dashboard', [
-            'todayAttendance' => $todayAttendance,
-            'todaySchedule' => $todaySchedule,
-            'checkoutOpensAt' => $checkoutOpensAt,
-            'checkoutTimeReached' => $checkoutTimeReached,
-            'monthlyPresent' => $monthlyPresent,
-            'monthlyLate' => $monthlyLate,
-            'totalAttendance' => $totalAttendance,
-            'announcements' => $announcements,
+            'todayAttendance' => $data->todayAttendance,
+            'todaySchedule' => $data->todaySchedule,
+            'checkoutOpensAt' => $data->checkoutOpensAt,
+            'checkoutTimeReached' => $data->checkoutTimeReached,
+            'monthlyPresent' => $data->monthlyPresent,
+            'monthlyLate' => $data->monthlyLate,
+            'totalAttendance' => $data->monthlyTotal(),
+            'announcements' => $data->announcements,
             'linkedAccounts' => $user->linkedAccounts()->with('office')->orderBy('name')->get(),
         ]);
     }

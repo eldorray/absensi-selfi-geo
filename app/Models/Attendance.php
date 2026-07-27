@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Attendance Model - Records user check-ins and check-outs with selfie and geolocation.
+ *
+ * @property AttendanceStatus $status
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $check_out_at
+ * @property ?string $image_path
+ * @property ?string $check_out_image_path
  */
 class Attendance extends Model
 {

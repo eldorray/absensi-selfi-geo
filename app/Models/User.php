@@ -10,15 +10,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property ?string $phone
+ * @property ?int $office_id
  * @property-read ?string $nip
  * @property-read ?string $nik
+ * @property-read ?string $avatar_url
  */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -28,6 +35,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'visible_password',
         'office_id',
@@ -116,6 +124,8 @@ class User extends Authenticatable
 
     /**
      * Get the office that the user belongs to.
+     *
+     * @return BelongsTo<Office, $this>
      */
     public function office(): BelongsTo
     {

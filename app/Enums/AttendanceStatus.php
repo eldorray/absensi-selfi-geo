@@ -26,6 +26,18 @@ enum AttendanceStatus: string
     }
 
     /**
+     * The value sent over the mobile API. The stored "present" reads as
+     * "on_time" there, which is what the iOS client expects.
+     */
+    public function apiValue(): string
+    {
+        return match ($this) {
+            self::Present => 'on_time',
+            self::Late => 'late',
+        };
+    }
+
+    /**
      * Get the CSS class for styling the status badge.
      */
     public function badgeClass(): string
