@@ -104,6 +104,12 @@ test('logout revokes only the token used for the request', function () {
 });
 
 test('protected endpoints reject a request without a token', function () {
-    $this->getJson('/api/dashboard')->assertStatus(401);
+    foreach (['/api/dashboard', '/api/profile', '/api/attendance/history'] as $url) {
+        $this->getJson($url)->assertStatus(401);
+    }
+
     $this->postJson('/api/logout')->assertStatus(401);
+    $this->postJson('/api/attendance')->assertStatus(401);
+    $this->postJson('/api/attendance/checkout')->assertStatus(401);
+    $this->putJson('/api/profile')->assertStatus(401);
 });

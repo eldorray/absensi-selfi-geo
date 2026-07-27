@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\HistoryController;
+use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,4 +30,8 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
     Route::post('attendance', [AttendanceController::class, 'store'])->name('api.attendance.store');
     Route::post('attendance/checkout', [AttendanceController::class, 'checkout'])->name('api.attendance.checkout');
+    Route::get('attendance/history', [HistoryController::class, 'index'])->name('api.attendance.history');
+
+    Route::get('profile', [ProfileController::class, 'show'])->name('api.profile.show');
+    Route::put('profile', [ProfileController::class, 'update'])->name('api.profile.update');
 });
