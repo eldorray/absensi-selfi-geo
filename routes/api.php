@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\HistoryController;
+use App\Http\Controllers\Api\LeaveController;
+use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +34,12 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('attendance/checkout', [AttendanceController::class, 'checkout'])->name('api.attendance.checkout');
     Route::get('attendance/history', [HistoryController::class, 'index'])->name('api.attendance.history');
 
+    Route::get('leaves', [LeaveController::class, 'index'])->name('api.leaves.index');
+    Route::post('leaves', [LeaveController::class, 'store'])->name('api.leaves.store');
+    Route::get('leaves/{leave}', [LeaveController::class, 'show'])->name('api.leaves.show');
+
     Route::get('profile', [ProfileController::class, 'show'])->name('api.profile.show');
     Route::put('profile', [ProfileController::class, 'update'])->name('api.profile.update');
+
+    Route::put('password', [PasswordController::class, 'update'])->name('api.password.update');
 });
