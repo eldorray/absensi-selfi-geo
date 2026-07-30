@@ -35,11 +35,11 @@ class DashboardResource extends JsonResource
         return [
             'user' => new UserResource($this->user),
             // Geofence kantor untuk pengukur jarak di klien; null bila belum di-set.
-            'office_location' => $user->office === null ? null : [
-                'name' => $user->office->name,
-                'latitude' => (float) $user->office->latitude,
-                'longitude' => (float) $user->office->longitude,
-                'radius_meters' => (int) $user->office->radius_meters,
+            'office_location' => $this->user->office === null ? null : [
+                'name' => $this->user->office->name,
+                'latitude' => (float) $this->user->office->latitude,
+                'longitude' => (float) $this->user->office->longitude,
+                'radius_meters' => (int) $this->user->office->radius_meters,
             ],
             // null until the teacher checks in today.
             'status' => $attendance?->status->apiValue(),
