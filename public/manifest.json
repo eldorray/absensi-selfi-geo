@@ -3,6 +3,7 @@
     "short_name": "Absensi",
     "description": "Aplikasi Absensi Selfie dengan Verifikasi GPS",
     "start_url": "/attendance/dashboard",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#1f2937",
     "theme_color": "#4f46e5",
