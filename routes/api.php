@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\AccountSwitchController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
@@ -27,6 +28,8 @@ Route::post('login', [AuthController::class, 'login'])
 
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('logout', [AuthController::class, 'logout'])->name('api.logout');
+
+    Route::post('account/switch', [AccountSwitchController::class, 'store'])->name('api.account.switch');
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('api.dashboard');
 

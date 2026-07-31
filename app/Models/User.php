@@ -150,6 +150,8 @@ class User extends Authenticatable
 
     /**
      * Accounts this user may switch to (admin-linked, symmetric).
+     *
+     * @return BelongsToMany<User, $this>
      */
     public function linkedAccounts(): BelongsToMany
     {

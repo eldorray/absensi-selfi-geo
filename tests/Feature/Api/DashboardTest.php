@@ -212,3 +212,27 @@ test('one teacher never sees another teacher figures', function () {
         ->assertJsonPath('status', null)
         ->assertJsonPath('summary.present', 0);
 });
+
+test('dashboard exposes the linked accounts for account switching', function () {
+    $mi = Office::create(['name' => 'Kantor MI', 'latitude' => -7.0, 'longitude' => 107.0, 'radius_meters' => 100]);
+    $smp = Office::create(['name' => 'Kantor SMP', 'latitude' => -6.2, 'longitude' => 106.8, 'radius_meters' => 100]);
+
+    $current = dashTeacher($mi);
+    $target = dashTeacher($smp);
+    $current->linkedAccounts()->attach($target->id);
+
+    $this->actingAs($current, 'sanctum')
+        ->getJson('/api/dashboard')
+        ->assertStatus(200)
+        ->assertJsonPath('linked_accounts.0.id', $target->id)
+        ->assertJsonPath('linked_accounts.0.office', 'Kantor SMP');
+});
+
+test('dashboard returns an empty linked accounts list when none are linked', function () {
+    $user = dashTeacher();
+
+    $this->actingAs($user, 'sanctum')
+        ->getJson('/api/dashboard')
+        ->assertStatus(200)
+        ->assertJsonPath('linked_accounts', []);
+});

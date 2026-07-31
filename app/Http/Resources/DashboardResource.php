@@ -34,6 +34,17 @@ class DashboardResource extends JsonResource
 
         return [
             'user' => new UserResource($this->user),
+            // Akun tertaut untuk fitur Ganti Akun (mirror dashboard web).
+            'linked_accounts' => $this->user->linkedAccounts()
+                ->with('office')
+                ->orderBy('name')
+                ->get()
+                ->map(fn (User $account): array => [
+                    'id' => $account->id,
+                    'name' => $account->name,
+                    'office' => $account->office?->name,
+                ])
+                ->all(),
             // Geofence kantor untuk pengukur jarak di klien; null bila belum di-set.
             'office_location' => $this->user->office === null ? null : [
                 'name' => $this->user->office->name,
