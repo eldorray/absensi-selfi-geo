@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Models\Office;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 function profTeacher(?Office $office = null): User
 {
@@ -111,4 +113,71 @@ test('profile update only ever touches the token own user', function () {
 
     expect($b->refresh()->name)->toBe($bName)
         ->and($a->refresh()->name)->toBe('Diubah');
+});
+
+test('avatar upload stores a compressed image and returns its url', function () {
+    Storage::fake('public');
+    $user = profTeacher();
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/profile/avatar', [
+            'avatar' => UploadedFile::fake()->image('me.jpg', 2000, 2000),
+        ])
+        ->assertStatus(200)
+        ->assertJsonStructure(['id', 'name', 'avatar_url']);
+
+    $user->refresh();
+    expect($user->avatar_path)->not->toBeNull()
+        ->and($user->avatar_url)->not->toBeNull();
+    Storage::disk('public')->assertExists($user->avatar_path);
+
+    // Downscaled to the 512px cap.
+    [$w, $h] = getimagesizefromstring(Storage::disk('public')->get($user->avatar_path));
+    expect(max($w, $h))->toBeLessThanOrEqual(512);
+});
+
+test('avatar upload replaces and deletes the old file', function () {
+    Storage::fake('public');
+    $user = profTeacher();
+    $user->update(['avatar_path' => 'avatars/old.jpg']);
+    Storage::disk('public')->put('avatars/old.jpg', 'x');
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/profile/avatar', [
+            'avatar' => UploadedFile::fake()->image('new.jpg'),
+        ])
+        ->assertStatus(200);
+
+    Storage::disk('public')->assertMissing('avatars/old.jpg');
+    Storage::disk('public')->assertExists($user->refresh()->avatar_path);
+});
+
+test('avatar upload requires an image', function () {
+    Storage::fake('public');
+    $user = profTeacher();
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/profile/avatar', [
+            'avatar' => UploadedFile::fake()->create('doc.pdf', 100, 'application/pdf'),
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['avatar']);
+
+    expect($user->refresh()->avatar_path)->toBeNull();
+});
+
+test('avatar upload only ever touches the token own user', function () {
+    Storage::fake('public');
+    $a = profTeacher();
+    $b = profTeacher();
+
+    $this->actingAs($a, 'sanctum')
+        ->postJson('/api/profile/avatar', [
+            'avatar' => UploadedFile::fake()->image('me.jpg'),
+            'id' => $b->id,
+        ])
+        ->assertStatus(200);
+
+    expect($a->refresh()->avatar_path)->not->toBeNull()
+        ->and($b->refresh()->avatar_path)->toBeNull();
 });
