@@ -103,3 +103,67 @@ test('captured_at without client_uuid is rejected', function () {
 
     Carbon::setTestNow();
 });
+
+test('a queued check-in is stored at its capture time', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 10:00:00'));
+    $user = offlineTeacher();
+
+    $response = $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03 07:00:00',
+        'client_uuid' => '55555555-5555-4555-8555-555555555555',
+    ]);
+
+    $response->assertStatus(201)
+        ->assertJsonPath('check_in_time', '07:00')
+        ->assertJsonPath('status', 'on_time');
+
+    $attendance = Attendance::first();
+    expect($attendance->created_at->format('H:i'))->toBe('07:00')
+        ->and($attendance->synced_at->format('H:i'))->toBe('10:00');
+
+    Carbon::setTestNow();
+});
+
+test('replaying a client_uuid returns the stored record instead of a second row', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 08:00:00'));
+    $user = offlineTeacher();
+    $payload = [
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03 07:00:00',
+        'client_uuid' => '66666666-6666-4666-8666-666666666666',
+    ];
+
+    $first = $this->actingAs($user, 'sanctum')->postJson('/api/attendance', $payload + [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+    ]);
+    $second = $this->actingAs($user, 'sanctum')->postJson('/api/attendance', $payload + [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+    ]);
+
+    $first->assertStatus(201);
+    $second->assertStatus(200)->assertJsonPath('check_in_time', '07:00');
+    expect(Attendance::count())->toBe(1);
+
+    Carbon::setTestNow();
+});
+
+test('an online check-in still behaves exactly as before', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 07:05:00'));
+    $user = offlineTeacher();
+
+    $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+    ])->assertStatus(201)->assertJsonPath('check_in_time', '07:05');
+
+    $attendance = Attendance::first();
+    expect($attendance->synced_at)->toBeNull()
+        ->and($attendance->client_uuid)->toBeNull();
+
+    Carbon::setTestNow();
+});

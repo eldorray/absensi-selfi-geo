@@ -13,6 +13,7 @@ use App\Services\AttendanceService;
 use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -30,10 +31,35 @@ class AttendanceController extends Controller
 
     /**
      * Record a check-in for the signed-in teacher.
+     *
+     * A queued check-in carries `captured_at` (when the teacher actually stood
+     * at the gate) and `client_uuid`. Every timing rule is judged against that
+     * moment, and the row's created_at is written to it, so the dashboard and
+     * history read the real time without any change on their side.
      */
     public function store(StoreAttendanceRequest $request): JsonResponse
     {
         $user = $request->user();
+        $capturedAt = $request->capturedAt();
+        $clientUuid = $request->clientUuid();
+        $moment = Carbon::instance($capturedAt ?? now());
+
+        // A retry after a lost response must not read as a duplicate: the
+        // teacher's attendance is already recorded, so hand it back as-is.
+        if ($clientUuid !== null) {
+            $existing = Attendance::query()
+                ->where('user_id', $user->id)
+                ->where('client_uuid', $clientUuid)
+                ->first();
+
+            if ($existing !== null) {
+                return response()->json([
+                    'status' => $existing->status->apiValue(),
+                    'check_in_time' => $existing->created_at?->format('H:i'),
+                    'message' => 'Absen masuk berhasil.',
+                ]);
+            }
+        }
 
         if ($this->attendance->hasCheckedInToday($user)) {
             $this->fail('attendance', 'Anda sudah melakukan absensi hari ini.');
@@ -43,7 +69,7 @@ class AttendanceController extends Controller
             $this->fail('schedule', $message);
         }
 
-        if ($message = $this->attendance->checkInWindowError($user)) {
+        if ($message = $this->attendance->checkInWindowError($user, $moment)) {
             $this->fail('time', $message);
         }
 
@@ -68,19 +94,27 @@ class AttendanceController extends Controller
             $this->fail('photo', 'Gagal menyimpan foto. Silakan coba lagi.');
         }
 
-        $attendance = Attendance::create([
+        $attendance = new Attendance([
             'user_id' => $user->id,
             'academic_year_id' => AcademicYear::getActive()?->id,
-            'status' => $this->attendance->statusNow($user),
+            'status' => $this->attendance->statusAt($user, $moment),
             'image_path' => $imagePath,
             'check_in_lat' => $latitude,
             'check_in_long' => $longitude,
             'distance_meters' => $distance,
+            'client_uuid' => $clientUuid,
+            'synced_at' => $capturedAt === null ? null : now(),
         ]);
+
+        // Setting created_at before save keeps Eloquent from overwriting it:
+        // updateTimestamps() only fills a created_at that is not already dirty.
+        $attendance->created_at = $moment;
+        $attendance->updated_at = $moment;
+        $attendance->save();
 
         return response()->json([
             'status' => $attendance->status->apiValue(),
-            'check_in_time' => $attendance->created_at?->format('H:i'),
+            'check_in_time' => $attendance->created_at->format('H:i'),
             'message' => 'Absen masuk berhasil.',
         ], 201);
     }
