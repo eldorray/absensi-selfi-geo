@@ -22,7 +22,7 @@ function badgeAdmin(): User
     ]);
 }
 
-test('the attendance list marks rows that arrived from the offline queue', function () {
+test('the attendance list marks only rows that arrived from the offline queue', function () {
     $admin = badgeAdmin();
     $office = Office::create([
         'name' => 'MI Badge',
@@ -31,16 +31,25 @@ test('the attendance list marks rows that arrived from the offline queue', funct
         'radius_meters' => 100,
     ]);
     $teacherRole = Role::firstOrCreate(['slug' => 'guru'], ['name' => 'Guru', 'is_admin' => false]);
-    $teacher = User::create([
-        'name' => 'Guru Badge',
+
+    $queuedTeacher = User::create([
+        'name' => 'Guru Antrian',
+        'email' => 'guru'.uniqid().'@test.test',
+        'password' => bcrypt('password'),
+        'role_id' => $teacherRole->id,
+        'office_id' => $office->id,
+    ]);
+    $liveTeacher = User::create([
+        'name' => 'Guru Reguler',
         'email' => 'guru'.uniqid().'@test.test',
         'password' => bcrypt('password'),
         'role_id' => $teacherRole->id,
         'office_id' => $office->id,
     ]);
 
+    // Arrived from the offline queue: synced_at is set.
     Attendance::create([
-        'user_id' => $teacher->id,
+        'user_id' => $queuedTeacher->id,
         'status' => 'present',
         'image_path' => 'attendance/x.jpg',
         'check_in_lat' => -6.2,
@@ -48,9 +57,27 @@ test('the attendance list marks rows that arrived from the offline queue', funct
         'distance_meters' => 5.0,
         'synced_at' => Carbon::parse('2026-08-03 10:00:00'),
     ]);
+    // Recorded live: synced_at is null. Must NOT get the badge.
+    Attendance::create([
+        'user_id' => $liveTeacher->id,
+        'status' => 'present',
+        'image_path' => 'attendance/y.jpg',
+        'check_in_lat' => -6.2,
+        'check_in_long' => 106.8,
+        'distance_meters' => 5.0,
+        'synced_at' => null,
+    ]);
 
-    $this->actingAs($admin)
+    $response = $this->actingAs($admin)
         ->get(route('admin.attendances.index'))
         ->assertOk()
-        ->assertSee('Offline');
+        ->assertSee('Guru Antrian')
+        ->assertSee('Guru Reguler');
+
+    // Both rows are on the page, but only the queued one carries the
+    // offline-queue tooltip. Counting occurrences (rather than a bare
+    // assertSee/assertDontSee) is what actually fails if the @if wrapper
+    // around the badge is ever removed and it starts rendering for every row.
+    $html = $response->getContent();
+    expect(substr_count($html, 'Dikirim dari antrean offline'))->toBe(1);
 });
