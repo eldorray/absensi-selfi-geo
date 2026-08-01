@@ -65,6 +65,24 @@ test('avatar route serves the stored file', function () {
         ->assertStatus(200);
 });
 
+test('avatar route serves the file to a sanctum token client', function () {
+    Storage::fake('public');
+    $user = User::factory()->create(['avatar_path' => 'avatars/a.jpg']);
+    Storage::disk('public')->put('avatars/a.jpg', 'imagebytes');
+
+    // The native app has a token, never a session cookie.
+    $this->actingAs($user, 'sanctum')->get(route('avatar.show', $user))
+        ->assertStatus(200);
+});
+
+test('avatar route rejects guests', function () {
+    Storage::fake('public');
+    $user = User::factory()->create(['avatar_path' => 'avatars/a.jpg']);
+    Storage::disk('public')->put('avatars/a.jpg', 'imagebytes');
+
+    $this->get(route('avatar.show', $user))->assertRedirect(route('login'));
+});
+
 test('avatar url changes when the photo changes (cache-busting)', function () {
     $user = User::factory()->create(['avatar_path' => 'avatars/one.jpg']);
     $first = $user->avatar_url;

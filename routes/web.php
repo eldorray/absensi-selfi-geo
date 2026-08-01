@@ -20,6 +20,13 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// Serve avatars via the app (avoids reliance on the public/storage symlink).
+// Both guards: Blade authenticates by session, the mobile app by Sanctum token.
+// Keep it out of the session-only group or the native client cannot load the image.
+Route::get('avatar/{user}', [Employee\AvatarController::class, 'show'])
+    ->middleware('auth:sanctum,web')
+    ->name('avatar.show');
+
 Route::middleware(['auth'])->group(function () {
     // Settings routes
     Route::get('settings/profile', [Settings\ProfileController::class, 'edit'])->name('settings.profile.edit');
@@ -50,9 +57,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Employee announcement (Informasi) detail
     Route::get('attendance/information/{announcement}', [Employee\AnnouncementController::class, 'show'])->name('attendance.information.show');
-
-    // Serve avatars via the app (avoids reliance on the public/storage symlink)
-    Route::get('avatar/{user}', [Employee\AvatarController::class, 'show'])->name('avatar.show');
 
     // Employee profile routes (SRP - separate controller)
     Route::get('attendance/profile', [Employee\ProfileController::class, 'show'])->name('attendance.profile');
