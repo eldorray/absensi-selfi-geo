@@ -40,6 +40,10 @@ class Attendance extends Model
         'check_out_long',
         'check_out_image_path',
         'check_out_distance_meters',
+        'client_uuid',
+        'synced_at',
+        'check_out_client_uuid',
+        'check_out_synced_at',
     ];
 
     /**
@@ -58,6 +62,8 @@ class Attendance extends Model
             'check_out_lat' => 'decimal:8',
             'check_out_long' => 'decimal:8',
             'check_out_distance_meters' => 'float',
+            'synced_at' => 'datetime',
+            'check_out_synced_at' => 'datetime',
         ];
     }
 
@@ -82,7 +88,7 @@ class Attendance extends Model
      */
     public function getImageUrlAttribute(): string
     {
-        return asset('storage/' . $this->image_path);
+        return asset('storage/'.$this->image_path);
     }
 
     /**
@@ -90,8 +96,8 @@ class Attendance extends Model
      */
     public function getCheckOutImageUrlAttribute(): ?string
     {
-        return $this->check_out_image_path 
-            ? asset('storage/' . $this->check_out_image_path) 
+        return $this->check_out_image_path
+            ? asset('storage/'.$this->check_out_image_path)
             : null;
     }
 
@@ -103,4 +109,3 @@ class Attendance extends Model
         return $this->check_out_at !== null;
     }
 }
-
