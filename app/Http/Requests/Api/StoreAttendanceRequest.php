@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Api;
 
+use App\Http\Requests\Api\Concerns\AcceptsCapturedAt;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAttendanceRequest extends FormRequest
 {
+    use AcceptsCapturedAt;
+
     /**
      * Ceiling for an uploaded selfie, in kilobytes.
      */
@@ -27,6 +30,7 @@ class StoreAttendanceRequest extends FormRequest
             'photo' => ['required', 'file', 'mimetypes:image/jpeg,image/png', 'max:'.self::MAX_PHOTO_KB],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
+            ...$this->capturedAtRules(),
         ];
     }
 
@@ -41,6 +45,7 @@ class StoreAttendanceRequest extends FormRequest
             'photo.max' => 'Ukuran foto maksimal 4 MB.',
             'latitude.required' => 'Lokasi GPS diperlukan.',
             'longitude.required' => 'Lokasi GPS diperlukan.',
+            ...$this->capturedAtMessages(),
         ];
     }
 }

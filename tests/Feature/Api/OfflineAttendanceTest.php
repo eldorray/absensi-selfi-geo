@@ -54,3 +54,52 @@ test('attendance stores the offline queue columns', function () {
         ->and($attendance->synced_at->format('Y-m-d H:i'))->toBe('2026-08-01 10:00')
         ->and($attendance->check_out_synced_at)->toBeInstanceOf(Carbon::class);
 });
+
+test('captured_at from a previous day is rejected', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 08:00:00'));
+    $user = offlineTeacher();
+
+    $response = $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-02 07:00:00',
+        'client_uuid' => '33333333-3333-4333-8333-333333333333',
+    ]);
+
+    $response->assertStatus(422)->assertJsonValidationErrors('captured_at');
+    expect(Attendance::count())->toBe(0);
+
+    Carbon::setTestNow();
+});
+
+test('captured_at in the future is rejected', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 08:00:00'));
+    $user = offlineTeacher();
+
+    $response = $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03 08:10:00',
+        'client_uuid' => '44444444-4444-4444-8444-444444444444',
+    ]);
+
+    $response->assertStatus(422)->assertJsonValidationErrors('captured_at');
+
+    Carbon::setTestNow();
+});
+
+test('captured_at without client_uuid is rejected', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 08:00:00'));
+    $user = offlineTeacher();
+
+    $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03 07:30:00',
+    ])->assertStatus(422)->assertJsonValidationErrors('client_uuid');
+
+    Carbon::setTestNow();
+});
