@@ -373,13 +373,16 @@ git commit -m "feat: judge attendance rules at a supplied moment"
 ### Task 3: Validasi `captured_at` + `client_uuid`
 
 **Files:**
+- Create: `app/Http/Requests/Api/Concerns/AcceptsCapturedAt.php`
 - Modify: `app/Http/Requests/Api/StoreAttendanceRequest.php`
 - Modify: `app/Http/Requests/Api/StoreCheckoutRequest.php`
 - Test: `tests/Feature/Api/OfflineAttendanceTest.php` (tambah test)
 
 **Interfaces:**
 - Consumes: —
-- Produces: `capturedAt(): ?Carbon` dan `clientUuid(): ?string` pada kedua Form Request.
+- Produces: trait `AcceptsCapturedAt` dengan `capturedAtRules(): array<string, list<string>>`, `capturedAtMessages(): array<string, string>`, `capturedAt(): ?Carbon`, `clientUuid(): ?string`; dipakai oleh kedua Form Request.
+
+Aturan, pesan, dan batas toleransi jam hidup di satu tempat: dua salinan yang boleh berselisih adalah dua perilaku keamanan yang boleh berselisih.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -441,27 +444,41 @@ test('captured_at without client_uuid is rejected', function () {
 Run: `php artisan test tests/Feature/Api/OfflineAttendanceTest.php`
 Expected: FAIL — field tak dikenal, tak ada error validasi yang diharapkan.
 
-- [ ] **Step 3: Add the rules to StoreAttendanceRequest**
+- [ ] **Step 3: Write the shared trait**
 
-Di `app/Http/Requests/Api/StoreAttendanceRequest.php`, tambahkan `use Carbon\Carbon;` di bagian atas, lalu:
+Buat `app/Http/Requests/Api/Concerns/AcceptsCapturedAt.php`:
 
 ```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\Api\Concerns;
+
+use Carbon\Carbon;
+
+/**
+ * Waktu tangkap dari antrean offline, dipakai absen masuk maupun pulang.
+ *
+ * Aturannya hidup di satu tempat: dua salinan yang boleh berselisih adalah
+ * dua perilaku keamanan yang boleh berselisih.
+ */
+trait AcceptsCapturedAt
+{
     /**
      * Toleransi selisih jam perangkat terhadap jam server, dalam menit.
      */
     public const CLOCK_SKEW_MINUTES = 2;
 
     /**
+     * Dinilai terhadap jam server: jam perangkat justru yang sedang
+     * diverifikasi, jadi tak boleh jadi alat verifikasinya sendiri.
+     *
      * @return array<string, list<string>>
      */
-    public function rules(): array
+    protected function capturedAtRules(): array
     {
         return [
-            'photo' => ['required', 'file', 'mimetypes:image/jpeg,image/png', 'max:'.self::MAX_PHOTO_KB],
-            'latitude' => ['required', 'numeric', 'between:-90,90'],
-            'longitude' => ['required', 'numeric', 'between:-180,180'],
-            // Kiriman dari antrean offline. Dinilai terhadap jam server: jam
-            // perangkat justru yang sedang diverifikasi.
             'captured_at' => [
                 'nullable',
                 'date',
@@ -469,6 +486,18 @@ Di `app/Http/Requests/Api/StoreAttendanceRequest.php`, tambahkan `use Carbon\Car
                 'before_or_equal:'.now()->addMinutes(self::CLOCK_SKEW_MINUTES)->toDateTimeString(),
             ],
             'client_uuid' => ['nullable', 'uuid', 'required_with:captured_at'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function capturedAtMessages(): array
+    {
+        return [
+            'captured_at.after_or_equal' => 'Absen tertunda hanya dapat dikirim pada hari yang sama.',
+            'captured_at.before_or_equal' => 'Waktu absen tidak valid. Periksa jam pada perangkat Anda.',
+            'client_uuid.required_with' => 'Kiriman absen tertunda harus menyertakan client_uuid.',
         ];
     }
 
@@ -486,47 +515,44 @@ Di `app/Http/Requests/Api/StoreAttendanceRequest.php`, tambahkan `use Carbon\Car
     {
         return $this->validated('client_uuid');
     }
+}
 ```
 
-Tambahkan pesan ke `messages()`:
+- [ ] **Step 4: Use the trait in both Form Requests**
+
+Di `app/Http/Requests/Api/StoreAttendanceRequest.php`, tambahkan `use App\Http\Requests\Api\Concerns\AcceptsCapturedAt;` di bagian atas dan `use AcceptsCapturedAt;` di dalam kelas, lalu gabungkan aturan & pesannya:
 
 ```php
-            'captured_at.after_or_equal' => 'Absen tertunda hanya dapat dikirim pada hari yang sama.',
-            'captured_at.before_or_equal' => 'Waktu absen tidak valid. Periksa jam pada perangkat Anda.',
-            'client_uuid.required_with' => 'Kiriman absen tertunda harus menyertakan client_uuid.',
-```
-
-- [ ] **Step 4: Add the same rules to StoreCheckoutRequest**
-
-Di `app/Http/Requests/Api/StoreCheckoutRequest.php`, tambahkan `use Carbon\Carbon;`, lalu sisipkan ke array `rules()` yang ada:
-
-```php
-            'captured_at' => [
-                'nullable',
-                'date',
-                'after_or_equal:'.now()->startOfDay()->toDateTimeString(),
-                'before_or_equal:'.now()->addMinutes(2)->toDateTimeString(),
-            ],
-            'client_uuid' => ['nullable', 'uuid', 'required_with:captured_at'],
-```
-
-dan method yang sama:
-
-```php
-    public function capturedAt(): ?Carbon
+    /**
+     * @return array<string, list<string>>
+     */
+    public function rules(): array
     {
-        $value = $this->validated('captured_at');
-
-        return $value === null ? null : Carbon::parse($value);
+        return [
+            'photo' => ['required', 'file', 'mimetypes:image/jpeg,image/png', 'max:'.self::MAX_PHOTO_KB],
+            'latitude' => ['required', 'numeric', 'between:-90,90'],
+            'longitude' => ['required', 'numeric', 'between:-180,180'],
+            ...$this->capturedAtRules(),
+        ];
     }
 
-    public function clientUuid(): ?string
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
     {
-        return $this->validated('client_uuid');
+        return [
+            'photo.required' => 'Foto selfie diperlukan.',
+            'photo.mimetypes' => 'Foto harus berupa gambar JPEG atau PNG.',
+            'photo.max' => 'Ukuran foto maksimal 4 MB.',
+            'latitude.required' => 'Lokasi GPS diperlukan.',
+            'longitude.required' => 'Lokasi GPS diperlukan.',
+            ...$this->capturedAtMessages(),
+        ];
     }
 ```
 
-Tambahkan pula ketiga pesan yang sama ke `messages()`.
+Lakukan hal yang sama di `app/Http/Requests/Api/StoreCheckoutRequest.php`: tambahkan import + `use AcceptsCapturedAt;`, sebarkan `...$this->capturedAtRules()` ke dalam `rules()` yang ada dan `...$this->capturedAtMessages()` ke dalam `messages()` yang ada. Jangan ubah aturan lain di berkas itu.
 
 - [ ] **Step 5: Run test to verify it passes**
 
