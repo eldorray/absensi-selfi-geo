@@ -50,6 +50,7 @@ class AttendanceController extends Controller
             $existing = Attendance::query()
                 ->where('user_id', $user->id)
                 ->where('client_uuid', $clientUuid)
+                ->whereDate('created_at', today())
                 ->first();
 
             if ($existing !== null) {

@@ -104,6 +104,22 @@ test('captured_at without client_uuid is rejected', function () {
     Carbon::setTestNow();
 });
 
+test('client_uuid without captured_at is rejected', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 08:00:00'));
+    $user = offlineTeacher();
+
+    $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'client_uuid' => '77777777-7777-4777-8777-777777777777',
+    ])->assertStatus(422)->assertJsonValidationErrors('captured_at');
+
+    expect(Attendance::count())->toBe(0);
+
+    Carbon::setTestNow();
+});
+
 test('a queued check-in is stored at its capture time', function () {
     Carbon::setTestNow(Carbon::parse('2026-08-03 10:00:00'));
     $user = offlineTeacher();
@@ -147,6 +163,35 @@ test('replaying a client_uuid returns the stored record instead of a second row'
     $first->assertStatus(201);
     $second->assertStatus(200)->assertJsonPath('check_in_time', '07:00');
     expect(Attendance::count())->toBe(1);
+
+    Carbon::setTestNow();
+});
+
+test('yesterday\'s client_uuid replayed today is rejected, not resolved to the stale record', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 07:00:00'));
+    $user = offlineTeacher();
+    $clientUuid = '88888888-8888-4888-8888-888888888888';
+
+    $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03 07:00:00',
+        'client_uuid' => $clientUuid,
+    ])->assertStatus(201);
+
+    Carbon::setTestNow(Carbon::parse('2026-08-04 07:00:00'));
+
+    $response = $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'client_uuid' => $clientUuid,
+    ]);
+
+    $response->assertStatus(422)->assertJsonValidationErrors('captured_at');
+    expect(Attendance::count())->toBe(1)
+        ->and(Attendance::query()->whereDate('created_at', today())->count())->toBe(0);
 
     Carbon::setTestNow();
 });

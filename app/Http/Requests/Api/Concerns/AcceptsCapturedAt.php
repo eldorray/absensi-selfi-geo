@@ -33,6 +33,7 @@ trait AcceptsCapturedAt
                 'date',
                 'after_or_equal:'.now()->startOfDay()->toDateTimeString(),
                 'before_or_equal:'.now()->addMinutes(self::CLOCK_SKEW_MINUTES)->toDateTimeString(),
+                'required_with:client_uuid',
             ],
             'client_uuid' => ['nullable', 'uuid', 'required_with:captured_at'],
         ];
@@ -46,6 +47,7 @@ trait AcceptsCapturedAt
         return [
             'captured_at.after_or_equal' => 'Absen tertunda hanya dapat dikirim pada hari yang sama.',
             'captured_at.before_or_equal' => 'Waktu absen tidak valid. Periksa jam pada perangkat Anda.',
+            'captured_at.required_with' => 'Kiriman dengan client_uuid harus menyertakan captured_at.',
             'client_uuid.required_with' => 'Kiriman absen tertunda harus menyertakan client_uuid.',
         ];
     }
