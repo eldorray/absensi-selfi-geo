@@ -219,7 +219,9 @@ uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 function timeTeacher(): User
 {
-    $role = Role::firstOrCreate(['name' => 'employee'], ['display_name' => 'Employee']);
+    // Pola peran yang dipakai seluruh suite: `roles.slug` NOT NULL & unique,
+    // dan tidak ada kolom `display_name`.
+    $role = Role::firstOrCreate(['slug' => 'guru'], ['name' => 'Guru', 'is_admin' => false]);
     $office = Office::create([
         'name' => 'MI Waktu',
         'latitude' => -6.2,
@@ -942,7 +944,7 @@ uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 function badgeAdmin(): User
 {
-    $role = Role::firstOrCreate(['name' => 'admin'], ['display_name' => 'Admin']);
+    $role = Role::firstOrCreate(['slug' => 'administrator'], ['name' => 'Administrator', 'is_admin' => true]);
 
     return User::create([
         'name' => 'Admin Badge',
@@ -960,11 +962,12 @@ test('the attendance list marks rows that arrived from the offline queue', funct
         'longitude' => 106.8,
         'radius_meters' => 100,
     ]);
+    $teacherRole = Role::firstOrCreate(['slug' => 'guru'], ['name' => 'Guru', 'is_admin' => false]);
     $teacher = User::create([
         'name' => 'Guru Badge',
         'email' => 'guru'.uniqid().'@test.test',
         'password' => bcrypt('password'),
-        'role_id' => Role::firstOrCreate(['name' => 'employee'], ['display_name' => 'Employee'])->id,
+        'role_id' => $teacherRole->id,
         'office_id' => $office->id,
     ]);
 
