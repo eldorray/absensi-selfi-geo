@@ -212,3 +212,67 @@ test('an online check-in still behaves exactly as before', function () {
 
     Carbon::setTestNow();
 });
+
+test('a queued check-out is stored at its capture time and is idempotent', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 18:00:00'));
+    $user = offlineTeacher();
+
+    $attendance = Attendance::create([
+        'user_id' => $user->id,
+        'status' => 'present',
+        'image_path' => 'attendance/x.jpg',
+        'check_in_lat' => -6.2,
+        'check_in_long' => 106.8,
+        'distance_meters' => 5.0,
+    ]);
+    $attendance->created_at = Carbon::parse('2026-08-03 07:00:00');
+    $attendance->save();
+
+    $payload = [
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03 15:35:00',
+        'client_uuid' => '77777777-7777-4777-8777-777777777777',
+    ];
+
+    $first = $this->actingAs($user, 'sanctum')->postJson('/api/attendance/checkout', $payload);
+    $second = $this->actingAs($user, 'sanctum')->postJson('/api/attendance/checkout', $payload);
+
+    $first->assertStatus(200)->assertJsonPath('check_out_time', '15:35');
+    $second->assertStatus(200)->assertJsonPath('check_out_time', '15:35');
+
+    $fresh = $attendance->fresh();
+    expect($fresh->check_out_at->format('H:i'))->toBe('15:35')
+        ->and($fresh->check_out_synced_at->format('H:i'))->toBe('18:00');
+
+    Carbon::setTestNow();
+});
+
+test('a queued check-out captured before the window opens is rejected', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 18:00:00'));
+    $user = offlineTeacher();
+
+    $attendance = Attendance::create([
+        'user_id' => $user->id,
+        'status' => 'present',
+        'image_path' => 'attendance/x.jpg',
+        'check_in_lat' => -6.2,
+        'check_in_long' => 106.8,
+        'distance_meters' => 5.0,
+    ]);
+    $attendance->created_at = Carbon::parse('2026-08-03 07:00:00');
+    $attendance->save();
+
+    $response = $this->actingAs($user, 'sanctum')->postJson('/api/attendance/checkout', [
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03 15:00:00',
+        'client_uuid' => '99999999-9999-4999-8999-999999999999',
+    ]);
+
+    $response->assertStatus(422)->assertJsonValidationErrors('time');
+
+    expect($attendance->fresh()->check_out_at)->toBeNull();
+
+    Carbon::setTestNow();
+});

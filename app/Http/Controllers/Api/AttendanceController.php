@@ -123,10 +123,18 @@ class AttendanceController extends Controller
     /**
      * Close out today's record. Scoped to the token's own user, so a teacher
      * can only ever check themselves out.
+     *
+     * A queued check-out carries `captured_at` (when the teacher actually
+     * stood at the gate) and `client_uuid`, mirroring check-in: every timing
+     * rule is judged against that moment, and it is what gets written to
+     * check_out_at.
      */
     public function checkout(StoreCheckoutRequest $request): JsonResponse
     {
         $user = $request->user();
+        $capturedAt = $request->capturedAt();
+        $clientUuid = $request->clientUuid();
+        $moment = Carbon::instance($capturedAt ?? now());
 
         $attendance = $this->attendance->todayFor($user);
 
@@ -134,11 +142,22 @@ class AttendanceController extends Controller
             $this->fail('attendance', 'Anda belum melakukan absensi masuk hari ini.');
         }
 
+        // Same replay guard as check-in: a retry after a lost response reports
+        // the check-out that already landed. todayFor() already scopes the
+        // row to today, so this comparison cannot match a stale check-out
+        // client_uuid from a previous day.
+        if ($clientUuid !== null && $attendance->check_out_client_uuid === $clientUuid) {
+            return response()->json([
+                'check_out_time' => $attendance->check_out_at?->format('H:i'),
+                'message' => 'Absen pulang berhasil.',
+            ]);
+        }
+
         if ($attendance->check_out_at !== null) {
             $this->fail('attendance', 'Anda sudah melakukan absensi pulang hari ini.');
         }
 
-        if ($message = $this->attendance->checkOutWindowError($user)) {
+        if ($message = $this->attendance->checkOutWindowError($user, $moment)) {
             $this->fail('time', $message);
         }
 
@@ -160,18 +179,18 @@ class AttendanceController extends Controller
             }
         }
 
-        $checkedOutAt = now();
-
         $attendance->update([
-            'check_out_at' => $checkedOutAt,
+            'check_out_at' => $moment,
             'check_out_image_path' => $this->storePhoto($request->file('photo')),
             'check_out_lat' => $latitude,
             'check_out_long' => $longitude,
             'check_out_distance_meters' => $distance,
+            'check_out_client_uuid' => $clientUuid,
+            'check_out_synced_at' => $capturedAt === null ? null : now(),
         ]);
 
         return response()->json([
-            'check_out_time' => $checkedOutAt->format('H:i'),
+            'check_out_time' => $moment->format('H:i'),
             'message' => 'Absen pulang berhasil.',
         ]);
     }
