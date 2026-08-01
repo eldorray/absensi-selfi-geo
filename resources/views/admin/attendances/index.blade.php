@@ -77,6 +77,15 @@
                                         class="{{ $attendance->status->value === 'present' ? 'admin-status-success' : 'admin-status-warning' }} px-2.5 py-1 text-xs">
                                         {{ $attendance->status->label() }}
                                     </span>
+                                    @if ($attendance->synced_at)
+                                        {{-- Baris dari antrean offline: jam absen berasal dari
+                                             perangkat, jam sinkron dari server. Ditandai agar
+                                             sengketa bisa ditelusuri. --}}
+                                        <span class="admin-chip ml-2 text-xs"
+                                            title="Dikirim dari antrean offline pada {{ $attendance->synced_at->format('d M Y H:i') }}">
+                                            Offline
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="admin-muted whitespace-nowrap px-6 py-4 text-sm">
                                     {{ number_format($attendance->distance_meters, 0) }} m
