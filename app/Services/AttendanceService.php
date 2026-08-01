@@ -63,22 +63,26 @@ final class AttendanceService
     }
 
     /**
-     * Why check-in is closed right now, or null when it is open.
+     * Why check-in is closed at a given moment, or null when it is open.
+     *
+     * The moment defaults to now, which keeps the Blade controller — and the
+     * PWA behind it — behaving exactly as before. The mobile API passes the
+     * device capture time so a queued check-in is judged when it happened.
      */
-    public function checkInWindowError(User $user): ?string
+    public function checkInWindowError(User $user, ?Carbon $at = null): ?string
     {
         $settings = WorkSetting::current();
         $scheduled = $this->scheduledCheckIn($user);
 
         $earliest = $scheduled->copy()->subMinutes($settings->before_check_in);
         $latest = $scheduled->copy()->addMinutes($settings->late_limit);
-        $now = now();
+        $moment = $at ?? now();
 
-        if ($now->lt($earliest)) {
+        if ($moment->lt($earliest)) {
             return 'Anda belum dapat absen. Waktu absen dimulai pukul '.$earliest->format('H:i').'.';
         }
 
-        if ($now->gt($latest)) {
+        if ($moment->gt($latest)) {
             return 'Waktu absen sudah berakhir. Batas absen adalah pukul '.$latest->format('H:i').'.';
         }
 
@@ -86,16 +90,16 @@ final class AttendanceService
     }
 
     /**
-     * Why check-out is still closed, or null when it has opened.
+     * Why check-out is still closed at a given moment, or null when it opened.
      */
-    public function checkOutWindowError(User $user): ?string
+    public function checkOutWindowError(User $user, ?Carbon $at = null): ?string
     {
         $opensAt = WorkSchedule::checkoutOpensAt(
             WorkSchedule::todayFor((int) $user->id),
             WorkSetting::current()->before_check_out,
         );
 
-        if (now()->lt($opensAt)) {
+        if (($at ?? now())->lt($opensAt)) {
             return 'Belum waktunya absen pulang. Absen pulang dibuka pukul '.$opensAt->format('H:i').'.';
         }
 
@@ -103,15 +107,24 @@ final class AttendanceService
     }
 
     /**
-     * On time or late, judged against the schedule plus the grace period.
+     * On time or late at a given moment, judged against the schedule plus the
+     * grace period.
      */
-    public function statusNow(User $user): AttendanceStatus
+    public function statusAt(User $user, ?Carbon $at = null): AttendanceStatus
     {
         $lateAfter = $this->scheduledCheckIn($user)
             ->copy()
             ->addMinutes(WorkSetting::current()->after_check_in);
 
-        return now()->gt($lateAfter) ? AttendanceStatus::Late : AttendanceStatus::Present;
+        return ($at ?? now())->gt($lateAfter) ? AttendanceStatus::Late : AttendanceStatus::Present;
+    }
+
+    /**
+     * On time or late right now. Kept so existing callers stay untouched.
+     */
+    public function statusNow(User $user): AttendanceStatus
+    {
+        return $this->statusAt($user);
     }
 
     /**
