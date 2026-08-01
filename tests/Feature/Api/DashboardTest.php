@@ -183,7 +183,12 @@ test('dashboard only shows announcements meant for the teacher office', function
         ->toContain('Untuk MI')
         ->not->toContain('Untuk SMP');
 
-    $response->assertJsonStructure(['announcements' => [['id', 'title', 'summary', 'image_url']]]);
+    $response->assertJsonStructure(['announcements' => [['id', 'title', 'summary', 'body', 'image_url']]]);
+
+    // The detail pages render `body`; `summary` is optional in the admin form,
+    // so the payload must carry the full text too.
+    $global = collect($response->json('announcements'))->firstWhere('title', 'Untuk semua');
+    expect($global['body'])->toBe('b');
 });
 
 test('one teacher never sees another teacher figures', function () {

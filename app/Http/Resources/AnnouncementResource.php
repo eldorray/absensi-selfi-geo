@@ -22,6 +22,9 @@ class AnnouncementResource extends JsonResource
             'id' => $this->resource->id,
             'title' => $this->resource->title,
             'summary' => $this->resource->summary,
+            // The full text the admin form requires. Without it the mobile
+            // detail pages have nothing to show, since `summary` is optional.
+            'body' => $this->resource->body,
             'image_url' => $this->resource->image_url,
         ];
     }
