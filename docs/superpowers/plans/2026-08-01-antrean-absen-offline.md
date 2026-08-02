@@ -803,19 +803,52 @@ test('a queued check-out is stored at its capture time and is idempotent', funct
     $payload = [
         'latitude' => -6.2,
         'longitude' => 106.8,
-        'captured_at' => '2026-08-03 15:00:00',
+        // 15:35 — jendela absen pulang baru terbuka 15:30 (jadwal 16:00 dikurangi
+        // before_check_out 30 menit). Sejak Task 2 jendela itu dinilai pada jam
+        // tangkap, jadi jam tangkap harus berada di dalamnya.
+        'captured_at' => '2026-08-03 15:35:00',
         'client_uuid' => '77777777-7777-4777-8777-777777777777',
     ];
 
     $first = $this->actingAs($user, 'sanctum')->postJson('/api/attendance/checkout', $payload);
     $second = $this->actingAs($user, 'sanctum')->postJson('/api/attendance/checkout', $payload);
 
-    $first->assertStatus(200)->assertJsonPath('check_out_time', '15:00');
-    $second->assertStatus(200)->assertJsonPath('check_out_time', '15:00');
+    $first->assertStatus(200)->assertJsonPath('check_out_time', '15:35');
+    $second->assertStatus(200)->assertJsonPath('check_out_time', '15:35');
 
     $fresh = $attendance->fresh();
-    expect($fresh->check_out_at->format('H:i'))->toBe('15:00')
+    expect($fresh->check_out_at->format('H:i'))->toBe('15:35')
         ->and($fresh->check_out_synced_at->format('H:i'))->toBe('18:00');
+
+    Carbon::setTestNow();
+});
+
+test('a queued check-out captured before the window opens is rejected', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 18:00:00'));
+    $user = offlineTeacher();
+
+    $attendance = Attendance::create([
+        'user_id' => $user->id,
+        'status' => 'present',
+        'image_path' => 'attendance/x.jpg',
+        'check_in_lat' => -6.2,
+        'check_in_long' => 106.8,
+        'distance_meters' => 5.0,
+    ]);
+    $attendance->created_at = Carbon::parse('2026-08-03 07:00:00');
+    $attendance->save();
+
+    // Jam sinkron (18:00) sudah di dalam jendela, jam tangkap (15:00) belum.
+    // Test ini yang menangkap regresi bila pemeriksaan jendela dikembalikan
+    // ke now(): pada 18:00 bug-nya tak terlihat.
+    $this->actingAs($user, 'sanctum')->postJson('/api/attendance/checkout', [
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03 15:00:00',
+        'client_uuid' => '88888888-8888-4888-8888-888888888888',
+    ])->assertStatus(422)->assertJsonValidationErrors('time');
+
+    expect($attendance->fresh()->check_out_at)->toBeNull();
 
     Carbon::setTestNow();
 });
