@@ -108,4 +108,30 @@ class Attendance extends Model
     {
         return $this->check_out_at !== null;
     }
+
+    /**
+     * Keterangan sinkronisasi offline untuk admin, atau null bila baris ini
+     * sepenuhnya online.
+     *
+     * Menyebut BAGIAN MANA yang datang dari antrean: absen masuk dan absen
+     * pulang punya penanda masing-masing (`synced_at`, `check_out_synced_at`),
+     * dan satu baris bisa punya salah satu saja — mis. masuk online lalu pulang
+     * dari antrean. Tanda "Offline" tanpa rincian tak bisa membedakannya, jadi
+     * jam absen mana yang berasal dari perangkat tidak dapat ditelusuri saat
+     * ada sengketa.
+     */
+    public function offlineSyncNote(): ?string
+    {
+        $parts = [];
+
+        if ($this->synced_at !== null) {
+            $parts[] = 'masuk '.$this->synced_at->format('d M Y H:i');
+        }
+
+        if ($this->check_out_synced_at !== null) {
+            $parts[] = 'pulang '.$this->check_out_synced_at->format('d M Y H:i');
+        }
+
+        return $parts === [] ? null : 'Dikirim dari antrean offline — '.implode('; ', $parts);
+    }
 }

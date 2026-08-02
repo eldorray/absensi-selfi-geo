@@ -77,12 +77,12 @@
                                         class="{{ $attendance->status->value === 'present' ? 'admin-status-success' : 'admin-status-warning' }} px-2.5 py-1 text-xs">
                                         {{ $attendance->status->label() }}
                                     </span>
-                                    @if ($attendance->synced_at)
+                                    @if ($note = $attendance->offlineSyncNote())
                                         {{-- Baris dari antrean offline: jam absen berasal dari
                                              perangkat, jam sinkron dari server. Ditandai agar
-                                             sengketa bisa ditelusuri. --}}
-                                        <span class="admin-chip ml-2 text-xs"
-                                            title="Dikirim dari antrean offline pada {{ $attendance->synced_at->format('d M Y H:i') }}">
+                                             sengketa bisa ditelusuri — termasuk saat hanya absen
+                                             pulang yang datang dari antrean. --}}
+                                        <span class="admin-chip ml-2 text-xs" title="{{ $note }}">
                                             Offline
                                         </span>
                                     @endif

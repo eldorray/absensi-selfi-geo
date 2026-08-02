@@ -81,3 +81,58 @@ test('the attendance list marks only rows that arrived from the offline queue', 
     $html = $response->getContent();
     expect(substr_count($html, 'Dikirim dari antrean offline'))->toBe(1);
 });
+
+test('a row whose check-out alone came from the queue is still marked', function () {
+    $admin = badgeAdmin();
+    $office = Office::create([
+        'name' => 'MI Badge Pulang',
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'radius_meters' => 100,
+    ]);
+    $teacherRole = Role::firstOrCreate(['slug' => 'guru'], ['name' => 'Guru', 'is_admin' => false]);
+    $teacher = User::create([
+        'name' => 'Guru Pulang Antrian',
+        'email' => 'guru'.uniqid().'@test.test',
+        'password' => bcrypt('password'),
+        'role_id' => $teacherRole->id,
+        'office_id' => $office->id,
+    ]);
+
+    // Masuk online (synced_at null), pulang dari antrean. check_out_synced_at was
+    // stored but never surfaced anywhere, so this row used to look fully online.
+    Attendance::create([
+        'user_id' => $teacher->id,
+        'status' => 'present',
+        'image_path' => 'attendance/z.jpg',
+        'check_in_lat' => -6.2,
+        'check_in_long' => 106.8,
+        'distance_meters' => 5.0,
+        'synced_at' => null,
+        'check_out_at' => Carbon::parse('2026-08-03 16:05:00'),
+        'check_out_synced_at' => Carbon::parse('2026-08-03 18:00:00'),
+    ]);
+
+    $html = $this->actingAs($admin)
+        ->get(route('admin.attendances.index'))
+        ->assertOk()
+        ->assertSee('Guru Pulang Antrian')
+        ->getContent();
+
+    expect(substr_count($html, 'Dikirim dari antrean offline'))->toBe(1)
+        ->and($html)->toContain('pulang 03 Aug 2026 18:00');
+});
+
+test('the note names both halves when check-in and check-out both came from the queue', function () {
+    $attendance = new Attendance([
+        'synced_at' => Carbon::parse('2026-08-03 10:00:00'),
+        'check_out_synced_at' => Carbon::parse('2026-08-03 18:00:00'),
+    ]);
+
+    expect($attendance->offlineSyncNote())
+        ->toBe('Dikirim dari antrean offline — masuk 03 Aug 2026 10:00; pulang 03 Aug 2026 18:00');
+});
+
+test('a fully online row has no note at all', function () {
+    expect((new Attendance)->offlineSyncNote())->toBeNull();
+});
