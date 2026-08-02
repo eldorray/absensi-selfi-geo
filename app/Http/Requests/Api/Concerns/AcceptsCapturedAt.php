@@ -54,12 +54,21 @@ trait AcceptsCapturedAt
 
     /**
      * Waktu tangkap di perangkat, atau null untuk absen online biasa.
+     *
+     * Dikonversi ke zona waktu aplikasi. Kedua klien mengirim ISO8601 ber-offset
+     * UTC (iOS `.withInternetDateTime`, Android `Instant.toString()`), dan Carbon
+     * mempertahankan offset itu — sementara Eloquent menyimpan Carbon apa adanya
+     * dengan zona waktunya sendiri. Tanpa konversi ini, rana 06:30 WIB tersimpan
+     * sebagai 23:30 pada TANGGAL SEBELUMNYA: absensi tercatat di hari yang salah,
+     * `whereDate('created_at', today())` tak menemukannya, dan kiriman ulang
+     * membuat baris kedua. String tanpa offset sudah diparse di zona aplikasi,
+     * jadi konversi ini tak mengubah apa pun untuknya.
      */
     public function capturedAt(): ?Carbon
     {
         $value = $this->validated('captured_at');
 
-        return $value === null ? null : Carbon::parse($value);
+        return $value === null ? null : Carbon::parse($value)->setTimezone(config('app.timezone'));
     }
 
     public function clientUuid(): ?string

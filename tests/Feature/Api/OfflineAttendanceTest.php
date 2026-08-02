@@ -276,3 +276,87 @@ test('a queued check-out captured before the window opens is rejected', function
 
     Carbon::setTestNow();
 });
+
+/*
+ * Both clients put captured_at on the wire as ISO8601 with an explicit UTC
+ * offset — iOS via ISO8601DateFormatter(.withInternetDateTime), Android via
+ * Instant.toString(). Every other test in this file sends an offset-less
+ * string, which Carbon parses in the app timezone, so none of them exercised
+ * the format the app actually sends.
+ */
+
+test('a queued check-in sent as UTC is stored at the local wall-clock time', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 10:00:00'));
+    $user = offlineTeacher();
+
+    // 06:30 Asia/Jakarta == 23:30Z the previous day. An ordinary early arrival:
+    // before_check_in is 60 minutes, so the window opened at 06:00.
+    $response = $this->actingAs($user, 'sanctum')->postJson('/api/attendance', [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-02T23:30:00Z',
+        'client_uuid' => '88888888-8888-4888-8888-888888888888',
+    ]);
+
+    $response->assertStatus(201)->assertJsonPath('check_in_time', '06:30');
+
+    // The date matters as much as the time: stored a day early, the record
+    // leaves the teacher absent today and phantom-present yesterday.
+    expect(Attendance::first()->created_at->format('Y-m-d H:i'))->toBe('2026-08-03 06:30');
+
+    Carbon::setTestNow();
+});
+
+test('replaying a UTC captured_at from before local midnight still resolves to the stored row', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 10:00:00'));
+    $user = offlineTeacher();
+
+    $payload = [
+        'photo' => Illuminate\Http\UploadedFile::fake()->image('selfie.jpg'),
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-02T23:30:00Z',
+        'client_uuid' => '99999999-9999-4999-8999-999999999999',
+    ];
+
+    $this->actingAs($user, 'sanctum')->postJson('/api/attendance', $payload)->assertStatus(201);
+    $replay = $this->actingAs($user, 'sanctum')->postJson('/api/attendance', $payload);
+
+    // The idempotency lookup is scoped with whereDate('created_at', today());
+    // a row written a day early is invisible to it, and the replay would then
+    // create a second attendance for the same shutter press.
+    $replay->assertStatus(200)->assertJsonPath('check_in_time', '06:30');
+    expect(Attendance::count())->toBe(1);
+
+    Carbon::setTestNow();
+});
+
+test('a queued check-out sent as UTC is stored at the local wall-clock time', function () {
+    Carbon::setTestNow(Carbon::parse('2026-08-03 20:00:00'));
+    $user = offlineTeacher();
+
+    $attendance = Attendance::create([
+        'user_id' => $user->id,
+        'status' => 'present',
+        'image_path' => 'attendance/x.jpg',
+        'check_in_lat' => -6.2,
+        'check_in_long' => 106.8,
+        'distance_meters' => 5.0,
+    ]);
+    $attendance->created_at = Carbon::parse('2026-08-03 07:00:00');
+    $attendance->save();
+
+    // 16:05 Asia/Jakarta == 09:05Z the same day.
+    $response = $this->actingAs($user, 'sanctum')->postJson('/api/attendance/checkout', [
+        'latitude' => -6.2,
+        'longitude' => 106.8,
+        'captured_at' => '2026-08-03T09:05:00Z',
+        'client_uuid' => 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    ]);
+
+    $response->assertStatus(200)->assertJsonPath('check_out_time', '16:05');
+    expect($attendance->fresh()->check_out_at->format('Y-m-d H:i'))->toBe('2026-08-03 16:05');
+
+    Carbon::setTestNow();
+});
