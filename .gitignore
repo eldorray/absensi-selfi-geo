@@ -23,3 +23,5 @@ yarn-error.log
 /.vscode
 /.zed
 /.worktrees
+.DS_Store
+*.DS_Store

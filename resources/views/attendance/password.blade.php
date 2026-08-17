@@ -1,4 +1,4 @@
-<x-layouts.mobile title="Ganti Password" backUrl="{{ route('attendance.profile') }}" showNav="true">
+<x-layouts.mobile title="Ganti Password" backUrl="{{ route('attendance.profile') }}" isSheet="true" showNav="true">
     <div class="space-y-4 pb-4">
         
         <!-- Icon Banner -->

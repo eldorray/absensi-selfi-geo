@@ -38,7 +38,7 @@
             --blob-opacity: 0.12;
             --phone-shell-bg: #000000;
             --phone-shell-border: rgba(255, 255, 255, 0.12);
-            --active-nav-color: #22d3ee;
+            --active-nav-color: #A5D6A7;
             
             /* Inputs */
             --input-bg: rgba(255, 255, 255, 0.03);
@@ -72,7 +72,7 @@
             --phone-shell-bg: #e2e4ed;
             --phone-shell-border: rgba(0, 0, 0, 0.04);
             
-            --active-nav-color: #6366f1;
+            --active-nav-color: #66BB6A;
             
             /* Inputs */
             --input-bg: rgba(255, 255, 255, 0.5);
@@ -80,7 +80,7 @@
             --input-focus-bg: #ffffff;
             
             /* Buttons */
-            --btn-accent-bg: #6366f1;
+            --btn-accent-bg: #1B5E20;
             --btn-accent-text: #ffffff;
             --btn-accent-shadow: 0 10px 24px rgba(99, 102, 241, 0.2);
         }
@@ -268,7 +268,7 @@
             
             <!-- Dynamic Island (Desktop only) -->
             <div class="hidden sm:flex absolute top-6.5 left-1/2 -translate-x-1/2 w-24 h-5.5 bg-black rounded-full z-50 items-center justify-end pr-3.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400/90 shadow-[0_0_8px_#22d3ee]"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400/90 shadow-[0_0_8px_#66BB6A]"></span>
             </div>
 
             <!-- Speaker Ear Piece (Desktop only) -->
@@ -278,7 +278,7 @@
             <div class="screen-content relative h-full w-full sm:rounded-[38px] overflow-hidden flex flex-col justify-between p-5 border border-transparent sm:border-white/5">
                 
                 <!-- Internal Screen Mesh Gradient -->
-                <div class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-indigo-500/10 via-transparent to-cyan-500/5"></div>
+                <div class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-green-500/10 via-transparent to-emerald-500/5"></div>
                 <div class="absolute top-[20%] right-[-10%] w-36 h-36 rounded-full bg-[#FF2D55]/6 blur-[40px]"></div>
 
                 <!-- App Header -->
@@ -293,7 +293,7 @@
                     <!-- App Title -->
                     <div class="text-center">
                         <span class="block text-xs font-black tracking-tight theme-text-main font-display">Absensi</span>
-                        <span class="block text-[8px] font-bold tracking-wider text-cyan-500 font-outfit uppercase">Selfie Geo</span>
+                        <span class="block text-[8px] font-bold tracking-wider text-green-500 font-outfit uppercase">Selfie Geo</span>
                     </div>
 
                     <!-- Theme Toggle Button -->
@@ -303,7 +303,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
                         </svg>
                         <!-- Moon Icon (for light mode) -->
-                        <svg class="moon-icon w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="moon-icon w-4 h-4 text-green-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>
                         </svg>
                     </button>

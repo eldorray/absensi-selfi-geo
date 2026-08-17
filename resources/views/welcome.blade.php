@@ -40,14 +40,14 @@
             --phone-shell-bg: #000000;
             --phone-shell-border: rgba(255, 255, 255, 0.12);
             --footer-icon-color: #64748b;
-            --active-nav-color: #38bdf8;
+            --active-nav-color: #A5D6A7;
 
             --viewfinder-bg: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(30, 27, 75, 0.5));
             --viewfinder-border: rgba(255, 255, 255, 0.08);
 
             --btn-accent-bg: linear-gradient(135deg, #0284c7, #4f46e5);
             --btn-accent-text: #ffffff;
-            --btn-guest-bg: linear-gradient(135deg, #38bdf8, #6366f1);
+            --btn-guest-bg: linear-gradient(135deg, #4ade80, #059669);
             --btn-guest-text: #ffffff;
             --btn-shadow: 0 10px 24px -4px rgba(56, 189, 248, 0.3);
         }
@@ -68,14 +68,14 @@
             --phone-shell-bg: #cbd5e1;
             --phone-shell-border: rgba(0, 0, 0, 0.06);
             --footer-icon-color: #94a3b8;
-            --active-nav-color: #4f46e5;
+            --active-nav-color: #66BB6A;
 
             --viewfinder-bg: linear-gradient(145deg, rgba(241, 245, 249, 0.9), rgba(238, 242, 255, 0.7));
             --viewfinder-border: rgba(226, 232, 240, 0.9);
 
-            --btn-accent-bg: linear-gradient(135deg, #4f46e5, #0284c7);
+            --btn-accent-bg: linear-gradient(135deg, #1B5E20, #0284c7);
             --btn-accent-text: #ffffff;
-            --btn-guest-bg: linear-gradient(135deg, #4f46e5, #0284c7);
+            --btn-guest-bg: linear-gradient(135deg, #4ade80, #059669);
             --btn-guest-text: #ffffff;
             --btn-shadow: 0 10px 24px -4px rgba(79, 70, 229, 0.25);
         }
@@ -239,7 +239,7 @@
         <!-- Soft Color Blobs -->
         <div class="absolute top-[12%] left-[15%] w-[45vw] h-[45vw] min-w-[300px] rounded-full bg-sky-500/15 blur-[90px] animate-blob-1"
             style="opacity: var(--blob-opacity);"></div>
-        <div class="absolute bottom-[15%] right-[15%] w-[40vw] h-[40vw] min-w-[280px] rounded-full bg-indigo-500/15 blur-[90px] animate-blob-2"
+        <div class="absolute bottom-[15%] right-[15%] w-[40vw] h-[40vw] min-w-[280px] rounded-full bg-green-500/20 blur-[90px] animate-blob-2"
             style="opacity: var(--blob-opacity);"></div>
     </div>
 
@@ -267,7 +267,7 @@
 
                 <!-- Internal Screen Gradient Accent -->
                 <div
-                    class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-sky-500/5 via-transparent to-indigo-500/5">
+                    class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-emerald-500/5 via-transparent to-green-500/5">
                 </div>
 
                 <!-- 1. App Header -->
@@ -303,7 +303,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                             </svg>
-                            <svg class="moon-icon w-4 h-4 text-indigo-600" fill="none" stroke="currentColor"
+                            <svg class="moon-icon w-4 h-4 text-green-700" fill="none" stroke="currentColor"
                                 stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
@@ -317,7 +317,7 @@
                     @auth
                         <div class="flex items-center gap-3">
                             <div
-                                class="w-9 h-9 rounded-full bg-gradient-to-tr from-sky-400 to-indigo-500 p-[1.5px] shadow-sm">
+                                class="w-9 h-9 rounded-full bg-gradient-to-tr from-green-400 to-emerald-500 p-[1.5px] shadow-sm">
                                 <div
                                     class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center text-[11px] font-bold text-white font-outfit">
                                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
@@ -351,7 +351,7 @@
                         <!-- Pulsating Face Guide Frame Ring -->
                         <div
                             class="absolute w-32 h-32 rounded-full border border-sky-400/30 animate-ring-pulse flex items-center justify-center">
-                            <div class="w-24 h-24 rounded-full border border-indigo-400/20"></div>
+                            <div class="w-24 h-24 rounded-full border border-green-400/20"></div>
                         </div>
 
                         <!-- Central Active Camera Avatar -->

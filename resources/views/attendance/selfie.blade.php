@@ -84,7 +84,7 @@
 
                     <!-- Camera Loading Overlay -->
                     <div x-show="cameraLoading" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 z-20">
-                        <svg class="animate-spin h-9 w-9 text-cyan-400 mb-3" fill="none" viewBox="0 0 24 24">
+                        <svg class="animate-spin h-9 w-9 text-green-400 mb-3" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -104,7 +104,7 @@
 
                     <!-- Liveness Model Loading Overlay -->
                     <div x-show="livenessLoading && !cameraError && !photoTaken" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/85 z-20">
-                        <svg class="animate-spin h-9 w-9 text-cyan-400 mb-3" fill="none" viewBox="0 0 24 24">
+                        <svg class="animate-spin h-9 w-9 text-green-400 mb-3" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -121,7 +121,7 @@
                         <p class="text-xs font-bold text-red-500 font-outfit uppercase tracking-wider">Deteksi Wajah Gagal Dimuat</p>
                         <p class="text-[10px] text-slate-400 mt-1" x-text="livenessError"></p>
                         <button type="button" @click="startLiveness()"
-                            class="mt-4 px-5 py-2 rounded-xl bg-cyan-500/90 text-white text-[10px] font-black uppercase tracking-wider font-outfit">Coba Lagi</button>
+                            class="mt-4 px-5 py-2 rounded-xl bg-green-500/90 text-white text-[10px] font-black uppercase tracking-wider font-outfit">Coba Lagi</button>
                     </div>
 
                     <!-- Blink capture flash -->
@@ -146,10 +146,10 @@
                         <!-- Liveness Prompt Tag -->
                         <div x-show="!livenessLoading && !livenessError"
                             class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border transition-colors"
-                            :class="faceDetected ? 'border-cyan-400/40' : 'border-white/10'">
-                            <span class="w-1.5 h-1.5 rounded-full animate-pulse" :class="faceDetected ? 'bg-cyan-400' : 'bg-amber-400'"></span>
+                            :class="faceDetected ? 'border-green-400/40' : 'border-white/10'">
+                            <span class="w-1.5 h-1.5 rounded-full animate-pulse" :class="faceDetected ? 'bg-green-400' : 'bg-amber-400'"></span>
                             <span class="text-[8px] font-black tracking-widest uppercase font-outfit"
-                                :class="faceDetected ? 'text-cyan-400' : 'text-amber-400'"
+                                :class="faceDetected ? 'text-green-400' : 'text-amber-400'"
                                 x-text="faceDetected ? 'Kedipkan Mata' : 'Arahkan Wajah ke Kamera'"></span>
                         </div>
                     </div>
@@ -170,7 +170,7 @@
             <div class="flex gap-3">
                 <div x-show="!photoTaken && !cameraError && !livenessError"
                     class="flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-[11px] font-bold uppercase tracking-wider font-outfit text-slate-400 border border-dashed theme-border">
-                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
@@ -259,10 +259,10 @@
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
                         <div class="w-8.5 h-8.5 rounded-xl flex-none flex items-center justify-center relative bg-white/5">
-                            <span x-show="locationLoading" class="absolute inset-0 rounded-xl bg-cyan-400/20 animate-pulse"></span>
+                            <span x-show="locationLoading" class="absolute inset-0 rounded-xl bg-green-400/20 animate-pulse"></span>
                             <span x-show="locationFetched && !locationLoading" class="absolute inset-0.5 rounded-full bg-emerald-400/20 animate-pulse-ring"></span>
                             
-                            <svg x-show="locationLoading" class="animate-spin w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24">
+                            <svg x-show="locationLoading" class="animate-spin w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                             </svg>

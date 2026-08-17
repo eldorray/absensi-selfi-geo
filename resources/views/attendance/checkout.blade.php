@@ -188,10 +188,10 @@
                         <!-- Liveness Prompt Tag -->
                         <div x-show="!livenessLoading && !livenessError"
                             class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border transition-colors"
-                            :class="faceDetected ? 'border-cyan-400/40' : 'border-white/10'">
-                            <span class="w-1.5 h-1.5 rounded-full animate-pulse" :class="faceDetected ? 'bg-cyan-400' : 'bg-amber-400'"></span>
+                            :class="faceDetected ? 'border-green-400/40' : 'border-white/10'">
+                            <span class="w-1.5 h-1.5 rounded-full animate-pulse" :class="faceDetected ? 'bg-green-400' : 'bg-amber-400'"></span>
                             <span class="text-[8px] font-black tracking-widest uppercase font-outfit"
-                                :class="faceDetected ? 'text-cyan-400' : 'text-amber-400'"
+                                :class="faceDetected ? 'text-green-400' : 'text-amber-400'"
                                 x-text="faceDetected ? 'Kedipkan Mata' : 'Arahkan Wajah ke Kamera'"></span>
                         </div>
                     </div>
@@ -301,10 +301,10 @@
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
                         <div class="w-8.5 h-8.5 rounded-xl flex-none flex items-center justify-center relative bg-white/5">
-                            <span x-show="locationLoading" class="absolute inset-0 rounded-xl bg-cyan-400/20 animate-pulse"></span>
+                            <span x-show="locationLoading" class="absolute inset-0 rounded-xl bg-green-400/20 animate-pulse"></span>
                             <span x-show="locationFetched && !locationLoading" class="absolute inset-0.5 rounded-full bg-emerald-400/20 animate-pulse-ring"></span>
                             
-                            <svg x-show="locationLoading" class="animate-spin w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24">
+                            <svg x-show="locationLoading" class="animate-spin w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                             </svg>

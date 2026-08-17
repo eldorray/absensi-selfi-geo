@@ -3,6 +3,7 @@
     'backUrl' => null,
     'activeTab' => null,
     'showNav' => true,
+    'isSheet' => false,
 ])
 
 <!DOCTYPE html>
@@ -30,124 +31,124 @@
     
     <style>
         :root {
-            /* Colors - Dark Theme (Default) */
-            --bg-color: #0d0f14;
-            --screen-bg: #12141b;
-            --text-main: #dfe4ec;
-            --text-muted: #94a3b8;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glass-shadow: 0 24px 80px -15px rgba(0, 0, 0, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
-            --glass-card-bg: rgba(255, 255, 255, 0.04);
+            /* Colors - Dark Theme (Android Green Palette) */
+            --bg-color: #0F1A11;
+            --screen-bg: #152218;
+            --text-main: #E8F5E9;
+            --text-muted: #93B897;
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.10);
+            --glass-shadow: none;
+            --glass-card-bg: rgba(255, 255, 255, 0.06);
             --glass-card-border: rgba(255, 255, 255, 0.10);
-            --glass-card-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            --glass-card-shadow: none;
             /* Solid (opaque) surface for menus/modals — not glass */
-            --menu-bg: #16151f;
+            --menu-bg: #152218;
             --menu-border: rgba(255, 255, 255, 0.10);
             --grid-line-color: rgba(255, 255, 255, 0.012);
-            --blob-opacity: 0.12;
-            --phone-shell-bg: #0a0b0f;
-            --phone-shell-border: rgba(255, 255, 255, 0.12);
-            --footer-icon-color: #64748b;
-            --active-nav-color: #22d3ee;
+            --blob-opacity: 0.20;
+            --phone-shell-bg: #0F1A11;
+            --phone-shell-border: rgba(255, 255, 255, 0.10);
+            --footer-icon-color: #93B897;
+            --active-nav-color: #A5D6A7;
             
             /* Inputs */
-            --input-bg: rgba(255, 255, 255, 0.03);
-            --input-border: rgba(255, 255, 255, 0.1);
-            --input-focus-bg: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(255, 255, 255, 0.06);
+            --input-border: rgba(255, 255, 255, 0.10);
+            --input-focus-bg: rgba(255, 255, 255, 0.08);
             
             /* Buttons */
-            --btn-accent-bg: #ffffff;
-            --btn-accent-text: #050409;
-            --btn-accent-shadow: 0 12px 28px rgba(255, 255, 255, 0.15);
+            --btn-accent-bg: #A5D6A7;
+            --btn-accent-text: #0F1A11;
+            --btn-accent-shadow: 0 12px 28px rgba(165, 214, 167, 0.25);
             
-            /* Stats colors */
-            --stats-present: #10b981;
-            --stats-late: #f59e0b;
-            --stats-total: #06b6d4;
-            --stats-card-border: rgba(255, 255, 255, 0.08);
+            /* Stats colors (Android Green) */
+            --stats-present: #A5D6A7;
+            --stats-late: #D9A24A;
+            --stats-total: #A5D6A7;
+            --stats-card-border: rgba(255, 255, 255, 0.10);
             
             /* Navigation colors */
-            --nav-btn-inactive-bg: rgba(255, 255, 255, 0.04);
-            --nav-btn-inactive-border: rgba(255, 255, 255, 0.05);
-            --nav-btn-inactive-text: rgba(255, 255, 255, 0.25);
+            --nav-btn-inactive-bg: rgba(255, 255, 255, 0.06);
+            --nav-btn-inactive-border: rgba(255, 255, 255, 0.10);
+            --nav-btn-inactive-text: #93B897;
             
-            /* Custom Icon Backgrounds */
-            --icon-riwayat-bg: rgba(6, 182, 212, 0.1);
-            --icon-profil-bg: rgba(168, 85, 247, 0.1);
-            --icon-password-bg: rgba(245, 158, 11, 0.1);
-            --icon-perizinan-bg: rgba(16, 185, 129, 0.1);
+            /* Custom Icon Backgrounds (Green tones) */
+            --icon-riwayat-bg: rgba(165, 214, 167, 0.12);
+            --icon-profil-bg: rgba(165, 214, 167, 0.12);
+            --icon-password-bg: rgba(217, 162, 74, 0.12);
+            --icon-perizinan-bg: rgba(165, 214, 167, 0.12);
 
-            /* Statuses */
-            --status-ok-text: #10b981;
-            --status-ok-bg: rgba(16, 185, 129, 0.10);
-            --status-ok-border: rgba(16, 185, 129, 0.20);
-            --status-late-text: #f59e0b;
-            --status-late-bg: rgba(245, 158, 11, 0.10);
-            --status-late-border: rgba(245, 158, 11, 0.20);
+            /* Statuses (Android specs) */
+            --status-ok-text: #A5D6A7;
+            --status-ok-bg: rgba(165, 214, 167, 0.12);
+            --status-ok-border: rgba(165, 214, 167, 0.30);
+            --status-late-text: #D9A24A;
+            --status-late-bg: rgba(217, 162, 74, 0.12);
+            --status-late-border: rgba(217, 162, 74, 0.30);
         }
 
         body.light-theme {
-            /* Colors - Light Theme (Polished iOS style) */
-            --bg-color: #e4e7ee;
-            --screen-bg: #eceff5;
-            --text-main: #1e293b;
-            --text-muted: #5b6472;
+            /* Colors - Light Theme (Android Green Palette) */
+            --bg-color: #E8F5E9;
+            --screen-bg: #F1F8F2;
+            --text-main: #1B5E20;
+            --text-muted: #5B7A60;
             
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.85);
-            --glass-shadow: 0 12px 36px -8px rgba(100, 116, 139, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(27, 94, 32, 0.10);
+            --glass-shadow: none;
             
             --glass-card-bg: rgba(255, 255, 255, 0.72);
-            --glass-card-border: rgba(255, 255, 255, 0.65);
-            --glass-card-shadow: 0 2px 10px rgba(100, 116, 139, 0.01), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+            --glass-card-border: rgba(27, 94, 32, 0.10);
+            --glass-card-shadow: none;
             /* Solid (opaque) surface for menus/modals — not glass */
             --menu-bg: #ffffff;
-            --menu-border: rgba(15, 23, 42, 0.10);
+            --menu-border: rgba(27, 94, 32, 0.10);
             
-            --grid-line-color: rgba(0, 0, 0, 0.015);
-            --blob-opacity: 0.16;
+            --grid-line-color: rgba(27, 94, 32, 0.04);
+            --blob-opacity: 0.32;
             
-            --phone-shell-bg: #d8dce6;
-            --phone-shell-border: rgba(0, 0, 0, 0.04);
+            --phone-shell-bg: #E8F5E9;
+            --phone-shell-border: rgba(27, 94, 32, 0.08);
             
-            --footer-icon-color: #94a3b8;
-            --active-nav-color: #6366f1;
+            --footer-icon-color: #5B7A60;
+            --active-nav-color: #66BB6A;
             
             /* Inputs */
-            --input-bg: rgba(255, 255, 255, 0.5);
-            --input-border: rgba(0, 0, 0, 0.08);
+            --input-bg: rgba(255, 255, 255, 0.72);
+            --input-border: rgba(27, 94, 32, 0.10);
             --input-focus-bg: #ffffff;
             
             /* Buttons */
-            --btn-accent-bg: #6366f1;
+            --btn-accent-bg: #1B5E20;
             --btn-accent-text: #ffffff;
-            --btn-accent-shadow: 0 10px 24px rgba(99, 102, 241, 0.2);
+            --btn-accent-shadow: 0 10px 24px rgba(27, 94, 32, 0.2);
             
-            /* Stats colors */
-            --stats-present: #047857;
-            --stats-late: #b45309;
-            --stats-total: #4f46e5;
-            --stats-card-border: rgba(255, 255, 255, 0.7);
+            /* Stats colors (Android Green) */
+            --stats-present: #2E7D32;
+            --stats-late: #C0843A;
+            --stats-total: #66BB6A;
+            --stats-card-border: rgba(27, 94, 32, 0.10);
             
             /* Navigation colors */
-            --nav-btn-inactive-bg: rgba(0, 0, 0, 0.02);
-            --nav-btn-inactive-border: rgba(0, 0, 0, 0.04);
-            --nav-btn-inactive-text: #94a3b8;
+            --nav-btn-inactive-bg: rgba(27, 94, 32, 0.04);
+            --nav-btn-inactive-border: rgba(27, 94, 32, 0.08);
+            --nav-btn-inactive-text: #5B7A60;
             
-            /* Custom Icon Backgrounds */
-            --icon-riwayat-bg: rgba(99, 102, 241, 0.08);
-            --icon-profil-bg: rgba(168, 85, 247, 0.08);
-            --icon-password-bg: rgba(245, 158, 11, 0.08);
-            --icon-perizinan-bg: rgba(16, 185, 129, 0.08);
+            /* Custom Icon Backgrounds (Green tones) */
+            --icon-riwayat-bg: rgba(102, 187, 106, 0.12);
+            --icon-profil-bg: rgba(102, 187, 106, 0.12);
+            --icon-password-bg: rgba(192, 132, 58, 0.12);
+            --icon-perizinan-bg: rgba(46, 125, 50, 0.12);
 
-            /* Statuses - Softer greens/oranges for readability */
-            --status-ok-text: #047857;
-            --status-ok-bg: rgba(52, 211, 153, 0.14);
-            --status-ok-border: rgba(52, 211, 153, 0.25);
-            --status-late-text: #b45309;
-            --status-late-bg: rgba(245, 158, 11, 0.12);
-            --status-late-border: rgba(245, 158, 11, 0.22);
+            /* Statuses (Android specs) */
+            --status-ok-text: #2E7D32;
+            --status-ok-bg: rgba(46, 125, 50, 0.10);
+            --status-ok-border: rgba(46, 125, 50, 0.25);
+            --status-late-text: #C0843A;
+            --status-late-bg: rgba(192, 132, 58, 0.10);
+            --status-late-border: rgba(192, 132, 58, 0.25);
         }
 
         html,
@@ -158,7 +159,49 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            transition: background-color 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
+        }
+        
+        /* Android Motion Tokens */
+        .dur-fast { transition-duration: 150ms; }
+        .dur-med { transition-duration: 300ms; }
+        .dur-slow { transition-duration: 450ms; }
+        
+        .ease-out { transition-timing-function: cubic-bezier(0.05, 0.7, 0.1, 1); }
+        .ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Spring Press Animation (Android: damping 0.65, stiffness 420) */
+        .spring-press {
+            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .spring-press:active {
+            transform: scale(0.96);
+        }
+        
+        /* Staggered Entrance Animation */
+        .stagger-0 { animation-delay: 0ms; }
+        .stagger-40 { animation-delay: 40ms; }
+        .stagger-80 { animation-delay: 80ms; }
+        .stagger-120 { animation-delay: 120ms; }
+        .stagger-160 { animation-delay: 160ms; }
+        .stagger-200 { animation-delay: 200ms; }
+        
+        @keyframes stagger-enter {
+            0% {
+                opacity: 0;
+                transform: translateY(calc(1/16 * 100vh)) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .animate-stagger {
+            animation-name: stagger-enter;
+            animation-duration: 300ms;
+            animation-fill-mode: both;
+            animation-timing-function: cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .font-display {
@@ -173,31 +216,33 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* Mapping classes for Theme Transitions */
+        /* Mapping classes for Theme Transitions (Android Motion) */
         .theme-bg {
             background-color: var(--bg-color);
-            transition: background-color 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         
         .theme-text-main {
             color: var(--text-main);
-            transition: color 0.5s ease;
+            transition: color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .theme-text-muted {
             color: var(--text-muted);
-            transition: color 0.5s ease;
+            transition: color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .phone-shell {
             background-color: var(--phone-shell-bg);
             border-color: var(--phone-shell-border);
-            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        box-shadow 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .screen-content {
             background-color: var(--screen-bg);
-            transition: background-color 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .bg-grid-overlay {
@@ -209,21 +254,23 @@
             background-size: 45px 45px;
             mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
             -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
-            transition: background-image 0.5s ease;
+            transition: background-image 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .glass-panel {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             box-shadow: var(--glass-shadow);
-            transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+            transition: background 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .glass-card {
             background: var(--glass-card-bg);
             border: 1px solid var(--glass-card-border);
             box-shadow: var(--glass-card-shadow);
-            transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+            transition: background 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         /* Opaque surface for popovers/modals — readable over the busy dashboard */
@@ -231,7 +278,8 @@
             background: var(--menu-bg);
             border: 1px solid var(--menu-border);
             box-shadow: var(--glass-shadow);
-            transition: background 0.5s ease, border-color 0.5s ease;
+            transition: background 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         /* Forms inputs theme mapping */
@@ -239,14 +287,16 @@
             background-color: var(--input-bg);
             border: 1px solid var(--input-border) !important;
             color: var(--text-main);
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), 
+                        border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), 
+                        color 150ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .theme-input:focus {
             background-color: var(--input-focus-bg);
             border-color: var(--active-nav-color) !important;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.08);
+            box-shadow: 0 0 0 2px rgba(165, 214, 167, 0.15);
         }
 
         /* Buttons Theme Mapping */
@@ -254,12 +304,18 @@
             background-color: var(--btn-accent-bg);
             color: var(--btn-accent-text);
             box-shadow: var(--btn-accent-shadow);
-            transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, transform 0.2s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        color 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        box-shadow 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .theme-btn-submit:active {
+            transform: scale(0.96);
         }
 
         .footer-nav-item {
             color: var(--footer-icon-color);
-            transition: color 0.5s ease;
+            transition: color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .footer-nav-item.active {
@@ -269,30 +325,30 @@
         /* Custom Theme Borders to prevent black-line specificity issues */
         .theme-border {
             border: 1px solid var(--glass-card-border) !important;
-            transition: border-color 0.5s ease;
+            transition: border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         .theme-border-t {
             border-top: 1px solid var(--glass-card-border) !important;
-            transition: border-top-color 0.5s ease;
+            transition: border-top-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         
         /* Dynamic Icons mapping background */
         .theme-icon-riwayat {
             background-color: var(--icon-riwayat-bg);
-            transition: background-color 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         .theme-icon-profil {
             background-color: var(--icon-profil-bg);
-            transition: background-color 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         .theme-icon-password {
             background-color: var(--icon-password-bg);
-            transition: background-color 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         .theme-icon-perizinan {
             background-color: var(--icon-perizinan-bg);
-            transition: background-color 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         /* Inactive nav buttons shape styling */
@@ -300,20 +356,22 @@
             background-color: var(--nav-btn-inactive-bg);
             border: 1px solid var(--nav-btn-inactive-border) !important;
             color: var(--nav-btn-inactive-text);
-            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+            transition: background-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         /* Reference-style bottom navigation bar (elevated center actions) */
         .footer-nav {
-            background: #12141b;
+            background: #152218;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 20px 20px 0 0;
             box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.28);
         }
         body.light-theme .footer-nav {
             background: #ffffff;
-            border-top: 1px solid rgba(15, 23, 42, 0.06);
-            box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+            border-top: 1px solid rgba(27, 94, 32, 0.08);
+            box-shadow: 0 -8px 24px rgba(27, 94, 32, 0.08);
         }
         .nav-item {
             flex: 1;
@@ -337,7 +395,7 @@
             color: var(--active-nav-color);
         }
         body.light-theme .nav-item.is-active .nav-pill {
-            background: rgba(99, 102, 241, 0.12);
+            background: rgba(102, 187, 106, 0.15);
         }
         .nav-label {
             font-size: 8px;
@@ -356,9 +414,11 @@
             width: 52px;
             height: 52px;
             border-radius: 9999px;
-            border: 3px solid #12141b;
+            border: 3px solid #152218;
             margin-top: -20px;
-            transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), 
+                        box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         body.light-theme .nav-fab {
             border-color: #ffffff;
@@ -368,17 +428,19 @@
             height: 22px;
         }
         .nav-fab:active {
-            transform: scale(0.93);
+            transform: scale(0.96);
         }
+        /* Android Check-in Gradient: #66BB6A → #1B5E20 */
         .nav-fab-masuk {
-            background: linear-gradient(135deg, #34d399, #059669);
-            color: #04291a;
-            box-shadow: 0 10px 22px rgba(16, 185, 129, 0.45);
+            background: linear-gradient(135deg, #66BB6A, #1B5E20);
+            color: #ffffff;
+            box-shadow: 0 10px 22px rgba(102, 187, 106, 0.45);
         }
+        /* Android Check-out Gradient: #CD7F5F → #A24E38 */
         .nav-fab-pulang {
-            background: linear-gradient(135deg, #fbbf24, #ea580c);
-            color: #3a1c00;
-            box-shadow: 0 10px 22px rgba(234, 88, 12, 0.42);
+            background: linear-gradient(135deg, #CD7F5F, #A24E38);
+            color: #ffffff;
+            box-shadow: 0 10px 22px rgba(205, 127, 95, 0.42);
         }
         .nav-fab.is-ring {
             box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.45);
@@ -387,21 +449,23 @@
         /* Statuses Theme Mapping */
         .theme-status-ok-text {
             color: var(--status-ok-text);
-            transition: color 0.5s ease;
+            transition: color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         .theme-status-ok-card {
             background: var(--status-ok-bg) !important;
             border: 1px solid var(--status-ok-border) !important;
-            transition: background 0.5s ease, border-color 0.5s ease;
+            transition: background 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         .theme-status-late-text {
             color: var(--status-late-text);
-            transition: color 0.5s ease;
+            transition: color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
         .theme-status-late-card {
             background: var(--status-late-bg) !important;
             border: 1px solid var(--status-late-border) !important;
-            transition: background 0.5s ease, border-color 0.5s ease;
+            transition: background 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
         }
 
         /* Sun / Moon Toggle Button Icon display */
@@ -412,7 +476,12 @@
         body.light-theme .theme-toggle .moon-icon { display: block; }
 
         .theme-toggle {
-            transition: transform 0.3s ease, background 0.5s ease, border-color 0.5s ease;
+            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), 
+                        background 300ms cubic-bezier(0.05, 0.7, 0.1, 1), 
+                        border-color 300ms cubic-bezier(0.05, 0.7, 0.1, 1);
+        }
+        .theme-toggle:active {
+            transform: scale(0.96);
         }
 
         /* Custom scrollbar inside mobile screen content container */
@@ -464,10 +533,11 @@
             }
         }
     </style>
+    @include('partials.pwa-material3')
 
 </head>
 
-<body class="antialiased theme-bg flex items-center justify-center">
+<body class="pwa-m3 antialiased theme-bg flex items-center justify-center">
     <!-- Theme Restore (runs as body's first child: document.body exists here, unlike in <head>) -->
     <script>
         (function() {
@@ -478,7 +548,7 @@
     </script>
 
     <!-- ════════ Background Liquid Layer ════════ -->
-    <div class="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+    <div class="pwa-decoration fixed inset-0 -z-20 overflow-hidden pointer-events-none">
         <!-- Tech grid overlay -->
         <div class="bg-grid-overlay"></div>
         
@@ -496,7 +566,7 @@
             
             <!-- Dynamic Island (Desktop only) -->
             <div class="hidden sm:flex absolute top-6.5 left-1/2 -translate-x-1/2 w-24 h-5.5 bg-black rounded-full z-50 items-center justify-end pr-3.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400/90 shadow-[0_0_8px_#22d3ee]"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400/90 shadow-[0_0_8px_#66BB6A]"></span>
             </div>
 
             <!-- Speaker Ear Piece (Desktop only) -->
@@ -506,53 +576,60 @@
             <div class="screen-content relative h-full w-full sm:rounded-[38px] overflow-hidden flex flex-col justify-between p-0 border border-transparent sm:border-white/5">
                 
                 <!-- Internal Screen Mesh Gradient -->
-                <div class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-indigo-500/10 via-transparent to-cyan-500/5"></div>
+                <div class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-green-500/10 via-transparent to-emerald-500/5"></div>
                 <div class="absolute top-[20%] right-[-10%] w-36 h-36 rounded-full bg-[#FF2D55]/5 blur-[40px]"></div>
 
                 <!-- 1. Header (Fixed at top) -->
-                <header class="relative z-10 flex items-center justify-between px-5 pt-5 pb-3">
-                    <div class="flex items-center gap-2">
-                        <!-- Back button -->
-                        @if($backUrl)
-                            <a href="{{ $backUrl }}" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center theme-text-main hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Kembali">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
-                                </svg>
-                            </a>
-                        @else
-                            <a href="{{ route('attendance.dashboard') }}" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center theme-text-main hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Dashboard">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
-                                </svg>
-                            </a>
-                        @endif
-                        
-                        <!-- Title -->
-                        <h2 class="text-xs font-black theme-text-main font-display truncate max-w-[150px]">{{ $title }}</h2>
-                    </div>
+                <header class="relative z-10 flex flex-col px-5 pt-4 pb-3">
+                    @if($isSheet)
+                        <div class="w-full pb-2 flex justify-center">
+                            <div class="sheet-handle"></div>
+                        </div>
+                    @endif
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center gap-2">
+                            <!-- Back button -->
+                            @if($backUrl)
+                                <a href="{{ $backUrl }}" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center theme-text-main hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Kembali">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+                                    </svg>
+                                </a>
+                            @else
+                                <a href="{{ route('attendance.dashboard') }}" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center theme-text-main hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Dashboard">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
+                                    </svg>
+                                </a>
+                            @endif
+                            
+                            <!-- Title -->
+                            <h2 class="text-xs font-black theme-text-main font-display truncate max-w-[150px]">{{ $title }}</h2>
+                        </div>
 
-                    <!-- Actions Layout: Theme Toggle & Custom slot -->
-                    <div class="flex items-center gap-2">
-                        @if(isset($headerAction))
-                            {{ $headerAction }}
-                        @endif
+                        <!-- Actions Layout: Theme Toggle & Custom slot -->
+                        <div class="flex items-center gap-2">
+                            @if(isset($headerAction))
+                                {{ $headerAction }}
+                            @endif
 
-                        <!-- Theme Toggle Button -->
-                        <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Toggle Theme">
-                            <!-- Sun Icon (for dark mode) -->
-                            <svg class="sun-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
-                            </svg>
-                            <!-- Moon Icon (for light mode) -->
-                            <svg class="moon-icon w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>
-                            </svg>
-                        </button>
+                            <!-- Theme Toggle Button -->
+                            <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Toggle Theme">
+                                <!-- Sun Icon (for dark mode) -->
+                                <svg class="sun-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+                                </svg>
+                                <!-- Moon Icon (for light mode) -->
+                                <svg class="moon-icon w-4 h-4 text-green-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </header>
 
                 <!-- 2. Scrollable Content Body -->
-                <div class="flex-1 overflow-y-auto custom-scroll px-5 pb-24 pt-1 space-y-4 mobile-panel">
+                <div class="flex-1 overflow-y-auto custom-scroll px-5 pb-24 pt-1 space-y-4 mobile-panel {{ $isSheet ? 'sheet-slide-up' : '' }}">
                     {{ $slot }}
                 </div>
 

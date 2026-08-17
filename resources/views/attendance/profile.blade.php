@@ -1,9 +1,9 @@
-<x-layouts.mobile title="Profil Saya" showNav="true">
+<x-layouts.mobile title="Profil Saya" backUrl="{{ route('attendance.dashboard') }}" isSheet="true" showNav="true">
     <div class="space-y-4 pb-4">
         
         <!-- Profile Avatar Badge -->
         <div class="flex flex-col items-center justify-center py-3">
-            <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-cyan-400 to-emerald-400 p-[1.5px] shadow-lg">
+            <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-green-400 to-emerald-500 p-[1.5px] shadow-lg">
                 <div class="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden">
                     @if ($user->avatar_url)
                         <img src="{{ $user->avatar_url }}" alt="Profile" class="w-full h-full object-cover">
@@ -33,7 +33,7 @@
                 <div>
                     <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Foto Profil</label>
                     <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-400 to-emerald-400 p-[1.5px] shrink-0">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-green-400 to-emerald-500 p-[1.5px] shrink-0">
                             <div class="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden">
                                 <template x-if="preview">
                                     <img :src="preview" alt="" class="w-full h-full object-cover">

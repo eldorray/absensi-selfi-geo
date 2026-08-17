@@ -1,4 +1,4 @@
-<x-layouts.mobile title="Detail Informasi" backUrl="{{ route('attendance.dashboard') }}" showNav="true">
+<x-layouts.mobile title="Detail Informasi" backUrl="{{ route('attendance.dashboard') }}" isSheet="true" showNav="true">
     <div class="space-y-4 pb-4">
 
         <!-- Hero image / fallback -->
@@ -7,7 +7,7 @@
                 @if ($announcement->image_url)
                     <img src="{{ $announcement->image_url }}" alt="" class="w-full h-full object-cover">
                 @else
-                    <div class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-5">
+                    <div class="w-full h-full bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center p-5">
                         <span class="text-white font-black text-lg text-center">{{ $announcement->title }}</span>
                     </div>
                 @endif
