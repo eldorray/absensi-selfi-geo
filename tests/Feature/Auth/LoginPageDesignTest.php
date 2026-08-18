@@ -1,5 +1,19 @@
 <?php
 
+use App\Models\ApplicationSetting;
+
+it('keeps uploaded logo and application title in one centered brand lockup', function () {
+    ApplicationSetting::current()->update(['application_logo_path' => 'branding/logo.png']);
+
+    $this->get(route('login'))
+        ->assertSuccessful()
+        ->assertSee('class="brand-lockup"', false)
+        ->assertSee('class="brand-logo"', false)
+        ->assertSee('class="app-title"', false)
+        ->assertSee('AbsenKu')
+        ->assertSee('grid-template-columns: 48px minmax(0, 1fr) 48px', false);
+});
+
 it('renders the Material 3 login page with accessible controls', function () {
     $response = $this->get(route('login'));
 

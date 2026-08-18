@@ -116,10 +116,13 @@
             gap: 18px;
         }
 
-        .app-bar { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; gap: 10px; }
-        .app-title { min-width: 0; text-align: center; }
+        .app-bar { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: center; gap: 10px; }
+        .brand-lockup { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 9px; }
+        .brand-logo { width: 36px; height: 36px; flex: 0 0 36px; object-fit: contain; }
+        .app-title { min-width: 0; text-align: left; }
         .app-title strong { display: block; font-size: 0.9375rem; font-weight: 800; }
-        .app-title span { display: block; margin-top: 2px; overflow: hidden; color: var(--md-sys-color-on-surface-variant); font-size: 0.6875rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+        .app-title :is(strong, span) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .app-title span { display: block; margin-top: 2px; color: var(--md-sys-color-on-surface-variant); font-size: 0.6875rem; font-weight: 600; }
 
         .icon-button {
             width: 48px;
@@ -310,12 +313,14 @@
                     </svg>
                 </a>
 
-                @if ($branding->logoUrl())
-                    <img src="{{ $branding->logoUrl() }}" alt="Logo {{ config('app.name') }}" class="h-10 max-w-32 object-contain">
-                @endif
-                <div class="app-title">
-                    <strong>AbsenKu</strong>
-                    <span>MI Daarul Hikmah</span>
+                <div class="brand-lockup">
+                    @if ($branding->logoUrl())
+                        <img src="{{ $branding->logoUrl() }}" alt="" class="brand-logo">
+                    @endif
+                    <div class="app-title">
+                        <strong>AbsenKu</strong>
+                        <span>MI Daarul Hikmah</span>
+                    </div>
                 </div>
 
                 <button type="button" class="icon-button" data-theme-toggle aria-label="Aktifkan tema gelap" title="Aktifkan tema gelap">

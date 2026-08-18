@@ -10,7 +10,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class LeaveAdvanceNotice implements ValidationRule
 {
-    public const HOURS = 12;
+    public const CUTOFF_HOUR = 21;
 
     public function __construct(private readonly ?string $leaveType) {}
 
@@ -21,13 +21,17 @@ class LeaveAdvanceNotice implements ValidationRule
         }
 
         try {
-            $startsAt = CarbonImmutable::createFromFormat('!Y-m-d', $value, config('app.timezone'));
+            $startDate = CarbonImmutable::createFromFormat('!Y-m-d', $value, config('app.timezone'));
         } catch (\Throwable) {
             return;
         }
 
-        if ($startsAt === false || now()->greaterThan($startsAt->subHours(self::HOURS))) {
-            $fail('Izin atau cuti harus diajukan minimal 12 jam sebelum tanggal mulai.');
+        $cutoff = $startDate === false
+            ? null
+            : $startDate->subDay()->setTime(self::CUTOFF_HOUR, 0);
+
+        if ($cutoff === null || now()->greaterThan($cutoff)) {
+            $fail('Izin atau cuti harus diajukan paling lambat pukul 21.00 pada hari sebelumnya.');
         }
     }
 }

@@ -107,33 +107,33 @@ test('leave store validates the payload', function () {
         ->assertJsonValidationErrors(['end_date']);
 });
 
-test('izin and cuti require at least twelve hours notice', function (string $type) {
-    \Carbon\Carbon::setTestNow('2026-08-17 12:01:00');
+test('izin and cuti are rejected after nine pm on the previous day', function (string $type) {
+    \Carbon\Carbon::setTestNow('2026-01-01 21:01:00');
     $user = leaveTeacher();
 
     $this->actingAs($user, 'sanctum')
         ->postJson('/api/leaves', leavePayload([
             'type' => $type,
-            'start_date' => '2026-08-18',
-            'end_date' => '2026-08-18',
+            'start_date' => '2026-01-02',
+            'end_date' => '2026-01-02',
         ]))
         ->assertUnprocessable()
         ->assertJsonValidationErrors('start_date')
-        ->assertJsonPath('errors.start_date.0', 'Izin atau cuti harus diajukan minimal 12 jam sebelum tanggal mulai.');
+        ->assertJsonPath('errors.start_date.0', 'Izin atau cuti harus diajukan paling lambat pukul 21.00 pada hari sebelumnya.');
 
     expect(Leave::query()->count())->toBe(0);
     \Carbon\Carbon::setTestNow();
 })->with(['izin', 'cuti']);
 
-test('izin exactly twelve hours before its start date is accepted', function () {
-    \Carbon\Carbon::setTestNow('2026-08-17 12:00:00');
+test('izin at exactly nine pm on the previous day is accepted', function () {
+    \Carbon\Carbon::setTestNow('2026-01-01 21:00:00');
     $user = leaveTeacher();
 
     $this->actingAs($user, 'sanctum')
         ->postJson('/api/leaves', leavePayload([
             'type' => 'izin',
-            'start_date' => '2026-08-18',
-            'end_date' => '2026-08-18',
+            'start_date' => '2026-01-02',
+            'end_date' => '2026-01-02',
         ]))
         ->assertCreated();
 
