@@ -139,10 +139,18 @@ test('student and class row actions use accessible tonal icon buttons', function
         ->assertSee('admin-row-action-edit', false)
         ->assertSee('admin-row-action-delete', false)
         ->assertSee('aria-label="Edit siswa Aisyah"', false)
-        ->assertSee('aria-label="Hapus siswa Aisyah"', false);
+        ->assertSee('aria-label="Hapus siswa Aisyah"', false)
+        ->assertSee('M11 5H6a2 2 0 00-2 2v11', false)
+        ->assertSee('M19 7l-.867 12.142', false)
+        ->assertDontSee('fas fa-pen', false)
+        ->assertDontSee('fas fa-trash', false);
 
     $this->actingAs($admin)->get(route('admin.school-classes.index', 'mi'))
         ->assertSuccessful()
         ->assertSee('aria-label="Edit kelas 4 A"', false)
-        ->assertSee('aria-label="Hapus kelas 4 A"', false);
+        ->assertSee('aria-label="Hapus kelas 4 A"', false)
+        ->assertSee('M11 5H6a2 2 0 00-2 2v11', false)
+        ->assertSee('M19 7l-.867 12.142', false)
+        ->assertDontSee('fas fa-pen', false)
+        ->assertDontSee('fas fa-trash', false);
 });
