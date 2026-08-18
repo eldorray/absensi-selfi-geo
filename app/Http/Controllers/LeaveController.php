@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreLeaveRequest;
 use App\Models\Leave;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -42,24 +42,9 @@ class LeaveController extends Controller
     /**
      * Store new leave request.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreLeaveRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'type' => 'required|in:izin,cuti,sakit',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'reason' => 'required|string|max:1000',
-            'attachment' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
-        ], [
-            'type.required' => 'Jenis perizinan harus dipilih.',
-            'start_date.required' => 'Tanggal mulai harus diisi.',
-            'start_date.after_or_equal' => 'Tanggal mulai tidak boleh sebelum hari ini.',
-            'end_date.required' => 'Tanggal selesai harus diisi.',
-            'end_date.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
-            'reason.required' => 'Alasan harus diisi.',
-            'attachment.image' => 'Lampiran harus berupa gambar.',
-            'attachment.max' => 'Ukuran gambar maksimal 5MB.',
-        ]);
+        $validated = $request->validated();
 
         // Handle attachment upload
         $attachmentPath = null;
@@ -142,7 +127,7 @@ class LeaveController extends Controller
      */
     public function approve(Leave $leave): RedirectResponse
     {
-        if (!$leave->isPending()) {
+        if (! $leave->isPending()) {
             return back()->with('error', 'Pengajuan ini sudah diproses.');
         }
 
@@ -160,7 +145,7 @@ class LeaveController extends Controller
      */
     public function reject(Request $request, Leave $leave): RedirectResponse
     {
-        if (!$leave->isPending()) {
+        if (! $leave->isPending()) {
             return back()->with('error', 'Pengajuan ini sudah diproses.');
         }
 

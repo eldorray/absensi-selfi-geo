@@ -32,6 +32,29 @@ test('employee can navigate from dashboard to leaves index and see leave list', 
         ->assertSee(route('attendance.leaves.create'));
 });
 
+test('web leave submission enforces twelve hours notice for izin but exempts sakit', function () {
+    \Carbon\Carbon::setTestNow('2026-08-17 12:01:00');
+    $role = Role::firstOrCreate(['slug' => 'guru'], ['name' => 'Guru', 'is_admin' => false]);
+    $guru = User::factory()->create(['role_id' => $role->id]);
+
+    actingAs($guru)->post(route('attendance.leaves.store'), [
+        'type' => 'izin',
+        'start_date' => '2026-08-18',
+        'end_date' => '2026-08-18',
+        'reason' => 'Keperluan keluarga.',
+    ])->assertSessionHasErrors('start_date');
+
+    actingAs($guru)->post(route('attendance.leaves.store'), [
+        'type' => 'sakit',
+        'start_date' => '2026-08-17',
+        'end_date' => '2026-08-17',
+        'reason' => 'Sedang sakit.',
+    ])->assertRedirect(route('attendance.leaves.index'));
+
+    expect(Leave::query()->count())->toBe(1);
+    \Carbon\Carbon::setTestNow();
+});
+
 test('employee can open create leave page and submit leave request successfully', function () {
     Storage::fake('public');
 

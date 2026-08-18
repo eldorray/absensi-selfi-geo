@@ -19,8 +19,8 @@ function leavePayload(array $overrides = []): array
 {
     return array_merge([
         'type' => 'cuti',
-        'start_date' => now()->addDay()->format('Y-m-d'),
-        'end_date' => now()->addDays(2)->format('Y-m-d'),
+        'start_date' => now()->addDays(2)->format('Y-m-d'),
+        'end_date' => now()->addDays(3)->format('Y-m-d'),
         'reason' => 'Keperluan keluarga.',
     ], $overrides);
 }
@@ -105,6 +105,55 @@ test('leave store validates the payload', function () {
         ]))
         ->assertStatus(422)
         ->assertJsonValidationErrors(['end_date']);
+});
+
+test('izin and cuti require at least twelve hours notice', function (string $type) {
+    \Carbon\Carbon::setTestNow('2026-08-17 12:01:00');
+    $user = leaveTeacher();
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/leaves', leavePayload([
+            'type' => $type,
+            'start_date' => '2026-08-18',
+            'end_date' => '2026-08-18',
+        ]))
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('start_date')
+        ->assertJsonPath('errors.start_date.0', 'Izin atau cuti harus diajukan minimal 12 jam sebelum tanggal mulai.');
+
+    expect(Leave::query()->count())->toBe(0);
+    \Carbon\Carbon::setTestNow();
+})->with(['izin', 'cuti']);
+
+test('izin exactly twelve hours before its start date is accepted', function () {
+    \Carbon\Carbon::setTestNow('2026-08-17 12:00:00');
+    $user = leaveTeacher();
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/leaves', leavePayload([
+            'type' => 'izin',
+            'start_date' => '2026-08-18',
+            'end_date' => '2026-08-18',
+        ]))
+        ->assertCreated();
+
+    expect(Leave::query()->count())->toBe(1);
+    \Carbon\Carbon::setTestNow();
+});
+
+test('sick leave can still be submitted for today', function () {
+    \Carbon\Carbon::setTestNow('2026-08-17 20:00:00');
+    $user = leaveTeacher();
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/leaves', leavePayload([
+            'type' => 'sakit',
+            'start_date' => '2026-08-17',
+            'end_date' => '2026-08-17',
+        ]))
+        ->assertCreated();
+
+    \Carbon\Carbon::setTestNow();
 });
 
 test('leave show returns the own row', function () {
