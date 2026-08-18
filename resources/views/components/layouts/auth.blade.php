@@ -2,9 +2,15 @@
 <html lang="en">
 
 <head>
+    @php
+        $branding = \App\Models\ApplicationSetting::current();
+    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - {{ config('app.name') }}</title>
+    <link rel="manifest" href="{{ route('manifest') }}">
+    <link rel="icon" href="{{ $branding->iconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ $branding->iconUrl() }}">
     @vite('resources/css/app.css')
     <script>
         function applyTheme() {

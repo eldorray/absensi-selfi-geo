@@ -2,6 +2,9 @@
 <html lang="id">
 
 <head>
+    @php
+        $branding = \App\Models\ApplicationSetting::current();
+    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#4f46e5">
@@ -9,8 +12,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Absensi">
-    <link rel="manifest" href="/manifest.json?v=4">
-    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png?v=2">
+    <link rel="manifest" href="{{ route('manifest') }}">
+    <link rel="icon" href="{{ $branding->iconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ $branding->iconUrl() }}">
     <title>{{ config('app.name') }}</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

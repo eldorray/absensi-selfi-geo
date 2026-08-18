@@ -7,6 +7,33 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Settings;
 use Illuminate\Support\Facades\Route;
 
+Route::get('branding/{type}', [\App\Http\Controllers\BrandingAssetController::class, 'show'])
+    ->whereIn('type', ['logo', 'icon'])
+    ->name('branding.asset');
+Route::get('manifest.webmanifest', function () {
+    $settings = \App\Models\ApplicationSetting::current();
+    $iconUrl = $settings->iconUrl();
+
+    return response()->json([
+        'name' => 'Absensi Selfie Geo',
+        'short_name' => 'Absensi',
+        'description' => 'Aplikasi Absensi Selfie dengan Verifikasi GPS',
+        'start_url' => '/attendance/dashboard',
+        'scope' => '/',
+        'display' => 'standalone',
+        'background_color' => '#f7fbf5',
+        'theme_color' => '#176b43',
+        'orientation' => 'portrait-primary',
+        'icons' => $settings->application_icon_path !== null ? [
+            ['src' => $iconUrl, 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any'],
+            ['src' => $iconUrl, 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
+        ] : [
+            ['src' => '/images/icons/icon-192.png?v=2', 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any'],
+            ['src' => '/images/icons/icon-512.png?v=2', 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
+        ],
+    ])->header('Content-Type', 'application/manifest+json');
+})->name('manifest');
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -35,6 +62,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/password', [Settings\PasswordController::class, 'edit'])->name('settings.password.edit');
     Route::put('settings/password', [Settings\PasswordController::class, 'update'])->name('settings.password.update');
     Route::get('settings/appearance', [Settings\AppearanceController::class, 'edit'])->name('settings.appearance.edit');
+    Route::middleware('admin')->group(function () {
+        Route::get('settings/branding', [Settings\BrandingController::class, 'edit'])->name('settings.branding.edit');
+        Route::put('settings/branding', [Settings\BrandingController::class, 'update'])->name('settings.branding.update');
+        Route::delete('settings/branding', [Settings\BrandingController::class, 'destroy'])->name('settings.branding.destroy');
+    });
 
     // Employee dashboard (SRP - separate controller)
     Route::get('attendance/dashboard', [Employee\DashboardController::class, 'index'])->name('attendance.dashboard');

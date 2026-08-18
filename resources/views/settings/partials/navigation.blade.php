@@ -29,5 +29,17 @@
             </svg>
             <span>{{ __('Appearance') }}</span>
         </a>
+        @if (auth()->user()?->isAdmin())
+            <a href="{{ route('settings.branding.edit') }}" @class([
+                'settings-navigation-item',
+                'is-active' => request()->routeIs('settings.branding.*'),
+            ]) @if (request()->routeIs('settings.branding.*')) aria-current="page" @endif>
+                <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <rect x="4" y="4" width="16" height="16" rx="4"></rect>
+                    <path stroke-linecap="round" d="M8 15 11 12l2 2 3-4"></path>
+                </svg>
+                <span>Branding</span>
+            </a>
+        @endif
     </nav>
 </aside>

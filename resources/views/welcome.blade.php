@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="light">
 <head>
+    @php
+        $branding = \App\Models\ApplicationSetting::current();
+    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f7fbf5">
@@ -9,8 +12,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="AbsenKu">
-    <link rel="manifest" href="/manifest.json?v=4">
-    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png?v=2">
+    <link rel="manifest" href="{{ route('manifest') }}">
+    <link rel="icon" href="{{ $branding->iconUrl() }}">
+    <link rel="apple-touch-icon" href="{{ $branding->iconUrl() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -307,7 +311,7 @@
         <header class="app-bar">
             <div class="brand">
                 <span class="brand-mark" aria-hidden="true">
-                    <img src="/images/icons/icon-192.png?v=2" alt="">
+                    <img src="{{ $branding->logoUrl() ?? $branding->iconUrl() }}" alt="">
                 </span>
                 <div class="brand-copy">
                     <p class="brand-name">AbsenKu</p>
