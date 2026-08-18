@@ -11,8 +11,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#080710">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f1712">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="Aplikasi Absensi Selfie dengan Verifikasi GPS">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -537,7 +537,7 @@
 
 </head>
 
-<body class="pwa-m3 antialiased theme-bg flex items-center justify-center">
+<body class="pwa-m3 antialiased theme-bg flex items-center justify-center" data-attendance-ui="material-3">
     <!-- Theme Restore (runs as body's first child: document.body exists here, unlike in <head>) -->
     <script>
         (function() {
@@ -580,7 +580,7 @@
                 <div class="absolute top-[20%] right-[-10%] w-36 h-36 rounded-full bg-[#FF2D55]/5 blur-[40px]"></div>
 
                 <!-- 1. Header (Fixed at top) -->
-                <header class="relative z-10 flex flex-col px-5 pt-4 pb-3">
+                <header class="relative z-10 flex flex-col px-5 pt-4 pb-3" data-m3-region="top-app-bar">
                     @if($isSheet)
                         <div class="w-full pb-2 flex justify-center">
                             <div class="sheet-handle"></div>
@@ -629,13 +629,13 @@
                 </header>
 
                 <!-- 2. Scrollable Content Body -->
-                <div class="flex-1 overflow-y-auto custom-scroll px-5 pb-24 pt-1 space-y-4 mobile-panel {{ $isSheet ? 'sheet-slide-up' : '' }}">
+                <div class="flex-1 overflow-y-auto custom-scroll px-5 pb-24 pt-1 space-y-4 mobile-panel {{ $isSheet ? 'sheet-slide-up' : '' }}" data-m3-region="content">
                     {{ $slot }}
                 </div>
 
                 <!-- 3. Bottom Navigation Bar (Fixed at bottom) -->
                 @if($showNav)
-                    <nav class="footer-nav relative z-10 flex items-end justify-between w-full px-2 pt-2 pb-1 mt-1">
+                    <nav class="footer-nav relative z-10 flex items-end justify-between w-full px-2 pt-2 pb-1 mt-1" aria-label="Navigasi utama" data-m3-region="navigation-bar">
                         <!-- Beranda -->
                         <a href="{{ route('attendance.dashboard') }}" class="nav-item @if($activeTab === 'beranda') is-active @endif">
                             <span class="nav-pill">

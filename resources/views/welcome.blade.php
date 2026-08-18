@@ -1,459 +1,400 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full overflow-hidden">
-
+<html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#080710">
-    <meta name="description" content="Aplikasi absensi digital dengan selfie, GPS, dan pengajuan izin online.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7fbf5">
+    <meta name="description" content="Aplikasi presensi MI Daarul Hikmah dengan verifikasi swafoto dan lokasi.">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="AbsenKu">
     <link rel="manifest" href="/manifest.json?v=4">
     <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png?v=2">
-    <title>Absensi Selfie Geo - MI Daarul Hikmah</title>
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>AbsenKu | MI Daarul Hikmah</title>
+
+    <script>
+        (() => {
+            const savedTheme = localStorage.getItem('welcome-theme');
+            const theme = savedTheme === 'dark' ? 'dark' : 'light';
+            document.documentElement.dataset.theme = theme;
+        })();
+    </script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         :root {
-            /* Dark Theme Variables */
-            --bg-color: #06070d;
-            --screen-bg: #090a14;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.08);
-            --glass-card-bg: rgba(255, 255, 255, 0.025);
-            --glass-card-border: rgba(255, 255, 255, 0.07);
-            --grid-line-color: rgba(255, 255, 255, 0.015);
-            --blob-opacity: 0.16;
-            --phone-shell-bg: #000000;
-            --phone-shell-border: rgba(255, 255, 255, 0.12);
-            --footer-icon-color: #64748b;
-            --active-nav-color: #A5D6A7;
-
-            --viewfinder-bg: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(30, 27, 75, 0.5));
-            --viewfinder-border: rgba(255, 255, 255, 0.08);
-
-            --btn-accent-bg: linear-gradient(135deg, #0284c7, #4f46e5);
-            --btn-accent-text: #ffffff;
-            --btn-guest-bg: linear-gradient(135deg, #4ade80, #059669);
-            --btn-guest-text: #ffffff;
-            --btn-shadow: 0 10px 24px -4px rgba(56, 189, 248, 0.3);
+            color-scheme: light;
+            --md-sys-color-primary: #176b43;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #b7f2cd;
+            --md-sys-color-on-primary-container: #002113;
+            --md-sys-color-secondary-container: #d4e8d9;
+            --md-sys-color-on-secondary-container: #102018;
+            --md-sys-color-surface: #f7fbf5;
+            --md-sys-color-surface-container-low: #eef5ee;
+            --md-sys-color-surface-container: #e8f0e8;
+            --md-sys-color-surface-container-high: #dfe9e0;
+            --md-sys-color-on-surface: #171d19;
+            --md-sys-color-on-surface-variant: #3e4a42;
+            --md-sys-color-outline: #6f7a72;
+            --md-sys-color-outline-variant: #bec9c0;
+            --md-sys-color-focus: #004d2e;
+            --md-sys-color-shadow: rgba(23, 107, 67, 0.18);
+            --page-accent: #075e38;
+            --device-stage: #e8f0e8;
+            --phone-shell: #d4ded5;
+            --phone-shell-border: rgba(23, 29, 25, 0.12);
         }
 
-        body.light-theme {
-            /* Light Theme Variables */
-            --bg-color: #e2e8f0;
-            --screen-bg: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.95);
-            --glass-shadow: 0 16px 40px -8px rgba(100, 116, 139, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 1);
-            --glass-card-bg: rgba(255, 255, 255, 0.7);
-            --glass-card-border: rgba(226, 232, 240, 0.9);
-            --grid-line-color: rgba(0, 0, 0, 0.02);
-            --blob-opacity: 0.22;
-            --phone-shell-bg: #cbd5e1;
-            --phone-shell-border: rgba(0, 0, 0, 0.06);
-            --footer-icon-color: #94a3b8;
-            --active-nav-color: #66BB6A;
-
-            --viewfinder-bg: linear-gradient(145deg, rgba(241, 245, 249, 0.9), rgba(238, 242, 255, 0.7));
-            --viewfinder-border: rgba(226, 232, 240, 0.9);
-
-            --btn-accent-bg: linear-gradient(135deg, #1B5E20, #0284c7);
-            --btn-accent-text: #ffffff;
-            --btn-guest-bg: linear-gradient(135deg, #4ade80, #059669);
-            --btn-guest-text: #ffffff;
-            --btn-shadow: 0 10px 24px -4px rgba(79, 70, 229, 0.25);
+        :root[data-theme='dark'] {
+            color-scheme: dark;
+            --md-sys-color-primary: #9bd5b5;
+            --md-sys-color-on-primary: #003822;
+            --md-sys-color-primary-container: #145236;
+            --md-sys-color-on-primary-container: #b7f2cd;
+            --md-sys-color-secondary-container: #344b3e;
+            --md-sys-color-on-secondary-container: #d0e8d8;
+            --md-sys-color-surface: #0f1712;
+            --md-sys-color-surface-container-low: #141f18;
+            --md-sys-color-surface-container: #19261e;
+            --md-sys-color-surface-container-high: #223228;
+            --md-sys-color-on-surface: #e5efe7;
+            --md-sys-color-on-surface-variant: #bdc9bf;
+            --md-sys-color-outline: #899e8e;
+            --md-sys-color-outline-variant: #3d4b40;
+            --md-sys-color-focus: #b7f2cd;
+            --md-sys-color-shadow: rgba(0, 0, 0, 0.38);
+            --page-accent: #b7f2cd;
+            --device-stage: #0b100d;
+            --phone-shell: #080d0a;
+            --phone-shell-border: rgba(229, 239, 231, 0.14);
         }
 
-        html,
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html { min-height: 100%; background: var(--md-sys-color-surface); }
+
         body {
-            height: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
-            width: 100%;
+            min-width: 320px;
+            min-height: 100svh;
             margin: 0;
-            padding: 0;
-            transition: background-color 0.4s ease;
+            overflow-x: hidden;
+            display: grid;
+            place-items: center;
+            background: var(--device-stage);
+            color: var(--md-sys-color-on-surface);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            transition: background-color 180ms ease, color 180ms ease;
         }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-        }
-
-        .font-display {
-            font-family: 'Bricolage Grotesque', sans-serif;
-        }
-
-        .font-outfit {
-            font-family: 'Outfit', sans-serif;
-        }
+        button, a { font: inherit; }
 
         .phone-shell {
-            background-color: var(--phone-shell-bg);
-            border-color: var(--phone-shell-border);
-            transition: all 0.4s ease;
+            position: relative;
+            width: 100%;
+            min-height: 100svh;
+            background: var(--md-sys-color-surface);
         }
 
-        .screen-content {
-            background-color: var(--screen-bg);
-            transition: background-color 0.4s ease;
+        .dynamic-island { display: none; }
+
+        .page {
+            width: 100%;
+            min-height: 100svh;
+            margin-inline: auto;
+            padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .bg-grid-overlay {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(var(--grid-line-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 60%, transparent 100%);
-            -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 60%, transparent 100%);
+        .app-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
         }
 
-        .glass-card {
-            background: var(--glass-card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-card-border);
-            transition: all 0.3s ease;
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+        .brand-mark {
+            width: 48px;
+            height: 48px;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            border-radius: 16px 16px 16px 6px;
+            background: var(--md-sys-color-primary-container);
         }
 
-        .viewfinder-canvas {
-            background: var(--viewfinder-bg);
-            border: 1px solid var(--viewfinder-border);
-            transition: all 0.4s ease;
+        .brand-mark img { width: 30px; height: 30px; object-fit: contain; }
+        .brand-copy { min-width: 0; }
+        .brand-name { margin: 0; font-size: 1rem; font-weight: 800; letter-spacing: -0.02em; }
+        .organization { margin: 2px 0 0; color: var(--md-sys-color-on-surface-variant); font-size: 0.75rem; font-weight: 600; }
+
+        .icon-button {
+            width: 48px;
+            height: 48px;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 50%;
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+            cursor: pointer;
+            transition: background-color 150ms ease, transform 150ms ease;
         }
 
-        .footer-nav-item {
-            color: var(--footer-icon-color);
-            transition: color 0.3s ease, transform 0.2s ease;
+        .icon-button:hover { background: var(--md-sys-color-secondary-container); }
+        .icon-button:active { transform: scale(0.94); }
+        .icon-button svg { width: 22px; height: 22px; }
+        .moon-icon, :root[data-theme='dark'] .sun-icon { display: none; }
+        :root[data-theme='dark'] .moon-icon { display: block; }
+
+        .gateway {
+            flex: 1;
+            display: grid;
+            align-content: center;
+            gap: 12px;
         }
 
-        .footer-nav-item.active {
-            color: var(--active-nav-color);
+        .hero {
+            position: relative;
+            min-height: 300px;
+            overflow: hidden;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+            border-radius: 32px 32px 32px 10px;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
         }
 
-        .theme-toggle .sun-icon {
-            display: block;
+        .hero-copy { position: relative; z-index: 1; max-width: 690px; }
+        .context-label { margin: 0 0 14px; color: var(--page-accent); font-size: 0.8rem; font-weight: 800; }
+        .hero h1 { margin: 0; max-width: 760px; font-size: clamp(2rem, 10vw, 3rem); line-height: 1.02; letter-spacing: -0.045em; }
+        .hero-description { max-width: 600px; margin: 16px 0 0; font-size: 0.9375rem; line-height: 1.55; }
+
+        .camera-motif {
+            width: 64px;
+            height: 64px;
+            align-self: flex-end;
+            display: grid;
+            place-items: center;
+            border-radius: 22px 22px 22px 8px;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
         }
 
-        .theme-toggle .moon-icon {
-            display: none;
+        .camera-motif svg { width: 32px; height: 32px; }
+
+        .action-panel {
+            padding: 16px;
+            display: grid;
+            gap: 16px;
+            border-radius: 24px 24px 10px 24px;
+            background: var(--md-sys-color-surface-container-low);
         }
 
-        body.light-theme .theme-toggle .sun-icon {
-            display: none;
+        .capabilities { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+        .capability {
+            min-height: 76px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 16px;
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
         }
 
-        body.light-theme .theme-toggle .moon-icon {
-            display: block;
+        .capability svg { width: 24px; height: 24px; flex: 0 0 auto; }
+        .capability span { font-size: 0.875rem; font-weight: 700; line-height: 1.25; }
+
+        .welcome-back { margin: 0; color: var(--md-sys-color-on-surface-variant); font-size: 0.875rem; line-height: 1.5; }
+        .welcome-back strong { color: var(--md-sys-color-on-surface); }
+
+        .primary-action {
+            min-height: 56px;
+            padding: 14px 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: 0 8px 22px var(--md-sys-color-shadow);
+            font-weight: 800;
+            text-decoration: none;
+            transition: box-shadow 150ms ease, transform 150ms ease;
         }
 
-        /* Floating Blobs Animation */
-        @keyframes float-blob {
+        .primary-action:hover { box-shadow: 0 10px 26px var(--md-sys-color-shadow); transform: translateY(-1px); }
+        .primary-action:active { transform: scale(0.98); }
 
-            0%,
-            100% {
-                transform: translate(0px, 0px) scale(1);
+        :where(a, button):focus-visible {
+            outline: 3px solid var(--md-sys-color-focus);
+            outline-offset: 4px;
+        }
+
+        footer { color: var(--md-sys-color-on-surface-variant); font-size: 0.75rem; text-align: center; }
+
+        @media (min-width: 800px) {
+            .phone-shell {
+                width: 395px;
+                height: min(780px, calc(100svh - 32px));
+                min-height: 0;
+                padding: 10px;
+                overflow: hidden;
+                border: 1px solid var(--phone-shell-border);
+                border-radius: 48px;
+                background: var(--phone-shell);
+                box-shadow: 0 28px 70px rgba(10, 28, 17, 0.22);
             }
 
-            50% {
-                transform: translate(25px, -35px) scale(1.08);
-            }
-        }
-
-        @keyframes float-blob-reverse {
-
-            0%,
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
-
-            50% {
-                transform: translate(-25px, 25px) scale(0.95);
-            }
-        }
-
-        .animate-blob-1 {
-            animation: float-blob 24s infinite ease-in-out;
-        }
-
-        .animate-blob-2 {
-            animation: float-blob-reverse 20s infinite ease-in-out;
-        }
-
-        /* Camera Scanner Ring Animation */
-        @keyframes pulse-ring {
-
-            0%,
-            100% {
-                transform: scale(0.92);
-                opacity: 0.7;
+            .dynamic-island {
+                position: absolute;
+                z-index: 2;
+                top: 22px;
+                left: 50%;
+                width: 96px;
+                height: 22px;
+                display: block;
+                border-radius: 999px;
+                background: #050806;
+                transform: translateX(-50%);
             }
 
-            50% {
-                transform: scale(1.06);
-                opacity: 0.3;
+            .page {
+                height: 100%;
+                min-height: 0;
+                overflow-y: auto;
+                padding: 28px 16px 16px;
+                border-radius: 38px;
+                background: var(--md-sys-color-surface);
+                scrollbar-width: none;
             }
+
+            .page::-webkit-scrollbar { display: none; }
         }
 
-        .animate-ring-pulse {
-            animation: pulse-ring 3.5s ease-in-out infinite;
+        @media (max-width: 359px) {
+            .page { padding-inline: 12px; }
+            .organization { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .hero { min-height: 280px; padding: 20px; }
+            .hero h1 { font-size: 1.8rem; }
+            .capabilities { grid-template-columns: 1fr; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
         }
     </style>
-
-    <!-- Theme Restore -->
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('welcome-theme');
-            if (savedTheme === 'light') {
-                document.body.classList.add('light-theme');
-            }
-        })();
-    </script>
 </head>
+<body>
+    <div class="phone-shell">
+        <span class="dynamic-island" aria-hidden="true"></span>
+        <div class="page">
+        <header class="app-bar">
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <img src="/images/icons/icon-192.png?v=2" alt="">
+                </span>
+                <div class="brand-copy">
+                    <p class="brand-name">AbsenKu</p>
+                    <p class="organization">MI Daarul Hikmah</p>
+                </div>
+            </div>
 
-<body class="antialiased flex items-center justify-center">
+            <button type="button" class="icon-button" data-theme-toggle aria-label="Aktifkan tema gelap" title="Aktifkan tema gelap">
+                <svg class="sun-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+                </svg>
+                <svg class="moon-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.5 8.5 0 1 0 20.4 15.2Z"></path>
+                </svg>
+            </button>
+        </header>
 
-    <!-- ════════ Ambient Background Liquid Layer ════════ -->
-    <div class="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
-        <div class="bg-grid-overlay"></div>
+        <main class="gateway">
+            <section class="hero" aria-labelledby="welcome-heading">
+                <div class="hero-copy">
+                    <p class="context-label">Presensi MI Daarul Hikmah</p>
+                    <h1 id="welcome-heading">Presensi yang siap saat Anda tiba.</h1>
+                    <p class="hero-description">AbsenKu memeriksa swafoto dan lokasi ketika Anda memulai presensi.</p>
+                </div>
 
-        <!-- Soft Color Blobs -->
-        <div class="absolute top-[12%] left-[15%] w-[45vw] h-[45vw] min-w-[300px] rounded-full bg-sky-500/15 blur-[90px] animate-blob-1"
-            style="opacity: var(--blob-opacity);"></div>
-        <div class="absolute bottom-[15%] right-[15%] w-[40vw] h-[40vw] min-w-[280px] rounded-full bg-green-500/20 blur-[90px] animate-blob-2"
-            style="opacity: var(--blob-opacity);"></div>
+                <div class="camera-motif" aria-hidden="true">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.8 6.2 5.2 7.2c-.4.1-.8.1-1.2.2A2.1 2.1 0 0 0 2.3 9.5V18c0 1.2 1 2.2 2.2 2.2h15c1.2 0 2.2-1 2.2-2.2V9.5c0-1-.7-1.9-1.8-2.1l-1.1-.2a2.3 2.3 0 0 1-1.6-1l-.9-1.4a2.2 2.2 0 0 0-1.7-1 48 48 0 0 0-5.2 0 2.2 2.2 0 0 0-1.8 1L6.8 6.2Z"></path>
+                        <circle cx="12" cy="13" r="4.3"></circle>
+                    </svg>
+                </div>
+            </section>
+
+            <section class="action-panel" aria-label="Akses AbsenKu">
+                <div class="capabilities">
+                    <div class="capability">
+                        <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="3.2"></circle>
+                            <path stroke-linecap="round" d="M5.5 19c.8-3.2 3-5 6.5-5s5.7 1.8 6.5 5"></path>
+                        </svg>
+                        <span>Verifikasi swafoto</span>
+                    </div>
+                    <div class="capability">
+                        <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 10c0 5-7 10-7 10S5 15 5 10a7 7 0 1 1 14 0Z"></path>
+                            <circle cx="12" cy="10" r="2.2"></circle>
+                        </svg>
+                        <span>Verifikasi lokasi</span>
+                    </div>
+                </div>
+
+                @auth
+                    <p class="welcome-back">Selamat datang kembali, <strong>{{ auth()->user()->name }}</strong></p>
+                    <a class="primary-action" href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('attendance.dashboard') }}">Buka Dashboard</a>
+                @else
+                    <a class="primary-action" href="{{ route('login') }}">Masuk ke AbsenKu</a>
+                @endauth
+            </section>
+        </main>
+
+            <footer>&copy; {{ date('Y') }} YPDH Al Madani</footer>
+        </div>
     </div>
 
-    <!-- ════════ Center Phone Viewport Container ════════ -->
-    <main class="w-full h-[100svh] sm:w-[380px] sm:h-[780px] flex items-center justify-center p-0 sm:p-3">
-
-        <!-- Phone Outer Shell (Desktop mockup frame) -->
-        <div
-            class="phone-shell relative w-full h-full sm:rounded-[48px] sm:p-2.5 sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] sm:border flex flex-col justify-between">
-
-            <!-- Dynamic Island (Desktop mockup) -->
-            <div
-                class="hidden sm:flex absolute top-6.5 left-1/2 -translate-x-1/2 w-24 h-5 bg-black rounded-full z-50 items-center justify-end pr-3">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]"></span>
-            </div>
-
-            <!-- Speaker Ear Piece (Desktop mockup) -->
-            <div
-                class="hidden sm:block absolute top-4 left-1/2 -translate-x-1/2 w-10 h-0.75 bg-neutral-900 rounded-full z-50">
-            </div>
-
-            <!-- Phone Screen Content -->
-            <div
-                class="screen-content relative h-full w-full sm:rounded-[38px] overflow-hidden flex flex-col justify-between p-5 border border-transparent sm:border-white/5">
-
-                <!-- Internal Screen Gradient Accent -->
-                <div
-                    class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-emerald-500/5 via-transparent to-green-500/5">
-                </div>
-
-                <!-- 1. App Header -->
-                <header class="relative z-10 flex items-center justify-between mt-1">
-                    <a href="{{ route('home') }}" class="flex items-center gap-2.5 group"
-                        aria-label="Absensi Selfie Geo">
-                        <span
-                            class="flex h-9 w-9 items-center justify-center rounded-xl glass-card shadow-sm group-hover:scale-105 transition-transform duration-300">
-                            <img src="/images/icons/icon-192.png?v=2" alt="Logo" class="h-5.5 w-5.5 object-contain">
-                        </span>
-                        <span class="leading-none text-left">
-                            <span
-                                class="block text-xs font-bold tracking-tight font-display text-[var(--text-main)]">Absensi</span>
-                            <span
-                                class="block text-[8px] font-bold tracking-wider text-sky-400 font-outfit uppercase">Selfie
-                                Geo</span>
-                        </span>
-                    </a>
-
-                    <!-- Instansi & Theme Toggle -->
-                    <div class="flex items-center gap-2">
-                        <div class="text-right hidden xs:block">
-                            <p class="text-[8px] text-[var(--text-muted)] font-outfit">Instansi</p>
-                            <p class="text-[9px] font-bold text-[var(--text-main)] font-outfit">MI Daarul Hikmah</p>
-                        </div>
-
-                        <!-- Theme Toggle Button -->
-                        <button onclick="toggleTheme()"
-                            class="theme-toggle w-8 h-8 rounded-xl glass-card flex items-center justify-center text-amber-400 hover:scale-105 active:scale-95 transition-all duration-300"
-                            aria-label="Toggle Theme">
-                            <svg class="sun-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                            </svg>
-                            <svg class="moon-icon w-4 h-4 text-green-700" fill="none" stroke="currentColor"
-                                stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                            </svg>
-                        </button>
-                    </div>
-                </header>
-
-                <!-- 2. Greeting Section -->
-                <div class="relative z-10 text-left mt-3">
-                    @auth
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-9 h-9 rounded-full bg-gradient-to-tr from-green-400 to-emerald-500 p-[1.5px] shadow-sm">
-                                <div
-                                    class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center text-[11px] font-bold text-white font-outfit">
-                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                                </div>
-                            </div>
-                            <div>
-                                <p class="text-[9px] text-[var(--text-muted)] font-outfit">Selamat datang kembali,</p>
-                                <p class="text-sm font-bold text-[var(--text-main)] font-display leading-tight">
-                                    {{ auth()->user()->name }}</p>
-                            </div>
-                        </div>
-                    @else
-                        <div>
-                            <div
-                                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-card text-[9px] font-bold font-outfit text-sky-400 border border-sky-500/20 mb-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                <span>MI Daarul Hikmah</span>
-                            </div>
-                            <h2 class="text-lg font-extrabold text-[var(--text-main)] font-display leading-tight">Presensi
-                                Digital Selfie</h2>
-                        </div>
-                    @endauth
-                </div>
-
-                <!-- 3. Clean Viewfinder Camera Simulation -->
-                <div
-                    class="relative flex-1 rounded-[22px] overflow-hidden glass-card p-2 flex flex-col justify-between my-3 min-h-[200px]">
-                    <div
-                        class="viewfinder-canvas relative flex-1 rounded-[16px] overflow-hidden flex flex-col items-center justify-center p-4">
-
-                        <!-- Pulsating Face Guide Frame Ring -->
-                        <div
-                            class="absolute w-32 h-32 rounded-full border border-sky-400/30 animate-ring-pulse flex items-center justify-center">
-                            <div class="w-24 h-24 rounded-full border border-green-400/20"></div>
-                        </div>
-
-                        <!-- Central Active Camera Avatar -->
-                        <div
-                            class="relative z-10 w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-400/30 flex items-center justify-center text-sky-400 shadow-md">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
-                            </svg>
-                        </div>
-
-                        <span
-                            class="relative z-10 text-[9px] font-bold tracking-widest uppercase text-sky-400 font-outfit mt-3">
-                            Selfie & GPS Siap
-                        </span>
-                    </div>
-
-                    <!-- Viewfinder Footer Info -->
-                    <div
-                        class="flex items-center justify-between mt-2 px-1 text-[10px] font-semibold text-[var(--text-muted)] font-outfit">
-                        <span class="flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            GPS Geofencing Terkalibrasi
-                        </span>
-                        <span>{{ now()->locale('id')->isoFormat('dddd') }}</span>
-                    </div>
-                </div>
-
-                <!-- 4. Clean Quick Highlights Grid -->
-                <div class="grid grid-cols-3 gap-2 text-center mb-3">
-                    <div class="rounded-xl glass-card py-2 px-1">
-                        <p class="text-[10px] font-bold font-outfit text-sky-400">GPS</p>
-                        <p class="text-[8px] text-[var(--text-muted)] uppercase tracking-wider font-outfit mt-0.5">
-                            Terkunci</p>
-                    </div>
-                    <div class="rounded-xl glass-card py-2 px-1">
-                        <p class="text-[10px] font-bold font-outfit text-emerald-400">Swafoto</p>
-                        <p class="text-[8px] text-[var(--text-muted)] uppercase tracking-wider font-outfit mt-0.5">Aktif
-                        </p>
-                    </div>
-                    <div class="rounded-xl glass-card py-2 px-1">
-                        <p class="text-[10px] font-bold font-outfit text-amber-400">Izin</p>
-                        <p class="text-[8px] text-[var(--text-muted)] uppercase tracking-wider font-outfit mt-0.5">
-                            Online</p>
-                    </div>
-                </div>
-
-                <!-- 5. Primary Action Button -->
-                <div class="relative z-10 w-full mb-1">
-                    @auth
-                        <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('attendance.dashboard') }}"
-                            class="group relative flex w-full items-center justify-center overflow-hidden rounded-2xl py-3.5 px-4 font-bold text-white shadow-md hover:scale-[1.01] transition-all duration-300"
-                            style="background: var(--btn-accent-bg); box-shadow: var(--btn-shadow);">
-                            <span class="flex items-center gap-2 text-xs font-bold tracking-wider uppercase font-outfit">
-                                Buka Dashboard
-                                <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                                </svg>
-                            </span>
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}"
-                            class="group relative flex w-full items-center justify-center overflow-hidden rounded-2xl py-3.5 px-4 font-bold text-white shadow-md hover:scale-[1.01] transition-all duration-300"
-                            style="background: var(--btn-guest-bg); box-shadow: var(--btn-shadow);">
-                            <span class="flex items-center gap-2 text-xs font-bold tracking-wider uppercase font-outfit">
-                                Masuk Sistem
-                                <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                                </svg>
-                            </span>
-                        </a>
-                    @endauth
-                </div>
-
-                <!-- Screen Footer -->
-                <div class="relative z-10 text-center pt-2 pb-1 border-t border-[var(--glass-card-border)]">
-                    <p class="text-[9px] font-semibold text-[var(--text-muted)] font-outfit">
-                        &copy; {{ date('Y') }} YPDH Al Madani • Absensi Selfie Geo
-                    </p>
-                </div>
-
-
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Theme Toggle Logic Script -->
     <script>
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('welcome-theme', isLight ? 'light' : 'dark');
-        }
+        (() => {
+            const root = document.documentElement;
+            const toggle = document.querySelector('[data-theme-toggle]');
+            const themeColor = document.querySelector('meta[name="theme-color"]');
+
+            const synchronizeTheme = () => {
+                const isDark = root.dataset.theme === 'dark';
+                const label = isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap';
+                toggle.setAttribute('aria-label', label);
+                toggle.setAttribute('title', label);
+                themeColor.setAttribute('content', isDark ? '#0f1712' : '#f7fbf5');
+            };
+
+            toggle.addEventListener('click', () => {
+                root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('welcome-theme', root.dataset.theme);
+                synchronizeTheme();
+            });
+
+            synchronizeTheme();
+        })();
     </script>
 </body>
-
 </html>

@@ -1,0 +1,37 @@
+<?php
+
+it('renders the Material 3 login page with accessible controls', function () {
+    $response = $this->get(route('login'));
+
+    $response->assertSuccessful()
+        ->assertSee('Masuk ke AbsenKu')
+        ->assertSee('action="'.route('login').'"', false)
+        ->assertSee('href="'.route('home').'"', false)
+        ->assertSee('name="email"', false)
+        ->assertSee('name="password"', false)
+        ->assertSee('name="remember" checked', false)
+        ->assertSee('autocomplete="email"', false)
+        ->assertSee('autocomplete="current-password"', false)
+        ->assertSee('class="phone-shell"', false)
+        ->assertSee('class="dynamic-island"', false)
+        ->assertSee('data-theme-toggle', false)
+        ->assertSee('data-password-toggle', false)
+        ->assertSee('aria-label="Tampilkan password"', false)
+        ->assertDontSee('animate-blob')
+        ->assertDontSee('bg-grid-overlay')
+        ->assertDontSee('glass-card');
+});
+
+it('renders validation feedback using an alert state', function () {
+    $response = $this->from(route('login'))->post(route('login'), [
+        'email' => 'bukan-email',
+        'password' => '',
+    ]);
+
+    $response->assertRedirect(route('login'));
+
+    $this->get(route('login'))
+        ->assertSuccessful()
+        ->assertSee('role="alert"', false)
+        ->assertSee('Periksa kembali email dan password Anda.');
+});

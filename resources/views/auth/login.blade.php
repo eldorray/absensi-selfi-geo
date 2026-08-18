@@ -1,436 +1,430 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full overflow-hidden">
-
+<html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#080710">
-    <meta name="description" content="Halaman login aplikasi absensi digital MI Daarul Hikmah.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7fbf5">
+    <meta name="description" content="Masuk ke aplikasi presensi MI Daarul Hikmah.">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="AbsenKu">
     <link rel="manifest" href="/manifest.json?v=4">
     <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png?v=2">
-    <title>Masuk - Absensi</title>
-    
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Masuk | AbsenKu</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <style>
-        :root {
-            /* Colors - Dark Theme (Default) */
-            --bg-color: #050409;
-            --screen-bg: #080711;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glass-shadow: 0 24px 80px -15px rgba(0, 0, 0, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
-            --glass-card-bg: rgba(255, 255, 255, 0.02);
-            --glass-card-border: rgba(255, 255, 255, 0.08);
-            --glass-card-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-            --grid-line-color: rgba(255, 255, 255, 0.012);
-            --blob-opacity: 0.12;
-            --phone-shell-bg: #000000;
-            --phone-shell-border: rgba(255, 255, 255, 0.12);
-            --active-nav-color: #A5D6A7;
-            
-            /* Inputs */
-            --input-bg: rgba(255, 255, 255, 0.03);
-            --input-border: rgba(255, 255, 255, 0.1);
-            --input-focus-bg: rgba(255, 255, 255, 0.05);
-            
-            /* Buttons */
-            --btn-accent-bg: #ffffff;
-            --btn-accent-text: #050409;
-            --btn-accent-shadow: 0 12px 28px rgba(255, 255, 255, 0.15);
-        }
-
-        body.light-theme {
-            /* Colors - Light Theme (Polished iOS style) */
-            --bg-color: #edf0f5;
-            --screen-bg: #f4f6fa;
-            --text-main: #475569;
-            --text-muted: #64748b;
-            
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.85);
-            --glass-shadow: 0 12px 36px -8px rgba(100, 116, 139, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
-            
-            --glass-card-bg: rgba(255, 255, 255, 0.55);
-            --glass-card-border: rgba(255, 255, 255, 0.65);
-            --glass-card-shadow: 0 2px 10px rgba(100, 116, 139, 0.01), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
-            
-            --grid-line-color: rgba(0, 0, 0, 0.015);
-            --blob-opacity: 0.16;
-            
-            --phone-shell-bg: #e2e4ed;
-            --phone-shell-border: rgba(0, 0, 0, 0.04);
-            
-            --active-nav-color: #66BB6A;
-            
-            /* Inputs */
-            --input-bg: rgba(255, 255, 255, 0.5);
-            --input-border: rgba(0, 0, 0, 0.08);
-            --input-focus-bg: #ffffff;
-            
-            /* Buttons */
-            --btn-accent-bg: #1B5E20;
-            --btn-accent-text: #ffffff;
-            --btn-accent-shadow: 0 10px 24px rgba(99, 102, 241, 0.2);
-        }
-
-        html,
-        body {
-            height: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.5s ease;
-        }
-
-        .font-display {
-            font-family: 'Bricolage Grotesque', sans-serif;
-        }
-
-        .font-outfit {
-            font-family: 'Outfit', sans-serif;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        /* Mapping classes for Theme Transitions */
-        .theme-bg {
-            background-color: var(--bg-color);
-            transition: background-color 0.5s ease;
-        }
-        
-        .theme-text-main {
-            color: var(--text-main);
-            transition: color 0.5s ease;
-        }
-
-        .theme-text-muted {
-            color: var(--text-muted);
-            transition: color 0.5s ease;
-        }
-
-        .phone-shell {
-            background-color: var(--phone-shell-bg);
-            border-color: var(--phone-shell-border);
-            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
-        }
-
-        .screen-content {
-            background-color: var(--screen-bg);
-            transition: background-color 0.5s ease;
-        }
-
-        .bg-grid-overlay {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(var(--grid-line-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
-            background-size: 45px 45px;
-            mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
-            -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
-            transition: background-image 0.5s ease;
-        }
-
-        .glass-panel {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
-        }
-
-        .glass-card {
-            background: var(--glass-card-bg);
-            border: 1px solid var(--glass-card-border);
-            box-shadow: var(--glass-card-shadow);
-            transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
-        }
-
-        /* Forms inputs theme mapping */
-        .theme-input {
-            background-color: var(--input-bg);
-            border: 1px solid var(--input-border) !important;
-            color: var(--text-main);
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-        }
-
-        .theme-input:focus {
-            background-color: var(--input-focus-bg);
-            border-color: var(--active-nav-color) !important;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.08);
-        }
-
-        /* Buttons Theme Mapping */
-        .theme-btn-submit {
-            background-color: var(--btn-accent-bg);
-            color: var(--btn-accent-text);
-            box-shadow: var(--btn-accent-shadow);
-            transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, transform 0.2s ease;
-        }
-
-        /* Borders Theme Mapping */
-        .theme-border {
-            border: 1px solid var(--glass-card-border) !important;
-            transition: border-color 0.5s ease;
-        }
-
-        /* Sun / Moon Toggle Button Icon display */
-        .theme-toggle .sun-icon { display: block; }
-        .theme-toggle .moon-icon { display: none; }
-        
-        body.light-theme .theme-toggle .sun-icon { display: none; }
-        body.light-theme .theme-toggle .moon-icon { display: block; }
-
-        .theme-toggle {
-            transition: transform 0.3s ease, background 0.5s ease, border-color 0.5s ease;
-        }
-
-        /* Animated background liquid blobs */
-        @keyframes float-blob {
-            0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
-            33% { transform: translate(30px, -45px) scale(1.1) rotate(120deg); }
-            66% { transform: translate(-25px, 25px) scale(0.95) rotate(240deg); }
-            100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
-        }
-
-        @keyframes float-blob-reverse {
-            0% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
-            33% { transform: translate(-40px, 30px) scale(0.9) rotate(240deg); }
-            66% { transform: translate(25px, -25px) scale(1.05) rotate(120deg); }
-            100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
-        }
-
-        .animate-blob-1 {
-            animation: float-blob 28s infinite alternate ease-in-out;
-        }
-
-        .animate-blob-2 {
-            animation: float-blob-reverse 22s infinite alternate ease-in-out;
-        }
-
-        .animate-blob-3 {
-            animation: float-blob 19s infinite alternate-reverse ease-in-out;
-        }
-
-        @media (max-width: 640px) and (max-height: 760px) {
-            .login-panel {
-                transform: scale(0.92);
-                transform-origin: top center;
-            }
-        }
-    </style>
-
-    <!-- Theme Restore (Prevents Flash of Unthemed Content) -->
     <script>
-        (function() {
+        (() => {
             const savedTheme = localStorage.getItem('welcome-theme');
-            if (savedTheme === 'light') {
-                document.body.classList.add('light-theme');
-            }
+            document.documentElement.dataset.theme = savedTheme === 'dark' ? 'dark' : 'light';
         })();
     </script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        :root {
+            color-scheme: light;
+            --md-sys-color-primary: #176b43;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #b7f2cd;
+            --md-sys-color-on-primary-container: #002113;
+            --md-sys-color-secondary-container: #d4e8d9;
+            --md-sys-color-on-secondary-container: #102018;
+            --md-sys-color-surface: #f7fbf5;
+            --md-sys-color-surface-container-low: #eef5ee;
+            --md-sys-color-surface-container: #e8f0e8;
+            --md-sys-color-surface-container-high: #dfe9e0;
+            --md-sys-color-on-surface: #171d19;
+            --md-sys-color-on-surface-variant: #3e4a42;
+            --md-sys-color-outline: #6f7a72;
+            --md-sys-color-error: #ba1a1a;
+            --md-sys-color-error-container: #ffdad6;
+            --md-sys-color-on-error-container: #410002;
+            --md-sys-color-focus: #004d2e;
+            --md-sys-color-shadow: rgba(23, 107, 67, 0.18);
+            --device-stage: #e8f0e8;
+            --phone-shell: #d4ded5;
+            --phone-shell-border: rgba(23, 29, 25, 0.12);
+        }
+
+        :root[data-theme='dark'] {
+            color-scheme: dark;
+            --md-sys-color-primary: #9bd5b5;
+            --md-sys-color-on-primary: #003822;
+            --md-sys-color-primary-container: #145236;
+            --md-sys-color-on-primary-container: #b7f2cd;
+            --md-sys-color-secondary-container: #344b3e;
+            --md-sys-color-on-secondary-container: #d0e8d8;
+            --md-sys-color-surface: #0f1712;
+            --md-sys-color-surface-container-low: #141f18;
+            --md-sys-color-surface-container: #19261e;
+            --md-sys-color-surface-container-high: #223228;
+            --md-sys-color-on-surface: #e5efe7;
+            --md-sys-color-on-surface-variant: #bdc9bf;
+            --md-sys-color-outline: #899e8e;
+            --md-sys-color-error: #ffb4ab;
+            --md-sys-color-error-container: #93000a;
+            --md-sys-color-on-error-container: #ffdad6;
+            --md-sys-color-focus: #b7f2cd;
+            --md-sys-color-shadow: rgba(0, 0, 0, 0.38);
+            --device-stage: #0b100d;
+            --phone-shell: #080d0a;
+            --phone-shell-border: rgba(229, 239, 231, 0.14);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        html { min-height: 100%; background: var(--device-stage); }
+
+        body {
+            min-width: 320px;
+            min-height: 100svh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            overflow-x: hidden;
+            background: var(--device-stage);
+            color: var(--md-sys-color-on-surface);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            transition: background-color 180ms ease, color 180ms ease;
+        }
+
+        button, a, input { font: inherit; }
+
+        .phone-shell {
+            position: relative;
+            width: 100%;
+            min-height: 100svh;
+            background: var(--md-sys-color-surface);
+        }
+
+        .dynamic-island { display: none; }
+
+        .page {
+            width: 100%;
+            min-height: 100svh;
+            padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .app-bar { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; gap: 10px; }
+        .app-title { min-width: 0; text-align: center; }
+        .app-title strong { display: block; font-size: 0.9375rem; font-weight: 800; }
+        .app-title span { display: block; margin-top: 2px; overflow: hidden; color: var(--md-sys-color-on-surface-variant); font-size: 0.6875rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+
+        .icon-button {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 50%;
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 150ms ease, transform 150ms ease;
+        }
+
+        .icon-button:hover { background: var(--md-sys-color-secondary-container); }
+        .icon-button:active { transform: scale(0.94); }
+        .icon-button svg { width: 22px; height: 22px; }
+        .moon-icon, :root[data-theme='dark'] .sun-icon { display: none; }
+        :root[data-theme='dark'] .moon-icon { display: block; }
+
+        .login-main { flex: 1; display: grid; align-content: center; gap: 14px; }
+
+        .intro {
+            padding: 22px;
+            border-radius: 30px 30px 30px 10px;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .intro-mark {
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 18px;
+            border-radius: 18px 18px 18px 7px;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .intro-mark svg { width: 27px; height: 27px; }
+        .intro h1 { margin: 0; font-size: 1.75rem; line-height: 1.08; letter-spacing: -0.035em; }
+        .intro p { margin: 10px 0 0; font-size: 0.875rem; line-height: 1.55; }
+
+        .form-panel {
+            padding: 18px;
+            border-radius: 26px 26px 10px 26px;
+            background: var(--md-sys-color-surface-container-low);
+        }
+
+        .status-message, .error-message {
+            margin: 0 0 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 0.8125rem;
+            line-height: 1.45;
+        }
+
+        .status-message { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+        .error-message { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }
+        .form { display: grid; gap: 16px; }
+        .field { display: grid; gap: 7px; }
+        .field label { font-size: 0.75rem; font-weight: 700; }
+        .input-wrap { position: relative; }
+
+        .text-input {
+            width: 100%;
+            min-height: 56px;
+            padding: 16px;
+            border: 1px solid transparent;
+            border-bottom-color: var(--md-sys-color-outline);
+            border-radius: 16px 16px 5px 5px;
+            outline: 0;
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+            font-size: 0.9375rem;
+        }
+
+        .text-input.has-trailing-action { padding-right: 58px; }
+        .text-input::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.8; }
+        .text-input:focus { border: 2px solid var(--md-sys-color-primary); padding: 15px; }
+        .text-input.has-trailing-action:focus { padding-right: 57px; }
+
+        .password-toggle {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+        }
+
+        .password-toggle svg { width: 21px; height: 21px; }
+        .eye-closed { display: none; }
+        .password-toggle[data-visible='true'] .eye-open { display: none; }
+        .password-toggle[data-visible='true'] .eye-closed { display: block; }
+        .field-error { margin: 0; color: var(--md-sys-color-error); font-size: 0.75rem; line-height: 1.4; }
+
+        .form-options { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .remember { min-height: 44px; display: inline-flex; align-items: center; gap: 9px; color: var(--md-sys-color-on-surface-variant); font-size: 0.75rem; cursor: pointer; }
+        .remember input { width: 20px; height: 20px; margin: 0; accent-color: var(--md-sys-color-primary); }
+        .forgot-link { min-height: 44px; display: inline-flex; align-items: center; color: var(--md-sys-color-primary); font-size: 0.75rem; font-weight: 800; text-decoration: none; }
+
+        .submit-button {
+            min-height: 56px;
+            border: 0;
+            border-radius: 999px;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: 0 8px 22px var(--md-sys-color-shadow);
+            font-weight: 800;
+            cursor: pointer;
+            transition: box-shadow 150ms ease, transform 150ms ease;
+        }
+
+        .submit-button:hover { box-shadow: 0 10px 26px var(--md-sys-color-shadow); transform: translateY(-1px); }
+        .submit-button:active { transform: scale(0.98); }
+        footer { color: var(--md-sys-color-on-surface-variant); font-size: 0.6875rem; text-align: center; }
+
+        :where(a, button, input):focus-visible { outline: 3px solid var(--md-sys-color-focus); outline-offset: 3px; }
+
+        @media (min-width: 800px) {
+            .phone-shell {
+                width: 395px;
+                height: min(780px, calc(100svh - 32px));
+                min-height: 0;
+                padding: 10px;
+                overflow: hidden;
+                border: 1px solid var(--phone-shell-border);
+                border-radius: 48px;
+                background: var(--phone-shell);
+                box-shadow: 0 28px 70px rgba(10, 28, 17, 0.22);
+            }
+
+            .dynamic-island {
+                position: absolute;
+                z-index: 2;
+                top: 22px;
+                left: 50%;
+                width: 96px;
+                height: 22px;
+                display: block;
+                border-radius: 999px;
+                background: #050806;
+                transform: translateX(-50%);
+            }
+
+            .page {
+                height: 100%;
+                min-height: 0;
+                overflow-y: auto;
+                padding: 28px 16px 16px;
+                border-radius: 38px;
+                background: var(--md-sys-color-surface);
+                scrollbar-width: none;
+            }
+
+            .page::-webkit-scrollbar { display: none; }
+        }
+
+        @media (max-width: 359px) {
+            .page { padding-inline: 12px; }
+            .intro { padding: 18px; }
+            .form-panel { padding: 14px; }
+            .form-options { align-items: flex-start; flex-direction: column; gap: 2px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition-duration: 0.01ms !important; }
+        }
+    </style>
 </head>
+<body>
+    <div class="phone-shell">
+        <span class="dynamic-island" aria-hidden="true"></span>
+        <div class="page">
+            <header class="app-bar">
+                <a class="icon-button" href="{{ route('home') }}" aria-label="Kembali ke beranda">
+                    <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6"></path>
+                    </svg>
+                </a>
 
-<body class="antialiased theme-bg flex items-center justify-center">
-
-    <!-- ════════ Background Liquid Layer ════════ -->
-    <div class="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
-        <!-- Tech grid overlay -->
-        <div class="bg-grid-overlay"></div>
-        
-        <!-- Organic Blobs (Google Colors, Apple Blurs) -->
-        <div class="absolute top-[10%] left-[10%] w-[50vw] h-[50vw] min-w-[320px] rounded-full bg-[#4285F4]/12 blur-[80px] animate-blob-1" style="opacity: var(--blob-opacity); transition: opacity 0.5s ease;"></div>
-        <div class="absolute top-[30%] right-[10%] w-[45vw] h-[45vw] min-w-[300px] rounded-full bg-[#FF2D55]/10 blur-[90px] animate-blob-2" style="opacity: var(--blob-opacity); transition: opacity 0.5s ease;"></div>
-        <div class="absolute bottom-[10%] left-[25%] w-[40vw] h-[40vw] min-w-[280px] rounded-full bg-[#34A853]/10 blur-[85px] animate-blob-3" style="opacity: var(--blob-opacity); transition: opacity 0.5s ease;"></div>
-    </div>
-
-    <!-- ════════ Center Viewport Container ════════ -->
-    <main class="w-full h-[100svh] sm:w-[375px] sm:h-[780px] flex items-center justify-center p-0 sm:p-2.5">
-
-        <!-- Phone Outer Shell (Only displays on screens >= sm) -->
-        <div class="phone-shell relative w-full h-full sm:rounded-[48px] sm:p-2.5 sm:shadow-[0_30px_70px_-15px_rgba(0,0,0,0.15)] sm:border flex flex-col justify-between">
-            
-            <!-- Dynamic Island (Desktop only) -->
-            <div class="hidden sm:flex absolute top-6.5 left-1/2 -translate-x-1/2 w-24 h-5.5 bg-black rounded-full z-50 items-center justify-end pr-3.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-green-400/90 shadow-[0_0_8px_#66BB6A]"></span>
-            </div>
-
-            <!-- Speaker Ear Piece (Desktop only) -->
-            <div class="hidden sm:block absolute top-4 left-1/2 -translate-x-1/2 w-10 h-0.75 bg-neutral-950 rounded-full z-50"></div>
-
-            <!-- Phone Screen Content (Full viewport on mobile, scroll locked) -->
-            <div class="screen-content relative h-full w-full sm:rounded-[38px] overflow-hidden flex flex-col justify-between p-5 border border-transparent sm:border-white/5">
-                
-                <!-- Internal Screen Mesh Gradient -->
-                <div class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-green-500/10 via-transparent to-emerald-500/5"></div>
-                <div class="absolute top-[20%] right-[-10%] w-36 h-36 rounded-full bg-[#FF2D55]/6 blur-[40px]"></div>
-
-                <!-- App Header -->
-                <header class="relative z-10 flex items-center justify-between mt-1">
-                    <!-- Back button to welcome screen -->
-                    <a href="{{ route('home') }}" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center theme-text-main hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Kembali ke beranda">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
-                        </svg>
-                    </a>
-
-                    <!-- App Title -->
-                    <div class="text-center">
-                        <span class="block text-xs font-black tracking-tight theme-text-main font-display">Absensi</span>
-                        <span class="block text-[8px] font-bold tracking-wider text-green-500 font-outfit uppercase">Selfie Geo</span>
-                    </div>
-
-                    <!-- Theme Toggle Button -->
-                    <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Toggle Theme">
-                        <!-- Sun Icon (for dark mode) -->
-                        <svg class="sun-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
-                        </svg>
-                        <!-- Moon Icon (for light mode) -->
-                        <svg class="moon-icon w-4 h-4 text-green-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>
-                        </svg>
-                    </button>
-                </header>
-
-                <!-- Login panel inner wrapper -->
-                <div class="login-panel flex-1 flex flex-col justify-center min-h-0 py-4">
-                    
-                    <!-- Decorative Avatar Circle -->
-                    <div class="mb-4 flex justify-center">
-                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl glass-card theme-border shadow-md">
-                            <svg class="h-6.5 w-6.5" style="color: var(--active-nav-color); transition: color 0.5s ease;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- Title Header -->
-                    <div class="text-center mb-5">
-                        <h2 class="text-lg font-black theme-text-main font-display">Masuk Akun</h2>
-                        <p class="text-[9px] theme-text-muted font-outfit uppercase tracking-wider mt-0.5">Silakan isi kredensial Anda</p>
-                    </div>
-
-                    <!-- Form card -->
-                    <div class="rounded-[24px] glass-card theme-border p-4.5 sm:p-5 shadow-xl">
-                        @if (session('status'))
-                            <div class="mb-3.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-xs theme-status-ok-text">
-                                {{ session('status') }}
-                            </div>
-                        @endif
-
-                        <form action="{{ route('login') }}" method="POST" class="space-y-4">
-                            @csrf
-
-                            <!-- Email Field -->
-                            <div>
-                                <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Email</label>
-                                <input type="email" name="email" value="{{ old('email') }}" autofocus
-                                    class="theme-input w-full rounded-2xl px-4.5 py-3 text-[14px] shadow-sm"
-                                    placeholder="Masukkan email Anda" required>
-                                @error('email')
-                                    <p class="mt-1.5 text-xs text-red-500 font-medium leading-normal">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Password Field -->
-                            <div>
-                                <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Password</label>
-                                <div class="relative">
-                                    <input type="password" name="password" id="password"
-                                        class="theme-input w-full rounded-2xl pl-4.5 pr-12 py-3 text-[14px] shadow-sm"
-                                        placeholder="Masukkan password Anda" required>
-                                    <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:theme-text-main focus:outline-none transition-colors" aria-label="Tampilkan password">
-                                        <!-- Eye Icon -->
-                                        <svg class="eye-open w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        </svg>
-                                        <!-- Eye Off Icon -->
-                                        <svg class="eye-closed w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                @error('password')
-                                    <p class="mt-1.5 text-xs text-red-500 font-medium leading-normal">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Options Layer -->
-                            <div class="flex items-center justify-between gap-3 pt-1">
-                                <label class="flex items-center gap-2 text-xs theme-text-muted cursor-pointer select-none">
-                                    <input type="checkbox" name="remember" checked
-                                        class="rounded border-slate-500/20 text-green-600 focus:ring-green-500/20 bg-transparent w-4 h-4">
-                                    <span>Ingat saya <span class="opacity-60">(30 hari)</span></span>
-                                </label>
-
-                                @if (Route::has('password.request'))
-                                    <a href="{{ route('password.request') }}" class="text-xs font-semibold hover:opacity-80 transition-opacity" style="color: var(--active-nav-color)">
-                                        Lupa password?
-                                    </a>
-                                @endif
-                            </div>
-
-                            <!-- Submit Button -->
-                            <button type="submit"
-                                class="theme-btn-submit flex w-full items-center justify-center rounded-[1.4rem] px-5 py-3.5 text-xs font-bold tracking-wider uppercase hover:scale-[1.01] active:scale-[0.99] font-outfit">
-                                Masuk
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Bottom Warning notice -->
-                    <div class="rounded-xl glass-card theme-border px-4 py-3 text-center text-[9px] theme-text-muted mt-4.5">
-                        Akun dibuat dan dikelola secara aman oleh administrator instansi.
-                    </div>
+                <div class="app-title">
+                    <strong>AbsenKu</strong>
+                    <span>MI Daarul Hikmah</span>
                 </div>
 
-            </div>
+                <button type="button" class="icon-button" data-theme-toggle aria-label="Aktifkan tema gelap" title="Aktifkan tema gelap">
+                    <svg class="sun-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+                    </svg>
+                    <svg class="moon-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.5 8.5 0 1 0 20.4 15.2Z"></path>
+                    </svg>
+                </button>
+            </header>
+
+            <main class="login-main">
+                <section class="intro" aria-labelledby="login-heading">
+                    <div class="intro-mark" aria-hidden="true">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="3.5"></circle>
+                            <path stroke-linecap="round" d="M5.5 20c.8-3.8 3-5.8 6.5-5.8s5.7 2 6.5 5.8"></path>
+                        </svg>
+                    </div>
+                    <h1 id="login-heading">Masuk ke AbsenKu</h1>
+                    <p>Gunakan akun yang diberikan administrator untuk melanjutkan presensi.</p>
+                </section>
+
+                <section class="form-panel" aria-label="Form masuk">
+                    @if (session('status'))
+                        <p class="status-message" role="status">{{ session('status') }}</p>
+                    @endif
+
+                    @if ($errors->any())
+                        <p class="error-message" role="alert">Periksa kembali email dan password Anda.</p>
+                    @endif
+
+                    <form action="{{ route('login') }}" method="POST" class="form">
+                        @csrf
+
+                        <div class="field">
+                            <label for="email">Email</label>
+                            <input id="email" class="text-input" type="email" name="email" value="{{ old('email') }}" placeholder="nama@sekolah.sch.id" autocomplete="email" autofocus required>
+                            @error('email')
+                                <p class="field-error">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="field">
+                            <label for="password">Password</label>
+                            <div class="input-wrap">
+                                <input id="password" class="text-input has-trailing-action" type="password" name="password" placeholder="Masukkan password" autocomplete="current-password" required>
+                                <button type="button" class="password-toggle" data-password-toggle aria-label="Tampilkan password" aria-pressed="false">
+                                    <svg class="eye-open" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+                                        <circle cx="12" cy="12" r="2.8"></circle>
+                                    </svg>
+                                    <svg class="eye-closed" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" d="m3 3 18 18M10.6 6.1c.5-.1.9-.1 1.4-.1 6 0 9.5 6 9.5 6a15 15 0 0 1-2.2 2.8M6.2 6.2A15.2 15.2 0 0 0 2.5 12s3.5 6 9.5 6c1.5 0 2.8-.4 4-1"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            @error('password')
+                                <p class="field-error">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="form-options">
+                            <label class="remember">
+                                <input type="checkbox" name="remember" checked>
+                                <span>Ingat saya (30 hari)</span>
+                            </label>
+
+                            @if (Route::has('password.request'))
+                                <a class="forgot-link" href="{{ route('password.request') }}">Lupa password?</a>
+                            @endif
+                        </div>
+
+                        <button type="submit" class="submit-button">Masuk</button>
+                    </form>
+                </section>
+            </main>
+
+            <footer>&copy; {{ date('Y') }} YPDH Al Madani</footer>
         </div>
+    </div>
 
-    </main>
-
-    <!-- Theme Toggle Logic Script -->
     <script>
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('welcome-theme', isLight ? 'light' : 'dark');
-        }
+        (() => {
+            const root = document.documentElement;
+            const themeToggle = document.querySelector('[data-theme-toggle]');
+            const themeColor = document.querySelector('meta[name="theme-color"]');
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.querySelector('[data-password-toggle]');
 
-        function togglePasswordVisibility(inputId, btn) {
-            const input = document.getElementById(inputId);
-            const eyeOpen = btn.querySelector('.eye-open');
-            const eyeClosed = btn.querySelector('.eye-closed');
-            if (input.type === 'password') {
-                input.type = 'text';
-                eyeOpen.classList.add('hidden');
-                eyeClosed.classList.remove('hidden');
-            } else {
-                input.type = 'password';
-                eyeOpen.classList.remove('hidden');
-                eyeClosed.classList.add('hidden');
-            }
-        }
+            const synchronizeTheme = () => {
+                const isDark = root.dataset.theme === 'dark';
+                const label = isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap';
+                themeToggle.setAttribute('aria-label', label);
+                themeToggle.setAttribute('title', label);
+                themeColor.setAttribute('content', isDark ? '#0f1712' : '#f7fbf5');
+            };
+
+            themeToggle.addEventListener('click', () => {
+                root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('welcome-theme', root.dataset.theme);
+                synchronizeTheme();
+            });
+
+            passwordToggle.addEventListener('click', () => {
+                const isVisible = passwordInput.type === 'text';
+                passwordInput.type = isVisible ? 'password' : 'text';
+                passwordToggle.dataset.visible = isVisible ? 'false' : 'true';
+                passwordToggle.setAttribute('aria-pressed', isVisible ? 'false' : 'true');
+                passwordToggle.setAttribute('aria-label', isVisible ? 'Tampilkan password' : 'Sembunyikan password');
+            });
+
+            synchronizeTheme();
+        })();
     </script>
 </body>
-
 </html>
