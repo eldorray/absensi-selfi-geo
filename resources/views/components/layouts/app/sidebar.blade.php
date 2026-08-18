@@ -18,6 +18,7 @@
 
                                 @php
                                     $masterActive = request()->routeIs('admin.academic-years.*', 'admin.offices.*', 'admin.users.*', 'admin.roles.*', 'admin.work-schedules.*');
+                                    $studentActive = request()->routeIs('admin.students.*', 'admin.school-classes.*');
                                     $hadirActive = request()->routeIs('admin.reports.*', 'admin.attendances.*', 'admin.leaves.*');
                                     $infoActive = request()->routeIs('admin.announcements.*', 'admin.account-switches.*');
                                 @endphp
@@ -34,6 +35,14 @@
                                         :active="request()->routeIs('admin.roles.*')">Kelola Role</x-layouts.sidebar-link>
                                     <x-layouts.sidebar-link href="{{ route('admin.work-schedules.index') }}"
                                         icon='fas-clock' :active="request()->routeIs('admin.work-schedules.*')">Jam Kerja</x-layouts.sidebar-link>
+                                </x-layouts.sidebar-dropdown>
+
+                                {{-- Data Siswa --}}
+                                <x-layouts.sidebar-dropdown label="Data Siswa" icon="fas-user-graduate" :active="$studentActive">
+                                    <x-layouts.sidebar-link href="{{ route('admin.students.index', 'mi') }}" icon='fas-users' :active="request()->routeIs('admin.students.*') && request()->route('schoolLevel') === 'mi'">Data Siswa MI</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.students.index', 'smp') }}" icon='fas-users' :active="request()->routeIs('admin.students.*') && request()->route('schoolLevel') === 'smp'">Data Siswa SMP</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.school-classes.index', 'mi') }}" icon='fas-chalkboard' :active="request()->routeIs('admin.school-classes.*') && request()->route('schoolLevel') === 'mi'">Kelas MI</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.school-classes.index', 'smp') }}" icon='fas-chalkboard' :active="request()->routeIs('admin.school-classes.*') && request()->route('schoolLevel') === 'smp'">Kelas SMP</x-layouts.sidebar-link>
                                 </x-layouts.sidebar-dropdown>
 
                                 {{-- Kehadiran --}}

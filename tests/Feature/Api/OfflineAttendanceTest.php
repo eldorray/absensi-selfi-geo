@@ -7,6 +7,7 @@ use App\Models\Office;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Schema;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -31,6 +32,17 @@ function offlineTeacher(?Office $office = null): User
         'office_id' => $office->id,
     ]);
 }
+
+test('attendance schema contains every offline queue column and idempotency index', function () {
+    expect(Schema::hasColumns('attendances', [
+        'client_uuid',
+        'check_out_client_uuid',
+        'synced_at',
+        'check_out_synced_at',
+    ]))->toBeTrue()
+        ->and(Schema::hasIndex('attendances', 'attendances_user_id_client_uuid_unique'))->toBeTrue()
+        ->and(Schema::hasIndex('attendances', 'attendances_user_id_check_out_client_uuid_unique'))->toBeTrue();
+});
 
 test('attendance stores the offline queue columns', function () {
     $user = offlineTeacher();

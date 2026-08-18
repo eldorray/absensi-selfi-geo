@@ -87,6 +87,22 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Office management
     Route::resource('offices', Admin\OfficeController::class)->except(['show']);
 
+    // Student and class management
+    Route::get('students/{schoolLevel}', [Admin\StudentController::class, 'index'])->name('students.index');
+    Route::get('students/{schoolLevel}/create', [Admin\StudentController::class, 'create'])->name('students.create');
+    Route::post('students/{schoolLevel}', [Admin\StudentController::class, 'store'])->name('students.store');
+    Route::post('students/{schoolLevel}/sync', [Admin\StudentController::class, 'sync'])->name('students.sync');
+    Route::get('students/{schoolLevel}/{student}/edit', [Admin\StudentController::class, 'edit'])->name('students.edit');
+    Route::put('students/{schoolLevel}/{student}', [Admin\StudentController::class, 'update'])->name('students.update');
+    Route::delete('students/{schoolLevel}/{student}', [Admin\StudentController::class, 'destroy'])->name('students.destroy');
+
+    Route::get('school-classes/{schoolLevel}', [Admin\SchoolClassController::class, 'index'])->name('school-classes.index');
+    Route::get('school-classes/{schoolLevel}/create', [Admin\SchoolClassController::class, 'create'])->name('school-classes.create');
+    Route::post('school-classes/{schoolLevel}', [Admin\SchoolClassController::class, 'store'])->name('school-classes.store');
+    Route::get('school-classes/{schoolLevel}/{schoolClass}/edit', [Admin\SchoolClassController::class, 'edit'])->name('school-classes.edit');
+    Route::put('school-classes/{schoolLevel}/{schoolClass}', [Admin\SchoolClassController::class, 'update'])->name('school-classes.update');
+    Route::delete('school-classes/{schoolLevel}/{schoolClass}', [Admin\SchoolClassController::class, 'destroy'])->name('school-classes.destroy');
+
     // Attendance reports
     Route::get('attendances', [Admin\AttendanceController::class, 'index'])->name('attendances.index');
     Route::get('attendances/{attendance}', [Admin\AttendanceController::class, 'show'])->name('attendances.show');

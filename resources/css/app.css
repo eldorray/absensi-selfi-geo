@@ -1120,6 +1120,28 @@
     .dark .admin-shell[data-admin-ui="material-you-3"] .admin-button-primary { color: #003822 !important; }
     .admin-shell[data-admin-ui="material-you-3"] .admin-button-primary:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--admin-primary-hover) !important; }
     .admin-shell[data-admin-ui="material-you-3"] .admin-button-secondary { background: var(--admin-primary-soft) !important; border-color: transparent; color: var(--admin-nav-active) !important; }
+    /* Icon-only actions keep dense tables scannable. Tonal color distinguishes
+       safe editing from deletion without using a visually loud solid fill. */
+    .admin-shell[data-admin-ui="material-you-3"] .admin-row-action {
+        display: inline-flex;
+        width: 2.75rem;
+        height: 2.75rem;
+        min-height: 2.75rem;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
+        border-radius: 999px !important;
+        cursor: pointer;
+        transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-row-action-edit { background: var(--admin-primary-soft) !important; color: var(--admin-nav-active) !important; }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-row-action-delete { background: var(--admin-danger-soft) !important; color: var(--admin-danger) !important; }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-row-action:hover { transform: translateY(-1px); }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-row-action-edit:hover { background: var(--admin-primary-container) !important; }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-row-action-delete:hover { background: color-mix(in srgb, var(--admin-danger) 18%, var(--admin-danger-soft)) !important; }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-row-action:focus-visible { outline: 3px solid color-mix(in srgb, var(--admin-primary) 42%, transparent); outline-offset: 2px; }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-row-action-delete:focus-visible { outline-color: color-mix(in srgb, var(--admin-danger) 42%, transparent); }
     .admin-shell[data-admin-ui="material-you-3"] :is(.admin-nav-link[aria-current="page"], .admin-nav-active) { background: var(--admin-primary-soft) !important; }
     .admin-shell[data-admin-ui="material-you-3"] .admin-status-success { background: var(--admin-success-soft) !important; border-color: transparent !important; }
     .admin-shell[data-admin-ui="material-you-3"] .admin-status-warning { background: var(--admin-warning-soft) !important; border-color: transparent !important; }
