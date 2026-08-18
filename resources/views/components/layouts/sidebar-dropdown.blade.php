@@ -1,4 +1,5 @@
 @props(['label', 'icon' => null, 'active' => false])
+@php($usesAdminMaterial = request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()))
 
 {{-- Collapsible sidebar group. Opens automatically when one of its child
      routes is active. Reads `sidebarOpen` from the parent Alpine scope. --}}
@@ -13,7 +14,7 @@
     " @class([
         'flex w-full items-center text-xs rounded-xl px-4 py-2.5 transition-all duration-200 font-semibold',
         'hover:bg-slate-500/5 hover:text-slate-800 dark:hover:text-slate-200 text-slate-600 dark:text-slate-400',
-        'admin-nav-link' => request()->routeIs('admin.*'),
+        'admin-nav-link' => $usesAdminMaterial,
         'admin-nav-active' => $active,
     ]) :class="{ 'justify-center': !sidebarOpen, 'justify-between': sidebarOpen }"
         :aria-expanded="open">

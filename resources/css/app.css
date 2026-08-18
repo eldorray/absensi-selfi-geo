@@ -1127,9 +1127,145 @@
     .admin-shell[data-admin-ui="material-you-3"] .admin-status-danger { background: var(--admin-danger-soft) !important; border-color: transparent !important; }
     .admin-shell[data-admin-ui="material-you-3"] .admin-status-neutral { background: var(--admin-neutral-soft) !important; border-color: transparent !important; }
 
+    .admin-shell[data-admin-ui="material-you-3"] .settings-page { display: grid; gap: 1.5rem; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-page-header { margin: 0; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-layout {
+        display: grid;
+        grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr);
+        gap: 1.5rem;
+        align-items: start;
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-navigation-surface {
+        display: grid;
+        gap: .35rem;
+        padding: .65rem;
+        border-radius: 1.5rem;
+        background: var(--admin-glass-soft);
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-navigation-item {
+        display: flex;
+        min-height: 3rem;
+        align-items: center;
+        gap: .75rem;
+        padding: .65rem .9rem;
+        border-radius: 1rem;
+        color: var(--admin-muted);
+        font-size: .82rem;
+        font-weight: 700;
+        transition: background-color 180ms ease, color 180ms ease, transform 150ms ease;
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-navigation-item svg { width: 1.2rem; height: 1.2rem; flex: none; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-navigation-item:hover { background: var(--admin-glass); color: var(--admin-text); }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-navigation-item.is-active { background: var(--admin-primary-soft); color: var(--admin-nav-active); }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-content { padding: 1.5rem; box-shadow: none !important; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-section { display: grid; gap: 1.5rem; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-section-heading { display: flex; align-items: center; gap: 1rem; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-section-heading h2,
+    .admin-shell[data-admin-ui="material-you-3"] .settings-danger-zone h2 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--admin-text);
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-section-heading p,
+    .admin-shell[data-admin-ui="material-you-3"] .settings-danger-zone p { margin-top: .2rem; font-size: .8rem; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-section-icon {
+        display: grid;
+        width: 3rem;
+        height: 3rem;
+        flex: none;
+        place-items: center;
+        border-radius: 1rem;
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-section-icon svg { width: 1.4rem; height: 1.4rem; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-form { display: grid; max-width: 34rem; gap: 1.15rem; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-form button { justify-self: start; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-danger-zone {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+        background: var(--admin-danger-soft);
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-theme-options {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .75rem;
+        max-width: 38rem;
+        margin-top: 1.5rem;
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-theme-option {
+        display: grid;
+        min-height: 7rem;
+        place-items: center;
+        align-content: center;
+        gap: .6rem;
+        border: 1px solid var(--admin-border-soft);
+        border-radius: 1.25rem;
+        background: var(--admin-glass-soft);
+        color: var(--admin-muted);
+        font-size: .8rem;
+        font-weight: 700;
+        transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 150ms ease;
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-theme-option svg { width: 1.65rem; height: 1.65rem; }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-theme-option:hover { transform: translateY(-1px); border-color: var(--admin-primary); color: var(--admin-text); }
+    .admin-shell[data-admin-ui="material-you-3"] .settings-theme-option[aria-pressed="true"] { background: var(--admin-primary-soft); border-color: transparent; color: var(--admin-nav-active); }
+
+    .admin-shell[data-admin-ui="material-you-3"] .admin-topbar-appearance {
+        align-items: center;
+        gap: .2rem;
+        padding: .2rem;
+        border-radius: 999px;
+        background: var(--admin-glass-soft);
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-topbar-theme-option,
+    .admin-shell[data-admin-ui="material-you-3"] .admin-topbar-theme-trigger {
+        display: grid;
+        width: 2.5rem;
+        height: 2.5rem;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--admin-muted);
+        transition: background-color 180ms ease, color 180ms ease, transform 150ms ease;
+    }
+    .admin-shell[data-admin-ui="material-you-3"] :is(.admin-topbar-theme-option, .admin-topbar-theme-trigger) svg { width: 1.15rem; height: 1.15rem; }
+    .admin-shell[data-admin-ui="material-you-3"] :is(.admin-topbar-theme-option, .admin-topbar-theme-trigger):hover { background: var(--admin-glass); color: var(--admin-text); }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-topbar-theme-option[aria-pressed="true"] { background: var(--admin-primary-soft); color: var(--admin-nav-active); }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-topbar-theme-trigger { background: var(--admin-glass-soft); }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-theme-popover { top: 100%; }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-theme-popover-option {
+        display: flex;
+        width: 100%;
+        min-height: 2.75rem;
+        align-items: center;
+        padding: .55rem .75rem;
+        border-radius: .75rem;
+        color: var(--admin-muted) !important;
+        font-size: .78rem;
+        font-weight: 700;
+        text-align: left;
+    }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-theme-popover-option:hover { background: var(--admin-glass-soft) !important; color: var(--admin-text) !important; }
+    .admin-shell[data-admin-ui="material-you-3"] .admin-theme-popover-option[aria-pressed="true"] { background: var(--admin-primary-soft) !important; color: var(--admin-nav-active) !important; }
+
     @media (max-width: 767px) {
         .admin-shell[data-admin-ui="material-you-3"] .admin-main > div { padding: 1rem; }
         .admin-shell[data-admin-ui="material-you-3"] .admin-stat-card { min-height: 6rem; }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-layout { grid-template-columns: 1fr; }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-navigation { width: 100%; }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-navigation-surface { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-navigation-item { justify-content: center; padding-inline: .5rem; }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-navigation-item svg { display: none; }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-content { padding: 1rem; }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-danger-zone { align-items: stretch; flex-direction: column; }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-theme-options { grid-template-columns: 1fr; }
+        .admin-shell[data-admin-ui="material-you-3"] .settings-theme-option { min-height: 3.5rem; grid-template-columns: auto auto; }
     }
 
     @media (prefers-reduced-motion: reduce) {

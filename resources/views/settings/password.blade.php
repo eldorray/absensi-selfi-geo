@@ -1,62 +1,52 @@
 <x-layouts.app>
-    <!-- Breadcrumbs -->
-    <div class="mb-6 flex items-center text-sm">
-        <a href="{{ route('dashboard') }}"
-            class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Dashboard') }}</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-        <a href="{{ route('settings.profile.edit') }}"
-           class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Profile') }}</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-        <span class="text-gray-500 dark:text-gray-400">{{ __('Password') }}</span>
-    </div>
+    <div class="settings-page">
+        <header class="admin-page-header settings-page-header">
+            <span class="admin-kicker">Pengaturan akun</span>
+            <h1>{{ __('Update password') }}</h1>
+            <p>{{ __('Ensure your account is using a long, random password to stay secure') }}</p>
+        </header>
 
-    <!-- Page Title -->
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ __('Update password') }}</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
-            {{ __('Ensure your account is using a long, random password to stay secure') }}
-        </p>
-    </div>
-
-    <div class="p-6">
-        <div class="flex flex-col md:flex-row gap-6">
-            <!-- Sidebar Navigation -->
+        <div class="settings-layout">
             @include('settings.partials.navigation')
 
-            <!-- Profile Content -->
-            <div class="flex-1">
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
-                    <div class="p-6">
-                        <!-- Profile Form -->
-                        <form class="max-w-md mb-10" action="{{ route('settings.password.update') }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="mb-4">
-                                <x-forms.input label="Current Password" name="current_password" type="password" />
-                            </div>
-
-                            <div class="mb-6">
-                                <x-forms.input label="New Password" name="password" type="password" />
-                            </div>
-
-                            <div class="mb-6">
-                                <x-forms.input label="Confirm Password" name="password_confirmation" type="password" />
-                            </div>
-
-                            <div>
-                                <x-button type="primary">{{ __('Update Password') }}</x-button>
-                            </div>
-                        </form>
+            <section class="settings-content admin-glass-panel" aria-labelledby="password-form-heading">
+                <div class="settings-section-heading">
+                    <span class="admin-tone-violet settings-section-icon" aria-hidden="true">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                            <path stroke-linecap="round" d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <h2 id="password-form-heading">Password akun</h2>
+                        <p class="admin-muted">Gunakan password yang berbeda dari layanan lain.</p>
                     </div>
                 </div>
-            </div>
+
+                <form class="settings-form" action="{{ route('settings.password.update') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div>
+                        <label class="admin-label" for="current_password">Current Password</label>
+                        <input id="current_password" class="admin-field px-4 py-3 @error('current_password') border-red-500 @enderror" type="password" name="current_password" autocomplete="current-password" required>
+                        @error('current_password')<p class="admin-text-danger mt-1.5 text-xs">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div>
+                        <label class="admin-label" for="password">New Password</label>
+                        <input id="password" class="admin-field px-4 py-3 @error('password') border-red-500 @enderror" type="password" name="password" autocomplete="new-password" required>
+                        @error('password')<p class="admin-text-danger mt-1.5 text-xs">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div>
+                        <label class="admin-label" for="password_confirmation">Confirm Password</label>
+                        <input id="password_confirmation" class="admin-field px-4 py-3" type="password" name="password_confirmation" autocomplete="new-password" required>
+                    </div>
+
+                    <button type="submit" class="admin-button-primary px-5 py-3">{{ __('Update Password') }}</button>
+                </form>
+            </section>
         </div>
     </div>
 </x-layouts.app>

@@ -22,7 +22,13 @@ it('renders the admin dashboard with its Material You 3 structure', function () 
         ->assertSee('admin-m3-action-office', false)
         ->assertSee('admin-m3-action-user', false)
         ->assertSee('admin-m3-action-report', false)
-        ->assertSee('admin-m3-table-panel', false);
+        ->assertSee('admin-m3-table-panel', false)
+        ->assertSee('admin-topbar-appearance', false)
+        ->assertSee('admin-topbar-theme-option', false)
+        ->assertSee('admin-topbar-theme-trigger', false)
+        ->assertSee('admin-theme-popover', false)
+        ->assertSee('@keydown.escape.window="open = false"', false)
+        ->assertSee('@click.away="open = false"', false);
 });
 
 it('defines scoped emerald multitone tokens and solid Material You surfaces', function () {

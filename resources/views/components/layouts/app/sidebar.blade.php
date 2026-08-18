@@ -4,7 +4,7 @@
                 }"
                 @class([
                     'bg-white/70 dark:bg-gray-950/40 backdrop-blur-md border-r border-slate-100 dark:border-slate-900/80 sidebar-transition overflow-hidden',
-                    'admin-sidebar' => request()->routeIs('admin.*'),
+                    'admin-sidebar' => request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()),
                 ]) data-layout-sidebar>
                 <!-- Sidebar Content -->
                 <div class="h-full flex flex-col">

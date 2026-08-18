@@ -1,36 +1,33 @@
-<div class="w-full md:w-64 shrink-0 border-r border-gray-200 dark:border-gray-700 pr-4">
-    <nav class="bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden">
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-            <li>
-                <a href="{{ route('settings.profile.edit') }}" @class([
-                    'bg-gray-100 dark:bg-gray-700 block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600' => !request()->routeIs(
-                        'settings.profile.*'),
-                    'bg-white dark:bg-gray-600 block px-4 py-3  text-gray-900 dark:text-gray-100 font-medium' => request()->routeIs(
-                        'settings.profile.*'),
-                ])>
-                    {{ __('Profile') }}
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('settings.password.edit') }}" @class([
-                    'bg-gray-100 dark:bg-gray-700 block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600' => !request()->routeIs(
-                        'settings.password.*'),
-                    'bg-white dark:bg-gray-600  block px-4 py-3 text-gray-900 dark:text-gray-100 font-medium' => request()->routeIs(
-                        'settings.password.*'),
-                ])>
-                    {{ __('Password') }}
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('settings.appearance.edit') }}" @class([
-                    'bg-gray-100 dark:bg-gray-700 block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600' => !request()->routeIs(
-                        'settings.appearance.*'),
-                    'bg-white dark:bg-gray-600 block px-4 py-3  text-gray-900 dark:text-gray-100 font-medium' => request()->routeIs(
-                        'settings.appearance.*'),
-                ])>
-                    {{ __('Appearance') }}
-                </a>
-            </li>
-        </ul>
+<aside class="settings-navigation w-full shrink-0 md:w-64" aria-label="Pengaturan akun">
+    <nav class="settings-navigation-surface">
+        <a href="{{ route('settings.profile.edit') }}" @class([
+            'settings-navigation-item',
+            'is-active' => request()->routeIs('settings.profile.*'),
+        ]) @if (request()->routeIs('settings.profile.*')) aria-current="page" @endif>
+            <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="3.5"></circle>
+                <path stroke-linecap="round" d="M5.5 20c.8-3.8 3-5.8 6.5-5.8s5.7 2 6.5 5.8"></path>
+            </svg>
+            <span>{{ __('Profile') }}</span>
+        </a>
+        <a href="{{ route('settings.password.edit') }}" @class([
+            'settings-navigation-item',
+            'is-active' => request()->routeIs('settings.password.*'),
+        ]) @if (request()->routeIs('settings.password.*')) aria-current="page" @endif>
+            <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                <path stroke-linecap="round" d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+            </svg>
+            <span>{{ __('Password') }}</span>
+        </a>
+        <a href="{{ route('settings.appearance.edit') }}" @class([
+            'settings-navigation-item',
+            'is-active' => request()->routeIs('settings.appearance.*'),
+        ]) @if (request()->routeIs('settings.appearance.*')) aria-current="page" @endif>
+            <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"></path>
+            </svg>
+            <span>{{ __('Appearance') }}</span>
+        </a>
     </nav>
-</div>
+</aside>

@@ -1,11 +1,12 @@
 @props(['active' => false, 'href' => '#', 'icon' => null])
+@php($usesAdminMaterial = request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()))
 <li>
     <a href="{{ $href }}" @class([
         'flex items-center text-xs rounded-xl px-4 py-2.5 justify-center transition-all duration-200 font-semibold',
         'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold' => $active,
         'hover:bg-slate-500/5 hover:text-slate-800 dark:hover:text-slate-200 text-slate-600 dark:text-slate-400' => !$active,
-        'admin-nav-link' => request()->routeIs('admin.*'),
-        'admin-nav-active' => request()->routeIs('admin.*') && $active,
+        'admin-nav-link' => $usesAdminMaterial,
+        'admin-nav-active' => $usesAdminMaterial && $active,
     ])
     @if ($active) aria-current="page" @endif
     @click="closeSidebarOnMobile()"

@@ -23,7 +23,7 @@
             let setDark = () => document.documentElement.classList.add('dark')
             let setLight = () => document.documentElement.classList.remove('dark')
             let setButtons = (appearance) => {
-                document.querySelectorAll('button[onclick^="setAppearance"]').forEach((button) => {
+                document.querySelectorAll('button[data-appearance]').forEach((button) => {
                     button.setAttribute('aria-pressed', String(appearance === button.value))
                 })
             }
@@ -109,12 +109,15 @@
     </script>
 </head>
 
-@php($isAdminRoute = request()->routeIs('admin.*'))
+@php
+    $isAdminRoute = request()->routeIs('admin.*');
+    $usesAdminMaterial = $isAdminRoute || (request()->routeIs('settings.*') && auth()->user()?->isAdmin());
+@endphp
 
 <body @class([
     'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased',
-    'admin-shell' => $isAdminRoute,
-]) data-admin-ui="{{ $isAdminRoute ? 'material-you-3' : '' }}" x-data="{
+    'admin-shell' => $usesAdminMaterial,
+]) data-admin-ui="{{ $usesAdminMaterial ? 'material-you-3' : '' }}" x-data="{
     sidebarOpen: localStorage.getItem('sidebarOpen') === null ? window.innerWidth >= 1024 : localStorage.getItem('sidebarOpen') === 'true',
     toggleSidebar() {
         this.sidebarOpen = !this.sidebarOpen;
@@ -179,7 +182,7 @@
             <!-- Main Content -->
             <main @class([
                 'flex-1 overflow-auto bg-gray-100 dark:bg-gray-900 content-transition',
-                'admin-main' => $isAdminRoute,
+                'admin-main' => $usesAdminMaterial,
             ])>
                 <div class="p-6">
                     <!-- Success Message -->
