@@ -8,8 +8,9 @@
         'admin-nav-active' => request()->routeIs('admin.*') && $active,
     ])
     @if ($active) aria-current="page" @endif
+    @click="closeSidebarOnMobile()"
     :class="{ 'justify-center': !sidebarOpen, 'justify-start': sidebarOpen }">
-        @svg($icon, $active ? 'w-4.5 h-4.5 text-indigo-600 dark:text-indigo-400' : 'w-4.5 h-4.5 text-slate-400 dark:text-slate-500')
+        @svg($icon, 'admin-nav-icon w-4.5 h-4.5')
         <span x-show="sidebarOpen" x-transition:enter="transition-all duration-300" x-transition:enter-start="opacity-0 transform -translate-x-2"
             x-transition:enter-end="opacity-100 transform translate-x-0" x-transition:leave="transition-all duration-300"
             x-transition:leave-start="opacity-100 transform translate-x-0" x-transition:leave-end="opacity-0 transform -translate-x-2"

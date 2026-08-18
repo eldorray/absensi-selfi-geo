@@ -114,7 +114,7 @@
 <body @class([
     'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased',
     'admin-shell' => $isAdminRoute,
-]) x-data="{
+]) data-admin-ui="{{ $isAdminRoute ? 'material-you-3' : '' }}" x-data="{
     sidebarOpen: localStorage.getItem('sidebarOpen') === null ? window.innerWidth >= 1024 : localStorage.getItem('sidebarOpen') === 'true',
     toggleSidebar() {
         this.sidebarOpen = !this.sidebarOpen;
@@ -124,6 +124,12 @@
         if (!this.sidebarOpen) {
             this.sidebarOpen = true;
             localStorage.setItem('sidebarOpen', true);
+        }
+    },
+    closeSidebarOnMobile() {
+        if (window.innerWidth < 768) {
+            this.sidebarOpen = false;
+            localStorage.setItem('sidebarOpen', false);
         }
     },
     formSubmitted: false,

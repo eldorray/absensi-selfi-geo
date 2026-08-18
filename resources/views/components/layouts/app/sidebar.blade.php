@@ -1,13 +1,16 @@
-            <aside :class="{ 'w-full md:w-64': sidebarOpen, 'w-0 md:w-16 hidden md:block': !sidebarOpen }"
+            <aside :class="{
+                    'w-full md:w-64 app-sidebar-expanded': sidebarOpen,
+                    'w-0 md:w-16 hidden md:block app-sidebar-collapsed': !sidebarOpen,
+                }"
                 @class([
                     'bg-white/70 dark:bg-gray-950/40 backdrop-blur-md border-r border-slate-100 dark:border-slate-900/80 sidebar-transition overflow-hidden',
                     'admin-sidebar' => request()->routeIs('admin.*'),
-                ])>
+                ]) data-layout-sidebar>
                 <!-- Sidebar Content -->
                 <div class="h-full flex flex-col">
                     <!-- Sidebar Menu -->
                     <nav class="flex-1 overflow-y-auto custom-scrollbar py-4">
-                        <ul class="space-y-1 px-2">
+                        <ul class="admin-nav-list space-y-1 px-2">
                             @if (auth()->user()->isAdmin())
                                 <!-- Admin Menu -->
                                 <x-layouts.sidebar-link href="{{ route('admin.dashboard') }}" icon='fas-house'

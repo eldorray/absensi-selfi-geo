@@ -1,6 +1,6 @@
 @props(['tone' => 'indigo', 'label', 'value', 'meta' => null])
 
-<div {{ $attributes->class(['admin-glass-panel admin-stat-card']) }}>
+<div {{ $attributes->class(["admin-glass-panel admin-stat-card admin-stat-tone-{$tone}"]) }}>
     <span class="admin-stat-icon admin-tone-{{ $tone }}" aria-hidden="true">{{ $slot }}</span>
     <div class="min-w-0">
         <span class="admin-label">{{ $label }}</span>

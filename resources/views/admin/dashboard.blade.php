@@ -16,7 +16,7 @@
 
     <div class="space-y-6">
         <!-- Hero: greeting + presence meter -->
-        <div class="admin-glass-panel p-6 md:p-8">
+        <div class="admin-m3-hero admin-glass-panel p-6 md:p-8" data-admin-ui="material-you-3">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div class="admin-page-header min-w-0">
                     <span class="admin-kicker">Dashboard</span>
@@ -85,7 +85,7 @@
         <!-- Quick links -->
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             <a href="{{ route('admin.offices.index') }}"
-                class="admin-glass-panel group flex items-center gap-4 p-6 transition-transform duration-300 hover:-translate-y-0.5">
+                class="admin-m3-action admin-m3-action-office admin-glass-panel group flex items-center gap-4 p-6 transition-transform duration-300 hover:-translate-y-0.5">
                 <span class="admin-stat-icon admin-tone-sky" aria-hidden="true">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -103,7 +103,7 @@
             </a>
 
             <a href="{{ route('admin.users.index') }}"
-                class="admin-glass-panel group flex items-center gap-4 p-6 transition-transform duration-300 hover:-translate-y-0.5">
+                class="admin-m3-action admin-m3-action-user admin-glass-panel group flex items-center gap-4 p-6 transition-transform duration-300 hover:-translate-y-0.5">
                 <span class="admin-stat-icon admin-tone-emerald" aria-hidden="true">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -121,7 +121,7 @@
             </a>
 
             <a href="{{ route('admin.attendances.index') }}"
-                class="admin-glass-panel group flex items-center gap-4 p-6 transition-transform duration-300 hover:-translate-y-0.5">
+                class="admin-m3-action admin-m3-action-report admin-glass-panel group flex items-center gap-4 p-6 transition-transform duration-300 hover:-translate-y-0.5">
                 <span class="admin-stat-icon admin-tone-amber" aria-hidden="true">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -140,7 +140,7 @@
         </div>
 
         <!-- Recent attendance -->
-        <div class="admin-glass-panel overflow-hidden">
+        <div class="admin-m3-table-panel admin-glass-panel overflow-hidden">
             <div class="admin-panel-header">
                 <span class="admin-label">Absensi Terbaru</span>
                 <a href="{{ route('admin.attendances.index') }}"
