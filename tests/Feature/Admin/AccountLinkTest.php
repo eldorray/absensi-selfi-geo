@@ -2,7 +2,6 @@
 
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 function linkGuru(string $name): User
 {
@@ -60,6 +59,21 @@ test('unchecking a link removes it on both sides', function () {
 
     expect($mi->fresh()->linkedAccounts)->toHaveCount(0)
         ->and($smp->fresh()->linkedAccounts)->toHaveCount(0);
+});
+
+test('edit page uses the searchable Material 3 linked account picker', function () {
+    $mi = linkGuru('Guru MI');
+    $smp = linkGuru('Guru SMP');
+
+    $this->actingAs(linkAdmin())
+        ->get(route('admin.users.edit', $mi))
+        ->assertSuccessful()
+        ->assertSee('Ganti Akun Cepat')
+        ->assertSee('Kelola akun tertaut')
+        ->assertSee('Cari nama atau email')
+        ->assertSee('Semua kantor')
+        ->assertSee($smp->email)
+        ->assertSee('linked_accounts[]', false);
 });
 
 test('admin accounts cannot be linked as a switch target', function () {

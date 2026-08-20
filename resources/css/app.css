@@ -1276,6 +1276,130 @@
     .admin-shell[data-admin-ui="material-you-3"] .admin-theme-popover-option:hover { background: var(--admin-glass-soft) !important; color: var(--admin-text) !important; }
     .admin-shell[data-admin-ui="material-you-3"] .admin-theme-popover-option[aria-pressed="true"] { background: var(--admin-primary-soft) !important; color: var(--admin-nav-active) !important; }
 
+    .admin-shell .admin-linked-account-picker {
+        border: 1px solid var(--admin-border);
+        border-radius: 1.25rem;
+        background: var(--admin-glass-soft);
+        padding: 1rem;
+    }
+
+    .admin-shell .admin-linked-account-heading,
+    .admin-shell .admin-linked-account-row,
+    .admin-shell .admin-linked-account-option {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+    }
+
+    .admin-shell .admin-linked-account-icon,
+    .admin-shell .admin-linked-account-avatar {
+        display: grid;
+        flex: none;
+        place-items: center;
+        background: var(--admin-primary-soft);
+        color: var(--admin-nav-active);
+    }
+
+    .admin-shell .admin-linked-account-icon { width: 2.75rem; height: 2.75rem; border-radius: .875rem; }
+    .admin-shell .admin-linked-account-icon svg { width: 1.25rem; height: 1.25rem; }
+    .admin-shell .admin-linked-account-avatar { width: 2.5rem; height: 2.5rem; border-radius: .75rem; font-size: .7rem; font-weight: 800; }
+
+    .admin-shell .admin-linked-account-row {
+        border: 1px solid var(--admin-border);
+        border-radius: 1rem;
+        background: var(--admin-glass);
+        padding: .75rem;
+    }
+
+    .admin-shell .admin-linked-account-remove {
+        display: grid;
+        width: 2.75rem;
+        height: 2.75rem;
+        flex: none;
+        place-items: center;
+        border-radius: 999px;
+        color: var(--admin-muted);
+        transition: background-color 150ms ease, color 150ms ease;
+    }
+
+    .admin-shell .admin-linked-account-remove:hover { background: var(--admin-danger-soft); color: var(--admin-danger); }
+    .admin-shell .admin-linked-account-remove svg { width: 1.1rem; height: 1.1rem; }
+
+    .admin-shell .admin-linked-account-empty {
+        display: flex;
+        min-height: 5rem;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: .25rem;
+        border: 1px dashed var(--admin-border);
+        border-radius: 1rem;
+        text-align: center;
+    }
+
+    .admin-linked-account-dialog {
+        display: flex;
+        width: min(42rem, 100%);
+        max-height: min(44rem, calc(100vh - 2rem));
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0 !important;
+    }
+
+    .admin-linked-account-dialog-header,
+    .admin-linked-account-dialog-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+    }
+
+    .admin-linked-account-dialog-header { border-bottom: 1px solid var(--admin-border); }
+    .admin-linked-account-dialog-footer { border-top: 1px solid var(--admin-border); }
+    .admin-linked-account-tools { display: grid; gap: .75rem; padding: 1rem 1.25rem; }
+    .admin-linked-account-search-icon { position: absolute; left: .9rem; top: .9rem; width: 1.15rem; height: 1.15rem; color: var(--admin-muted); }
+    .admin-linked-account-filters { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .15rem; }
+
+    .admin-linked-account-filter {
+        min-height: 2.5rem;
+        flex: none;
+        border: 1px solid var(--admin-border);
+        border-radius: .75rem;
+        padding: .5rem .8rem;
+        color: var(--admin-muted);
+        font-size: .75rem;
+        font-weight: 700;
+    }
+
+    .admin-linked-account-filter.is-active { border-color: transparent; background: var(--admin-primary-soft); color: var(--admin-nav-active); }
+    .admin-linked-account-results { min-height: 10rem; overflow-y: auto; border-top: 1px solid var(--admin-border); padding: .5rem; }
+
+    .admin-linked-account-option {
+        width: 100%;
+        min-height: 3.75rem;
+        border-radius: .875rem;
+        padding: .625rem .75rem;
+        color: var(--admin-text);
+    }
+
+    .admin-linked-account-option:hover { background: var(--admin-glass-soft); }
+
+    .admin-linked-account-check {
+        display: grid;
+        width: 1.4rem;
+        height: 1.4rem;
+        flex: none;
+        place-items: center;
+        border: 2px solid var(--admin-muted);
+        border-radius: .4rem;
+        color: transparent;
+        font-size: .8rem;
+        font-weight: 800;
+    }
+
+    .admin-linked-account-check.is-checked { border-color: var(--admin-primary); background: var(--admin-primary); color: #fff; }
+
     @media (max-width: 767px) {
         .admin-shell[data-admin-ui="material-you-3"] .admin-main > div { padding: 1rem; }
         .admin-shell[data-admin-ui="material-you-3"] .admin-stat-card { min-height: 6rem; }
