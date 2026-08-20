@@ -264,7 +264,7 @@
 
     .admin-shell .admin-page-header h1 {
         color: var(--admin-text) !important;
-        font-family: "Bricolage Grotesque", sans-serif;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-weight: 800;
         letter-spacing: -0.03em;
     }
@@ -306,7 +306,7 @@
         justify-content: center;
         border-radius: .875rem !important;
         cursor: pointer;
-        font-family: "Outfit", sans-serif;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-weight: 700;
         transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
@@ -415,7 +415,7 @@
 
     .admin-shell .admin-table th {
         color: var(--admin-muted) !important;
-        font: 700 0.72rem/1.2 "Outfit", sans-serif !important;
+        font: 700 0.72rem/1.2 "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
         letter-spacing: .07em !important;
         text-transform: uppercase !important;
     }
@@ -514,7 +514,7 @@
         display: inline-flex;
         align-items: center;
         gap: .5rem;
-        font: 700 .68rem/1 "Outfit", sans-serif;
+        font: 700 .68rem/1 "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         letter-spacing: .16em;
         text-transform: uppercase;
         color: var(--admin-nav-active);
@@ -541,7 +541,7 @@
         border: 1px solid var(--admin-border-soft);
         border-radius: 999px;
         background: var(--admin-glass-soft);
-        font: 600 .72rem/1 "Outfit", sans-serif;
+        font: 600 .72rem/1 "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         color: var(--admin-muted);
         white-space: nowrap;
     }
@@ -582,7 +582,7 @@
     .admin-shell .admin-label {
         display: block;
         margin-bottom: .45rem;
-        font: 700 .7rem/1.2 "Outfit", sans-serif;
+        font: 700 .7rem/1.2 "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         letter-spacing: .08em;
         text-transform: uppercase;
         color: var(--admin-muted);
@@ -626,7 +626,7 @@
     }
 
     .admin-shell .admin-stat-value {
-        font-family: "Bricolage Grotesque", sans-serif;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-size: 1.9rem;
         font-weight: 800;
         letter-spacing: -.02em;
@@ -687,7 +687,7 @@
         border-radius: 999px;
         background: var(--admin-primary-soft);
         color: var(--admin-nav-active);
-        font: 700 .78rem/1 "Outfit", sans-serif;
+        font: 700 .78rem/1 "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         box-shadow: 0 6px 14px -9px rgba(44, 52, 92, .55);
     }
 
@@ -766,7 +766,7 @@
     }
 
     .admin-shell .admin-empty-state-title {
-        font-family: "Bricolage Grotesque", sans-serif;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-size: .95rem;
         font-weight: 700;
         color: var(--admin-text);
@@ -783,7 +783,7 @@
         align-items: center;
         gap: .55rem;
         padding: 1.15rem .9rem .5rem;
-        font: 700 .6rem/1 "Outfit", sans-serif;
+        font: 700 .6rem/1 "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         letter-spacing: .17em;
         text-transform: uppercase;
         color: var(--admin-muted);
@@ -816,7 +816,7 @@
     }
 
     .admin-shell .admin-dl dt {
-        font: 700 .68rem/1.2 "Outfit", sans-serif;
+        font: 700 .68rem/1.2 "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         letter-spacing: .09em;
         text-transform: uppercase;
         color: var(--admin-muted);
@@ -868,7 +868,7 @@
     }
 
     .admin-shell .admin-header .app-brand {
-        font-family: "Bricolage Grotesque", sans-serif;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-weight: 800;
         letter-spacing: -.02em;
         color: var(--admin-text) !important;
@@ -1184,7 +1184,7 @@
     .admin-shell[data-admin-ui="material-you-3"] .settings-section-heading { display: flex; align-items: center; gap: 1rem; }
     .admin-shell[data-admin-ui="material-you-3"] .settings-section-heading h2,
     .admin-shell[data-admin-ui="material-you-3"] .settings-danger-zone h2 {
-        font-family: "Bricolage Grotesque", sans-serif;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-size: 1.05rem;
         font-weight: 800;
         color: var(--admin-text);

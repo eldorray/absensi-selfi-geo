@@ -194,7 +194,7 @@
         background: var(--m3-primary) !important;
         color: var(--m3-on-primary) !important;
         box-shadow: var(--btn-accent-shadow) !important;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-weight: 800;
         letter-spacing: 0;
         transition: transform 150ms cubic-bezier(0.2, 0, 0, 1), box-shadow 180ms ease;
@@ -232,7 +232,7 @@
     body.pwa-m3 .nav-item:active { transform: scale(0.94); }
     body.pwa-m3 .nav-pill { min-width: 64px; min-height: 32px; padding: 5px 18px; border-radius: 16px; transition: background-color 250ms cubic-bezier(0.2, 0, 0, 1), color 180ms ease, transform 180ms ease; }
     body.pwa-m3 .nav-item.is-active .nav-pill { background: var(--m3-primary-container); color: var(--m3-on-primary-container); box-shadow: none; }
-    body.pwa-m3 .nav-label { color: var(--m3-on-surface-variant); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0; }
+    body.pwa-m3 .nav-label { color: var(--m3-on-surface-variant); font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; font-size: 9px; font-weight: 700; letter-spacing: 0; }
     body.pwa-m3 .nav-item.is-active .nav-label { color: var(--m3-primary); }
 
     body.pwa-m3 .nav-fab {

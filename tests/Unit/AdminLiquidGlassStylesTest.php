@@ -115,7 +115,7 @@ test('admin canvas uses the exact static liquid glass gradients', function () {
 
 test('admin table and success alert use exact semantic values', function () {
     expect(adminStyles())->toContain(
-        'font: 700 0.72rem/1.2 "Outfit", sans-serif !important;',
+        'font: 700 0.72rem/1.2 "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;',
         'letter-spacing: .07em !important;',
         'transition: background-color 180ms ease;',
         'border: 1px solid color-mix(in srgb, var(--admin-success) 30%, transparent) !important;',

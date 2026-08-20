@@ -51,8 +51,7 @@
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-3 scale-95">
 
-        <h2 :id="$id('confirm-title')" x-text="title" class="font-display text-base font-bold"
-            style="font-family: 'Bricolage Grotesque', sans-serif"></h2>
+        <h2 :id="$id('confirm-title')" x-text="title" class="font-display text-base font-bold"></h2>
         <p class="admin-muted mt-2 text-sm leading-relaxed" x-text="message"></p>
 
         <div class="mt-6 flex items-center justify-end gap-3">

@@ -17,7 +17,7 @@
     <link rel="apple-touch-icon" href="{{ $branding->iconUrl() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <title>Masuk | AbsenKu</title>
 
     <script>
@@ -92,7 +92,7 @@
             overflow-x: hidden;
             background: var(--device-stage);
             color: var(--md-sys-color-on-surface);
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             transition: background-color 180ms ease, color 180ms ease;
         }
 
