@@ -289,7 +289,7 @@ class ReportController extends Controller
     }
 
     /**
-     * Count work days in a date range (excluding weekends).
+     * Count Monday through Saturday as work days in a date range.
      */
     private function countWorkDaysInRange(Carbon $start, Carbon $end): int
     {
@@ -298,7 +298,7 @@ class ReportController extends Controller
         $workDays = 0;
 
         while ($startCopy <= $endCopy) {
-            if (! $startCopy->isWeekend()) {
+            if (! $startCopy->isSunday()) {
                 $workDays++;
             }
             $startCopy->addDay();

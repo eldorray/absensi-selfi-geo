@@ -103,6 +103,17 @@ test('monthly report filtered by office shows only that office employees', funct
         ->assertDontSee('Guru MI Satu');
 });
 
+test('monthly report counts Monday through Saturday as work days', function () {
+    $this->actingAs(officeAdmin());
+
+    $this->get(route('admin.reports.monthly', [
+        'start_date' => '2026-08-01',
+        'end_date' => '2026-08-19',
+    ]))
+        ->assertSuccessful()
+        ->assertSee('16 hari kerja');
+});
+
 test('daily pdf export with office filter returns a pdf', function () {
     $smp = mkOffice('SMP');
     officeEmployee('Guru SMP Satu', $smp);
