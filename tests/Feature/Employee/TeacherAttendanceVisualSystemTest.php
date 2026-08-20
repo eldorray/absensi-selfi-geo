@@ -74,6 +74,22 @@ it('keeps the animated sheet treatment on secondary attendance pages', function 
         ->assertSee('class="sheet-handle"', false);
 });
 
+it('downscales browser selfie captures to a maximum dimension of 1024 pixels', function (string $view) {
+    $template = file_get_contents(resource_path("views/attendance/{$view}.blade.php"));
+
+    expect($template)
+        ->toContain('const maxPhotoDimension = 1024;')
+        ->toContain('Math.min(1, maxPhotoDimension / Math.max(video.videoWidth, video.videoHeight))')
+        ->toContain('Math.round(video.videoWidth * photoScale)')
+        ->toContain('Math.round(video.videoHeight * photoScale)')
+        ->not->toContain('canvas.width = video.videoWidth;')
+        ->not->toContain('canvas.height = video.videoHeight;');
+})->with([
+    'check-in camera' => ['selfie'],
+    'check-out camera' => ['checkout'],
+    'legacy attendance camera' => ['create'],
+]);
+
 it('redirects guests away from teacher attendance pages', function (string $routeName) {
     $this->get(route($routeName))->assertRedirect(route('login'));
 })->with([

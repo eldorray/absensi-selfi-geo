@@ -342,9 +342,10 @@
                             const canvas = this.$refs.canvas;
                             const context = canvas.getContext('2d');
 
-                            // Set canvas size to match video
-                            canvas.width = video.videoWidth;
-                            canvas.height = video.videoHeight;
+                            const maxPhotoDimension = 1024;
+                            const photoScale = Math.min(1, maxPhotoDimension / Math.max(video.videoWidth, video.videoHeight));
+                            canvas.width = Math.round(video.videoWidth * photoScale);
+                            canvas.height = Math.round(video.videoHeight * photoScale);
 
                             // Draw video frame to canvas
                             context.drawImage(video, 0, 0, canvas.width, canvas.height);

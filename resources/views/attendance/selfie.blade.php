@@ -440,8 +440,10 @@
                     const video = this.$refs.video;
                     const canvas = this.$refs.canvas;
                     const context = canvas.getContext('2d');
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
+                    const maxPhotoDimension = 1024;
+                    const photoScale = Math.min(1, maxPhotoDimension / Math.max(video.videoWidth, video.videoHeight));
+                    canvas.width = Math.round(video.videoWidth * photoScale);
+                    canvas.height = Math.round(video.videoHeight * photoScale);
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
                     this.imageBase64 = canvas.toDataURL('image/jpeg', 0.85);
                     this.photoTaken = true;
