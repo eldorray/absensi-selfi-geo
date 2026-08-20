@@ -46,6 +46,15 @@
                     </div>
                 </div>
 
+                <div>
+                    <label for="school_level" class="admin-label">Jenjang Sekolah</label>
+                    <select name="school_level" id="school_level" class="admin-field p-2.5">
+                        <option value="">Belum dipetakan</option>
+                        <option value="mi" @selected(old('school_level', $office->school_level) === 'mi')>MI</option>
+                        <option value="smp" @selected(old('school_level', $office->school_level) === 'smp')>SMP</option>
+                    </select>
+                </div>
+
                 <!-- Radius -->
                 <div>
                     <label for="radius_meters" class="admin-label">Radius (meter)</label>

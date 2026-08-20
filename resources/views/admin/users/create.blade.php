@@ -89,6 +89,8 @@
                     @enderror
                 </div>
 
+                <label class="flex items-center gap-3"><input type="checkbox" name="is_bk_counselor" value="1" class="admin-checkbox" @checked(old('is_bk_counselor'))><span class="admin-label mb-0">Berikan akses Guru BK</span></label>
+
                 <!-- Submit -->
                 <div class="flex items-center justify-end gap-3 pt-2">
                     <a href="{{ route('admin.users.index') }}" class="admin-button-secondary px-4 py-2 text-sm">

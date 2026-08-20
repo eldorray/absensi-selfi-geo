@@ -40,6 +40,7 @@ class User extends Authenticatable
         'visible_password',
         'office_id',
         'role_id',
+        'is_bk_counselor',
         'avatar_path',
         'nip',
         'nik',
@@ -67,6 +68,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'visible_password' => 'encrypted',
+            'is_bk_counselor' => 'boolean',
         ];
     }
 
@@ -120,6 +122,17 @@ class User extends Authenticatable
     public function isEmployee(): bool
     {
         return ! $this->isAdmin();
+    }
+
+    public function canAccessBk(): bool
+    {
+        return $this->isAdmin()
+            || ($this->is_bk_counselor && in_array($this->office?->school_level, ['mi', 'smp'], true));
+    }
+
+    public function bkRecords(): HasMany
+    {
+        return $this->hasMany(BkRecord::class, 'counselor_id');
     }
 
     /**

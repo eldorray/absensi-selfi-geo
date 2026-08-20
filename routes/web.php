@@ -90,6 +90,20 @@ Route::middleware(['auth'])->group(function () {
     // Employee announcement (Informasi) detail
     Route::get('attendance/information/{announcement}', [Employee\AnnouncementController::class, 'show'])->name('attendance.information.show');
 
+    Route::middleware('bk')->prefix('attendance/bk')->name('attendance.bk.')->group(function () {
+        Route::get('/', [Employee\BkRecordController::class, 'index'])->name('index');
+        Route::get('/create', [Employee\BkRecordController::class, 'create'])->name('create');
+        Route::post('/', [Employee\BkRecordController::class, 'store'])->name('store');
+        Route::get('/attachments/{attachment}', [Employee\BkRecordController::class, 'attachment'])->name('attachments.show');
+        Route::get('/{record}', [Employee\BkRecordController::class, 'show'])->name('show');
+        Route::get('/{record}/edit', [Employee\BkRecordController::class, 'edit'])->name('edit');
+        Route::put('/{record}', [Employee\BkRecordController::class, 'update'])->name('update');
+        Route::patch('/{record}/archive', [Employee\BkRecordController::class, 'archive'])->name('archive');
+        Route::patch('/{record}/restore', [Employee\BkRecordController::class, 'restore'])->name('restore');
+        Route::post('/{record}/follow-ups', [Employee\BkRecordController::class, 'followUp'])->name('follow-ups.store');
+        Route::post('/{record}/parent-contacts', [Employee\BkRecordController::class, 'parentContact'])->name('parent-contacts.store');
+    });
+
     // Employee profile routes (SRP - separate controller)
     Route::get('attendance/profile', [Employee\ProfileController::class, 'show'])->name('attendance.profile');
     Route::put('attendance/profile', [Employee\ProfileController::class, 'update'])->name('attendance.profile.update');
@@ -144,6 +158,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('users/export-pdf', [Admin\UserController::class, 'exportPasswordsPdf'])->name('users.export-pdf');
     Route::post('users/{user}/reset-password', [Admin\UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::resource('users', Admin\UserController::class)->except(['show']);
+
+    Route::resource('bk-categories', Admin\BkCategoryController::class)->except(['show']);
+    Route::get('bk-records', [Admin\BkRecordController::class, 'index'])->name('bk-records.index');
+    Route::get('bk-records/{bkRecord}', [Admin\BkRecordController::class, 'show'])->name('bk-records.show');
+    Route::patch('bk-records/{bkRecord}/archive', [Admin\BkRecordController::class, 'archive'])->name('bk-records.archive');
+    Route::patch('bk-records/{bkRecord}/restore', [Admin\BkRecordController::class, 'restore'])->name('bk-records.restore');
 
     // Role management
     Route::resource('roles', Admin\RoleController::class)->except(['show']);

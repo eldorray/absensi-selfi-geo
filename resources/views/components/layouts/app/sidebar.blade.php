@@ -37,6 +37,11 @@
                                         icon='fas-clock' :active="request()->routeIs('admin.work-schedules.*')">Jam Kerja</x-layouts.sidebar-link>
                                 </x-layouts.sidebar-dropdown>
 
+                                <x-layouts.sidebar-dropdown label="Bimbingan Konseling" icon="fas-user-shield" :active="request()->routeIs('admin.bk-*')">
+                                    <x-layouts.sidebar-link href="{{ route('admin.bk-records.index') }}" icon='fas-notes-medical' :active="request()->routeIs('admin.bk-records.*')">Catatan BK</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.bk-categories.index') }}" icon='fas-tags' :active="request()->routeIs('admin.bk-categories.*')">Kategori BK</x-layouts.sidebar-link>
+                                </x-layouts.sidebar-dropdown>
+
                                 {{-- Data Siswa --}}
                                 <x-layouts.sidebar-dropdown label="Data Siswa" icon="fas-user-graduate" :active="$studentActive">
                                     <x-layouts.sidebar-link href="{{ route('admin.students.index', 'mi') }}" icon='fas-users' :active="request()->routeIs('admin.students.*') && request()->route('schoolLevel') === 'mi'">Data Siswa MI</x-layouts.sidebar-link>

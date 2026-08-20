@@ -70,6 +70,8 @@
                     @enderror
                 </div>
 
+                <div><label for="school_level" class="admin-label">Jenjang sekolah untuk BK</label><select name="school_level" id="school_level" class="admin-field p-2.5"><option value="">Bukan unit sekolah</option><option value="mi" @selected(old('school_level')==='mi')>MI</option><option value="smp" @selected(old('school_level')==='smp')>SMP</option></select></div>
+
                 <!-- Submit -->
                 <div class="flex items-center justify-end gap-3 pt-2">
                     <a href="{{ route('admin.offices.index') }}" class="admin-button-secondary px-4 py-2 text-sm">

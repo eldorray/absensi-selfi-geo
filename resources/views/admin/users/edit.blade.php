@@ -92,6 +92,14 @@
                 </div>
 
                 @unless ($user->isAdmin())
+                    <div class="rounded-2xl bg-emerald-50 p-4 dark:bg-emerald-950/30">
+                        <input type="hidden" name="is_bk_counselor" value="0">
+                        <label class="flex items-center gap-3 font-semibold">
+                            <input type="checkbox" name="is_bk_counselor" value="1" class="admin-checkbox" @checked(old('is_bk_counselor', $user->is_bk_counselor))>
+                            <span>Berikan akses Guru BK</span>
+                        </label>
+                        <p class="admin-hint">Jenjang akses mengikuti mapping kantor guru.</p>
+                    </div>
                     <hr class="admin-divider">
 
                     <!-- Linked Accounts -->

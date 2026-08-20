@@ -880,6 +880,17 @@
                                 </div>
                                 <p class="text-[9px] font-bold theme-text-main font-outfit truncate">Izin</p>
                             </a>
+                            @if (auth()->user()->canAccessBk() && ! auth()->user()->isAdmin())
+                                <a href="{{ route('attendance.bk.index') }}"
+                                    class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300">
+                                    <div class="theme-icon-riwayat w-9 h-9 mx-auto mb-2 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 6h8M8 10h8m-8 4h5m-7 7 3-3h9a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2v3Z"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="text-[9px] font-bold theme-text-main font-outfit truncate">Catatan BK</p>
+                                </a>
+                            @endif
                         </div>
                     </div>
 

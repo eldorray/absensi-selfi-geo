@@ -47,6 +47,7 @@ class OfficeController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'radius_meters' => 'required|integer|min:10|max:5000',
+            'school_level' => 'nullable|in:mi,smp',
         ], [
             'name.required' => 'Nama kantor wajib diisi.',
             'latitude.required' => 'Latitude wajib diisi.',
@@ -83,6 +84,7 @@ class OfficeController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'radius_meters' => 'required|integer|min:10|max:5000',
+            'school_level' => 'nullable|in:mi,smp',
         ]);
 
         $office->update($validated);

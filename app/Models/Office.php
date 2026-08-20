@@ -28,6 +28,7 @@ class Office extends Model
      */
     protected $fillable = [
         'name',
+        'school_level',
         'latitude',
         'longitude',
         'radius_meters',

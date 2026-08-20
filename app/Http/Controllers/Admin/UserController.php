@@ -133,6 +133,7 @@ class UserController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'role_id' => 'required|exists:roles,id',
             'office_id' => 'nullable|exists:offices,id',
+            'is_bk_counselor' => ['boolean'],
         ], [
             'name.required' => 'Nama wajib diisi.',
             'email.required' => 'Email wajib diisi.',
@@ -150,6 +151,7 @@ class UserController extends Controller
             'visible_password' => $validated['password'],
             'role_id' => $validated['role_id'],
             'office_id' => $validated['office_id'] ?? null,
+            'is_bk_counselor' => $request->boolean('is_bk_counselor'),
         ]);
 
         return redirect()
@@ -246,6 +248,7 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'role_id' => 'required|exists:roles,id',
             'office_id' => 'nullable|exists:offices,id',
+            'is_bk_counselor' => ['boolean'],
             'linked_accounts' => ['array'],
             'linked_accounts.*' => [
                 'integer',
@@ -264,6 +267,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'role_id' => $validated['role_id'],
             'office_id' => $validated['office_id'] ?? null,
+            'is_bk_counselor' => $request->boolean('is_bk_counselor'),
         ]);
 
         // Update password if provided
