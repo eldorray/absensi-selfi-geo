@@ -13,6 +13,15 @@ function teacherForVisualSystem(): User
     return User::factory()->create(['role_id' => $role->id]);
 }
 
+it('raises the whole navigation card and removes its top outline', function () {
+    $styles = file_get_contents(resource_path('views/partials/pwa-material3.blade.php'));
+
+    expect($styles)
+        ->toContain('transform: translateY(-6px);')
+        ->toContain('border-top: 0;')
+        ->not->toContain('body.pwa-m3 .footer-nav::before');
+});
+
 it('renders the dashboard with the shared Material 3 attendance system', function () {
     $teacher = teacherForVisualSystem();
 
@@ -21,6 +30,9 @@ it('renders the dashboard with the shared Material 3 attendance system', functio
         ->assertSuccessful()
         ->assertSee('data-attendance-ui="material-3"', false)
         ->assertSee('data-m3-region="top-app-bar"', false)
+        ->assertSee('data-profile-link="teacher-identity"', false)
+        ->assertSee('href="'.route('attendance.profile').'"', false)
+        ->assertSee('aria-label="Buka profil '.e($teacher->name).'"', false)
         ->assertSee('data-m3-region="content"', false)
         ->assertSee('data-m3-region="navigation-bar"', false)
         ->assertSee('aria-label="Navigasi utama"', false)

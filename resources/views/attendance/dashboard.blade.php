@@ -602,7 +602,10 @@
                 <!-- 1. Header (Fixed at top) -->
                 <header class="relative z-10 flex items-center justify-between px-5 pt-5 pb-3" data-m3-region="top-app-bar">
                     <!-- User Info Layout -->
-                    <div class="flex items-center gap-2.5">
+                    <a href="{{ route('attendance.profile') }}"
+                        data-profile-link="teacher-identity"
+                        aria-label="Buka profil {{ auth()->user()->name }}"
+                        class="-m-1 flex min-h-12 items-center gap-2.5 rounded-2xl p-1 transition-colors hover:bg-emerald-500/10 focus-visible:bg-emerald-500/10">
                         <div class="relative w-9 h-9 rounded-full bg-gradient-to-tr from-green-400 to-emerald-500 p-[1px] shadow-sm">
                             <div class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center overflow-hidden border border-white/10">
                                 @if (auth()->user()->avatar_url)
@@ -617,7 +620,7 @@
                             <h2 class="text-xs font-bold theme-text-main font-display truncate max-w-[140px]">{{ auth()->user()->name }}</h2>
                             <p class="text-[9px] theme-text-muted mt-0.5">{{ auth()->user()->office?->name ?? 'MI Daarul Hikmah' }}</p>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Actions Layout: Theme Toggle & Logout -->
                     <div class="flex items-center gap-2.5">
@@ -888,7 +891,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 6h8M8 10h8m-8 4h5m-7 7 3-3h9a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2v3Z"></path>
                                         </svg>
                                     </div>
-                                    <p class="text-[9px] font-bold theme-text-main font-outfit truncate">Catatan BK</p>
+                                    <p class="text-[9px] font-bold theme-text-main font-outfit truncate">BK</p>
                                 </a>
                             @endif
                         </div>

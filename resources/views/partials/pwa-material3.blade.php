@@ -210,8 +210,12 @@
     body.pwa-m3 .footer-nav {
         min-height: 76px;
         padding: 8px 8px max(8px, env(safe-area-inset-bottom));
-        border-top: 1px solid var(--m3-outline-variant);
+        border-top: 0;
         border-radius: 24px 24px 0 0;
+        transform: translateY(-6px);
+    }
+
+    body.pwa-m3 .footer-nav {
         background: var(--m3-surface-container-low);
         box-shadow: 0 -8px 24px var(--m3-shadow);
         backdrop-filter: none;

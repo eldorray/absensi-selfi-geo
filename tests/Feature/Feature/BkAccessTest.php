@@ -38,8 +38,8 @@ test('bk dashboard shortcut only appears for enabled counselor', function () {
     $regular = bkTeacher(false);
     $bk = bkTeacher(true);
 
-    $this->actingAs($regular)->get(route('attendance.dashboard'))->assertDontSee('Catatan BK');
-    $this->actingAs($bk)->get(route('attendance.dashboard'))->assertSee('Catatan BK');
+    $this->actingAs($regular)->get(route('attendance.dashboard'))->assertDontSee('>BK<', false);
+    $this->actingAs($bk)->get(route('attendance.dashboard'))->assertSee('>BK<', false);
 });
 
 test('bk teacher only sees students from their office school level', function () {
