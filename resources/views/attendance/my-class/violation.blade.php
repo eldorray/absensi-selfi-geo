@@ -1,0 +1,6 @@
+<x-layouts.mobile title="Detail Pelanggaran">
+    <div class="space-y-4 p-4 text-left">
+        <section class="solid-panel rounded-[24px] p-5"><p class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Pelanggaran · Baca saja</p><h1 class="mt-1 text-lg font-black theme-text-main">{{ $record->category?->name ?? $record->custom_topic ?? 'Pelanggaran' }}</h1><p class="mt-1 text-xs theme-text-muted">{{ $record->student->nama_lengkap }} · {{ $record->occurred_at->format('d M Y H:i') }}</p></section>
+        <section class="solid-panel space-y-4 rounded-[24px] p-5"><div><h2 class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Kronologi</h2><p class="mt-1 whitespace-pre-line text-sm theme-text-main">{{ $record->chronology }}</p></div><div><h2 class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Tindakan</h2><p class="mt-1 whitespace-pre-line text-sm theme-text-main">{{ $record->action_taken ?: '-' }}</p></div><div><h2 class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Rencana tindak lanjut</h2><p class="mt-1 whitespace-pre-line text-sm theme-text-main">{{ $record->follow_up_plan ?: '-' }}</p></div></section>
+    </div>
+</x-layouts.mobile>

@@ -18,7 +18,7 @@
 
                                 @php
                                     $masterActive = request()->routeIs('admin.academic-years.*', 'admin.offices.*', 'admin.users.*', 'admin.roles.*', 'admin.work-schedules.*');
-                                    $studentActive = request()->routeIs('admin.students.*', 'admin.school-classes.*');
+                                    $studentActive = request()->routeIs('admin.students.*', 'admin.school-classes.*', 'admin.homeroom-assignments.*');
                                     $hadirActive = request()->routeIs('admin.reports.*', 'admin.attendances.*', 'admin.leaves.*');
                                     $infoActive = request()->routeIs('admin.announcements.*', 'admin.account-switches.*');
                                 @endphp
@@ -48,6 +48,7 @@
                                     <x-layouts.sidebar-link href="{{ route('admin.students.index', 'smp') }}" icon='fas-users' :active="request()->routeIs('admin.students.*') && request()->route('schoolLevel') === 'smp'">Data Siswa SMP</x-layouts.sidebar-link>
                                     <x-layouts.sidebar-link href="{{ route('admin.school-classes.index', 'mi') }}" icon='fas-chalkboard' :active="request()->routeIs('admin.school-classes.*') && request()->route('schoolLevel') === 'mi'">Kelas MI</x-layouts.sidebar-link>
                                     <x-layouts.sidebar-link href="{{ route('admin.school-classes.index', 'smp') }}" icon='fas-chalkboard' :active="request()->routeIs('admin.school-classes.*') && request()->route('schoolLevel') === 'smp'">Kelas SMP</x-layouts.sidebar-link>
+                                    <x-layouts.sidebar-link href="{{ route('admin.homeroom-assignments.index') }}" icon='fas-chalkboard-teacher' :active="request()->routeIs('admin.homeroom-assignments.*')">Penugasan Wali Kelas</x-layouts.sidebar-link>
                                 </x-layouts.sidebar-dropdown>
 
                                 {{-- Kehadiran --}}
@@ -79,6 +80,11 @@
 
                                 <x-layouts.sidebar-link href="{{ route('attendance.index') }}" icon='fas-list'
                                     :active="request()->routeIs('attendance.index')">Riwayat Absensi</x-layouts.sidebar-link>
+
+                                @if (auth()->user()->activeHomeroomAssignment())
+                                    <x-layouts.sidebar-link href="{{ route('attendance.my-class.index') }}" icon='fas-user-graduate'
+                                        :active="request()->routeIs('attendance.my-class.*')">Kelas Saya</x-layouts.sidebar-link>
+                                @endif
                             @endif
                         </ul>
                     </nav>

@@ -25,6 +25,11 @@ class SchoolClass extends Model
         return $this->hasMany(Student::class);
     }
 
+    public function homeroomAssignments(): HasMany
+    {
+        return $this->hasMany(HomeroomAssignment::class);
+    }
+
     public static function normalizeName(string $name): string
     {
         return Str::of($name)->squish()->lower()->value();

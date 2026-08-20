@@ -70,6 +70,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Employee dashboard (SRP - separate controller)
     Route::get('attendance/dashboard', [Employee\DashboardController::class, 'index'])->name('attendance.dashboard');
+    Route::get('attendance/my-class', [Employee\MyClassController::class, 'index'])->name('attendance.my-class.index');
+    Route::get('attendance/my-class/students/{student}', [Employee\MyClassController::class, 'show'])->name('attendance.my-class.show');
+    Route::get('attendance/my-class/violations/{record}', [Employee\MyClassController::class, 'violation'])->name('attendance.my-class.violations.show');
 
     // Fast, password-less account switching (linked, non-admin accounts only)
     Route::post('account/switch', [AccountSwitchController::class, 'store'])
@@ -148,6 +151,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('school-classes/{schoolLevel}/{schoolClass}/edit', [Admin\SchoolClassController::class, 'edit'])->name('school-classes.edit');
     Route::put('school-classes/{schoolLevel}/{schoolClass}', [Admin\SchoolClassController::class, 'update'])->name('school-classes.update');
     Route::delete('school-classes/{schoolLevel}/{schoolClass}', [Admin\SchoolClassController::class, 'destroy'])->name('school-classes.destroy');
+
+    Route::get('homeroom-assignments', [Admin\HomeroomAssignmentController::class, 'index'])->name('homeroom-assignments.index');
+    Route::post('homeroom-assignments', [Admin\HomeroomAssignmentController::class, 'store'])->name('homeroom-assignments.store');
+    Route::put('homeroom-assignments/{homeroomAssignment}', [Admin\HomeroomAssignmentController::class, 'update'])->name('homeroom-assignments.update');
+    Route::delete('homeroom-assignments/{homeroomAssignment}', [Admin\HomeroomAssignmentController::class, 'destroy'])->name('homeroom-assignments.destroy');
+    Route::post('homeroom-assignments/copy-previous', [Admin\HomeroomAssignmentController::class, 'copyPrevious'])->name('homeroom-assignments.copy-previous');
 
     // Attendance reports
     Route::get('attendances', [Admin\AttendanceController::class, 'index'])->name('attendances.index');

@@ -28,6 +28,7 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $data = $this->dashboard->for($user);
+        $homeroomAssignment = $user->activeHomeroomAssignment();
 
         return view('attendance.dashboard', [
             'todayAttendance' => $data->todayAttendance,
@@ -39,6 +40,9 @@ class DashboardController extends Controller
             'totalAttendance' => $data->monthlyTotal(),
             'announcements' => $data->announcements,
             'linkedAccounts' => $user->linkedAccounts()->with('office')->orderBy('name')->get(),
+            'homeroomAssignment' => $homeroomAssignment,
+            'homeroomStudentCount' => $homeroomAssignment?->schoolClass->students()->where('status', 'Aktif')->count() ?? 0,
+            'homeroomViolationCount' => $homeroomAssignment?->schoolClass->students()->whereHas('bkRecords', fn ($query) => $query->where('record_type', 'violation')->whereNull('archived_at'))->count() ?? 0,
         ]);
     }
 }

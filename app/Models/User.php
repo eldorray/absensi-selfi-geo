@@ -135,6 +135,20 @@ class User extends Authenticatable
         return $this->hasMany(BkRecord::class, 'counselor_id');
     }
 
+    public function homeroomAssignments(): HasMany
+    {
+        return $this->hasMany(HomeroomAssignment::class, 'teacher_id');
+    }
+
+    public function activeHomeroomAssignment(): ?HomeroomAssignment
+    {
+        $activeYear = AcademicYear::getActive();
+
+        return $activeYear
+            ? $this->homeroomAssignments()->with(['schoolClass', 'academicYear'])->where('academic_year_id', $activeYear->id)->first()
+            : null;
+    }
+
     /**
      * Get the office that the user belongs to.
      *

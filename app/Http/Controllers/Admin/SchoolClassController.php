@@ -7,9 +7,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreSchoolClassRequest;
 use App\Http\Requests\Admin\UpdateSchoolClassRequest;
+use App\Models\AcademicYear;
+use App\Models\HomeroomAssignment;
 use App\Models\SchoolClass;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class SchoolClassController extends Controller
@@ -41,15 +45,36 @@ class SchoolClassController extends Controller
     {
         $this->assertClassLevel($schoolLevel, $schoolClass);
 
-        return view('admin.school-classes.edit', ['schoolClass' => $schoolClass, 'schoolLevel' => $schoolLevel]);
+        $activeYear = AcademicYear::getActive();
+        $assignment = $activeYear ? $schoolClass->homeroomAssignments()->where('academic_year_id', $activeYear->id)->first() : null;
+        $teachers = User::query()
+            ->whereHas('role', fn ($query) => $query->where('slug', 'guru')->where('is_admin', false))
+            ->whereHas('office', fn ($query) => $query->where('school_level', $schoolLevel))
+            ->with('office')->orderBy('name')->get();
+
+        return view('admin.school-classes.edit', compact('schoolClass', 'schoolLevel', 'activeYear', 'assignment', 'teachers'));
     }
 
     public function update(UpdateSchoolClassRequest $request, string $schoolLevel, SchoolClass $schoolClass): RedirectResponse
     {
         $this->assertClassLevel($schoolLevel, $schoolClass);
-        $schoolClass->update([...$request->validated(), 'is_active' => $request->boolean('is_active')]);
+        $data = $request->validated();
+        $teacherId = $data['teacher_id'] ?? null;
+        unset($data['teacher_id']);
 
-        return to_route('admin.school-classes.index', $schoolLevel)->with('success', 'Kelas berhasil diperbarui.');
+        DB::transaction(function () use ($request, $schoolClass, $data, $teacherId): void {
+            $schoolClass->update([...$data, 'is_active' => $request->boolean('is_active')]);
+
+            $activeYear = AcademicYear::getActive();
+            if ($activeYear && $teacherId) {
+                HomeroomAssignment::query()->updateOrCreate(
+                    ['academic_year_id' => $activeYear->id, 'school_class_id' => $schoolClass->id],
+                    ['teacher_id' => $teacherId, 'assigned_by' => $request->user()->id],
+                );
+            }
+        });
+
+        return to_route('admin.school-classes.index', $schoolLevel)->with('success', 'Kelas dan wali kelas berhasil diperbarui.');
     }
 
     public function destroy(string $schoolLevel, SchoolClass $schoolClass): RedirectResponse

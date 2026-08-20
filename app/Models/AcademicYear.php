@@ -49,6 +49,11 @@ class AcademicYear extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function homeroomAssignments(): HasMany
+    {
+        return $this->hasMany(HomeroomAssignment::class);
+    }
+
     /**
      * Scope to get only the active academic year.
      */

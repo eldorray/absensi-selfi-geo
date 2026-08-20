@@ -839,6 +839,16 @@
                         </div>
                     </div>
 
+                    @if ($homeroomAssignment)
+                        <a href="{{ route('attendance.my-class.index') }}" class="solid-panel block rounded-[22px] p-4 text-left">
+                            <div class="flex items-center justify-between gap-3">
+                                <div><p class="text-[9px] font-bold uppercase tracking-wider theme-text-muted">Kelas Wali · {{ $homeroomAssignment->academicYear->name }}</p><h3 class="mt-1 text-base font-black theme-text-main">{{ $homeroomAssignment->schoolClass->name }}</h3></div>
+                                <span class="grid h-10 w-10 place-items-center rounded-xl bg-green-500/15 text-green-600"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5-3M9 20H4v-2a3 3 0 015-3m8-8a3 3 0 11-6 0 3 3 0 016 0z" /></svg></span>
+                            </div>
+                            <div class="mt-3 grid grid-cols-2 gap-2"><div class="rounded-xl border theme-border p-2"><p class="text-[8px] uppercase theme-text-muted">Siswa aktif</p><p class="text-lg font-black theme-text-main">{{ $homeroomStudentCount }}</p></div><div class="rounded-xl border theme-border p-2"><p class="text-[8px] uppercase theme-text-muted">Siswa dengan pelanggaran</p><p class="text-lg font-black theme-text-main">{{ $homeroomViolationCount }}</p></div></div>
+                        </a>
+                    @endif
+
                     <!-- Menu Utama -->
                     <div class="animate-stagger stagger-120 text-left">
                         <h3 class="font-black text-xs theme-text-main font-display uppercase tracking-wider mb-3">Menu Utama</h3>
