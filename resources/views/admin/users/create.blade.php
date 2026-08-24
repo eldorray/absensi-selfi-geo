@@ -89,7 +89,11 @@
                     @enderror
                 </div>
 
-                <label class="flex items-center gap-3"><input type="checkbox" name="is_bk_counselor" value="1" class="admin-checkbox" @checked(old('is_bk_counselor'))><span class="admin-label mb-0">Berikan akses Guru BK</span></label>
+                <div class="grid gap-3 rounded-2xl bg-emerald-50 p-4 dark:bg-emerald-950/30 sm:grid-cols-2">
+                    <label class="flex items-center gap-3"><input type="checkbox" name="is_bk_counselor" value="1" class="admin-checkbox" @checked(old('is_bk_counselor'))><span class="admin-label mb-0">Berikan akses Guru BK</span></label>
+                    <label class="flex items-center gap-3"><input type="checkbox" name="is_student_affairs_officer" value="1" class="admin-checkbox" @checked(old('is_student_affairs_officer'))><span class="admin-label mb-0">Berikan akses Petugas Kesiswaan</span></label>
+                    <p class="admin-hint sm:col-span-2">Kedua capability berdiri sendiri. Jenjang akses mengikuti mapping kantor guru.</p>
+                </div>
 
                 <!-- Submit -->
                 <div class="flex items-center justify-end gap-3 pt-2">

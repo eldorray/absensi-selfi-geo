@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Student;
 use App\Models\User;
 use App\Services\EmployeeDashboardData;
 use Carbon\Carbon;
@@ -69,6 +70,59 @@ class DashboardResource extends JsonResource
                 'total' => $this->resource->monthlyTotal(),
             ],
             'announcements' => AnnouncementResource::collection($this->resource->announcements),
+            // Kapabilitas menentukan menu mana yang dirender klien native. Dikirim
+            // dari server — bukan disimpulkan klien dari peran — supaya pencabutan
+            // wewenang oleh admin langsung berlaku tanpa rilis aplikasi baru.
+            'capabilities' => $this->capabilities(),
+            'homeroom' => $this->homeroom(),
+        ];
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    private function capabilities(): array
+    {
+        $level = $this->user->office?->school_level;
+        $scoped = in_array($level, Student::LEVELS, true);
+
+        return [
+            'is_admin' => $this->user->isAdmin(),
+            'can_access_bk' => $this->user->canAccessBk(),
+            'is_bk_counselor' => (bool) $this->user->is_bk_counselor && $scoped,
+            'is_student_affairs_officer' => (bool) $this->user->is_student_affairs_officer && $scoped,
+            'is_homeroom_teacher' => $this->user->activeHomeroomAssignment() !== null,
+            'can_approve_leave' => ($this->user->role->is_admin ?? false)
+                || $this->user->role?->slug === 'kepala-sekolah',
+        ];
+    }
+
+    /**
+     * Ringkasan kartu "Kelas Wali" di beranda, atau null bila tak ada penugasan.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function homeroom(): ?array
+    {
+        $assignment = $this->user->activeHomeroomAssignment();
+
+        if ($assignment === null) {
+            return null;
+        }
+
+        $students = Student::query()
+            ->where('school_class_id', $assignment->school_class_id)
+            ->where('status', 'Aktif');
+
+        return [
+            'class_name' => $assignment->schoolClass?->name,
+            'academic_year' => $assignment->academicYear?->name,
+            'student_count' => (clone $students)->count(),
+            'students_with_violations' => (clone $students)
+                ->whereHas('bkRecords', fn ($query) => $query
+                    ->where('record_type', 'violation')
+                    ->whereNull('archived_at'))
+                ->count(),
         ];
     }
 

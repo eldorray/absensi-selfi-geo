@@ -10,9 +10,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Leave Model - Represents leave/permission requests.
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $type
+ * @property ?\Illuminate\Support\Carbon $start_date
+ * @property ?\Illuminate\Support\Carbon $end_date
+ * @property string $reason
+ * @property ?string $attachment
+ * @property string $status
+ * @property ?int $approved_by
+ * @property ?\Illuminate\Support\Carbon $approved_at
+ * @property ?string $rejection_reason
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property-read ?User $user
+ * @property-read ?User $approver
+ * @property-read string $type_label
+ * @property-read string $status_label
+ * @property-read ?string $attachment_url
+ * @property-read int $duration
  */
 class Leave extends Model
 {
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
 
     protected $fillable = [
@@ -36,6 +56,8 @@ class Leave extends Model
 
     /**
      * Get the user who requested the leave.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -44,6 +66,8 @@ class Leave extends Model
 
     /**
      * Get the user who approved/rejected the leave.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function approver(): BelongsTo
     {
@@ -147,8 +171,11 @@ class Leave extends Model
 
     /**
      * Scope to get pending leaves.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<Leave>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<Leave>
      */
-    public function scopePending($query)
+    public function scopePending(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('status', 'pending');
     }

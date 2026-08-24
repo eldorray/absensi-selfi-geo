@@ -23,6 +23,7 @@ class StoreBkRecordRequest extends FormRequest
 
         return [
             'student_id' => ['required', Rule::exists('students', 'id')->where('school_level', $this->user()?->office?->school_level)],
+            'student_referral_id' => ['nullable', 'integer', 'unique:bk_records,student_referral_id'],
             'related_student_ids' => ['sometimes', 'array'],
             'related_student_ids.*' => ['integer', 'distinct', 'different:student_id', Rule::exists('students', 'id')->where('school_level', $this->user()?->office?->school_level)],
             'record_type' => ['required', Rule::in(BkRecord::TYPES)],
@@ -46,6 +47,7 @@ class StoreBkRecordRequest extends FormRequest
     {
         return [
             'student_id' => 'siswa utama',
+            'student_referral_id' => 'rujukan siswa',
             'related_student_ids' => 'siswa terkait',
             'related_student_ids.*' => 'siswa terkait',
             'record_type' => 'jenis catatan',
@@ -70,6 +72,7 @@ class StoreBkRecordRequest extends FormRequest
         return [
             'student_id.required' => 'Siswa utama wajib dipilih.',
             'student_id.exists' => 'Siswa utama tidak tersedia pada unit Anda.',
+            'student_referral_id.unique' => 'Rujukan sudah memiliki Catatan BK.',
             'related_student_ids.array' => 'Daftar siswa terkait tidak valid.',
             'related_student_ids.*.exists' => 'Siswa terkait tidak tersedia pada unit Anda.',
             'related_student_ids.*.distinct' => 'Siswa terkait tidak boleh dipilih lebih dari sekali.',

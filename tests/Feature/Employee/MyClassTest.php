@@ -81,5 +81,9 @@ test('homeroom teacher sees violations but never counseling records', function (
     BkRecord::create(['counselor_id' => $counselor->id, 'student_id' => $student->id, 'school_level' => 'mi', 'record_type' => 'counseling', 'occurred_at' => now(), 'counseling_content' => 'Rahasia konseling', 'counseling_result' => 'Rahasia hasil', 'status' => 'new']);
 
     $this->actingAs($teacher)->get(route('attendance.my-class.show', $student))
-        ->assertSuccessful()->assertSee('Pelanggaran terlihat')->assertDontSee('Rahasia konseling')->assertDontSee('Rahasia hasil');
+        ->assertSuccessful()
+        ->assertDontSee('Pelanggaran terlihat')
+        ->assertDontSee('Rahasia konseling')
+        ->assertDontSee('Rahasia hasil')
+        ->assertSee('Status: new');
 });

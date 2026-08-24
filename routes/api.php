@@ -8,9 +8,14 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BkController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\HistoryController;
+use App\Http\Controllers\Api\KesiswaanController;
+use App\Http\Controllers\Api\LeaveApprovalController;
 use App\Http\Controllers\Api\LeaveController;
+use App\Http\Controllers\Api\MyClassController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\StudentReferralController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +46,56 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('leaves', [LeaveController::class, 'index'])->name('api.leaves.index');
     Route::post('leaves', [LeaveController::class, 'store'])->name('api.leaves.store');
     Route::get('leaves/{leave}', [LeaveController::class, 'show'])->name('api.leaves.show');
+
+    /*
+     * Persetujuan perizinan — Admin / Kepala Sekolah.
+     *
+     * Prefix `approval` sengaja dipisah dari `leaves` milik pemohon: satu segmen
+     * URL yang berbeda membuat middleware penyetuju mustahil bocor ke jalur
+     * pengajuan pribadi.
+     */
+    Route::middleware('can-approve-leave')->prefix('approval')->name('api.approval.')->group(function (): void {
+        Route::get('leaves', [LeaveApprovalController::class, 'index'])->name('leaves.index');
+        Route::get('leaves/{leave}', [LeaveApprovalController::class, 'show'])->name('leaves.show');
+        Route::post('leaves/{leave}/approve', [LeaveApprovalController::class, 'approve'])->name('leaves.approve');
+        Route::post('leaves/{leave}/reject', [LeaveApprovalController::class, 'reject'])->name('leaves.reject');
+    });
+
+    /*
+     * Kelas Saya — wali kelas dengan penugasan aktif.
+     */
+    Route::middleware('homeroom')->prefix('my-class')->name('api.my-class.')->group(function (): void {
+        Route::get('/', [MyClassController::class, 'index'])->name('index');
+        Route::get('students/{student}', [MyClassController::class, 'show'])->name('show');
+        Route::get('students/{student}/bk-summary', [MyClassController::class, 'bkSummary'])->name('bk-summary');
+        Route::post('students/{student}/referrals', [StudentReferralController::class, 'store'])->name('referrals.store');
+    });
+
+    /*
+     * Kesiswaan + rujukan.
+     *
+     * Hanya direktori siswa yang dijaga `student-affairs`; rujukan punya aturan
+     * kelayakannya sendiri (wali kelas untuk `mine`, Guru BK untuk `queue`,
+     * policy untuk baris tunggal) sehingga tidak boleh ikut middleware itu.
+     */
+    Route::prefix('kesiswaan')->name('api.kesiswaan.')->group(function (): void {
+        Route::middleware('student-affairs')->group(function (): void {
+            Route::get('students', [KesiswaanController::class, 'index'])->name('students.index');
+            Route::get('students/{student}', [KesiswaanController::class, 'show'])->name('students.show');
+        });
+
+        Route::get('referrals/meta', [StudentReferralController::class, 'meta'])->name('referrals.meta');
+        Route::get('referrals/mine', [StudentReferralController::class, 'mine'])->name('referrals.mine');
+        Route::get('referrals/queue', [StudentReferralController::class, 'queue'])->name('referrals.queue');
+        Route::get('referrals/{referral}', [StudentReferralController::class, 'show'])->name('referrals.show');
+        Route::post('referrals/{referral}/claim', [StudentReferralController::class, 'claim'])->name('referrals.claim');
+        Route::match(['put', 'patch'], 'referrals/{referral}/transition', [StudentReferralController::class, 'transition'])->name('referrals.transition');
+        Route::get('referrals/{referral}/attachments/{attachment}', [StudentReferralController::class, 'attachment'])->name('referrals.attachments.download');
+
+        Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+        Route::post('notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    });
 
     Route::middleware('bk')->prefix('bk')->name('api.bk.')->group(function (): void {
         Route::get('meta', [BkController::class, 'meta'])->name('meta');

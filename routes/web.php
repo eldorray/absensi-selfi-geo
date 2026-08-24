@@ -72,7 +72,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('attendance/dashboard', [Employee\DashboardController::class, 'index'])->name('attendance.dashboard');
     Route::get('attendance/my-class', [Employee\MyClassController::class, 'index'])->name('attendance.my-class.index');
     Route::get('attendance/my-class/students/{student}', [Employee\MyClassController::class, 'show'])->name('attendance.my-class.show');
-    Route::get('attendance/my-class/violations/{record}', [Employee\MyClassController::class, 'violation'])->name('attendance.my-class.violations.show');
+    Route::middleware('student-affairs')->group(function () {
+        Route::get('attendance/kesiswaan', [Employee\KesiswaanController::class, 'index'])->name('attendance.kesiswaan.index');
+        Route::get('attendance/kesiswaan/students/{student}', [Employee\KesiswaanController::class, 'show'])->name('attendance.kesiswaan.show');
+    });
+    Route::get('attendance/referrals/mine', [Employee\MyReferralController::class, 'index'])->name('attendance.referrals.mine');
+    Route::get('attendance/referrals/queue', [Employee\ReferralQueueController::class, 'index'])->name('attendance.referrals.queue');
+    Route::get('attendance/kesiswaan/students/{student}/referrals/create', [Employee\StudentReferralController::class, 'create'])->name('attendance.kesiswaan.referrals.create');
+    Route::post('attendance/kesiswaan/students/{student}/referrals', [Employee\StudentReferralController::class, 'store'])->name('attendance.kesiswaan.referrals.store');
+    Route::get('attendance/kesiswaan/referrals/{referral}', [Employee\StudentReferralController::class, 'show'])->name('attendance.kesiswaan.referrals.show');
+    Route::post('attendance/kesiswaan/referrals/{referral}/claim', [Employee\StudentReferralController::class, 'claim'])->name('attendance.kesiswaan.referrals.claim');
+    Route::patch('attendance/kesiswaan/referrals/{referral}/transition', [Employee\StudentReferralController::class, 'transition'])->name('attendance.kesiswaan.referrals.transition');
+    Route::get('attendance/kesiswaan/referrals/{referral}/attachments/{attachment}', [Employee\StudentReferralController::class, 'attachment'])->name('attendance.kesiswaan.referrals.attachments.show');
+    Route::get('attendance/kesiswaan/notifications', [Employee\NotificationController::class, 'index'])->name('attendance.kesiswaan.notifications.index');
+    Route::get('attendance/kesiswaan/notifications/{notification}', [Employee\NotificationController::class, 'show'])->name('attendance.kesiswaan.notifications.show');
+    Route::patch('attendance/kesiswaan/notifications', [Employee\NotificationController::class, 'readAll'])->name('attendance.kesiswaan.notifications.read-all');
 
     // Fast, password-less account switching (linked, non-admin accounts only)
     Route::post('account/switch', [AccountSwitchController::class, 'store'])
@@ -135,6 +149,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Office management
     Route::resource('offices', Admin\OfficeController::class)->except(['show']);
+
+    // Read-only Kesiswaan
+    Route::get('kesiswaan', [Admin\KesiswaanController::class, 'index'])->name('kesiswaan.index');
+    Route::get('kesiswaan/students/{student}', [Admin\KesiswaanController::class, 'show'])->name('kesiswaan.show');
+    Route::get('kesiswaan/referrals/{referral}', [Admin\KesiswaanController::class, 'referral'])->name('kesiswaan.referrals.show');
+    Route::get('kesiswaan/referrals/{referral}/attachments/{attachment}', [Admin\KesiswaanController::class, 'attachment'])->name('kesiswaan.referrals.attachments.show');
 
     // Student and class management
     Route::get('students/{schoolLevel}', [Admin\StudentController::class, 'index'])->name('students.index');

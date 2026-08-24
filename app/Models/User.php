@@ -18,9 +18,14 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $email
  * @property ?string $phone
  * @property ?int $office_id
+ * @property ?int $role_id
+ * @property bool $is_bk_counselor
+ * @property bool $is_student_affairs_officer
  * @property-read ?string $nip
  * @property-read ?string $nik
  * @property-read ?string $avatar_url
+ * @property-read ?Role $role
+ * @property-read ?Office $office
  */
 class User extends Authenticatable
 {
@@ -41,6 +46,7 @@ class User extends Authenticatable
         'office_id',
         'role_id',
         'is_bk_counselor',
+        'is_student_affairs_officer',
         'avatar_path',
         'nip',
         'nik',
@@ -69,6 +75,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'visible_password' => 'encrypted',
             'is_bk_counselor' => 'boolean',
+            'is_student_affairs_officer' => 'boolean',
         ];
     }
 
@@ -102,6 +109,8 @@ class User extends Authenticatable
 
     /**
      * Get the role that the user belongs to.
+     *
+     * @return BelongsTo<Role, $this>
      */
     public function role(): BelongsTo
     {
@@ -130,14 +139,36 @@ class User extends Authenticatable
             || ($this->is_bk_counselor && in_array($this->office?->school_level, ['mi', 'smp'], true));
     }
 
+    /**
+     * @return HasMany<BkRecord, $this>
+     */
     public function bkRecords(): HasMany
     {
         return $this->hasMany(BkRecord::class, 'counselor_id');
     }
 
+    /**
+     * @return HasMany<HomeroomAssignment, $this>
+     */
     public function homeroomAssignments(): HasMany
     {
         return $this->hasMany(HomeroomAssignment::class, 'teacher_id');
+    }
+
+    /**
+     * @return HasMany<StudentReferral, $this>
+     */
+    public function createdReferrals(): HasMany
+    {
+        return $this->hasMany(StudentReferral::class, 'created_by');
+    }
+
+    /**
+     * @return HasMany<StudentReferral, $this>
+     */
+    public function assignedReferrals(): HasMany
+    {
+        return $this->hasMany(StudentReferral::class, 'assigned_counselor_id');
     }
 
     public function activeHomeroomAssignment(): ?HomeroomAssignment
@@ -161,6 +192,8 @@ class User extends Authenticatable
 
     /**
      * Get all attendance records for this user.
+     *
+     * @return HasMany<Attendance, $this>
      */
     public function attendances(): HasMany
     {
@@ -169,6 +202,8 @@ class User extends Authenticatable
 
     /**
      * Get all work schedules for this user.
+     *
+     * @return HasMany<WorkSchedule, $this>
      */
     public function workSchedules(): HasMany
     {

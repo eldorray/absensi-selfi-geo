@@ -15,6 +15,8 @@
                                 <!-- Admin Menu -->
                                 <x-layouts.sidebar-link href="{{ route('admin.dashboard') }}" icon='fas-house'
                                     :active="request()->routeIs('admin.dashboard')">Dashboard</x-layouts.sidebar-link>
+                                <x-layouts.sidebar-link href="{{ route('admin.kesiswaan.index') }}" icon='fas-user-graduate'
+                                    :active="request()->routeIs('admin.kesiswaan.*')">Kesiswaan</x-layouts.sidebar-link>
 
                                 @php
                                     $masterActive = request()->routeIs('admin.academic-years.*', 'admin.offices.*', 'admin.users.*', 'admin.roles.*', 'admin.work-schedules.*');
@@ -84,6 +86,18 @@
                                 @if (auth()->user()->activeHomeroomAssignment())
                                     <x-layouts.sidebar-link href="{{ route('attendance.my-class.index') }}" icon='fas-user-graduate'
                                         :active="request()->routeIs('attendance.my-class.*')">Kelas Saya</x-layouts.sidebar-link>
+                                @endif
+                                @if (auth()->user()->activeHomeroomAssignment())
+                                    <x-layouts.sidebar-link href="{{ route('attendance.referrals.mine') }}" icon='fas-paper-plane'
+                                        :active="request()->routeIs('attendance.referrals.mine')">Rujukan Saya</x-layouts.sidebar-link>
+                                @endif
+                                @if (auth()->user()->is_bk_counselor && in_array(auth()->user()->office?->school_level, ['mi', 'smp'], true))
+                                    <x-layouts.sidebar-link href="{{ route('attendance.referrals.queue') }}" icon='fas-inbox'
+                                        :active="request()->routeIs('attendance.referrals.queue')">Antrean Rujukan</x-layouts.sidebar-link>
+                                @endif
+                                @if (auth()->user()->is_student_affairs_officer && in_array(auth()->user()->office?->school_level, ['mi', 'smp'], true))
+                                    <x-layouts.sidebar-link href="{{ route('attendance.kesiswaan.index') }}" icon='fas-users'
+                                        :active="request()->routeIs('attendance.kesiswaan.*')">Kesiswaan @if(auth()->user()->unreadNotifications()->where('type','like','%StudentReferral%')->count()) ({{ auth()->user()->unreadNotifications()->where('type','like','%StudentReferral%')->count() }}) @endif</x-layouts.sidebar-link>
                                 @endif
                             @endif
                         </ul>

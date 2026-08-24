@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
-use App\Models\BkRecord;
 use App\Models\HomeroomAssignment;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -32,15 +31,6 @@ class MyClassController extends Controller
         $violations = $student->bkRecords()->where('record_type', 'violation')->whereNull('archived_at')->with('category')->latest('occurred_at')->get();
 
         return view('attendance.my-class.show', compact('assignment', 'student', 'violations'));
-    }
-
-    public function violation(Request $request, BkRecord $record): View
-    {
-        $assignment = $this->assignment($request);
-        abort_unless($record->record_type === 'violation' && $record->student?->school_class_id === $assignment->school_class_id, 403);
-        $record->load(['student', 'category', 'counselor']);
-
-        return view('attendance.my-class.violation', compact('assignment', 'record'));
     }
 
     private function assignment(Request $request): HomeroomAssignment

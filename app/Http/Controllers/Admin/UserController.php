@@ -134,6 +134,7 @@ class UserController extends Controller
             'role_id' => 'required|exists:roles,id',
             'office_id' => 'nullable|exists:offices,id',
             'is_bk_counselor' => ['boolean'],
+            'is_student_affairs_officer' => ['boolean'],
         ], [
             'name.required' => 'Nama wajib diisi.',
             'email.required' => 'Email wajib diisi.',
@@ -152,6 +153,7 @@ class UserController extends Controller
             'role_id' => $validated['role_id'],
             'office_id' => $validated['office_id'] ?? null,
             'is_bk_counselor' => $request->boolean('is_bk_counselor'),
+            'is_student_affairs_officer' => $request->boolean('is_student_affairs_officer'),
         ]);
 
         return redirect()
@@ -249,6 +251,7 @@ class UserController extends Controller
             'role_id' => 'required|exists:roles,id',
             'office_id' => 'nullable|exists:offices,id',
             'is_bk_counselor' => ['boolean'],
+            'is_student_affairs_officer' => ['boolean'],
             'linked_accounts' => ['array'],
             'linked_accounts.*' => [
                 'integer',
@@ -268,6 +271,7 @@ class UserController extends Controller
             'role_id' => $validated['role_id'],
             'office_id' => $validated['office_id'] ?? null,
             'is_bk_counselor' => $request->boolean('is_bk_counselor'),
+            'is_student_affairs_officer' => $request->boolean('is_student_affairs_officer'),
         ]);
 
         // Update password if provided

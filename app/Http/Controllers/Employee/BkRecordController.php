@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateBkRecordRequest;
 use App\Models\BkAttachment;
 use App\Models\BkRecord;
 use App\Models\Student;
+use App\Models\StudentReferral;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -35,8 +36,15 @@ class BkRecordController extends Controller
         $students = Student::query()->where('school_level', $request->user()->office->school_level)->orderBy('nama_lengkap')->get();
         $categories = \App\Models\BkCategory::query()->where('is_active', true)->orderBy('sort_order')->get();
         $record = new BkRecord;
+        $referral = null;
+        if ($request->filled('referral')) {
+            $referral = StudentReferral::query()->with('student')->whereKey($request->integer('referral'))->where('status', 'in_handling')->where('assigned_counselor_id', $request->user()->id)->firstOrFail();
+            abort_if($referral->bkRecord()->exists(), 409, 'Rujukan sudah memiliki Catatan BK.');
+            $record->student_id = $referral->student_id;
+            $record->student_referral_id = $referral->id;
+        }
 
-        return view('attendance.bk.form', compact('record', 'students', 'categories'));
+        return view('attendance.bk.form', compact('record', 'students', 'categories', 'referral'));
     }
 
     public function show(BkRecord $record): View
@@ -60,6 +68,12 @@ class BkRecordController extends Controller
     {
         $record = DB::transaction(function () use ($request): BkRecord {
             $data = Arr::except($request->validated(), ['related_student_ids', 'attachments']);
+            if ($request->filled('student_referral_id')) {
+                $referral = StudentReferral::query()->lockForUpdate()->whereKey($request->integer('student_referral_id'))->where('status', 'in_handling')->where('assigned_counselor_id', $request->user()->id)->firstOrFail();
+                abort_if($referral->bkRecord()->exists(), 409, 'Rujukan sudah memiliki Catatan BK.');
+                $data['student_id'] = $referral->student_id;
+                $data['student_referral_id'] = $referral->id;
+            }
             $data['counselor_id'] = $request->user()->id;
             $data['school_level'] = $request->user()->office->school_level;
             $data['status_updated_at'] = now();
