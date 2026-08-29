@@ -84,11 +84,22 @@ class StudentSyncService
                 $attributes['school_level'] = $schoolLevel;
                 $attributes['school_class_id'] = $schoolClass?->id;
                 $attributes['source'] = 'api';
-                $attributes['external_id'] = $this->nullableString($row['id'] ?? null);
+                $externalId = $this->nullableString($row['id'] ?? null);
+                $attributes['external_id'] = $externalId;
                 $attributes['nisn'] = $nisn;
                 $attributes['nik'] = $nik;
                 $attributes['tingkat_rombel'] = $className;
                 $attributes['last_synced_at'] = now();
+
+                // ponytail: external_id data induk bisa dipakai ulang setelah import ulang
+                // di sana, jadi lepas pemegang lama sebelum klaim. Identitas asli tetap nisn/nik.
+                if ($externalId !== null) {
+                    Student::query()
+                        ->where('school_level', $schoolLevel)
+                        ->where('external_id', $externalId)
+                        ->when($student !== null, fn ($query) => $query->whereKeyNot($student->getKey()))
+                        ->update(['external_id' => null]);
+                }
 
                 if ($student === null) {
                     Student::query()->create($attributes);

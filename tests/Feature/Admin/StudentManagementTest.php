@@ -124,6 +124,21 @@ test('sync skips rows without identifiers and rejects malformed responses atomic
     expect(Student::count())->toBe(0);
 });
 
+test('sync reassigns an external_id already held by a different student', function () {
+    $stale = Student::factory()->create([
+        'school_level' => 'smp', 'external_id' => '7', 'nisn' => '9999999999', 'nama_lengkap' => 'Siswa Lama',
+    ]);
+
+    Http::fake(['*/api/siswa-smp/all' => Http::response(['success' => true, 'data' => [
+        ['id' => 7, 'nisn' => '1234512345', 'nama_lengkap' => 'Siswa Baru'],
+    ]])]);
+
+    expect(app(StudentSyncService::class)->sync('smp'))
+        ->toMatchArray(['created' => 1, 'updated' => 0, 'skipped' => 0])
+        ->and($stale->fresh()->external_id)->toBeNull()
+        ->and(Student::query()->where('nisn', '1234512345')->value('external_id'))->toBe('7');
+});
+
 test('admin sidebar contains four separate student navigation entries', function () {
     $this->actingAs(studentAdmin())->get(route('admin.dashboard'))->assertSuccessful()
         ->assertSee('Data Siswa MI')->assertSee('Data Siswa SMP')->assertSee('Kelas MI')->assertSee('Kelas SMP');
