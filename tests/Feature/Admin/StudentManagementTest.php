@@ -70,6 +70,24 @@ test('class names are normalized per level and classes with students cannot be d
     expect($class->fresh())->not->toBeNull();
 });
 
+test('student list honours the per page filter and falls back to the default', function () {
+    Student::factory()->count(12)->create(['school_level' => 'mi']);
+    $admin = studentAdmin();
+
+    $this->actingAs($admin)->get(route('admin.students.index', ['schoolLevel' => 'mi', 'per_page' => 10]))
+        ->assertSuccessful()
+        ->assertViewHas('students', fn ($students) => $students->perPage() === 10 && $students->count() === 10);
+
+    $this->actingAs($admin)->get(route('admin.students.index', ['schoolLevel' => 'mi', 'per_page' => 'semua']))
+        ->assertSuccessful()
+        ->assertViewHas('students', fn ($students) => $students->count() === 12 && ! $students->hasPages());
+
+    // Nilai di luar allowlist tidak boleh menentukan ukuran halaman.
+    $this->actingAs($admin)->get(route('admin.students.index', ['schoolLevel' => 'mi', 'per_page' => '999999']))
+        ->assertSuccessful()
+        ->assertViewHas('students', fn ($students) => $students->perPage() === 25);
+});
+
 test('bulk delete removes selected students of that level only', function () {
     $a = Student::factory()->create(['school_level' => 'smp', 'nisn' => '3333333333']);
     $b = Student::factory()->create(['school_level' => 'smp', 'nisn' => '4444444444']);

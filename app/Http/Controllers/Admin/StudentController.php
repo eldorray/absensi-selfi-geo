@@ -19,15 +19,20 @@ use RuntimeException;
 
 class StudentController extends Controller
 {
+    /** Nilai yang boleh dipakai pada query string per_page; 'semua' menampilkan seluruh baris. */
+    private const PER_PAGE_OPTIONS = ['10', '25', '100', 'semua'];
+
+    private const DEFAULT_PER_PAGE = '25';
+
     public function index(Request $request, string $schoolLevel): View
     {
         $this->assertLevel($schoolLevel);
         $students = Student::query()->with('schoolClass')->where('school_level', $schoolLevel)
             ->when($request->filled('search'), fn ($query) => $query->where(fn ($nested) => $nested->where('nama_lengkap', 'like', '%'.$request->string('search').'%')->orWhere('nisn', 'like', '%'.$request->string('search').'%')->orWhere('nik', 'like', '%'.$request->string('search').'%')))
             ->when($request->filled('school_class_id'), fn ($query) => $query->where('school_class_id', $request->integer('school_class_id')))
-            ->orderBy('nama_lengkap')->paginate(15)->withQueryString();
+            ->orderBy('nama_lengkap')->paginate($this->perPage($request))->withQueryString();
 
-        return view('admin.students.index', ['students' => $students, 'classes' => $this->classes($schoolLevel), 'schoolLevel' => $schoolLevel]);
+        return view('admin.students.index', ['students' => $students, 'classes' => $this->classes($schoolLevel), 'schoolLevel' => $schoolLevel, 'perPageOptions' => self::PER_PAGE_OPTIONS, 'perPage' => $request->input('per_page', self::DEFAULT_PER_PAGE)]);
     }
 
     public function create(string $schoolLevel): View
@@ -108,6 +113,16 @@ class StudentController extends Controller
         }
 
         return back()->with('success', "Sinkronisasi selesai: {$result['created']} dibuat, {$result['updated']} diperbarui, {$result['skipped']} dilewati.");
+    }
+
+    private function perPage(Request $request): int
+    {
+        $requested = (string) $request->input('per_page', self::DEFAULT_PER_PAGE);
+        $requested = in_array($requested, self::PER_PAGE_OPTIONS, true) ? $requested : self::DEFAULT_PER_PAGE;
+
+        // ponytail: 'semua' cukup dipetakan ke perPage besar, tidak perlu cabang
+        // non-paginated tersendiri. Naikkan bila satu jenjang bisa lebih dari 100k siswa.
+        return $requested === 'semua' ? 100000 : (int) $requested;
     }
 
     private function classes(string $level)
