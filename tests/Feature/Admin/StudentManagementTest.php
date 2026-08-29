@@ -88,6 +88,17 @@ test('student list honours the per page filter and falls back to the default', f
         ->assertViewHas('students', fn ($students) => $students->perPage() === 25);
 });
 
+test('deleting a student locked by a bk record reports an error instead of a 500', function () {
+    $student = Student::factory()->create(['school_level' => 'smp', 'nisn' => '1010101010']);
+    BkRecord::factory()->create(['student_id' => $student->id, 'school_level' => 'smp']);
+
+    $this->actingAs(studentAdmin())
+        ->delete(route('admin.students.destroy', ['smp', $student]))
+        ->assertSessionHas('error', 'Siswa tidak dapat dihapus karena masih punya catatan BK atau rujukan.');
+
+    expect(Student::query()->whereKey($student->id)->exists())->toBeTrue();
+});
+
 test('bulk delete removes selected students of that level only', function () {
     $a = Student::factory()->create(['school_level' => 'smp', 'nisn' => '3333333333']);
     $b = Student::factory()->create(['school_level' => 'smp', 'nisn' => '4444444444']);

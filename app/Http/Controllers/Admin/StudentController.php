@@ -68,6 +68,11 @@ class StudentController extends Controller
     public function destroy(string $schoolLevel, Student $student): RedirectResponse
     {
         $this->assertStudentLevel($schoolLevel, $student);
+
+        if ($this->isLockedByRelations($student)) {
+            return back()->with('error', 'Siswa tidak dapat dihapus karena masih punya catatan BK atau rujukan.');
+        }
+
         $student->delete();
 
         return to_route('admin.students.index', $schoolLevel)->with('success', 'Data siswa berhasil dihapus.');
@@ -84,7 +89,7 @@ class StudentController extends Controller
         // Siswa yang punya catatan BK atau rujukan ditahan oleh foreign key
         // restrict; lewati supaya satu baris terkunci tidak menggagalkan seluruh batch.
         $students = Student::query()->where('school_level', $schoolLevel)->whereIn('id', $ids)->get();
-        $deletable = $students->reject(fn (Student $student) => $student->bkRecords()->exists() || $student->referrals()->exists());
+        $deletable = $students->reject(fn (Student $student) => $this->isLockedByRelations($student));
         $blocked = $students->count() - $deletable->count();
 
         Student::query()->whereIn('id', $deletable->modelKeys())->delete();
@@ -113,6 +118,15 @@ class StudentController extends Controller
         }
 
         return back()->with('success', "Sinkronisasi selesai: {$result['created']} dibuat, {$result['updated']} diperbarui, {$result['skipped']} dilewati.");
+    }
+
+    /**
+     * bk_records dan student_referrals memakai foreign key restrict, jadi hapus
+     * siswa seperti ini melempar QueryException (SQLSTATE 23000), bukan error validasi.
+     */
+    private function isLockedByRelations(Student $student): bool
+    {
+        return $student->bkRecords()->exists() || $student->referrals()->exists();
     }
 
     private function perPage(Request $request): int
