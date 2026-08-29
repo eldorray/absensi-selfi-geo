@@ -1,12 +1,29 @@
 <?php
 
+use App\Models\AcademicYear;
 use App\Models\BkRecord;
+use App\Models\HomeroomAssignment;
 use App\Models\Role;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\User;
 use App\Services\StudentSyncService;
 use Illuminate\Support\Facades\Http;
+
+function homeroomFor(SchoolClass $class): HomeroomAssignment
+{
+    // Repo ini belum punya AcademicYearFactory, jadi bangun barisnya langsung.
+    $year = AcademicYear::query()->firstOrCreate(
+        ['name' => '2026/2027'],
+        ['start_date' => '2026-07-01', 'end_date' => '2027-06-30', 'is_active' => true],
+    );
+
+    return HomeroomAssignment::query()->create([
+        'academic_year_id' => $year->id,
+        'school_class_id' => $class->id,
+        'teacher_id' => User::factory()->create()->id,
+    ]);
+}
 
 function studentAdmin(): User
 {
@@ -137,6 +154,53 @@ test('bulk delete requires at least one id', function () {
     $this->actingAs(studentAdmin())
         ->delete(route('admin.students.bulk-destroy', 'smp'), ['ids' => []])
         ->assertSessionHasErrors('ids');
+});
+
+test('bulk delete removes selected classes of that level only', function () {
+    $a = SchoolClass::factory()->create(['school_level' => 'smp', 'name' => '7 A']);
+    $b = SchoolClass::factory()->create(['school_level' => 'smp', 'name' => '7 B']);
+    $keep = SchoolClass::factory()->create(['school_level' => 'smp', 'name' => '7 C']);
+    $otherLevel = SchoolClass::factory()->create(['school_level' => 'mi', 'name' => '4 A']);
+    $admin = studentAdmin();
+
+    $this->actingAs($admin)->get(route('admin.school-classes.index', 'smp'))
+        ->assertSee('name="ids[]" value="'.$a->id.'"', false)
+        ->assertSee('id="bulk-delete-form"', false)
+        ->assertSee('Hapus Terpilih');
+
+    $this->actingAs($admin)
+        ->delete(route('admin.school-classes.bulk-destroy', 'smp'), ['ids' => [$a->id, $b->id, $otherLevel->id]])
+        ->assertRedirect(route('admin.school-classes.index', 'smp'));
+
+    expect(SchoolClass::query()->pluck('id')->all())
+        ->toEqualCanonicalizing([$keep->id, $otherLevel->id]);
+});
+
+test('bulk delete skips classes that still have students or a homeroom teacher', function () {
+    $withStudent = SchoolClass::factory()->create(['school_level' => 'smp', 'name' => '8 A']);
+    $withHomeroom = SchoolClass::factory()->create(['school_level' => 'smp', 'name' => '8 B']);
+    $free = SchoolClass::factory()->create(['school_level' => 'smp', 'name' => '8 C']);
+    Student::factory()->create(['school_level' => 'smp', 'school_class_id' => $withStudent->id, 'nisn' => '1212121212']);
+    homeroomFor($withHomeroom);
+
+    $this->actingAs(studentAdmin())
+        ->delete(route('admin.school-classes.bulk-destroy', 'smp'), ['ids' => [$withStudent->id, $withHomeroom->id, $free->id]])
+        ->assertSessionHas('success', fn (string $message) => str_contains($message, '1 kelas berhasil dihapus.')
+            && str_contains($message, '2 kelas dilewati'));
+
+    expect(SchoolClass::query()->pluck('id')->all())
+        ->toEqualCanonicalizing([$withStudent->id, $withHomeroom->id]);
+});
+
+test('deleting a class with a homeroom teacher reports an error instead of a 500', function () {
+    $class = SchoolClass::factory()->create(['school_level' => 'smp', 'name' => '9 A']);
+    homeroomFor($class);
+
+    $this->actingAs(studentAdmin())
+        ->delete(route('admin.school-classes.destroy', ['smp', $class]))
+        ->assertSessionHas('error', 'Kelas masih memiliki penugasan wali kelas dan tidak dapat dihapus.');
+
+    expect(SchoolClass::query()->whereKey($class->id)->exists())->toBeTrue();
 });
 
 test('sync creates classes and students then updates by nisn without deleting local data', function () {

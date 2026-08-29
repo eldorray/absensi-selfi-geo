@@ -13,6 +13,7 @@ use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -83,9 +84,44 @@ class SchoolClassController extends Controller
         if ($schoolClass->students()->exists()) {
             return back()->with('error', 'Kelas masih memiliki siswa dan tidak dapat dihapus.');
         }
+        if ($schoolClass->homeroomAssignments()->exists()) {
+            return back()->with('error', 'Kelas masih memiliki penugasan wali kelas dan tidak dapat dihapus.');
+        }
         $schoolClass->delete();
 
         return back()->with('success', 'Kelas berhasil dihapus.');
+    }
+
+    public function bulkDestroy(Request $request, string $schoolLevel): RedirectResponse
+    {
+        $this->assertLevel($schoolLevel);
+        $ids = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer'],
+        ])['ids'];
+
+        $classes = SchoolClass::query()->where('school_level', $schoolLevel)->whereIn('id', $ids)->get();
+        $deletable = $classes->reject(fn (SchoolClass $class) => $this->isLockedByRelations($class));
+        $blocked = $classes->count() - $deletable->count();
+
+        SchoolClass::query()->whereIn('id', $deletable->modelKeys())->delete();
+
+        $message = $deletable->count().' kelas berhasil dihapus.';
+        if ($blocked > 0) {
+            $message .= ' '.$blocked.' kelas dilewati karena masih punya siswa atau wali kelas.';
+        }
+
+        return to_route('admin.school-classes.index', $schoolLevel)->with('success', $message);
+    }
+
+    /**
+     * Kelas berisi siswa ditahan oleh kebijakan aplikasi, dan kelas dengan penugasan
+     * wali kelas ditahan oleh foreign key restrict pada homeroom_assignments —
+     * yang terakhir melempar QueryException (SQLSTATE 23000), bukan error validasi.
+     */
+    private function isLockedByRelations(SchoolClass $class): bool
+    {
+        return $class->students()->exists() || $class->homeroomAssignments()->exists();
     }
 
     private function assertLevel(string $level): void

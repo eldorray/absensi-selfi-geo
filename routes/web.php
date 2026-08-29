@@ -171,6 +171,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('school-classes/{schoolLevel}', [Admin\SchoolClassController::class, 'store'])->name('school-classes.store');
     Route::get('school-classes/{schoolLevel}/{schoolClass}/edit', [Admin\SchoolClassController::class, 'edit'])->name('school-classes.edit');
     Route::put('school-classes/{schoolLevel}/{schoolClass}', [Admin\SchoolClassController::class, 'update'])->name('school-classes.update');
+    Route::delete('school-classes/{schoolLevel}/bulk', [Admin\SchoolClassController::class, 'bulkDestroy'])->name('school-classes.bulk-destroy');
     Route::delete('school-classes/{schoolLevel}/{schoolClass}', [Admin\SchoolClassController::class, 'destroy'])->name('school-classes.destroy');
 
     Route::get('homeroom-assignments', [Admin\HomeroomAssignmentController::class, 'index'])->name('homeroom-assignments.index');
