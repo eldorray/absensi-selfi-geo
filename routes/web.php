@@ -163,6 +163,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('students/{schoolLevel}/sync', [Admin\StudentController::class, 'sync'])->name('students.sync');
     Route::get('students/{schoolLevel}/{student}/edit', [Admin\StudentController::class, 'edit'])->name('students.edit');
     Route::put('students/{schoolLevel}/{student}', [Admin\StudentController::class, 'update'])->name('students.update');
+    Route::delete('students/{schoolLevel}/bulk', [Admin\StudentController::class, 'bulkDestroy'])->name('students.bulk-destroy');
     Route::delete('students/{schoolLevel}/{student}', [Admin\StudentController::class, 'destroy'])->name('students.destroy');
 
     Route::get('school-classes/{schoolLevel}', [Admin\SchoolClassController::class, 'index'])->name('school-classes.index');

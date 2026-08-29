@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\BkRecord;
 use App\Models\Role;
 use App\Models\SchoolClass;
 use App\Models\Student;
@@ -67,6 +68,46 @@ test('class names are normalized per level and classes with students cannot be d
     $this->actingAs($admin)->delete(route('admin.school-classes.destroy', ['mi', $class]))
         ->assertSessionHas('error');
     expect($class->fresh())->not->toBeNull();
+});
+
+test('bulk delete removes selected students of that level only', function () {
+    $a = Student::factory()->create(['school_level' => 'smp', 'nisn' => '3333333333']);
+    $b = Student::factory()->create(['school_level' => 'smp', 'nisn' => '4444444444']);
+    $keep = Student::factory()->create(['school_level' => 'smp', 'nisn' => '5555555555']);
+    $otherLevel = Student::factory()->create(['school_level' => 'mi', 'nisn' => '6666666666']);
+
+    $admin = studentAdmin();
+
+    $this->actingAs($admin)->get(route('admin.students.index', 'smp'))
+        ->assertSee('name="ids[]" value="'.$a->id.'"', false)
+        ->assertSee('id="bulk-delete-form"', false)
+        ->assertSee('Hapus Terpilih');
+
+    $this->actingAs($admin)
+        ->delete(route('admin.students.bulk-destroy', 'smp'), ['ids' => [$a->id, $b->id, $otherLevel->id]])
+        ->assertRedirect(route('admin.students.index', 'smp'));
+
+    expect(Student::query()->pluck('id')->all())
+        ->toEqualCanonicalizing([$keep->id, $otherLevel->id]);
+});
+
+test('bulk delete skips students locked by a bk record instead of failing the batch', function () {
+    $locked = Student::factory()->create(['school_level' => 'smp', 'nisn' => '7777777777']);
+    $free = Student::factory()->create(['school_level' => 'smp', 'nisn' => '8888888888']);
+    BkRecord::factory()->create(['student_id' => $locked->id, 'school_level' => 'smp']);
+
+    $this->actingAs(studentAdmin())
+        ->delete(route('admin.students.bulk-destroy', 'smp'), ['ids' => [$locked->id, $free->id]])
+        ->assertSessionHas('success', fn (string $message) => str_contains($message, '1 siswa berhasil dihapus.')
+            && str_contains($message, '1 siswa dilewati'));
+
+    expect(Student::query()->pluck('id')->all())->toBe([$locked->id]);
+});
+
+test('bulk delete requires at least one id', function () {
+    $this->actingAs(studentAdmin())
+        ->delete(route('admin.students.bulk-destroy', 'smp'), ['ids' => []])
+        ->assertSessionHasErrors('ids');
 });
 
 test('sync creates classes and students then updates by nisn without deleting local data', function () {

@@ -68,6 +68,30 @@ class StudentController extends Controller
         return to_route('admin.students.index', $schoolLevel)->with('success', 'Data siswa berhasil dihapus.');
     }
 
+    public function bulkDestroy(Request $request, string $schoolLevel): RedirectResponse
+    {
+        $this->assertLevel($schoolLevel);
+        $ids = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer'],
+        ])['ids'];
+
+        // Siswa yang punya catatan BK atau rujukan ditahan oleh foreign key
+        // restrict; lewati supaya satu baris terkunci tidak menggagalkan seluruh batch.
+        $students = Student::query()->where('school_level', $schoolLevel)->whereIn('id', $ids)->get();
+        $deletable = $students->reject(fn (Student $student) => $student->bkRecords()->exists() || $student->referrals()->exists());
+        $blocked = $students->count() - $deletable->count();
+
+        Student::query()->whereIn('id', $deletable->modelKeys())->delete();
+
+        $message = $deletable->count().' siswa berhasil dihapus.';
+        if ($blocked > 0) {
+            $message .= ' '.$blocked.' siswa dilewati karena masih punya catatan BK atau rujukan.';
+        }
+
+        return to_route('admin.students.index', $schoolLevel)->with('success', $message);
+    }
+
     public function sync(string $schoolLevel, StudentSyncService $service): RedirectResponse
     {
         $this->assertLevel($schoolLevel);
