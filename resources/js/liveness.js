@@ -1,6 +1,25 @@
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { stepBlink } from './blink-state';
 
+// Model files are ~15 MB; load once per page and share between detectors.
+// A failed load is forgotten so "Coba Lagi" can retry.
+let landmarkerPromise = null;
+
+export function loadLandmarker() {
+    landmarkerPromise ??= FilesetResolver.forVisionTasks('/mediapipe/wasm')
+        .then((vision) => FaceLandmarker.createFromOptions(vision, {
+            baseOptions: { modelAssetPath: '/mediapipe/face_landmarker.task' },
+            runningMode: 'VIDEO',
+            outputFaceBlendshapes: true,
+            numFaces: 1,
+        }))
+        .catch((e) => {
+            landmarkerPromise = null;
+            throw e;
+        });
+    return landmarkerPromise;
+}
+
 // createBlinkDetector({ video, onBlink, onState, onError })
 //  - onState({ faceDetected }) : called as the face comes/goes
 //  - onBlink()                 : called once, then the loop stops
@@ -14,16 +33,6 @@ export function createBlinkDetector({ video, onBlink, onState, onError }) {
     let blinkState = { eyesClosed: false };
     let lastTs = 0;
     const FPS_INTERVAL = 1000 / 12;
-
-    async function load() {
-        const vision = await FilesetResolver.forVisionTasks('/mediapipe/wasm');
-        landmarker = await FaceLandmarker.createFromOptions(vision, {
-            baseOptions: { modelAssetPath: '/mediapipe/face_landmarker.task' },
-            runningMode: 'VIDEO',
-            outputFaceBlendshapes: true,
-            numFaces: 1,
-        });
-    }
 
     function loop() {
         if (!running) return;
@@ -73,7 +82,7 @@ export function createBlinkDetector({ video, onBlink, onState, onError }) {
             lastFace = null;
             running = true;
             try {
-                if (!landmarker) await load();
+                if (!landmarker) landmarker = await loadLandmarker();
             } catch (e) {
                 running = false;
                 onError && onError(e);
@@ -89,4 +98,3 @@ export function createBlinkDetector({ video, onBlink, onState, onError }) {
     };
 }
 
-window.createBlinkDetector = createBlinkDetector;

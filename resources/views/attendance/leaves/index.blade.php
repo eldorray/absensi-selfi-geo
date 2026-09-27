@@ -1,7 +1,7 @@
 <x-layouts.mobile title="Perizinan Saya" backUrl="{{ route('attendance.dashboard') }}" isSheet="true" showNav="true">
     <x-slot:headerAction>
         <a href="{{ route('attendance.leaves.create') }}"
-            class="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 active:scale-95 text-white text-[10px] font-bold uppercase tracking-wider transition-all duration-300 font-outfit shadow-md flex items-center gap-1.5">
+            class="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 active:scale-95 text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 font-outfit shadow-md flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
@@ -30,12 +30,12 @@
                     <div class="flex items-start justify-between gap-3 mb-3">
                         <div class="flex items-center gap-1.5 flex-wrap">
                             <!-- Type Badge -->
-                            <span class="px-2.5 py-1 text-[8px] font-black uppercase tracking-wider rounded-full bg-white/10 theme-text-main">
+                            <span class="px-2.5 py-1 text-xs font-black uppercase tracking-wider rounded-full bg-white/10 theme-text-main">
                                 {{ $leave->type_label }}
                             </span>
                             
                             <!-- Status Badge -->
-                            <span class="px-2.5 py-1 text-[8px] font-black uppercase tracking-wider rounded-full @if($leave->status === 'approved') theme-status-ok-card theme-status-ok-text status-badge-glow @elseif($leave->status === 'rejected') theme-status-late-card theme-status-late-text @else bg-amber-400/10 text-amber-500 border border-amber-500/20 @endif">
+                            <span class="px-2.5 py-1 text-xs font-black uppercase tracking-wider rounded-full @if($leave->status === 'approved') theme-status-ok-card theme-status-ok-text status-badge-glow @elseif($leave->status === 'rejected') theme-status-late-card theme-status-late-text @else bg-amber-400/10 text-amber-500 border border-amber-500/20 @endif">
                                 {{ $leave->status_label }}
                             </span>
                         </div>
@@ -51,7 +51,7 @@
                     <p class="font-bold text-xs theme-text-main font-display truncate mb-2.5">{{ $leave->reason }}</p>
                     
                     <!-- Date range duration -->
-                    <div class="flex items-center gap-1.5 text-[9px] font-bold theme-text-muted font-outfit uppercase">
+                    <div class="flex items-center gap-1.5 text-xs font-bold theme-text-muted font-outfit uppercase">
                         <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
                         </svg>
@@ -76,7 +76,7 @@
                         </svg>
                     </div>
                     <h3 class="font-bold text-sm theme-text-main font-display">Belum Ada Pengajuan</h3>
-                    <p class="text-[10px] theme-text-muted mt-1 max-w-[220px] mx-auto">Daftar izin, cuti, atau sakit yang Anda ajukan akan ditampilkan di sini.</p>
+                    <p class="text-xs theme-text-muted mt-1 max-w-[220px] mx-auto">Daftar izin, cuti, atau sakit yang Anda ajukan akan ditampilkan di sini.</p>
                     
                     <a href="{{ route('attendance.leaves.create') }}"
                         class="mt-6 inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-green-600 active:scale-95 text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all duration-300 font-outfit shadow-md">

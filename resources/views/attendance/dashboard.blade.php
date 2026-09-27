@@ -6,7 +6,7 @@
         $branding = \App\Models\ApplicationSetting::current();
     @endphp
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f1712">
     <meta name="description" content="Aplikasi Absensi Selfie dengan Verifikasi GPS">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -351,7 +351,7 @@
             background: rgba(102, 187, 106, 0.15);
         }
         .nav-label {
-            font-size: 8px;
+            font-size: 12px;
             font-weight: 800;
             font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             letter-spacing: 0.02em;
@@ -514,13 +514,6 @@
         .animate-blob-3 {
             animation: float-blob 19s infinite alternate-reverse ease-in-out;
         }
-
-        @media (max-width: 640px) and (max-height: 760px) {
-            .dashboard-panel {
-                transform: scale(0.94);
-                transform-origin: top center;
-            }
-        }
     </style>
     @include('partials.pwa-material3')
 
@@ -561,15 +554,15 @@
                 </div>
                 <div class="text-white">
                     <p class="font-bold text-[12px] leading-tight">Install AbsenKu</p>
-                    <p class="text-[9px] text-white/80">Akses lebih cepat & offline</p>
+                    <p class="text-xs text-white/80">Akses lebih cepat & offline</p>
                 </div>
             </div>
             <div class="flex items-center gap-1.5">
                 <button onclick="installPWA()"
-                    class="px-2.5 py-1 bg-white text-green-700 font-bold text-[10px] rounded-md hover:bg-gray-100 font-outfit">
+                    class="px-2.5 py-1 bg-white text-green-700 font-bold text-xs rounded-md hover:bg-gray-100 font-outfit">
                     Install
                 </button>
-                <button onclick="dismissInstallBanner()" class="p-1 text-white/80 hover:text-white">
+                <button onclick="dismissInstallBanner()" aria-label="Tutup banner instal" class="p-3 text-white/80 hover:text-white">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -600,7 +593,7 @@
                 <div class="absolute top-[20%] right-[-10%] w-36 h-36 rounded-full bg-[#66BB6A]/5 blur-[40px]"></div>
 
                 <!-- 1. Header (Fixed at top) -->
-                <header class="relative z-10 flex items-center justify-between px-5 pt-5 pb-3" data-m3-region="top-app-bar">
+                <header class="relative z-10 flex items-center justify-between px-5 pt-5 pb-3" style="padding-top: max(1.25rem, env(safe-area-inset-top))" data-m3-region="top-app-bar">
                     <!-- User Info Layout -->
                     <a href="{{ route('attendance.profile') }}"
                         data-profile-link="teacher-identity"
@@ -612,13 +605,13 @@
                                     <img src="{{ auth()->user()->avatar_url }}" alt="Profile"
                                         class="w-full h-full object-cover">
                                 @else
-                                    <span class="text-white text-[10px] font-bold font-outfit">{{ auth()->user()->initials() }}</span>
+                                    <span class="text-white text-xs font-bold font-outfit">{{ auth()->user()->initials() }}</span>
                                 @endif
                             </div>
                         </div>
                         <div class="leading-none text-left">
                             <h2 class="text-xs font-bold theme-text-main font-display truncate max-w-[140px]">{{ auth()->user()->name }}</h2>
-                            <p class="text-[9px] theme-text-muted mt-0.5">{{ auth()->user()->office?->name ?? 'MI Daarul Hikmah' }}</p>
+                            <p class="text-xs theme-text-muted mt-0.5">{{ auth()->user()->office?->name ?? 'MI Daarul Hikmah' }}</p>
                         </div>
                     </a>
 
@@ -639,17 +632,17 @@
                                     x-transition:enter="transition ease-out duration-150"
                                     x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                                     class="solid-panel absolute right-0 top-14 w-64 rounded-2xl p-2 z-40 text-left">
-                                    <p class="px-2 py-1 text-[9px] uppercase tracking-wider theme-text-muted font-outfit">Ganti Akun</p>
+                                    <p class="px-2 py-1 text-xs uppercase tracking-wider theme-text-muted font-outfit">Ganti Akun</p>
                                     @foreach ($linkedAccounts as $account)
                                         <button type="button"
                                             @click="target = { id: {{ $account->id }}, name: @js($account->name) }; open = false; confirmOpen = true"
                                             class="w-full flex items-center gap-2 rounded-xl px-2 py-2 text-xs theme-text-main hover:bg-green-500/10 transition-colors">
-                                            <span class="w-7 h-7 flex-none rounded-full bg-gradient-to-tr from-green-400 to-emerald-500 flex items-center justify-center text-[9px] font-bold text-slate-950">
+                                            <span class="w-7 h-7 flex-none rounded-full bg-gradient-to-tr from-green-400 to-emerald-500 flex items-center justify-center text-xs font-bold text-slate-950">
                                                 {{ $account->initials() }}
                                             </span>
                                             <span class="min-w-0 flex-1 truncate text-left">
                                                 {{ $account->name }}
-                                                <span class="block text-[9px] theme-text-muted">{{ $account->office?->name ?? 'Tanpa kantor' }}</span>
+                                                <span class="block text-xs theme-text-muted">{{ $account->office?->name ?? 'Tanpa kantor' }}</span>
                                             </span>
                                         </button>
                                     @endforeach
@@ -745,9 +738,9 @@
                                     <img src="{{ $todayAttendance->image_url }}" alt="Selfie" class="w-full h-full object-cover">
                                 </div>
                                 <div class="text-left flex-1 leading-tight">
-                                    <p class="text-[9px] theme-text-muted uppercase font-outfit">Status Absen Anda</p>
+                                    <p class="text-xs theme-text-muted uppercase font-outfit">Status Absen Anda</p>
                                     <p class="text-sm font-black font-display {{ $todayAttendance->status->value === 'late' ? 'theme-status-late-text' : 'theme-status-ok-text' }}">{{ $todayAttendance->status->label() }}</p>
-                                    <p class="text-[9px] theme-text-muted mt-0.5">Masuk pukul {{ $todayAttendance->created_at->format('H:i') }} WIB</p>
+                                    <p class="text-xs theme-text-muted mt-0.5">Masuk pukul {{ $todayAttendance->created_at->format('H:i') }} WIB</p>
                                 </div>
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 flex-none {{ $todayAttendance->status->value === 'late' ? 'theme-status-late-text' : 'theme-status-ok-text' }}">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -770,31 +763,31 @@
                                 </div>
                                 <div class="text-left">
                                     @if ($todaySchedule)
-                                        <p class="text-[9px] theme-text-muted font-outfit uppercase">Jadwal Hari Ini</p>
+                                        <p class="text-xs theme-text-muted font-outfit uppercase">Jadwal Hari Ini</p>
                                         <p class="font-black text-xs theme-text-main font-outfit mt-0.5">
                                             {{ \Carbon\Carbon::parse($todaySchedule->check_in_time)->format('H:i') }} -
                                             {{ \Carbon\Carbon::parse($todaySchedule->check_out_time)->format('H:i') }}
                                         </p>
                                     @else
-                                        <p class="text-[9px] theme-text-muted font-outfit uppercase">Tidak Ada Jadwal</p>
+                                        <p class="text-xs theme-text-muted font-outfit uppercase">Tidak Ada Jadwal</p>
                                         <p class="font-bold text-xs theme-status-late-text font-outfit mt-0.5">Hari Libur</p>
                                     @endif
                                 </div>
                             </div>
                             <div class="text-right leading-tight">
                                 <p class="font-black text-xs theme-text-main font-display capitalize">{{ now()->locale('id')->isoFormat('dddd') }}</p>
-                                <p class="text-[9px] theme-text-muted font-outfit mt-0.5">{{ now()->format('d M Y') }}</p>
+                                <p class="text-xs theme-text-muted font-outfit mt-0.5">{{ now()->format('d M Y') }}</p>
                             </div>
                         </div>
                         
                         <div class="flex justify-between mt-3.5 pt-3.5 theme-border-t">
                             <div class="text-left">
-                                <p class="text-[9px] theme-text-muted uppercase">Masuk :</p>
+                                <p class="text-xs theme-text-muted uppercase">Masuk :</p>
                                 @if ($todayAttendance)
                                     <p class="font-bold text-xs mt-0.5 {{ $todayAttendance->status->value === 'late' ? 'theme-status-late-text' : 'theme-status-ok-text' }} font-outfit">
                                         {{ $todayAttendance->created_at->format('H:i') }}
                                         @if ($todayAttendance->status->value === 'late')
-                                            <span class="text-[9px] theme-status-late-text opacity-80 font-normal">(Terlambat)</span>
+                                            <span class="text-xs theme-status-late-text opacity-80 font-normal">(Terlambat)</span>
                                         @endif
                                     </p>
                                 @else
@@ -802,7 +795,7 @@
                                 @endif
                             </div>
                             <div class="text-right">
-                                <p class="text-[9px] theme-text-muted uppercase">Pulang :</p>
+                                <p class="text-xs theme-text-muted uppercase">Pulang :</p>
                                 @if ($todayAttendance && $todayAttendance->check_out_at)
                                     <p class="font-bold text-xs theme-status-ok-text mt-0.5 font-outfit">
                                         {{ $todayAttendance->check_out_at->format('H:i') }}
@@ -820,21 +813,21 @@
                         <div class="grid grid-cols-3 gap-2">
                             <!-- Hadir -->
                             <div class="text-center rounded-xl py-2" style="border: 1px solid var(--stats-card-border);">
-                                <p class="text-[8px] theme-text-muted font-outfit uppercase">Hadir</p>
+                                <p class="text-xs theme-text-muted font-outfit uppercase">Hadir</p>
                                 <p class="text-2xl font-black font-display mt-0.5" style="color: var(--stats-present); transition: color 0.5s ease;">{{ $monthlyPresent }}</p>
-                                <p class="text-[8px] theme-text-muted font-outfit">Hari</p>
+                                <p class="text-xs theme-text-muted font-outfit">Hari</p>
                             </div>
                             <!-- Terlambat -->
                             <div class="text-center rounded-xl py-2" style="border: 1px solid var(--stats-card-border);">
-                                <p class="text-[8px] theme-text-muted font-outfit uppercase">Telat</p>
+                                <p class="text-xs theme-text-muted font-outfit uppercase">Telat</p>
                                 <p class="text-2xl font-black font-display mt-0.5" style="color: var(--stats-late); transition: color 0.5s ease;">{{ $monthlyLate }}</p>
-                                <p class="text-[8px] theme-text-muted font-outfit">Hari</p>
+                                <p class="text-xs theme-text-muted font-outfit">Hari</p>
                             </div>
                             <!-- Total -->
                             <div class="text-center rounded-xl py-2" style="border: 1px solid var(--stats-card-border);">
-                                <p class="text-[8px] theme-text-muted font-outfit uppercase">Total</p>
+                                <p class="text-xs theme-text-muted font-outfit uppercase">Total</p>
                                 <p class="text-2xl font-black font-display mt-0.5" style="color: var(--stats-total); transition: color 0.5s ease;">{{ $totalAttendance }}</p>
-                                <p class="text-[8px] theme-text-muted font-outfit">Hari</p>
+                                <p class="text-xs theme-text-muted font-outfit">Hari</p>
                             </div>
                         </div>
                     </div>
@@ -842,10 +835,10 @@
                     @if ($homeroomAssignment)
                         <a href="{{ route('attendance.my-class.index') }}" class="solid-panel block rounded-[22px] p-4 text-left">
                             <div class="flex items-center justify-between gap-3">
-                                <div><p class="text-[9px] font-bold uppercase tracking-wider theme-text-muted">Kelas Wali · {{ $homeroomAssignment->academicYear->name }}</p><h3 class="mt-1 text-base font-black theme-text-main">{{ $homeroomAssignment->schoolClass->name }}</h3></div>
+                                <div><p class="text-xs font-bold uppercase tracking-wider theme-text-muted">Kelas Wali · {{ $homeroomAssignment->academicYear->name }}</p><h3 class="mt-1 text-base font-black theme-text-main">{{ $homeroomAssignment->schoolClass->name }}</h3></div>
                                 <span class="grid h-10 w-10 place-items-center rounded-xl bg-green-500/15 text-green-600"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5-3M9 20H4v-2a3 3 0 015-3m8-8a3 3 0 11-6 0 3 3 0 016 0z" /></svg></span>
                             </div>
-                            <div class="mt-3 grid grid-cols-2 gap-2"><div class="rounded-xl border theme-border p-2"><p class="text-[8px] uppercase theme-text-muted">Siswa aktif</p><p class="text-lg font-black theme-text-main">{{ $homeroomStudentCount }}</p></div><div class="rounded-xl border theme-border p-2"><p class="text-[8px] uppercase theme-text-muted">Siswa dengan pelanggaran</p><p class="text-lg font-black theme-text-main">{{ $homeroomViolationCount }}</p></div></div>
+                            <div class="mt-3 grid grid-cols-2 gap-2"><div class="rounded-xl border theme-border p-2"><p class="text-xs uppercase theme-text-muted">Siswa aktif</p><p class="text-lg font-black theme-text-main">{{ $homeroomStudentCount }}</p></div><div class="rounded-xl border theme-border p-2"><p class="text-xs uppercase theme-text-muted">Siswa dengan pelanggaran</p><p class="text-lg font-black theme-text-main">{{ $homeroomViolationCount }}</p></div></div>
                         </a>
                     @endif
 
@@ -855,64 +848,64 @@
                         <div class="grid grid-cols-4 gap-2">
                             <!-- Riwayat -->
                             <a href="{{ route('attendance.index') }}"
-                                class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300">
+                                class="interactive-card glass-card theme-border rounded-[20px] px-1 py-3 text-center transition-all duration-300">
                                 <div class="theme-icon-riwayat w-9 h-9 mx-auto mb-2 rounded-xl flex items-center justify-center text-green-500 shadow-sm">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
                                     </svg>
                                 </div>
-                                <p class="text-[9px] font-bold theme-text-main font-outfit truncate">Riwayat</p>
+                                <p class="text-xs font-bold leading-tight break-words theme-text-main font-outfit">Riwayat</p>
                             </a>
                             <!-- Profil -->
                             <a href="{{ route('attendance.profile') }}"
-                                class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300">
+                                class="interactive-card glass-card theme-border rounded-[20px] px-1 py-3 text-center transition-all duration-300">
                                 <div class="theme-icon-profil w-9 h-9 mx-auto mb-2 rounded-xl flex items-center justify-center text-purple-500 shadow-sm">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                     </svg>
                                 </div>
-                                <p class="text-[9px] font-bold theme-text-main font-outfit truncate">Profil</p>
+                                <p class="text-xs font-bold leading-tight break-words theme-text-main font-outfit">Profil</p>
                             </a>
                             <!-- Password -->
                             <a href="{{ route('attendance.password') }}"
-                                class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300">
+                                class="interactive-card glass-card theme-border rounded-[20px] px-1 py-3 text-center transition-all duration-300">
                                 <div class="theme-icon-password w-9 h-9 mx-auto mb-2 rounded-xl flex items-center justify-center text-amber-500 shadow-sm">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                     </svg>
                                 </div>
-                                <p class="text-[9px] font-bold theme-text-main font-outfit truncate">Password</p>
+                                <p class="text-xs font-bold leading-tight break-words theme-text-main font-outfit">Password</p>
                             </a>
                             <!-- Perizinan (Izin) -->
                             <a href="{{ route('attendance.leaves.index') }}"
-                                class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300 relative group">
+                                class="interactive-card glass-card theme-border rounded-[20px] px-1 py-3 text-center transition-all duration-300 relative group">
                                 <div class="theme-icon-perizinan w-9 h-9 mx-auto mb-2 rounded-xl flex items-center justify-center text-green-500 shadow-sm group-hover:scale-105 transition-transform duration-200">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
                                 </div>
-                                <p class="text-[9px] font-bold theme-text-main font-outfit truncate">Izin</p>
+                                <p class="text-xs font-bold leading-tight break-words theme-text-main font-outfit">Izin</p>
                             </a>
                             @if ($homeroomAssignment)
-                                <a href="{{ route('attendance.referrals.mine') }}" class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300">
+                                <a href="{{ route('attendance.referrals.mine') }}" class="interactive-card glass-card theme-border rounded-[20px] px-1 py-3 text-center transition-all duration-300">
                                     <div class="theme-icon-riwayat mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl text-emerald-500 shadow-sm"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4 4 16 8-16 8 3-8-3-8Zm3 8h13" /></svg></div>
-                                    <p class="truncate text-[9px] font-bold theme-text-main font-outfit">Rujukan Saya</p>
+                                    <p class="text-xs font-bold leading-tight break-words theme-text-main font-outfit">Rujukan Saya</p>
                                 </a>
                             @endif
                             @if (auth()->user()->canAccessBk() && ! auth()->user()->isAdmin())
-                                <a href="{{ route('attendance.bk.index') }}" class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300">
+                                <a href="{{ route('attendance.bk.index') }}" class="interactive-card glass-card theme-border rounded-[20px] px-1 py-3 text-center transition-all duration-300">
                                     <div class="theme-icon-riwayat w-9 h-9 mx-auto mb-2 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 6h8M8 10h8m-8 4h5m-7 7 3-3h9a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2v3Z"></path></svg></div>
-                                    <p class="text-[9px] font-bold theme-text-main font-outfit truncate">BK</p>
+                                    <p class="text-xs font-bold leading-tight break-words theme-text-main font-outfit">BK</p>
                                 </a>
-                                <a href="{{ route('attendance.referrals.queue') }}" class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300">
+                                <a href="{{ route('attendance.referrals.queue') }}" class="interactive-card glass-card theme-border rounded-[20px] px-1 py-3 text-center transition-all duration-300">
                                     <div class="theme-icon-riwayat mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl text-emerald-500 shadow-sm"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v14H4V5Zm0 9h5l2 2h2l2-2h5" /></svg></div>
-                                    <p class="truncate text-[9px] font-bold theme-text-main font-outfit">Antrean Rujukan</p>
+                                    <p class="text-xs font-bold leading-tight break-words theme-text-main font-outfit">Antrean Rujukan</p>
                                 </a>
                             @endif
                             @if (auth()->user()->is_student_affairs_officer && in_array(auth()->user()->office?->school_level, ['mi', 'smp'], true))
-                                <a href="{{ route('attendance.kesiswaan.index') }}" class="interactive-card glass-card theme-border rounded-[20px] p-3 text-center transition-all duration-300">
+                                <a href="{{ route('attendance.kesiswaan.index') }}" class="interactive-card glass-card theme-border rounded-[20px] px-1 py-3 text-center transition-all duration-300">
                                     <div class="theme-icon-riwayat mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl text-emerald-500 shadow-sm"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m7-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm13 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg></div>
-                                    <p class="truncate text-[9px] font-bold theme-text-main font-outfit">Kesiswaan</p>
+                                    <p class="text-xs font-bold leading-tight break-words theme-text-main font-outfit">Kesiswaan</p>
                                 </a>
                             @endif
                         </div>
@@ -942,7 +935,7 @@
                                         <div class="p-3">
                                             <p class="font-bold text-[11px] theme-text-main font-outfit line-clamp-1">{{ $info->title }}</p>
                                             @if ($info->summary)
-                                                <p class="text-[9px] theme-text-main opacity-60 font-outfit mt-0.5 line-clamp-2">{{ $info->summary }}</p>
+                                                <p class="text-xs theme-text-main opacity-60 font-outfit mt-0.5 line-clamp-2">{{ $info->summary }}</p>
                                             @endif
                                         </div>
                                     </a>
@@ -965,7 +958,7 @@
                                     </div>
                                     <div class="leading-tight">
                                         <p class="font-bold text-xs">Persetujuan Perizinan</p>
-                                        <p class="text-white/70 text-[9px] font-outfit mt-0.5">Kelola pengajuan izin & cuti guru</p>
+                                        <p class="text-white/70 text-xs font-outfit mt-0.5">Kelola pengajuan izin & cuti guru</p>
                                     </div>
                                 </div>
                                 <svg class="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">

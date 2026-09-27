@@ -8,7 +8,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
             </div>
-            <p class="text-[9px] theme-text-muted mt-2 uppercase font-bold tracking-wider font-outfit">Sandi Keamanan</p>
+            <p class="text-xs theme-text-muted mt-2 uppercase font-bold tracking-wider font-outfit">Sandi Keamanan</p>
         </div>
 
         <!-- Form card -->
@@ -35,7 +35,7 @@
 
                 <!-- Current Password -->
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Password Saat Ini</label>
+                    <label for="current_password" class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Password Saat Ini</label>
                     <div class="relative">
                         <input type="password" name="current_password" id="current_password"
                             class="theme-input w-full rounded-2xl pl-4.5 pr-12 py-3 text-xs font-semibold"
@@ -56,7 +56,7 @@
 
                 <!-- New Password -->
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Password Baru</label>
+                    <label for="password" class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Password Baru</label>
                     <div class="relative">
                         <input type="password" name="password" id="password"
                             class="theme-input w-full rounded-2xl pl-4.5 pr-12 py-3 text-xs font-semibold"
@@ -77,7 +77,7 @@
 
                 <!-- Confirm Password -->
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Konfirmasi Password Baru</label>
+                    <label for="password_confirmation" class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Konfirmasi Password Baru</label>
                     <div class="relative">
                         <input type="password" name="password_confirmation" id="password_confirmation"
                             class="theme-input w-full rounded-2xl pl-4.5 pr-12 py-3 text-xs font-semibold"
@@ -106,9 +106,9 @@
 
         <!-- Security Tips Info Card -->
         <div class="glass-card theme-border rounded-[22px] p-4 text-left">
-            <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-3">Persyaratan Password Kuat</h3>
+            <h3 class="font-black text-xs theme-text-muted font-outfit uppercase tracking-wider mb-3">Persyaratan Password Kuat</h3>
             
-            <ul class="space-y-2 text-[10px] font-semibold theme-text-muted font-outfit">
+            <ul class="space-y-2 text-xs font-semibold theme-text-muted font-outfit">
                 <li class="flex items-center gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
                     Gunakan minimal 8 karakter unik

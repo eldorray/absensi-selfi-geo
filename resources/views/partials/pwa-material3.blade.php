@@ -232,7 +232,7 @@
     body.pwa-m3 .nav-item:active { transform: scale(0.94); }
     body.pwa-m3 .nav-pill { min-width: 64px; min-height: 32px; padding: 5px 18px; border-radius: 16px; transition: background-color 250ms cubic-bezier(0.2, 0, 0, 1), color 180ms ease, transform 180ms ease; }
     body.pwa-m3 .nav-item.is-active .nav-pill { background: var(--m3-primary-container); color: var(--m3-on-primary-container); box-shadow: none; }
-    body.pwa-m3 .nav-label { color: var(--m3-on-surface-variant); font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; font-size: 9px; font-weight: 700; letter-spacing: 0; }
+    body.pwa-m3 .nav-label { color: var(--m3-on-surface-variant); font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; font-size: 12px; font-weight: 700; letter-spacing: 0; }
     body.pwa-m3 .nav-item.is-active .nav-label { color: var(--m3-primary); }
 
     body.pwa-m3 .nav-fab {
@@ -258,6 +258,11 @@
     body.pwa-m3 .theme-icon-profil,
     body.pwa-m3 .theme-icon-perizinan { background: var(--m3-secondary-container); color: var(--m3-primary); }
     body.pwa-m3 .theme-icon-password { background: var(--m3-tertiary-container); color: var(--m3-warning); }
+
+    /* 16px keeps iOS Safari from zooming the page when a field gets focus. */
+    body.pwa-m3 input,
+    body.pwa-m3 select,
+    body.pwa-m3 textarea { font-size: 16px; }
 
     body.pwa-m3 [class*="bg-gradient-to-r"],
     body.pwa-m3 [class*="bg-gradient-to-tr"] { background-image: none !important; }

@@ -14,7 +14,7 @@
             </div>
 
             <div class="p-5">
-                <p class="text-[8px] uppercase font-bold tracking-wider theme-text-muted opacity-70">
+                <p class="text-xs uppercase font-bold tracking-wider theme-text-muted opacity-70">
                     {{ $announcement->created_at->translatedFormat('d F Y') }}
                 </p>
                 <h1 class="font-black text-lg theme-text-main font-display mt-1 leading-snug">{{ $announcement->title }}</h1>

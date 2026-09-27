@@ -8,7 +8,7 @@
                         <svg class="size-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m7-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm13 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
                     </span>
                     <div class="min-w-0 flex-1">
-                        <p class="text-[10px] font-black uppercase tracking-[0.15em] text-emerald-700 dark:text-emerald-300">Petugas Kesiswaan</p>
+                        <p class="text-xs font-black uppercase tracking-[0.15em] text-emerald-700 dark:text-emerald-300">Petugas Kesiswaan</p>
                         <h1 class="mt-1 text-2xl font-black leading-tight theme-text-main">Direktori siswa</h1>
                         <p class="mt-2 text-xs leading-5 theme-text-muted">Buka profil siswa, lihat informasi akademik, dan pantau ringkasan penanganan sesuai kewenangan Anda.</p>
                     </div>
@@ -16,11 +16,11 @@
 
                 <div class="mt-5 grid grid-cols-2 gap-2">
                     <div class="rounded-2xl bg-white/75 p-3 dark:bg-white/5">
-                        <span class="block text-[9px] font-bold uppercase theme-text-muted">Cakupan siswa</span>
+                        <span class="block text-xs font-bold uppercase theme-text-muted">Cakupan siswa</span>
                         <strong class="mt-1 block text-sm font-black theme-text-main">{{ strtoupper(auth()->user()->office?->school_level ?? '-') }}</strong>
                     </div>
                     <div class="rounded-2xl bg-white/75 p-3 dark:bg-white/5">
-                        <span class="block text-[9px] font-bold uppercase theme-text-muted">Hasil ditemukan</span>
+                        <span class="block text-xs font-bold uppercase theme-text-muted">Hasil ditemukan</span>
                         <strong class="mt-1 block text-sm font-black text-emerald-800 dark:text-emerald-200">{{ $students->total() }} siswa</strong>
                     </div>
                 </div>

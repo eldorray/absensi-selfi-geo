@@ -1,7 +1,7 @@
 <x-layouts.mobile title="Persetujuan Izin" backUrl="{{ route('attendance.dashboard') }}" isSheet="true" showNav="true">
     <x-slot:headerAction>
         @if ($pendingCount > 0)
-            <span class="px-2.5 py-1 bg-amber-400/15 border border-amber-400/30 text-amber-400 rounded-full text-[9px] font-black uppercase tracking-wider shadow-sm animate-pulse">
+            <span class="px-2.5 py-1 bg-amber-400/15 border border-amber-400/30 text-amber-400 rounded-full text-xs font-black uppercase tracking-wider shadow-sm animate-pulse">
                 {{ $pendingCount }} Pending
             </span>
         @endif
@@ -20,19 +20,19 @@
         <!-- Filter tag list -->
         <div class="flex gap-2 overflow-x-auto pb-1.5 custom-scroll select-none animate-stagger stagger-0">
             <a href="{{ route('approval.leaves.index') }}"
-                class="px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 active:scale-95 @if(!request('status')) bg-emerald-500 text-white font-black shadow-md @else glass-card theme-border theme-text-muted hover:theme-text-main @endif">
+                class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 active:scale-95 @if(!request('status')) bg-emerald-500 text-white font-black shadow-md @else glass-card theme-border theme-text-muted hover:theme-text-main @endif">
                 Semua
             </a>
             <a href="{{ route('approval.leaves.index', ['status' => 'pending']) }}"
-                class="px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 active:scale-95 @if(request('status') == 'pending') bg-amber-500 text-slate-950 font-black shadow-md @else glass-card theme-border theme-text-muted hover:theme-text-main @endif">
+                class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 active:scale-95 @if(request('status') == 'pending') bg-amber-500 text-slate-950 font-black shadow-md @else glass-card theme-border theme-text-muted hover:theme-text-main @endif">
                 Menunggu
             </a>
             <a href="{{ route('approval.leaves.index', ['status' => 'approved']) }}"
-                class="px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 active:scale-95 @if(request('status') == 'approved') bg-emerald-500 text-white font-black shadow-md @else glass-card theme-border theme-text-muted hover:theme-text-main @endif">
+                class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 active:scale-95 @if(request('status') == 'approved') bg-emerald-500 text-white font-black shadow-md @else glass-card theme-border theme-text-muted hover:theme-text-main @endif">
                 Disetujui
             </a>
             <a href="{{ route('approval.leaves.index', ['status' => 'rejected']) }}"
-                class="px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 active:scale-95 @if(request('status') == 'rejected') bg-red-500 text-white font-black shadow-md @else glass-card theme-border theme-text-muted hover:theme-text-main @endif">
+                class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 active:scale-95 @if(request('status') == 'rejected') bg-red-500 text-white font-black shadow-md @else glass-card theme-border theme-text-muted hover:theme-text-main @endif">
                 Ditolak
             </a>
         </div>
@@ -55,12 +55,12 @@
                             
                             <div class="leading-tight text-left min-w-0">
                                 <p class="font-black text-xs theme-text-main font-display truncate">{{ $leave->user->name }}</p>
-                                <p class="text-[9px] theme-text-muted mt-0.5 font-outfit uppercase font-semibold truncate">{{ $leave->user->role?->name ?? 'Pegawai' }}</p>
+                                <p class="text-xs theme-text-muted mt-0.5 font-outfit uppercase font-semibold truncate">{{ $leave->user->role?->name ?? 'Pegawai' }}</p>
                             </div>
                         </div>
 
                         <!-- Status Badge -->
-                        <span class="px-2.5 py-1 text-[8px] font-black uppercase tracking-wider rounded-full flex-none @if($leave->status === 'approved') theme-status-ok-card theme-status-ok-text status-badge-glow @elseif($leave->status === 'rejected') theme-status-late-card theme-status-late-text @else bg-amber-400/15 text-amber-400 border border-amber-400/30 @endif">
+                        <span class="px-2.5 py-1 text-xs font-black uppercase tracking-wider rounded-full flex-none @if($leave->status === 'approved') theme-status-ok-card theme-status-ok-text status-badge-glow @elseif($leave->status === 'rejected') theme-status-late-card theme-status-late-text @else bg-amber-400/15 text-amber-400 border border-amber-400/30 @endif">
                             {{ $leave->status_label }}
                         </span>
                     </div>
@@ -68,13 +68,13 @@
                     <div class="flex items-center justify-between gap-3">
                         <div class="flex items-center gap-1.5">
                             <!-- Type Badge -->
-                            <span class="px-2.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded-full bg-white/10 theme-text-main">
+                            <span class="px-2.5 py-0.5 text-xs font-black uppercase tracking-wider rounded-full bg-white/10 theme-text-main">
                                 {{ $leave->type_label }}
                             </span>
-                            <span class="text-[9px] font-bold theme-text-muted font-outfit uppercase font-semibold">{{ $leave->duration }} hari</span>
+                            <span class="text-xs font-bold theme-text-muted font-outfit uppercase font-semibold">{{ $leave->duration }} hari</span>
                         </div>
                         
-                        <p class="text-[9px] font-bold theme-text-muted font-outfit uppercase">{{ $leave->start_date->format('d M Y') }}</p>
+                        <p class="text-xs font-bold theme-text-muted font-outfit uppercase">{{ $leave->start_date->format('d M Y') }}</p>
                     </div>
                 </a>
             @empty
@@ -86,7 +86,7 @@
                         </svg>
                     </div>
                     <h3 class="font-bold text-sm theme-text-main font-display">Tidak Ada Pengajuan</h3>
-                    <p class="text-[10px] theme-text-muted mt-1">Belum ada pengajuan izin masuk dalam kategori filter ini.</p>
+                    <p class="text-xs theme-text-muted mt-1">Belum ada pengajuan izin masuk dalam kategori filter ini.</p>
                 </div>
             @endforelse
         </div>

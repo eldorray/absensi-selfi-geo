@@ -58,7 +58,7 @@
                     <img src="{{ $todayAttendance->image_url }}" alt="Selfie" class="w-full h-full object-cover">
                 </div>
                 <h2 class="text-xl font-black font-display mb-1">Anda Sudah Absen!</h2>
-                <p class="text-[10px] theme-text-muted uppercase tracking-wider font-outfit">Status Masuk Harian</p>
+                <p class="text-xs theme-text-muted uppercase tracking-wider font-outfit">Status Masuk Harian</p>
                 
                 <div class="my-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
@@ -76,6 +76,10 @@
                 </a>
             </div>
         @else
+            <!-- Screen-reader announcements for camera / face / GPS state -->
+            <div class="sr-only" role="status" aria-live="polite" x-text="statusMessage"></div>
+            <div class="sr-only" role="alert" x-text="cameraError || livenessError || locationError || (distanceWarning ? 'Anda berada di luar radius kantor.' : '')"></div>
+
             <!-- Camera Viewfinder Section -->
             <div class="glass-card theme-border rounded-[24px] overflow-hidden p-2.5 viewfinder-border-glow">
                 <div class="relative aspect-[3/4] bg-slate-950 rounded-[18px] overflow-hidden">
@@ -88,7 +92,7 @@
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest font-outfit">Menghubungkan Kamera...</span>
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-widest font-outfit">Menghubungkan Kamera...</span>
                     </div>
 
                     <!-- Camera Access Error Overlay -->
@@ -99,7 +103,7 @@
                             </svg>
                         </div>
                         <p class="text-xs font-bold text-red-500 font-outfit uppercase tracking-wider">Akses Kamera Gagal</p>
-                        <p class="text-[10px] text-slate-400 mt-1" x-text="cameraError"></p>
+                        <p class="text-xs text-slate-400 mt-1" x-text="cameraError"></p>
                     </div>
 
                     <!-- Liveness Model Loading Overlay -->
@@ -108,7 +112,8 @@
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest font-outfit">Memuat Deteksi Wajah...</span>
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-widest font-outfit">Memuat Deteksi Wajah...</span>
+                        <span class="text-xs text-slate-400 mt-1">Pertama kali bisa agak lama (±15 MB)</span>
                     </div>
 
                     <!-- Liveness Model Error Overlay -->
@@ -119,9 +124,9 @@
                             </svg>
                         </div>
                         <p class="text-xs font-bold text-red-500 font-outfit uppercase tracking-wider">Deteksi Wajah Gagal Dimuat</p>
-                        <p class="text-[10px] text-slate-400 mt-1" x-text="livenessError"></p>
+                        <p class="text-xs text-slate-400 mt-1" x-text="livenessError"></p>
                         <button type="button" @click="startLiveness()"
-                            class="mt-4 px-5 py-2 rounded-xl bg-green-500/90 text-white text-[10px] font-black uppercase tracking-wider font-outfit">Coba Lagi</button>
+                            class="mt-4 px-5 py-2 rounded-xl bg-green-700 text-white text-xs font-black uppercase tracking-wider font-outfit">Coba Lagi</button>
                         <button type="button" @click="useManualCapture()"
                             class="mt-3 px-5 py-2 text-[11px] font-bold uppercase tracking-wider font-outfit text-slate-300 underline underline-offset-4">Foto Manual</button>
                     </div>
@@ -150,7 +155,7 @@
                             class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border transition-colors"
                             :class="faceDetected ? 'border-green-400/40' : 'border-white/10'">
                             <span class="w-1.5 h-1.5 rounded-full animate-pulse" :class="faceDetected ? 'bg-green-400' : 'bg-amber-400'"></span>
-                            <span class="text-[8px] font-black tracking-widest uppercase font-outfit"
+                            <span class="text-xs font-black tracking-widest uppercase font-outfit"
                                 :class="faceDetected ? 'text-green-400' : 'text-amber-400'"
                                 x-text="faceDetected ? 'Kedipkan Mata' : 'Arahkan Wajah ke Kamera'"></span>
                         </div>
@@ -158,7 +163,7 @@
 
                     <!-- Photo Success Badge -->
                     <div x-show="photoTaken" class="absolute inset-0 pointer-events-none z-10 flex items-center justify-center bg-black/10">
-                        <span class="px-3.5 py-1.5 bg-emerald-500/90 backdrop-blur-md text-white rounded-full text-[9px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+                        <span class="px-3.5 py-1.5 bg-emerald-500/90 backdrop-blur-md text-white rounded-full text-xs font-black uppercase tracking-wider shadow-lg flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
@@ -171,7 +176,7 @@
             <!-- Action Trigger: retake only; capture is automatic on blink -->
             <div class="flex gap-3">
                 <div x-show="!photoTaken && !cameraError && !livenessError && !manualAllowed"
-                    class="flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-[11px] font-bold uppercase tracking-wider font-outfit text-slate-400 border border-dashed theme-border">
+                    class="flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-xs font-bold uppercase tracking-wider font-outfit theme-text-muted border border-dashed theme-border">
                     <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -197,10 +202,10 @@
 
             <!-- Office Location Selection Card -->
             <div class="glass-card theme-border rounded-[22px] p-4 text-left">
-                <label class="block text-[10px] font-bold tracking-wide uppercase theme-text-muted mb-2 font-outfit">
+                <label for="office_id" class="block text-xs font-bold tracking-wide uppercase theme-text-muted mb-2 font-outfit">
                     Kantor Tujuan
                     @if ($user->office_id)
-                        <span class="ml-1 inline-flex items-center gap-1 text-[9px] normal-case text-emerald-500">
+                        <span class="ml-1 inline-flex items-center gap-1 text-xs normal-case text-emerald-500">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                             </svg>
@@ -209,7 +214,7 @@
                     @endif
                 </label>
                 <div class="relative">
-                    <select x-model="officeId" @change="calculateDistance()" @if ($user->office_id) disabled @endif
+                    <select id="office_id" x-model="officeId" @change="calculateDistance()" @if ($user->office_id) disabled @endif
                         class="w-full theme-input rounded-xl px-4 py-3 text-xs font-semibold appearance-none {{ $user->office_id ? 'cursor-not-allowed opacity-80' : 'cursor-pointer' }}">
                         @unless ($user->office_id)
                             <option value="">-- Pilih Lokasi Kerja --</option>
@@ -242,8 +247,8 @@
                     </div>
                     <div class="leading-tight flex-1">
                         <p class="font-black text-xs font-display">Diluar Radius Kantor</p>
-                        <p class="text-[9px] theme-text-muted mt-0.5" x-text="'Jarak: ' + Math.round(currentDistance) + 'm (Maksimal: ' + maxDistance + 'm)'"></p>
-                        <p class="text-[8px] opacity-75 mt-1">Anda berada di luar batas koordinat GPS kantor. Mohon masuk ke area kantor untuk melakukan absensi.</p>
+                        <p class="text-xs theme-text-muted mt-0.5" x-text="'Jarak: ' + Math.round(currentDistance) + 'm (Maksimal: ' + maxDistance + 'm)'"></p>
+                        <p class="text-xs opacity-75 mt-1">Anda berada di luar batas koordinat GPS kantor. Mohon masuk ke area kantor untuk melakukan absensi.</p>
                     </div>
                 </div>
             </div>
@@ -259,7 +264,7 @@
                     </div>
                     <div class="leading-tight flex-1">
                         <p class="font-black text-xs font-display">Lokasi Terverifikasi</p>
-                        <p class="text-[9px] theme-text-muted mt-0.5" x-text="'Jarak: ' + Math.round(currentDistance) + 'm dari titik pusat kantor'"></p>
+                        <p class="text-xs theme-text-muted mt-0.5" x-text="'Jarak: ' + Math.round(currentDistance) + 'm dari titik pusat kantor'"></p>
                     </div>
                 </div>
             </div>
@@ -287,14 +292,14 @@
                         
                         <div class="leading-none text-left">
                             <p class="text-xs font-bold theme-text-main" x-text="locationLoading ? 'Mengambil GPS...' : (locationFetched ? 'GPS Terkunci' : 'GPS Mati')"></p>
-                            <p x-show="locationFetched" class="text-[9px] theme-text-muted mt-1" x-text="latitude + ', ' + longitude"></p>
-                            <p x-show="locationError" class="text-[9px] text-red-500 mt-1" x-text="locationError"></p>
+                            <p x-show="locationFetched" class="text-xs theme-text-muted mt-1" x-text="latitude + ', ' + longitude"></p>
+                            <p x-show="locationError" class="text-xs text-red-500 mt-1" x-text="locationError"></p>
                         </div>
                     </div>
                     
-                    <button type="button" @click="fetchLocation()" :disabled="locationLoading"
-                        class="w-7 h-7 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center theme-text-muted hover:theme-text-main hover:scale-105 active:scale-95 transition-all">
-                        <svg class="w-4 h-4" :class="{ 'animate-spin': locationLoading }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <button type="button" @click="fetchLocation()" :disabled="locationLoading" aria-label="Perbarui lokasi GPS"
+                        class="w-11 h-11 shrink-0 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center theme-text-muted hover:theme-text-main hover:scale-105 active:scale-95 transition-all">
+                        <svg class="w-4 h-4" :class="{ 'animate-spin': locationLoading }" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
                         </svg>
                     </button>
@@ -334,7 +339,7 @@
             </form>
 
             <!-- Inline Checklist Requirements Status -->
-            <div class="flex items-center justify-center gap-3 pt-2 text-[9px] font-bold theme-text-muted font-outfit uppercase">
+            <div class="flex items-center justify-center gap-3 pt-2 text-xs font-bold theme-text-muted font-outfit uppercase">
                 <span class="flex items-center gap-1">
                     <span class="w-1.5 h-1.5 rounded-full transition-colors" :class="officeId ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]' : 'bg-white/20'"></span>
                     Kantor
@@ -388,7 +393,17 @@
                     return this.officeId && this.locationFetched && this.photoTaken && !this.isSubmitting && !this.distanceWarning;
                 },
 
+                get statusMessage() {
+                    if (this.photoTaken) return this.livenessVerified ? 'Foto berhasil diambil.' : 'Foto manual berhasil diambil.';
+                    if (this.cameraLoading) return 'Menghubungkan kamera.';
+                    if (this.livenessLoading) return 'Memuat deteksi wajah.';
+                    if (this.manualAllowed) return 'Kedip tidak terdeteksi. Tombol Ambil Foto Manual tersedia.';
+                    return this.faceDetected ? 'Wajah terdeteksi. Kedipkan mata untuk mengambil foto.' : 'Arahkan wajah ke kamera.';
+                },
+
                 async init() {
+                    // Start fetching the face model while the camera permission prompt is open.
+                    window.preloadBlinkDetector?.();
                     await this.initCamera();
                     this.fetchLocation();
                     if (!this.cameraError) this.startLiveness();

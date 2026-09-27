@@ -21,8 +21,8 @@
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-[10px] font-black uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-300">{{ $student->status ?? 'Siswa' }}</span>
-                            <span class="rounded-lg bg-white/80 px-2 py-1 text-[9px] font-black text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100">{{ strtoupper($student->school_level) }}</span>
+                            <span class="text-xs font-black uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-300">{{ $student->status ?? 'Siswa' }}</span>
+                            <span class="rounded-lg bg-white/80 px-2 py-1 text-xs font-black text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100">{{ strtoupper($student->school_level) }}</span>
                         </div>
                         <h1 class="mt-2 text-xl font-black leading-tight theme-text-main">{{ $student->nama_lengkap }}</h1>
                         <p class="mt-1 text-xs theme-text-muted">NISN {{ $student->nisn ?: 'belum tersedia' }}</p>
@@ -30,9 +30,9 @@
                 </div>
 
                 <div data-profile-summary="student" class="mt-5 grid grid-cols-3 gap-2">
-                    <div class="rounded-2xl bg-white/75 p-3 dark:bg-white/5"><span class="block text-[9px] font-bold uppercase theme-text-muted">Kelas</span><strong class="mt-1 block truncate text-xs theme-text-main">{{ $student->schoolClass?->name ?? '-' }}</strong></div>
-                    <div class="rounded-2xl bg-white/75 p-3 dark:bg-white/5"><span class="block text-[9px] font-bold uppercase theme-text-muted">BK aktif</span><strong class="mt-1 block text-base font-black text-emerald-800 dark:text-emerald-200">{{ $summary['active_count'] }}</strong></div>
-                    <div class="rounded-2xl bg-white/75 p-3 dark:bg-white/5"><span class="block text-[9px] font-bold uppercase theme-text-muted">Rujukan</span><strong class="mt-1 block text-base font-black theme-text-main">{{ $referrals->total() }}</strong></div>
+                    <div class="rounded-2xl bg-white/75 p-3 dark:bg-white/5"><span class="block text-xs font-bold uppercase theme-text-muted">Kelas</span><strong class="mt-1 block truncate text-xs theme-text-main">{{ $student->schoolClass?->name ?? '-' }}</strong></div>
+                    <div class="rounded-2xl bg-white/75 p-3 dark:bg-white/5"><span class="block text-xs font-bold uppercase theme-text-muted">BK aktif</span><strong class="mt-1 block text-base font-black text-emerald-800 dark:text-emerald-200">{{ $summary['active_count'] }}</strong></div>
+                    <div class="rounded-2xl bg-white/75 p-3 dark:bg-white/5"><span class="block text-xs font-bold uppercase theme-text-muted">Rujukan</span><strong class="mt-1 block text-base font-black theme-text-main">{{ $referrals->total() }}</strong></div>
                 </div>
             </div>
         </section>
@@ -93,7 +93,7 @@
             <div class="flex items-end justify-between gap-3 px-1"><div><h2 class="text-sm font-black theme-text-main">Riwayat rujukan</h2><p class="mt-1 text-[11px] theme-text-muted">Rujukan yang dapat Anda akses.</p></div><span class="text-xs font-bold text-emerald-700 dark:text-emerald-300">{{ $referrals->total() }}</span></div>
             @forelse($referrals as $referral)
                 <a href="{{ route('attendance.kesiswaan.referrals.show', $referral) }}" class="solid-panel block rounded-[20px] p-4 transition hover:border-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">
-                    <div class="flex items-start justify-between gap-3"><h3 class="min-w-0 flex-1 text-sm font-black theme-text-main">{{ $referral->reason }}</h3><span class="shrink-0 rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-bold theme-text-muted dark:bg-slate-800">{{ $referralStatusLabels[$referral->status->value] ?? ucfirst(str_replace('_', ' ', $referral->status->value)) }}</span></div>
+                    <div class="flex items-start justify-between gap-3"><h3 class="min-w-0 flex-1 text-sm font-black theme-text-main">{{ $referral->reason }}</h3><span class="shrink-0 rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold theme-text-muted dark:bg-slate-800">{{ $referralStatusLabels[$referral->status->value] ?? ucfirst(str_replace('_', ' ', $referral->status->value)) }}</span></div>
                     <p class="mt-2 text-[11px] theme-text-muted">{{ $referral->observed_at?->translatedFormat('d M Y') }} · {{ $referral->counselor?->name ?? 'Belum ditangani' }}</p>
                 </a>
             @empty

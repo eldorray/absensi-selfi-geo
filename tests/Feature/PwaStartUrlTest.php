@@ -10,10 +10,15 @@ test('pwa manifest start_url points to the dashboard beranda, not the check-in f
     expect($manifest['start_url'])->toBe('/attendance/dashboard');
 });
 
-test('service worker precaches the dashboard beranda for offline launch', function () {
+// Logged-in pages carry personal data and a CSRF token, and a cached copy shows
+// stale attendance; offline launch falls back to /offline instead.
+test('service worker never precaches logged-in pages, only the offline fallback', function () {
     $sw = (string) file_get_contents(public_path('sw.js'));
 
-    expect($sw)->toContain("'/attendance/dashboard'");
+    expect($sw)
+        ->not->toContain("'/attendance/dashboard'")
+        ->toContain("'/offline'")
+        ->toContain("caches.match('/offline')");
 });
 
 // Installed PWAs cache the manifest they were installed with, so an older

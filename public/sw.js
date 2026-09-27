@@ -1,9 +1,12 @@
-const CACHE_NAME = 'absensi-selfie-geo-v5';
+const CACHE_NAME = 'absensi-selfie-geo-v6';
+// Face-detection model files (~15 MB) change rarely: cache-first in their own
+// cache. Bump the version when public/mediapipe is updated.
+const MEDIAPIPE_CACHE = 'absensi-mediapipe-v1';
 
 // Assets to cache on install
+// Only public pages: logged-in HTML carries personal data and a CSRF token.
 const STATIC_ASSETS = [
     '/',
-    '/attendance/dashboard',
     '/offline'
 ];
 
@@ -27,7 +30,7 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
+                    if (cacheName !== CACHE_NAME && cacheName !== MEDIAPIPE_CACHE) {
                         console.log('[SW] Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
@@ -50,6 +53,20 @@ self.addEventListener('fetch', (event) => {
 
     // Skip external requests
     if (url.origin !== location.origin) {
+        return;
+    }
+
+    if (url.pathname.startsWith('/mediapipe/')) {
+        event.respondWith(
+            caches.open(MEDIAPIPE_CACHE).then((cache) =>
+                cache.match(request).then((cached) => cached || fetch(request).then((response) => {
+                    if (response.ok) {
+                        cache.put(request, response.clone());
+                    }
+                    return response;
+                }))
+            )
+        );
         return;
     }
 
@@ -98,48 +115,20 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // For HTML pages - Network First strategy with offline fallback
+    // HTML pages - network only, never cached (pages behind login hold personal
+    // data and a CSRF token; a stale copy would also show outdated attendance).
+    // Offline falls back to the cached public page or /offline.
     if (request.headers.get('accept')?.includes('text/html')) {
         event.respondWith(
-            fetch(request)
-                .then((response) => {
-                    // Cache successful responses
-                    if (response.ok) {
-                        const responseClone = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(request, responseClone);
-                        });
-                    }
-                    return response;
-                })
-                .catch(() => {
-                    // Try to return cached version
-                    return caches.match(request).then((cachedResponse) => {
-                        if (cachedResponse) {
-                            return cachedResponse;
-                        }
-                        // Return offline page
-                        return caches.match('/offline');
-                    });
-                })
+            fetch(request).catch(() =>
+                caches.match(request).then((cachedResponse) => cachedResponse || caches.match('/offline'))
+            )
         );
         return;
     }
 
-    // Default - Network First
-    event.respondWith(
-        fetch(request)
-            .then((response) => {
-                if (response.ok) {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(request, responseClone);
-                    });
-                }
-                return response;
-            })
-            .catch(() => caches.match(request))
-    );
+    // Everything else (JSON endpoints, etc.) goes straight to the network and
+    // is not cached.
 });
 
 // Listen for messages from the main thread

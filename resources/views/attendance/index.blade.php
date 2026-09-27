@@ -1,6 +1,6 @@
 <x-layouts.mobile title="Riwayat Absen" backUrl="{{ route('attendance.dashboard') }}" activeTab="riwayat">
     <x-slot:headerAction>
-        <span class="text-[9px] font-bold theme-text-muted font-outfit uppercase bg-white/5 border border-white/10 px-2.5 py-1 rounded-full shadow-inner">
+        <span class="text-xs font-bold theme-text-muted font-outfit uppercase bg-white/5 border border-white/10 px-2.5 py-1 rounded-full shadow-inner">
             {{ $attendances->total() }} Total
         </span>
     </x-slot:headerAction>
@@ -21,16 +21,16 @@
                             {{ $attendance->created_at->locale('id')->isoFormat('dddd') }}
                         </p>
                         
-                        <span class="px-2.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded-full flex-none @if($attendance->status->value === 'present') theme-status-ok-card theme-status-ok-text status-badge-glow @else theme-status-late-card theme-status-late-text @endif">
+                        <span class="px-2.5 py-0.5 text-xs font-black uppercase tracking-wider rounded-full flex-none @if($attendance->status->value === 'present') theme-status-ok-card theme-status-ok-text status-badge-glow @else theme-status-late-card theme-status-late-text @endif">
                             {{ $attendance->status->label() }}
                         </span>
                     </div>
                     
-                    <p class="text-[9px] theme-text-muted font-outfit mt-0.5">
+                    <p class="text-xs theme-text-muted font-outfit mt-0.5">
                         {{ $attendance->created_at->format('d M Y') }}
                     </p>
                     
-                    <div class="flex items-center gap-2 mt-2 text-[9px] font-bold theme-text-muted font-outfit">
+                    <div class="flex items-center gap-2 mt-2 text-xs font-bold theme-text-muted font-outfit">
                         <!-- Clock Info -->
                         <span class="flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@
                     </div>
 
                     @if($attendance->check_out_at)
-                        <div class="mt-2 pt-2 theme-border-t flex items-center justify-between text-[9px] font-bold theme-text-muted font-outfit">
+                        <div class="mt-2 pt-2 theme-border-t flex items-center justify-between text-xs font-bold theme-text-muted font-outfit">
                             <span class="flex items-center gap-1">
                                 <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3.007-3L18 10.5m-3.007 3L18 13.5"/>
@@ -61,7 +61,7 @@
                             </span>
                             
                             @if($attendance->check_out_image_url)
-                                <a href="{{ $attendance->check_out_image_url }}" target="_blank" class="theme-status-ok-text hover:underline text-[8px] uppercase tracking-wider font-black">
+                                <a href="{{ $attendance->check_out_image_url }}" target="_blank" class="theme-status-ok-text hover:underline text-xs uppercase tracking-wider font-black">
                                     Lihat Foto
                                 </a>
                             @endif
@@ -78,7 +78,7 @@
                     </svg>
                 </div>
                 <h3 class="font-bold text-sm theme-text-main font-display">Belum Ada Riwayat</h3>
-                <p class="text-[10px] theme-text-muted mt-1">Data riwayat kehadiran Anda hari ini dan sebelumnya akan dicantumkan di sini.</p>
+                <p class="text-xs theme-text-muted mt-1">Data riwayat kehadiran Anda hari ini dan sebelumnya akan dicantumkan di sini.</p>
             </div>
         @endforelse
 

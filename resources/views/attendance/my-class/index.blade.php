@@ -2,10 +2,10 @@
     <div class="space-y-3">
         <section class="flex items-center justify-between gap-3 px-1 text-left">
             <div class="min-w-0">
-                <p class="text-[10px] font-semibold theme-text-muted">Wali kelas · {{ $assignment->academicYear->name }}</p>
+                <p class="text-xs font-semibold theme-text-muted">Wali kelas · {{ $assignment->academicYear->name }}</p>
                 <h1 class="truncate text-lg font-black theme-text-main">{{ $assignment->schoolClass->name }}</h1>
             </div>
-            <span class="flex-none rounded-xl bg-green-500/10 px-2.5 py-1.5 text-[10px] font-bold text-green-700 dark:text-green-300">
+            <span class="flex-none rounded-xl bg-green-500/10 px-2.5 py-1.5 text-xs font-bold text-green-700 dark:text-green-300">
                 {{ $students->total() }} siswa
             </span>
         </section>
@@ -33,10 +33,10 @@
                         </span>
                         <span class="min-w-0 flex-1">
                             <span class="block truncate text-sm font-bold theme-text-main">{{ $student->nama_lengkap }}</span>
-                            <span class="block truncate text-[10px] theme-text-muted">NISN {{ $student->nisn ?? '-' }}</span>
+                            <span class="block truncate text-xs theme-text-muted">NISN {{ $student->nisn ?? '-' }}</span>
                         </span>
                         @if ($student->violations_count > 0)
-                            <span class="grid min-w-6 flex-none place-items-center rounded-lg bg-amber-500/10 px-1.5 py-1 text-[10px] font-bold text-amber-700 dark:text-amber-300"
+                            <span class="grid min-w-6 flex-none place-items-center rounded-lg bg-amber-500/10 px-1.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-300"
                                 aria-label="{{ $student->violations_count }} pelanggaran">
                                 {{ $student->violations_count }}
                             </span>

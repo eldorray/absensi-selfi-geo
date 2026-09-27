@@ -13,7 +13,7 @@
                 </div>
             </div>
             <h3 class="font-black text-sm theme-text-main font-display mt-3 leading-none">{{ auth()->user()->name }}</h3>
-            <p class="text-[9px] theme-text-muted mt-1 uppercase font-bold tracking-wider font-outfit">{{ auth()->user()->role?->name ?? 'Pegawai' }}</p>
+            <p class="text-xs theme-text-muted mt-1 uppercase font-bold tracking-wider font-outfit">{{ auth()->user()->role?->name ?? 'Pegawai' }}</p>
         </div>
 
         <!-- Update details form -->
@@ -31,7 +31,7 @@
 
                 <!-- Avatar Field -->
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Foto Profil</label>
+                    <label class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Foto Profil</label>
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-green-400 to-emerald-500 p-[1.5px] shrink-0">
                             <div class="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden">
@@ -49,13 +49,13 @@
                                 </template>
                             </div>
                         </div>
-                        <label class="theme-input cursor-pointer rounded-2xl px-4 py-2.5 text-[11px] font-bold uppercase tracking-wide font-outfit theme-text-main">
+                        <label class="theme-input cursor-pointer rounded-2xl px-4 py-2.5 text-xs font-bold focus-within:ring-2 focus-within:ring-green-500 uppercase tracking-wide font-outfit theme-text-main">
                             Pilih Foto
-                            <input type="file" name="avatar" accept="image/*" class="hidden"
+                            <input type="file" name="avatar" accept="image/*" class="sr-only"
                                 @change="preview = $event.target.files.length ? URL.createObjectURL($event.target.files[0]) : null">
                         </label>
                     </div>
-                    <p class="mt-1.5 text-[9px] theme-text-muted">JPG/PNG/WEBP, maks 8MB. Otomatis dikompres.</p>
+                    <p class="mt-1.5 text-xs theme-text-muted">JPG/PNG/WEBP, maks 8MB. Otomatis dikompres.</p>
                     @error('avatar')
                         <p class="mt-1.5 text-xs text-red-500 font-medium">{{ $message }}</p>
                     @enderror
@@ -63,8 +63,8 @@
 
                 <!-- Name Field -->
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Nama Lengkap</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}"
+                    <label for="name" class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Nama Lengkap</label>
+                    <input type="text" name="name" id="name" autocomplete="name" value="{{ old('name', $user->name) }}"
                         class="theme-input w-full rounded-2xl px-4 py-3 text-xs font-semibold"
                         placeholder="Nama Lengkap Anda" required>
                     @error('name')
@@ -74,8 +74,8 @@
 
                 <!-- Email Field -->
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Alamat Email</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}"
+                    <label for="email" class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Alamat Email</label>
+                    <input type="email" name="email" id="email" autocomplete="email" value="{{ old('email', $user->email) }}"
                         class="theme-input w-full rounded-2xl px-4 py-3 text-xs font-semibold"
                         placeholder="email@domain.com" required>
                     @error('email')
@@ -93,19 +93,19 @@
 
         <!-- Account Info metadata cards -->
         <div class="glass-card theme-border rounded-[22px] p-4 text-left">
-            <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-3.5">Detail Informasi Instansi</h3>
+            <h3 class="font-black text-xs theme-text-muted font-outfit uppercase tracking-wider mb-3.5">Detail Informasi Instansi</h3>
             
             <div class="space-y-3.5 text-xs">
                 <div class="flex justify-between items-center theme-border-b pb-2">
-                    <span class="text-[10px] theme-text-muted uppercase font-semibold">Instansi/Kantor</span>
+                    <span class="text-xs theme-text-muted uppercase font-semibold">Instansi/Kantor</span>
                     <span class="font-bold theme-text-main font-outfit">{{ auth()->user()->office?->name ?? '-' }}</span>
                 </div>
                 <div class="flex justify-between items-center theme-border-b pb-2">
-                    <span class="text-[10px] theme-text-muted uppercase font-semibold">Peran Pengguna</span>
+                    <span class="text-xs theme-text-muted uppercase font-semibold">Peran Pengguna</span>
                     <span class="font-bold theme-text-main font-outfit">{{ auth()->user()->role?->name ?? '-' }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-[10px] theme-text-muted uppercase font-semibold">Tanggal Bergabung</span>
+                    <span class="text-xs theme-text-muted uppercase font-semibold">Tanggal Bergabung</span>
                     <span class="font-bold theme-text-main font-outfit">{{ auth()->user()->created_at->format('d M Y') }}</span>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                 </div>
                 <div class="text-left leading-none">
                     <span class="font-black text-xs theme-text-main font-display">Ganti Password Akun</span>
-                    <p class="text-[9px] theme-text-muted mt-1">Kelola keamanan password akun Anda</p>
+                    <p class="text-xs theme-text-muted mt-1">Kelola keamanan password akun Anda</p>
                 </div>
             </div>
             

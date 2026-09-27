@@ -163,7 +163,7 @@
                     class="px-4 py-2 bg-white text-indigo-600 font-semibold text-sm rounded-lg hover:bg-gray-100 transition-colors">
                     Install
                 </button>
-                <button onclick="dismissInstallBanner()" class="p-2 text-white/80 hover:text-white transition-colors">
+                <button onclick="dismissInstallBanner()" aria-label="Tutup banner instal" class="p-2 text-white/80 hover:text-white transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>

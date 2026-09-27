@@ -14,7 +14,7 @@
         $branding = \App\Models\ApplicationSetting::current();
     @endphp
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f1712">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="Aplikasi Absensi Selfie dengan Verifikasi GPS">
@@ -402,7 +402,7 @@
             background: rgba(102, 187, 106, 0.15);
         }
         .nav-label {
-            font-size: 8px;
+            font-size: 12px;
             font-weight: 800;
             font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             letter-spacing: 0.02em;
@@ -529,13 +529,6 @@
         .animate-blob-3 {
             animation: float-blob 19s infinite alternate-reverse ease-in-out;
         }
-
-        @media (max-width: 640px) and (max-height: 760px) {
-            .mobile-panel {
-                transform: scale(0.94);
-                transform-origin: top center;
-            }
-        }
     </style>
     @include('partials.pwa-material3')
 
@@ -584,7 +577,7 @@
                 <div class="absolute top-[20%] right-[-10%] w-36 h-36 rounded-full bg-[#FF2D55]/5 blur-[40px]"></div>
 
                 <!-- 1. Header (Fixed at top) -->
-                <header class="relative z-10 flex flex-col px-5 pt-4 pb-3" data-m3-region="top-app-bar">
+                <header class="relative z-10 flex flex-col px-5 pt-4 pb-3" style="padding-top: max(1rem, env(safe-area-inset-top))" data-m3-region="top-app-bar">
                     @if($isSheet)
                         <div class="w-full pb-2 flex justify-center">
                             <div class="sheet-handle"></div>

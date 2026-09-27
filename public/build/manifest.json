@@ -1,13 +1,22 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-DBTuJ6eM.css",
+    "file": "assets/app-CZ4KjDIc.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-pqBoe_fj.js",
+    "file": "assets/app-CprKdUdp.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/liveness.js"
+    ]
+  },
+  "resources/js/liveness.js": {
+    "file": "assets/liveness-D3dxCvAf.js",
+    "name": "liveness",
+    "src": "resources/js/liveness.js",
+    "isDynamicEntry": true
   }
 }

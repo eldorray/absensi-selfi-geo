@@ -4,11 +4,11 @@
         <!-- Status Overview Card -->
         <div class="glass-card theme-border rounded-[28px] p-5 text-left shadow-lg animate-stagger stagger-0">
             <div class="flex items-center justify-between gap-3 mb-4">
-                <span class="px-3 py-1 text-[9px] font-black uppercase tracking-wider rounded-full bg-white/10 theme-text-main shadow-inner">
+                <span class="px-3 py-1 text-xs font-black uppercase tracking-wider rounded-full bg-white/10 theme-text-main shadow-inner">
                     {{ $leave->type_label }}
                 </span>
                 
-                <span class="px-3 py-1 text-[9px] font-black uppercase tracking-wider rounded-full @if($leave->status === 'approved') theme-status-ok-card theme-status-ok-text status-badge-glow @elseif($leave->status === 'rejected') theme-status-late-card theme-status-late-text @else bg-amber-400/10 text-amber-500 border border-amber-500/20 @endif">
+                <span class="px-3 py-1 text-xs font-black uppercase tracking-wider rounded-full @if($leave->status === 'approved') theme-status-ok-card theme-status-ok-text status-badge-glow @elseif($leave->status === 'rejected') theme-status-late-card theme-status-late-text @else bg-amber-400/10 text-amber-500 border border-amber-500/20 @endif">
                     {{ $leave->status_label }}
                 </span>
             </div>
@@ -22,7 +22,7 @@
                         </svg>
                     </div>
                     <div class="leading-tight">
-                        <p class="text-[8px] uppercase font-bold tracking-wider opacity-60">Durasi Perizinan</p>
+                        <p class="text-xs uppercase font-bold tracking-wider opacity-60">Durasi Perizinan</p>
                         <p class="font-bold theme-text-main mt-0.5">
                             {{ $leave->start_date->format('d M Y') }}
                             @if ($leave->start_date != $leave->end_date)
@@ -40,7 +40,7 @@
                         </svg>
                     </div>
                     <div class="leading-tight">
-                        <p class="text-[8px] uppercase font-bold tracking-wider opacity-60">Tanggal Pengajuan</p>
+                        <p class="text-xs uppercase font-bold tracking-wider opacity-60">Tanggal Pengajuan</p>
                         <p class="font-bold theme-text-main mt-0.5">{{ $leave->created_at->format('d M Y, H:i') }} WIB</p>
                     </div>
                 </div>
@@ -49,14 +49,14 @@
 
         <!-- Reason Card -->
         <div class="glass-card theme-border rounded-[24px] p-5 text-left animate-stagger stagger-40 shadow-md">
-            <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-2">Alasan Pengajuan</h3>
+            <h3 class="font-black text-xs theme-text-muted font-outfit uppercase tracking-wider mb-2">Alasan Pengajuan</h3>
             <p class="text-xs theme-text-main leading-relaxed font-semibold">{{ $leave->reason }}</p>
         </div>
 
         <!-- Attachment image Card -->
         @if ($leave->attachment)
             <div class="glass-card theme-border rounded-[24px] p-5 text-left animate-stagger stagger-80 shadow-md">
-                <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-3">Dokumen Lampiran</h3>
+                <h3 class="font-black text-xs theme-text-muted font-outfit uppercase tracking-wider mb-3">Dokumen Lampiran</h3>
                 <div class="rounded-2xl overflow-hidden border border-white/10 shadow bg-slate-950/60 p-1">
                     <a href="{{ $leave->attachment_url }}" target="_blank" class="block group relative overflow-hidden rounded-xl">
                         <img src="{{ $leave->attachment_url }}" alt="Lampiran" class="w-full object-contain max-h-64 group-hover:scale-102 transition-transform duration-300">
@@ -71,7 +71,7 @@
         <!-- Approval / Rejection details -->
         @if (!$leave->isPending())
             <div class="glass-card theme-border rounded-[24px] p-5 text-left animate-stagger stagger-120 shadow-md">
-                <h3 class="font-black text-[10px] theme-text-muted font-outfit uppercase tracking-wider mb-3.5">
+                <h3 class="font-black text-xs theme-text-muted font-outfit uppercase tracking-wider mb-3.5">
                     {{ $leave->isApproved() ? 'Disetujui Oleh' : 'Ditolak Oleh' }}
                 </h3>
                 
@@ -84,13 +84,13 @@
                     
                     <div class="leading-tight text-left flex-1 min-w-0">
                         <p class="font-bold text-xs theme-text-main font-display truncate">{{ $leave->approver?->name ?? '-' }}</p>
-                        <p class="text-[9px] theme-text-muted mt-0.5 font-outfit uppercase font-semibold">{{ $leave->approved_at?->format('d M Y, H:i') }} WIB</p>
+                        <p class="text-xs theme-text-muted mt-0.5 font-outfit uppercase font-semibold">{{ $leave->approved_at?->format('d M Y, H:i') }} WIB</p>
                     </div>
                 </div>
 
                 @if ($leave->isRejected() && $leave->rejection_reason)
                     <div class="mt-4 p-3.5 rounded-2xl border border-red-500/20 bg-red-500/10 theme-status-late-text text-xs leading-normal">
-                        <p class="font-black text-[10px] uppercase tracking-wider mb-1 font-outfit text-red-400">Alasan Penolakan:</p>
+                        <p class="font-black text-xs uppercase tracking-wider mb-1 font-outfit text-red-400">Alasan Penolakan:</p>
                         <p class="font-semibold">{{ $leave->rejection_reason }}</p>
                     </div>
                 @endif
