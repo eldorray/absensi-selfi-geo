@@ -241,23 +241,28 @@
             (function () {
                 let deferredPrompt = null;
                 const banner = () => document.getElementById('pwa-install-banner');
+                // Banner fixed di atas nav: selama tampil, konten diberi ruang agar tidak tertutup.
+                const showBanner = (visible) => {
+                    banner().hidden = ! visible;
+                    document.body.classList.toggle('g-has-install', visible);
+                };
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     deferredPrompt = e;
                     let dismissed = false;
                     try { dismissed = localStorage.getItem('pwaInstallDismissed') === 'true'; } catch (err) {}
-                    if (! dismissed) banner().hidden = false;
+                    if (! dismissed) showBanner(true);
                 });
-                window.addEventListener('appinstalled', () => { banner().hidden = true; deferredPrompt = null; });
+                window.addEventListener('appinstalled', () => { showBanner(false); deferredPrompt = null; });
                 window.installPWA = async function () {
                     if (! deferredPrompt) return;
                     deferredPrompt.prompt();
                     await deferredPrompt.userChoice;
                     deferredPrompt = null;
-                    banner().hidden = true;
+                    showBanner(false);
                 };
                 window.dismissInstallBanner = function () {
-                    banner().hidden = true;
+                    showBanner(false);
                     try { localStorage.setItem('pwaInstallDismissed', 'true'); } catch (err) {}
                 };
 

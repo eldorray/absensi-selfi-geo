@@ -1226,6 +1226,10 @@
         box-shadow: 0 12px 32px rgb(17 21 18 / 0.25);
     }
 
+    .g-has-install .g-main {
+        padding-bottom: calc(196px + env(safe-area-inset-bottom));
+    }
+
     .g-install p {
         flex: 1;
         font-size: 13px;

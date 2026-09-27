@@ -157,3 +157,11 @@ test('the focus ring on the green hero and install banner uses the amber accent'
     expect(file_get_contents(resource_path('css/guru.css')))
         ->toMatch('/\.g-card--hero\s*,\s*\.g-install\s*\{\s*--g-focus:\s*#F2C879;/');
 });
+
+test('the install banner reserves room below the content while it is shown', function () {
+    $html = $this->actingAs(berandaTeacher())->get(route('attendance.dashboard'))->getContent();
+
+    expect($html)->toContain("document.body.classList.toggle('g-has-install', visible)")
+        ->and(file_get_contents(resource_path('css/guru.css')))
+        ->toMatch('/\.g-has-install\s+\.g-main\s*\{[^}]*padding-bottom:/');
+});
