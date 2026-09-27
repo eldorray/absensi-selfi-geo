@@ -15,13 +15,13 @@
                 font-family:
                     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
                     Oxygen, Ubuntu, sans-serif;
-                background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+                background: #0f1712;
                 min-height: 100vh;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 padding: 20px;
-                color: #f9fafb;
+                color: #e5efe7;
             }
 
             .container {
@@ -33,7 +33,7 @@
                 width: 120px;
                 height: 120px;
                 margin: 0 auto 24px;
-                background: rgba(99, 102, 241, 0.2);
+                background: #145236;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
@@ -44,7 +44,7 @@
             .icon svg {
                 width: 60px;
                 height: 60px;
-                color: #818cf8;
+                color: #9bd5b5;
             }
 
             @keyframes pulse {
@@ -68,7 +68,7 @@
 
             p {
                 font-size: 16px;
-                color: #9ca3af;
+                color: #bdc9bf;
                 margin-bottom: 32px;
                 line-height: 1.6;
             }
@@ -77,8 +77,8 @@
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
-                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-                color: white;
+                background: #9bd5b5;
+                color: #003822;
                 padding: 14px 28px;
                 border-radius: 12px;
                 font-size: 16px;
@@ -87,12 +87,12 @@
                 border: none;
                 cursor: pointer;
                 transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+                box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
             }
 
             .btn:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+                box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
             }
 
             .btn:active {
@@ -171,14 +171,31 @@
                 content: '✓';
                 position: absolute;
                 left: 0;
-                color: #10b981;
+                color: #9bd5b5;
+            }
+
+            .btn:focus-visible {
+                outline: 3px solid #b7f2cd;
+                outline-offset: 3px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .icon,
+                .status-dot {
+                    animation: none;
+                }
+                .btn,
+                .btn:hover {
+                    transition: none;
+                    transform: none;
+                }
             }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="icon">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -195,7 +212,7 @@
             </p>
 
             <button class="btn" onclick="location.reload()">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -206,7 +223,7 @@
                 Coba Lagi
             </button>
 
-            <div class="status">
+            <div class="status" role="status">
                 <span class="status-dot"></span>
                 <span class="status-text">Tidak ada koneksi internet</span>
             </div>

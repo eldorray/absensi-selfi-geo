@@ -27,7 +27,8 @@
                 </div>
             @endif
 
-            <form action="{{ route('attendance.leaves.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <form action="{{ route('attendance.leaves.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4"
+                x-data="{ sending: false }" @submit="sending = true" @pageshow.window="sending = false">
                 @csrf
 
                 <!-- Type Selector Radio Tabs (Izin, Cuti, Sakit) -->
@@ -135,9 +136,9 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit"
-                    class="theme-btn-submit flex w-full items-center justify-center rounded-full py-3.5 text-xs font-bold tracking-wider uppercase font-outfit shadow-lg">
-                    Kirim Pengajuan Izin
+                <button type="submit" :disabled="sending" :aria-busy="sending"
+                    class="theme-btn-submit flex w-full items-center justify-center rounded-full py-3.5 text-xs font-bold tracking-wider uppercase font-outfit shadow-lg disabled:opacity-60">
+                    <span x-text="sending ? 'Mengirim…' : 'Kirim Pengajuan Izin'">Kirim Pengajuan Izin</span>
                 </button>
             </form>
         </div>

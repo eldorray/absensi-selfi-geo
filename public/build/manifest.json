@@ -1,8 +1,12 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-CZ4KjDIc.css",
+    "file": "assets/app-C8lVG9I_.css",
     "src": "resources/css/app.css",
     "isEntry": true
+  },
+  "resources/fonts/inter-latin.woff2": {
+    "file": "assets/inter-latin-8kRkwJBP.woff2",
+    "src": "resources/fonts/inter-latin.woff2"
   },
   "resources/js/app.js": {
     "file": "assets/app-CprKdUdp.js",

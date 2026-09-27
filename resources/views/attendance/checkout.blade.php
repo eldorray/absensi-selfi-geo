@@ -8,9 +8,10 @@
 
     <style>
         /* Viewfinder Scanner Animations */
+        /* Moves a full-height track so % is relative to the viewfinder; transform avoids per-frame layout. */
         @keyframes scanline {
-            0%, 100% { top: 12%; opacity: 0.8; }
-            50% { top: 85%; opacity: 0.8; }
+            0%, 100% { transform: translateY(12%); }
+            50% { transform: translateY(85%); }
         }
 
         @keyframes pulse-ring {
@@ -125,8 +126,9 @@
             <!-- Camera Viewfinder Section -->
             <div class="glass-card theme-border rounded-[24px] overflow-hidden p-2.5 viewfinder-border-glow">
                 <div class="relative aspect-[3/4] bg-slate-950 rounded-[18px] overflow-hidden">
-                    <video x-ref="video" x-show="!photoTaken" autoplay playsinline class="w-full h-full object-cover"></video>
-                    <canvas x-ref="canvas" x-show="photoTaken" class="w-full h-full object-cover"></canvas>
+                    <video x-ref="video" x-show="!photoTaken" autoplay playsinline class="w-full h-full object-cover -scale-x-100"></video>
+                    <!-- Preview mirrored like a mirror; the saved photo stays unmirrored. -->
+                    <canvas x-ref="canvas" x-show="photoTaken" class="w-full h-full object-cover -scale-x-100"></canvas>
 
                     <!-- Camera Loading Overlay -->
                     <div x-show="cameraLoading" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 z-20">
@@ -179,7 +181,7 @@
                     <!-- Scanning Overlay Details -->
                     <div x-show="!photoTaken && !cameraLoading && !cameraError" class="absolute inset-0 pointer-events-none z-10">
                         <!-- Laser line -->
-                        <div class="theme-scanline absolute left-2 right-2 h-[1px] rounded animate-scanline"></div>
+                        <div class="absolute inset-x-2 top-0 h-full opacity-80 animate-scanline"><div class="theme-scanline h-[1px] rounded"></div></div>
                         
                         <!-- Brackets corners -->
                         <div class="theme-brackets absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 rounded-tl-sm opacity-60"></div>
@@ -291,6 +293,7 @@
                         <p class="font-black text-xs font-display">Diluar Radius Kantor</p>
                         <p class="text-xs theme-text-muted mt-0.5" x-text="'Jarak: ' + Math.round(currentDistance) + 'm (Maksimal: ' + maxDistance + 'm)'"></p>
                         <p class="text-xs opacity-75 mt-1">Anda berada di luar batas koordinat GPS kantor. Mohon masuk ke area kantor untuk melakukan absensi.</p>
+                        <p x-show="accuracy > 50" class="text-xs mt-1" x-text="'Sinyal GPS kurang akurat (±' + accuracy + ' m). Jika Anda sudah di kantor, coba dekat jendela atau di luar ruangan, lalu tekan tombol perbarui lokasi.'"></p>
                     </div>
                 </div>
             </div>
@@ -334,7 +337,7 @@
                         
                         <div class="leading-none text-left">
                             <p class="text-xs font-bold theme-text-main" x-text="locationLoading ? 'Mengambil GPS...' : (locationFetched ? 'GPS Terkunci' : 'Menunggu GPS')"></p>
-                            <p x-show="locationFetched" class="text-xs theme-text-muted mt-1" x-text="latitude + ', ' + longitude"></p>
+                            <p x-show="locationFetched" class="text-xs theme-text-muted mt-1" x-text="latitude + ', ' + longitude + (accuracy ? ' · akurasi ±' + accuracy + ' m' : '')"></p>
                             <p x-show="locationError" class="text-xs text-red-500 mt-1" x-text="locationError"></p>
                         </div>
                     </div>
@@ -428,6 +431,7 @@
                 currentDistance: 0,
                 maxDistance: 0,
                 distanceWarning: false,
+                accuracy: 0,
                 distanceOk: false,
                 offices: @json($offices),
 
@@ -515,7 +519,13 @@
                         this.cameraLoading = false;
                     } catch (error) {
                         this.cameraLoading = false;
-                        this.cameraError = 'Gagal mengakses kamera perangkat.';
+                        if (error.name === 'NotAllowedError') {
+                            this.cameraError = 'Mohon izinkan akses kamera di pengaturan browser Anda.';
+                        } else if (error.name === 'NotFoundError') {
+                            this.cameraError = 'Kamera tidak ditemukan pada perangkat ini.';
+                        } else {
+                            this.cameraError = 'Gagal mengakses kamera perangkat.';
+                        }
                     }
                 },
 
@@ -556,16 +566,27 @@
                         (position) => {
                             this.latitude = position.coords.latitude.toFixed(8);
                             this.longitude = position.coords.longitude.toFixed(8);
+                            this.accuracy = Math.round(position.coords.accuracy);
                             this.locationFetched = true;
                             this.locationLoading = false;
                             this.calculateDistance();
                         },
                         (error) => {
                             this.locationLoading = false;
-                            this.locationError = 'Gagal mengambil koordinat lokasi.';
+                            switch (error.code) {
+                                case error.PERMISSION_DENIED:
+                                    this.locationError = 'Izin akses lokasi GPS ditolak.';
+                                    break;
+                                case error.POSITION_UNAVAILABLE:
+                                    this.locationError = 'Informasi koordinat lokasi tidak tersedia.';
+                                    break;
+                                default:
+                                    this.locationError = 'Gagal mengambil koordinat lokasi.';
+                            }
                         }, {
                             enableHighAccuracy: true,
-                            timeout: 10000
+                            timeout: 10000,
+                            maximumAge: 0
                         }
                     );
                 },

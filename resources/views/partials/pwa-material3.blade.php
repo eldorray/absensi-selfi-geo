@@ -347,5 +347,8 @@
             animation-iteration-count: 1 !important;
             transition-duration: 0.01ms !important;
         }
+        ::view-transition-group(*),
+        ::view-transition-old(*),
+        ::view-transition-new(*) { animation: none !important; }
     }
 </style>

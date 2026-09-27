@@ -17,10 +17,6 @@
     <link rel="apple-touch-icon" href="{{ $branding->iconUrl() }}">
     <title>AbsenKu - {{ auth()->user()->name }}</title>
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -523,7 +519,12 @@
     <!-- Theme Restore (runs as body's first child: document.body exists here, unlike in <head>) -->
     <script>
         (function() {
-            if (localStorage.getItem('welcome-theme') === 'light') {
+            // Shared theme key across the app: 'light' | 'dark', absent = follow the OS.
+            // 'welcome-theme' is the legacy key, read so earlier choices survive.
+            let saved = null;
+            try { saved = localStorage.getItem('appearance') ?? localStorage.getItem('welcome-theme'); } catch (e) {}
+            const light = saved ? saved === 'light' : !window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (light) {
                 document.body.classList.add('light-theme');
             }
         })();
@@ -686,7 +687,7 @@
                             </div>
                         @endif
                         <!-- Theme Toggle Button -->
-                        <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Toggle Theme">
+                        <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Ganti tema terang/gelap">
                             <!-- Sun Icon (for dark mode) -->
                             <svg class="sun-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
@@ -731,7 +732,7 @@
                                 dismiss() { this.show = false; localStorage.setItem('statusBannerSeen', '{{ $todayAttendance->id }}'); },
                             }"
                             x-init="if (show) setTimeout(() => dismiss(), 10000)" x-show="show" x-cloak
-                            @click="dismiss()" x-transition.opacity.duration.500ms
+                            @click="dismiss()" x-transition.opacity.duration.500ms role="status"
                             class="animate-stagger stagger-0 rounded-2xl p-3.5 relative overflow-hidden cursor-pointer {{ $todayAttendance->status->value === 'late' ? 'theme-status-late-card theme-status-late-text' : 'theme-status-ok-card theme-status-ok-text' }}">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl overflow-hidden border border-white/20 flex-none bg-slate-900">
@@ -742,11 +743,12 @@
                                     <p class="text-sm font-black font-display {{ $todayAttendance->status->value === 'late' ? 'theme-status-late-text' : 'theme-status-ok-text' }}">{{ $todayAttendance->status->label() }}</p>
                                     <p class="text-xs theme-text-muted mt-0.5">Masuk pukul {{ $todayAttendance->created_at->format('H:i') }} WIB</p>
                                 </div>
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 flex-none {{ $todayAttendance->status->value === 'late' ? 'theme-status-late-text' : 'theme-status-ok-text' }}">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <button type="button" @click.stop="dismiss()" aria-label="Tutup status absen"
+                                    class="w-11 h-11 rounded-full flex items-center justify-center bg-white/10 flex-none {{ $todayAttendance->status->value === 'late' ? 'theme-status-late-text' : 'theme-status-ok-text' }}">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                                     </svg>
-                                </div>
+                                </button>
                             </div>
                         </div>
                     @endif
@@ -1023,7 +1025,7 @@
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
             const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('welcome-theme', isLight ? 'light' : 'dark');
+            try { localStorage.setItem('appearance', isLight ? 'light' : 'dark'); } catch (e) {}
         }
     </script>
 </body>
