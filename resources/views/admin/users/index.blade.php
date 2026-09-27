@@ -141,16 +141,34 @@
                                         <div class="flex items-center gap-1.5"
                                             x-data="{
                                                 show: false,
-                                                pw: @js($user->visible_password),
+                                                pw: null,
+                                                text: '',
+                                                failed: false,
                                                 copied: false,
+                                                // Fetched on demand so passwords never sit in the page source.
+                                                load() {
+                                                    this.pw ??= fetch(@js(route('admin.users.password', $user)), { headers: { Accept: 'application/json' } })
+                                                        .then(r => r.ok ? r.json() : Promise.reject(r))
+                                                        .then(d => d.password)
+                                                        .catch(e => { this.pw = null; this.failed = true; throw e; });
+                                                    return this.pw;
+                                                },
+                                                async toggle() {
+                                                    if (this.show) { this.show = false; return; }
+                                                    this.failed = false;
+                                                    this.text = await this.load().catch(() => null);
+                                                    this.show = this.text !== null;
+                                                },
                                                 copy() {
-                                                    navigator.clipboard.writeText(this.pw);
-                                                    this.copied = true;
-                                                    setTimeout(() => this.copied = false, 1500);
+                                                    this.failed = false;
+                                                    // ClipboardItem accepts a promise, which keeps Safari's user-gesture check happy across the fetch.
+                                                    navigator.clipboard.write([new ClipboardItem({ 'text/plain': this.load().then(p => new Blob([p], { type: 'text/plain' })) })])
+                                                        .then(() => { this.copied = true; setTimeout(() => this.copied = false, 1500); })
+                                                        .catch(() => { this.failed = true; });
                                                 },
                                             }">
-                                            <span class="font-mono text-sm" x-text="show ? pw : '••••••••'"></span>
-                                            <button type="button" @click="show = !show"
+                                            <span class="font-mono text-sm" x-text="failed ? 'Gagal memuat' : (show ? text : '••••••••')"></span>
+                                            <button type="button" @click="toggle()"
                                                 class="admin-icon-action size-8 p-0"
                                                 :title="show ? 'Sembunyikan' : 'Lihat password'">
                                                 <svg x-show="!show" class="h-4 w-4" fill="none" stroke="currentColor"
@@ -205,7 +223,7 @@
                                                 method="POST" x-data="{}"
                                                 @submit.prevent="$dispatch('admin-confirm', {
                                                     title: 'Reset Password',
-                                                    message: 'Reset password user ini ke default Guru12345? Password lama akan diganti.',
+                                                    message: 'Reset password user ini ke password acak baru? Password lama akan diganti.',
                                                     confirmText: 'Reset',
                                                     variant: 'primary',
                                                     form: $el,
@@ -213,7 +231,7 @@
                                                 @csrf
                                                 <button type="submit"
                                                     class="admin-button-secondary admin-icon-action size-11 p-0"
-                                                    title="Reset password ke Guru12345">
+                                                    title="Reset password">
                                                     <svg class="h-5 w-5" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"

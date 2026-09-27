@@ -96,12 +96,31 @@ test('a teacher changing their own password keeps the visible copy in sync', fun
     expect($guru->fresh()->visible_password)->toBe('fresh6789');
 });
 
-test('admin sees a teacher password on the users page', function () {
+test('the users page never embeds passwords in its source', function () {
     vpGuru(['name' => 'Guru Terlihat'])->update(['visible_password' => 'lihataku1']);
 
     actingAs(vpAdmin())->get(route('admin.users.index'))
         ->assertStatus(200)
-        ->assertSee('lihataku1');
+        ->assertSee('Guru Terlihat')
+        ->assertDontSee('lihataku1');
+});
+
+test('admin fetches a teacher password on demand', function () {
+    $guru = vpGuru();
+    $guru->update(['visible_password' => 'lihataku1']);
+
+    actingAs(vpAdmin())->getJson(route('admin.users.password', $guru))
+        ->assertOk()
+        ->assertExactJson(['password' => 'lihataku1'])
+        ->assertHeader('Cache-Control', 'no-store, private');
+});
+
+test('non-admin cannot fetch a password', function () {
+    $target = vpGuru();
+    $target->update(['visible_password' => 'rahasia99']);
+
+    actingAs(vpGuru())->get(route('admin.users.password', $target))
+        ->assertRedirect();
 });
 
 test('password PDF export downloads for admin', function () {
@@ -117,25 +136,38 @@ test('non-admin cannot export the password PDF', function () {
         ->assertRedirect();
 });
 
-test('admin resets a password to the default and the visible copy follows', function () {
+test('admin resets a password to a random one and the visible copy follows', function () {
     $guru = vpGuru();
     $guru->update(['password' => Hash::make('sesuatu123'), 'visible_password' => 'sesuatu123']);
 
     actingAs(vpAdmin())->post(route('admin.users.reset-password', $guru))
-        ->assertRedirect();
+        ->assertRedirect()
+        ->assertSessionHas('success', fn (string $message) => str_contains($message, $guru->fresh()->visible_password));
 
     $guru->refresh();
-    expect(Hash::check('Guru12345', $guru->password))->toBeTrue();
-    expect($guru->visible_password)->toBe('Guru12345');
+    expect($guru->visible_password)->not->toBe('sesuatu123')->toHaveLength(10);
+    expect(Hash::check($guru->visible_password, $guru->password))->toBeTrue();
+});
+
+test('each reset produces a different password', function () {
+    $guru = vpGuru();
+    $admin = vpAdmin();
+
+    actingAs($admin)->post(route('admin.users.reset-password', $guru));
+    $first = $guru->fresh()->visible_password;
+    actingAs($admin)->post(route('admin.users.reset-password', $guru));
+
+    expect($guru->fresh()->visible_password)->not->toBe($first);
 });
 
 test('non-admin cannot reset a password', function () {
     $target = vpGuru();
+    $target->update(['password' => Hash::make('asli12345')]);
 
     actingAs(vpGuru())->post(route('admin.users.reset-password', $target))
         ->assertRedirect();
 
-    expect(Hash::check('Guru12345', $target->fresh()->password))->toBeFalse();
+    expect(Hash::check('asli12345', $target->fresh()->password))->toBeTrue();
 });
 
 test('editing a user returns to the same list page instead of page 1', function () {

@@ -187,6 +187,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // User management
     Route::post('users/sync', [Admin\UserController::class, 'syncFromApi'])->name('users.sync');
     Route::get('users/export-pdf', [Admin\UserController::class, 'exportPasswordsPdf'])->name('users.export-pdf');
+    Route::get('users/{user}/password', [Admin\UserController::class, 'showPassword'])->middleware('throttle:30,1')->name('users.password');
     Route::post('users/{user}/reset-password', [Admin\UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::resource('users', Admin\UserController::class)->except(['show']);
 

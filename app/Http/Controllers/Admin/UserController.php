@@ -11,11 +11,13 @@ use App\Models\User;
 use App\Services\UserSyncService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -33,12 +35,6 @@ class UserController extends Controller
         'guru-mi' => 'Guru MI',
         'guru-smp' => 'Guru SMP',
     ];
-
-    /**
-     * Shared default password applied by the admin "reset password" action.
-     * The teacher is expected to change it after logging in.
-     */
-    private const DEFAULT_RESET_PASSWORD = 'Guru12345';
 
     /**
      * Display a listing of users.
@@ -303,17 +299,30 @@ class UserController extends Controller
     }
 
     /**
-     * Reset a user's password to the shared default ("Guru12345"). The visible
-     * copy follows automatically. The teacher should change it after logging in.
+     * Return a user's readable password on demand, so it never sits in the
+     * users page source. Admin-only via the route group.
+     */
+    public function showPassword(User $user): JsonResponse
+    {
+        return response()
+            ->json(['password' => $user->visible_password])
+            ->header('Cache-Control', 'no-store');
+    }
+
+    /**
+     * Reset a user's password to a fresh random one. The visible copy follows
+     * automatically. The teacher should change it after logging in.
      */
     public function resetPassword(User $user): RedirectResponse
     {
+        $password = Str::password(10, symbols: false);
+
         $user->update([
-            'password' => Hash::make(self::DEFAULT_RESET_PASSWORD),
-            'visible_password' => self::DEFAULT_RESET_PASSWORD,
+            'password' => Hash::make($password),
+            'visible_password' => $password,
         ]);
 
-        return back()->with('success', 'Password '.$user->name.' direset ke "'.self::DEFAULT_RESET_PASSWORD.'".');
+        return back()->with('success', 'Password '.$user->name.' direset. Password baru: '.$password);
     }
 
     /**
