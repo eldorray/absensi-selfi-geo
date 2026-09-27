@@ -48,3 +48,10 @@ test('announcement detail renders title and body', function () {
         ->assertSee('Rapat Guru')
         ->assertSee('Rapat di aula.');
 });
+
+test('password toggles carry a static name before Alpine loads and signal state with aria-pressed only', function () {
+    $html = $this->actingAs(profilUser())->get(route('attendance.password'))->getContent();
+
+    expect(substr_count($html, 'aria-label="Tampilkan password" aria-pressed="false"'))->toBe(3)
+        ->and($html)->not->toContain(':aria-label="show');
+});

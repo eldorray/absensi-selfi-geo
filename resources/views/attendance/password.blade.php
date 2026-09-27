@@ -27,7 +27,7 @@
                     <input :type="show ? 'text' : 'password'" type="password" name="{{ $name }}" id="{{ $name }}" autocomplete="{{ $autocomplete }}"
                         placeholder="{{ $placeholder }}" class="g-input pr-14" required
                         @error($name) aria-invalid="true" aria-describedby="{{ $name }}-error" @enderror>
-                    <button type="button" @click="show = ! show" :aria-pressed="show.toString()" :aria-label="show ? 'Sembunyikan password' : 'Tampilkan password'"
+                    <button type="button" @click="show = ! show" aria-label="Tampilkan password" aria-pressed="false" :aria-pressed="show.toString()"
                         class="g-iconbtn absolute right-1 top-1/2 -translate-y-1/2 border-0 bg-transparent">
                         <x-guru.icon name="eye" x-show="! show" />
                         <x-guru.icon name="eye-off" x-show="show" x-cloak />
