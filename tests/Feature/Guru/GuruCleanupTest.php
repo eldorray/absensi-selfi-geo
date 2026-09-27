@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\File;
 
 test('teacher views no longer carry the previous design classes', function () {
     $legacy = ['glass-card', 'theme-text-', 'theme-input', 'theme-btn-submit', 'solid-panel', 'font-outfit', 'animate-stagger', 'pwa-m3'];
-    // Di luar cakupan: kamera lama (x-layouts.app, tidak dipakai route) dan tiga halaman kesiswaan ber-layout admin.
-    $skip = ['create.blade.php', 'kesiswaan/notifications.blade.php', 'kesiswaan/referral-form.blade.php', 'kesiswaan/referral.blade.php'];
+    // Di luar cakupan: kamera lama (x-layouts.app, tidak dipakai route).
+    $skip = ['create.blade.php'];
 
     $paths = collect(File::allFiles(resource_path('views/attendance')))
         ->reject(fn ($file) => in_array($file->getRelativePathname(), $skip, true))
