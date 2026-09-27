@@ -14,23 +14,40 @@ test('pagination labels are Indonesian', function () {
         ->and(__('pagination.next'))->toContain('Berikutnya');
 });
 
+/** Whether the first rule for $selector sits at the top level of the stylesheet, outside any @layer/@media block. */
+function guruRuleIsTopLevel(string $css, string $selector): bool
+{
+    $offset = strpos($css, $selector);
+    if ($offset === false) {
+        return false;
+    }
+    $before = substr($css, 0, $offset);
+
+    return substr_count($before, '{') === substr_count($before, '}');
+}
+
+function guruCss(): string
+{
+    return file_get_contents(resource_path('css/guru.css'));
+}
+
 test('beranda date line lets a long office name wrap below the date', function () {
-    expect(file_get_contents(resource_path('css/guru.css')))
-        ->toContain("    .g-dateline {\n        display: flex;\n        flex-wrap: wrap;");
+    expect(guruCss())->toMatch('/\.g-dateline\s*\{[^}]*flex-wrap:\s*wrap/');
 });
 
 test('neutral status chips stay visible on the page ground', function () {
-    expect(file_get_contents(resource_path('css/guru.css')))->toContain('.g-status .g-chip--neutral {');
+    expect(guruCss())->toMatch('/\.g-status\s+\.g-chip--neutral\s*\{[^}]*background:\s*var\(--g-surface\)/');
 });
 
 test('pagination styling is unlayered so framework dark utilities cannot override it', function () {
-    $css = file_get_contents(resource_path('css/guru.css'));
-
-    expect(strpos($css, '.guru .g-pager nav[role="navigation"] a'))->toBeGreaterThan(strrpos($css, '@layer components'));
+    expect(guruRuleIsTopLevel(guruCss(), '.guru .g-pager nav[role="navigation"] a'))->toBeTrue();
 });
 
 test('bottom camera brackets sit above the face prompt', function () {
-    expect(file_get_contents(resource_path('views/attendance/partials/absen-form.blade.php')))
-        ->toContain('bottom-[76px] left-4')
-        ->toContain('bottom-[76px] right-4');
+    $role = App\Models\Role::firstOrCreate(['slug' => 'guru'], ['name' => 'Guru', 'is_admin' => false]);
+    $teacher = User::factory()->create(['role_id' => $role->id]);
+
+    $html = $this->actingAs($teacher)->get(route('attendance.selfie'))->assertOk()->getContent();
+
+    expect(preg_match_all('/g-camera__bracket bottom-\[76px\]/', $html))->toBe(2);
 });
