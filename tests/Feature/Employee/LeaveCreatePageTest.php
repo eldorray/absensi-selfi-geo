@@ -12,5 +12,5 @@ test('the leave create page renders with the type selector', function () {
     actingAs($guru)->get(route('attendance.leaves.create'))
         ->assertStatus(200)
         ->assertSee('Jenis Perizinan')
-        ->assertSee('peer-checked:opacity-100', false);
+        ->assertSee('g-choice__check', false);
 });
