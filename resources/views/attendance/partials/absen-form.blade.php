@@ -45,8 +45,8 @@
         <div class="g-camera__guide"></div>
         <span class="g-camera__bracket left-4 top-4 rounded-tl-lg border-l-2 border-t-2"></span>
         <span class="g-camera__bracket right-4 top-4 rounded-tr-lg border-r-2 border-t-2"></span>
-        <span class="g-camera__bracket bottom-4 left-4 rounded-bl-lg border-b-2 border-l-2"></span>
-        <span class="g-camera__bracket bottom-4 right-4 rounded-br-lg border-b-2 border-r-2"></span>
+        <span class="g-camera__bracket bottom-[76px] left-4 rounded-bl-lg border-b-2 border-l-2"></span>
+        <span class="g-camera__bracket bottom-[76px] right-4 rounded-br-lg border-b-2 border-r-2"></span>
     </div>
 
     <div x-show="!photoTaken && !cameraLoading && !cameraError && !livenessLoading && !livenessError && !manualOnly" class="g-camera__prompt">

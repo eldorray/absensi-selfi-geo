@@ -1,248 +1,57 @@
 <!doctype html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Offline - Absensi Selfie Geo</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-
-            body {
-                font-family:
-                    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                    Oxygen, Ubuntu, sans-serif;
-                background: #0f1712;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-                color: #e5efe7;
-            }
-
-            .container {
-                text-align: center;
-                max-width: 400px;
-            }
-
-            .icon {
-                width: 120px;
-                height: 120px;
-                margin: 0 auto 24px;
-                background: #145236;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                animation: pulse 2s ease-in-out infinite;
-            }
-
-            .icon svg {
-                width: 60px;
-                height: 60px;
-                color: #9bd5b5;
-            }
-
-            @keyframes pulse {
-                0%,
-                100% {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-                50% {
-                    transform: scale(1.05);
-                    opacity: 0.8;
-                }
-            }
-
-            h1 {
-                font-size: 28px;
-                font-weight: 700;
-                margin-bottom: 12px;
-                color: #f9fafb;
-            }
-
-            p {
-                font-size: 16px;
-                color: #bdc9bf;
-                margin-bottom: 32px;
-                line-height: 1.6;
-            }
-
-            .btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                background: #9bd5b5;
-                color: #003822;
-                padding: 14px 28px;
-                border-radius: 12px;
-                font-size: 16px;
-                font-weight: 600;
-                text-decoration: none;
-                border: none;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
-            }
-
-            .btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
-            }
-
-            .btn:active {
-                transform: translateY(0);
-            }
-
-            .btn svg {
-                width: 20px;
-                height: 20px;
-            }
-
-            .status {
-                margin-top: 32px;
-                padding: 16px;
-                background: rgba(239, 68, 68, 0.1);
-                border: 1px solid rgba(239, 68, 68, 0.3);
-                border-radius: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-            }
-
-            .status-dot {
-                width: 10px;
-                height: 10px;
-                background: #ef4444;
-                border-radius: 50%;
-                animation: blink 1.5s ease-in-out infinite;
-            }
-
-            @keyframes blink {
-                0%,
-                100% {
-                    opacity: 1;
-                }
-                50% {
-                    opacity: 0.3;
-                }
-            }
-
-            .status-text {
-                font-size: 14px;
-                color: #fca5a5;
-            }
-
-            .tips {
-                margin-top: 32px;
-                text-align: left;
-                background: rgba(255, 255, 255, 0.05);
-                padding: 20px;
-                border-radius: 12px;
-            }
-
-            .tips h3 {
-                font-size: 14px;
-                color: #9ca3af;
-                margin-bottom: 12px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-            .tips ul {
-                list-style: none;
-                font-size: 14px;
-                color: #d1d5db;
-            }
-
-            .tips li {
-                padding: 8px 0;
-                padding-left: 24px;
-                position: relative;
-            }
-
-            .tips li:before {
-                content: '✓';
-                position: absolute;
-                left: 0;
-                color: #9bd5b5;
-            }
-
-            .btn:focus-visible {
-                outline: 3px solid #b7f2cd;
-                outline-offset: 3px;
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-                .icon,
-                .status-dot {
-                    animation: none;
-                }
-                .btn,
-                .btn:hover {
-                    transition: none;
-                    transform: none;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="icon">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414"
-                    ></path>
-                </svg>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#F4F1EA">
+    <title>Offline · absenKU</title>
+    <style>
+        :root {
+            --ground: #F4F1EA; --surface: #FFFFFF; --ink: #1B2420; --muted: #5E665F; --border: #E3DDD0;
+            --primary: #1E5A48; --primary-soft: #DDE9E2; --attn-soft: #F5E1D7; --attn-ink: #8A361E;
+            color-scheme: light;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root { --ground: #111512; --surface: #1A201C; --ink: #ECE8DF; --muted: #A3ABA4; --border: #2E3631; --primary-soft: #22382F; --attn-soft: #3A241C; --attn-ink: #F0A58B; color-scheme: dark; }
+        }
+        * { box-sizing: border-box; margin: 0; }
+        body {
+            min-height: 100svh; display: grid; place-items: center; padding: 24px 20px;
+            background: var(--ground); color: var(--ink);
+            font: 15px/1.5 "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+        }
+        main { width: 100%; max-width: 24rem; display: flex; flex-direction: column; gap: 20px; }
+        .card { display: flex; flex-direction: column; gap: 16px; padding: 24px 20px; border-radius: 24px; background: var(--surface); border: 1px solid var(--border); text-align: center; }
+        .icon { width: 56px; height: 56px; margin: 0 auto; display: grid; place-items: center; border-radius: 16px; background: var(--primary-soft); color: var(--primary); }
+        h1 { font-family: Fraunces, Georgia, serif; font-size: 26px; font-weight: 600; }
+        p { color: var(--muted); }
+        .status { display: inline-flex; align-self: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--attn-soft); color: var(--attn-ink); font-size: 12px; font-weight: 700; }
+        button { min-height: 56px; border: 0; border-radius: 16px; background: #1E5A48; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 800; cursor: pointer; }
+        button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+        ul { padding: 0; list-style: none; text-align: left; display: grid; gap: 8px; color: var(--muted); font-size: 14px; }
+        li::before { content: "·"; margin-right: 8px; color: var(--primary); font-weight: 800; }
+        @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="card">
+            <div class="icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 5-2.8M19 13a10 10 0 0 0-2.7-2M2 9.5a15 15 0 0 1 4.6-2.8M22 9.5A15 15 0 0 0 12 5.5"/><path d="M12 20h.01"/></svg>
             </div>
-
-            <h1>Anda Sedang Offline</h1>
-            <p>
-                Tidak dapat terhubung ke internet. Periksa koneksi Anda dan coba
-                lagi.
-            </p>
-
-            <button class="btn" onclick="location.reload()">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    ></path>
-                </svg>
-                Coba Lagi
-            </button>
-
-            <div class="status" role="status">
-                <span class="status-dot"></span>
-                <span class="status-text">Tidak ada koneksi internet</span>
-            </div>
-
-            <div class="tips">
-                <h3>Tips</h3>
-                <ul>
-                    <li>Periksa koneksi WiFi atau data seluler</li>
-                    <li>Coba aktifkan mode pesawat lalu matikan</li>
-                    <li>Restart perangkat Anda</li>
-                </ul>
-            </div>
+            <h1>Anda sedang offline</h1>
+            <p>absenKU butuh internet untuk mencatat absen. Periksa koneksi, lalu coba lagi.</p>
+            <span class="status" role="status">Tidak ada koneksi internet</span>
+            <button type="button" onclick="location.reload()">Coba Lagi</button>
         </div>
-
-        <script>
-            // Auto-reload when back online
-            window.addEventListener('online', () => {
-                location.reload();
-            });
-        </script>
-    </body>
+        <ul>
+            <li>Periksa Wi-Fi atau data seluler.</li>
+            <li>Nyalakan lalu matikan mode pesawat.</li>
+            <li>Halaman dimuat ulang otomatis saat koneksi kembali.</li>
+        </ul>
+    </main>
+    <script>
+        window.addEventListener('online', () => location.reload());
+    </script>
+</body>
 </html>

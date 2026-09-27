@@ -392,6 +392,7 @@
 
     .g-dateline {
         display: flex;
+        flex-wrap: wrap;
         align-items: baseline;
         justify-content: space-between;
         gap: 12px;
@@ -1268,21 +1269,6 @@
         font-weight: 700;
     }
 
-    /* Paginasi Laravel */
-    .g-pager nav[role="navigation"] a,
-    .g-pager nav[role="navigation"] span {
-        display: inline-flex;
-        align-items: center;
-        min-height: 44px;
-        padding: 0 16px;
-        border-radius: 14px;
-        border: 1px solid var(--g-border);
-        background: var(--g-surface);
-        color: var(--g-ink);
-        font-size: 14px;
-        font-weight: 700;
-    }
-
     /* Kamera */
     .g-camera {
         position: relative;
@@ -1406,6 +1392,31 @@
         flex-wrap: wrap;
         gap: 8px;
     }
+
+    /* On the page ground the neutral chip needs its own surface to be seen. */
+    .g-status .g-chip--neutral {
+        background: var(--g-surface);
+        box-shadow: inset 0 0 0 1px var(--g-border);
+    }
+}
+
+/* Paginasi Laravel: di luar @layer supaya utility dark: bawaan view paginasi tidak menimpanya. */
+.guru .g-pager nav[role="navigation"] a,
+.guru .g-pager nav[role="navigation"] span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 14px;
+    border: 1px solid var(--g-border);
+    background: var(--g-surface);
+    color: var(--g-ink);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.guru .g-pager nav[role="navigation"] span {
+    color: var(--g-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
