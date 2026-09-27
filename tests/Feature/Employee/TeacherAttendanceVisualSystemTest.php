@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\AcademicYear;
+use App\Models\HomeroomAssignment;
 use App\Models\Role;
+use App\Models\SchoolClass;
 use App\Models\User;
 
 function teacherForVisualSystem(): User
@@ -13,45 +16,23 @@ function teacherForVisualSystem(): User
     return User::factory()->create(['role_id' => $role->id]);
 }
 
-it('raises the whole navigation card and removes its top outline', function () {
-    $styles = file_get_contents(resource_path('views/partials/pwa-material3.blade.php'));
+function homeroomForVisualSystem(User $teacher): void
+{
+    $year = AcademicYear::create(['name' => '2026/2027', 'start_date' => '2026-07-01', 'end_date' => '2027-06-30', 'is_active' => true]);
+    $class = SchoolClass::create(['school_level' => 'mi', 'name' => 'Kelas 4B', 'normalized_name' => SchoolClass::normalizeName('Kelas 4B'), 'grade_level' => 4, 'is_active' => true]);
+    HomeroomAssignment::create(['academic_year_id' => $year->id, 'school_class_id' => $class->id, 'teacher_id' => $teacher->id]);
+}
 
-    expect($styles)
-        ->toContain('transform: translateY(-6px);')
-        ->toContain('border-top: 0;')
-        ->not->toContain('body.pwa-m3 .footer-nav::before');
-});
-
-it('renders the dashboard with the shared Material 3 attendance system', function () {
-    $teacher = teacherForVisualSystem();
-
-    $this->actingAs($teacher)
-        ->get(route('attendance.dashboard'))
-        ->assertSuccessful()
-        ->assertSee('data-attendance-ui="material-3"', false)
-        ->assertSee('data-m3-region="top-app-bar"', false)
-        ->assertSee('data-profile-link="teacher-identity"', false)
-        ->assertSee('href="'.route('attendance.profile').'"', false)
-        ->assertSee('aria-label="Buka profil '.e($teacher->name).'"', false)
-        ->assertSee('data-m3-region="content"', false)
-        ->assertSee('data-m3-region="navigation-bar"', false)
-        ->assertSee('aria-label="Navigasi utama"', false)
-        ->assertSee('@view-transition', false)
-        ->assertSee('navigation: auto', false)
-        ->assertSee('@media (prefers-reduced-motion: reduce)', false)
-        ->assertDontSee('maximum-scale=1', false)
-        ->assertDontSee('user-scalable=no', false);
-});
-
-it('renders shared Material 3 shell pages while preserving their functional controls', function (string $routeName, string $expectedContent) {
-    $teacher = teacherForVisualSystem();
-
-    $this->actingAs($teacher)
+it('renders teacher pages inside the AbsenKU Guru shell', function (string $routeName, string $expectedContent) {
+    $this->actingAs(teacherForVisualSystem())
         ->get(route($routeName))
         ->assertSuccessful()
-        ->assertSee('data-attendance-ui="material-3"', false)
-        ->assertSee('data-m3-region="content"', false)
+        ->assertSee('<body class="guru" data-teacher-ui="absenku-guru">', false)
+        ->assertSee('data-region="content"', false)
         ->assertSee('aria-label="Navigasi utama"', false)
+        ->assertSee('@view-transition', false)
+        ->assertDontSee('maximum-scale=1', false)
+        ->assertDontSee('user-scalable=no', false)
         ->assertSee($expectedContent);
 })->with([
     'check-in camera' => ['attendance.selfie', 'Absensi Masuk'],
@@ -63,15 +44,35 @@ it('renders shared Material 3 shell pages while preserving their functional cont
     'leave create form' => ['attendance.leaves.create', 'Jenis Perizinan'],
 ]);
 
-it('keeps the animated sheet treatment on secondary attendance pages', function () {
-    $teacher = teacherForVisualSystem();
-
-    $this->actingAs($teacher)
-        ->get(route('attendance.profile'))
+it('shows three tabs for a regular teacher and marks the current one', function () {
+    $html = $this->actingAs(teacherForVisualSystem())
+        ->get(route('attendance.index'))
         ->assertSuccessful()
-        ->assertSee('sheet-slide-up', false)
-        ->assertSee('sheet-slide-up-anim', false)
-        ->assertSee('class="sheet-handle"', false);
+        ->getContent();
+
+    expect(substr_count($html, 'class="g-nav__item"'))->toBe(3)
+        ->and($html)->toContain('href="'.route('attendance.index').'" class="g-nav__item" aria-current="page"')
+        ->not->toContain('href="'.route('attendance.my-class.index').'" class="g-nav__item"');
+});
+
+it('adds the Kelas tab for a homeroom teacher', function () {
+    $teacher = teacherForVisualSystem();
+    homeroomForVisualSystem($teacher);
+
+    $html = $this->actingAs($teacher)->get(route('attendance.index'))->assertSuccessful()->getContent();
+
+    expect(substr_count($html, 'class="g-nav__item"'))->toBe(4)
+        ->and($html)->toContain('href="'.route('attendance.my-class.index').'" class="g-nav__item"');
+});
+
+it('applies the saved or system theme before first paint', function () {
+    $html = $this->actingAs(teacherForVisualSystem())->get(route('attendance.index'))->getContent();
+
+    expect($html)
+        ->toContain("localStorage.getItem('appearance') ?? localStorage.getItem('welcome-theme')")
+        ->toContain("matchMedia('(prefers-color-scheme: dark)')")
+        ->toContain("document.documentElement.classList.toggle('dark', dark)")
+        ->and(strpos($html, 'window.guruApplyTheme'))->toBeLessThan(strpos($html, '<body'));
 });
 
 it('downscales browser selfie captures to a maximum dimension of 1024 pixels', function (string $view) {
