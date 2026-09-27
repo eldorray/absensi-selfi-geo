@@ -1,137 +1,95 @@
-<x-layouts.mobile title="Profil Saya" backUrl="{{ route('attendance.dashboard') }}" isSheet="true" showNav="true">
-    <div class="space-y-4 pb-4">
-        
-        <!-- Profile Avatar Badge -->
-        <div class="flex flex-col items-center justify-center py-3">
-            <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-green-400 to-emerald-500 p-[1.5px] shadow-lg">
-                <div class="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden">
-                    @if ($user->avatar_url)
-                        <img src="{{ $user->avatar_url }}" alt="Profile" class="w-full h-full object-cover">
-                    @else
-                        <span class="text-white text-xl font-black font-outfit uppercase">{{ $user->initials() }}</span>
-                    @endif
-                </div>
-            </div>
-            <h3 class="font-black text-sm theme-text-main font-display mt-3 leading-none">{{ auth()->user()->name }}</h3>
-            <p class="text-xs theme-text-muted mt-1 uppercase font-bold tracking-wider font-outfit">{{ auth()->user()->role?->name ?? 'Pegawai' }}</p>
-        </div>
-
-        <!-- Update details form -->
-        <div class="glass-card theme-border rounded-[24px] p-5">
-            @if (session('success'))
-                <div class="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-xs theme-status-ok-text text-left">
-                    {{ session('success') }}
-                </div>
+<x-layouts.mobile title="Profil Saya" backUrl="{{ route('attendance.dashboard') }}">
+    <x-guru.card class="items-center text-center">
+        <span class="g-avatar g-avatar--xl">
+            @if ($user->avatar_url)
+                <img src="{{ $user->avatar_url }}" alt="">
+            @else
+                {{ $user->initials() }}
             @endif
-
-            <form action="{{ route('attendance.profile.update') }}" method="POST" enctype="multipart/form-data"
-                class="space-y-4 text-left" x-data="{ preview: null }">
-                @csrf
-                @method('PUT')
-
-                <!-- Avatar Field -->
-                <div>
-                    <label class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Foto Profil</label>
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-green-400 to-emerald-500 p-[1.5px] shrink-0">
-                            <div class="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden">
-                                <template x-if="preview">
-                                    <img :src="preview" alt="" class="w-full h-full object-cover">
-                                </template>
-                                <template x-if="!preview">
-                                    <span>
-                                        @if ($user->avatar_url)
-                                            <img src="{{ $user->avatar_url }}" alt="" class="w-full h-full object-cover">
-                                        @else
-                                            <span class="text-white text-sm font-black font-outfit uppercase">{{ $user->initials() }}</span>
-                                        @endif
-                                    </span>
-                                </template>
-                            </div>
-                        </div>
-                        <label class="theme-input cursor-pointer rounded-2xl px-4 py-2.5 text-xs font-bold focus-within:ring-2 focus-within:ring-green-500 uppercase tracking-wide font-outfit theme-text-main">
-                            Pilih Foto
-                            <input type="file" name="avatar" accept="image/*" class="sr-only"
-                                @change="preview = $event.target.files.length ? URL.createObjectURL($event.target.files[0]) : null">
-                        </label>
-                    </div>
-                    <p class="mt-1.5 text-xs theme-text-muted">JPG/PNG/WEBP, maks 8MB. Otomatis dikompres.</p>
-                    @error('avatar')
-                        <p class="mt-1.5 text-xs text-red-500 font-medium">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Name Field -->
-                <div>
-                    <label for="name" class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Nama Lengkap</label>
-                    <input type="text" name="name" id="name" autocomplete="name" value="{{ old('name', $user->name) }}"
-                        class="theme-input w-full rounded-2xl px-4 py-3 text-xs font-semibold"
-                        placeholder="Nama Lengkap Anda" required>
-                    @error('name')
-                        <p class="mt-1.5 text-xs text-red-500 font-medium">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Email Field -->
-                <div>
-                    <label for="email" class="mb-1.5 block text-xs font-bold tracking-wide uppercase theme-text-muted font-outfit">Alamat Email</label>
-                    <input type="email" name="email" id="email" autocomplete="email" value="{{ old('email', $user->email) }}"
-                        class="theme-input w-full rounded-2xl px-4 py-3 text-xs font-semibold"
-                        placeholder="email@domain.com" required>
-                    @error('email')
-                        <p class="mt-1.5 text-xs text-red-500 font-medium">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit"
-                    class="theme-btn-submit flex w-full items-center justify-center rounded-[1.4rem] py-3.5 text-xs font-bold tracking-wider uppercase hover:scale-[1.01] active:scale-[0.99] font-outfit">
-                    Simpan Perubahan
-                </button>
-            </form>
+        </span>
+        <div class="flex flex-col gap-1">
+            <p class="g-card__title">{{ $user->name }}</p>
+            <p class="text-sm text-guru-muted">{{ $user->role?->name ?? 'Pegawai' }} · {{ $user->office?->name ?? '-' }}</p>
         </div>
+    </x-guru.card>
 
-        <!-- Account Info metadata cards -->
-        <div class="glass-card theme-border rounded-[22px] p-4 text-left">
-            <h3 class="font-black text-xs theme-text-muted font-outfit uppercase tracking-wider mb-3.5">Detail Informasi Instansi</h3>
-            
-            <div class="space-y-3.5 text-xs">
-                <div class="flex justify-between items-center theme-border-b pb-2">
-                    <span class="text-xs theme-text-muted uppercase font-semibold">Instansi/Kantor</span>
-                    <span class="font-bold theme-text-main font-outfit">{{ auth()->user()->office?->name ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center theme-border-b pb-2">
-                    <span class="text-xs theme-text-muted uppercase font-semibold">Peran Pengguna</span>
-                    <span class="font-bold theme-text-main font-outfit">{{ auth()->user()->role?->name ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-xs theme-text-muted uppercase font-semibold">Tanggal Bergabung</span>
-                    <span class="font-bold theme-text-main font-outfit">{{ auth()->user()->created_at->format('d M Y') }}</span>
-                </div>
-            </div>
-        </div>
+    @if (session('success'))
+        <x-guru.notice tone="ok" role="status">{{ session('success') }}</x-guru.notice>
+    @endif
 
-        <!-- Settings Links (Change password) -->
-        <a href="{{ route('attendance.password') }}"
-            class="flex items-center justify-between glass-card theme-border rounded-[22px] p-4.5 hover:scale-[1.01] transition-transform duration-300">
+    <form action="{{ route('attendance.profile.update') }}" method="POST" enctype="multipart/form-data" class="g-card" x-data="{ preview: null }">
+        @csrf
+        @method('PUT')
+        <h2 class="g-h2">Data diri</h2>
+
+        <div class="g-field">
+            <span class="g-label">Foto profil</span>
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl theme-icon-password flex items-center justify-center text-amber-500">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                </div>
-                <div class="text-left leading-none">
-                    <span class="font-black text-xs theme-text-main font-display">Ganti Password Akun</span>
-                    <p class="text-xs theme-text-muted mt-1">Kelola keamanan password akun Anda</p>
-                </div>
+                <span class="g-avatar">
+                    <template x-if="preview"><img :src="preview" alt=""></template>
+                    <template x-if="! preview">
+                        <span class="contents">
+                            @if ($user->avatar_url)
+                                <img src="{{ $user->avatar_url }}" alt="">
+                            @else
+                                {{ $user->initials() }}
+                            @endif
+                        </span>
+                    </template>
+                </span>
+                <label class="g-btn g-btn--secondary g-btn--sm cursor-pointer has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-guru-primary">
+                    <x-guru.icon name="image" /> Pilih foto
+                    <input type="file" name="avatar" accept="image/*" class="sr-only" aria-describedby="avatar-hint"
+                        @change="preview = $event.target.files.length ? URL.createObjectURL($event.target.files[0]) : null">
+                </label>
             </div>
-            
-            <div class="theme-text-muted">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-                </svg>
-            </div>
-        </a>
+            <p id="avatar-hint" class="g-hint">JPG, PNG, atau WEBP, maksimal 8 MB. Otomatis dikompres.</p>
+            @error('avatar')
+                <p class="g-error">{{ $message }}</p>
+            @enderror
+        </div>
 
-    </div>
+        <x-guru.field label="Nama lengkap" for="name" error="name" :required="true">
+            <input type="text" name="name" id="name" autocomplete="name" value="{{ old('name', $user->name) }}" class="g-input" required
+                @error('name') aria-invalid="true" aria-describedby="name-error" @enderror>
+        </x-guru.field>
+
+        <x-guru.field label="Alamat email" for="email" error="email" :required="true">
+            <input type="email" name="email" id="email" autocomplete="email" value="{{ old('email', $user->email) }}" class="g-input" required
+                @error('email') aria-invalid="true" aria-describedby="email-error" @enderror>
+        </x-guru.field>
+
+        <x-guru.button type="submit" class="g-btn--block">Simpan Perubahan</x-guru.button>
+    </form>
+
+    <section class="g-card" aria-labelledby="judul-tema" x-data="{ mode: window.guruThemeMode() }">
+        <h2 id="judul-tema" class="g-h2">Tema tampilan</h2>
+        <div class="g-seg" role="radiogroup" aria-labelledby="judul-tema">
+            @foreach (['light' => ['Terang', 'sun'], 'dark' => ['Gelap', 'moon'], 'system' => ['Ikut sistem', 'monitor']] as $value => [$label, $icon])
+                <label>
+                    <input type="radio" name="appearance" value="{{ $value }}" x-model="mode" @change="guruSetTheme(mode)">
+                    <x-guru.icon :name="$icon" />
+                    {{ $label }}
+                </label>
+            @endforeach
+        </div>
+    </section>
+
+    <x-guru.list>
+        <x-guru.list-item :href="route('attendance.password')" icon="lock" tone="neutral" title="Ganti Password" desc="Kelola kata sandi akun" />
+    </x-guru.list>
+
+    <x-guru.card as="div">
+        <h2 class="g-h2">Akun</h2>
+        <dl class="g-dl">
+            <div><dt>Instansi</dt><dd>{{ $user->office?->name ?? '-' }}</dd></div>
+            <div><dt>Peran</dt><dd>{{ $user->role?->name ?? '-' }}</dd></div>
+            <div><dt>Bergabung</dt><dd>{{ $user->created_at?->locale('id')->isoFormat('D MMMM Y') }}</dd></div>
+        </dl>
+    </x-guru.card>
+
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <x-guru.button type="submit" variant="secondary" icon="logout" class="g-btn--block">Keluar</x-guru.button>
+    </form>
 </x-layouts.mobile>
