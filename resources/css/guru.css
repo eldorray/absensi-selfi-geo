@@ -123,6 +123,8 @@
         font-size: 15px;
         line-height: 1.5;
         -webkit-tap-highlight-color: transparent;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
         text-rendering: optimizeLegibility;
     }
 
@@ -131,8 +133,18 @@
         text-decoration: none;
     }
 
-    .guru a:hover {
-        color: var(--g-primary-hover);
+    /* Tanpa jeda ketuk ganda di kontrol. */
+    .guru a,
+    .guru button,
+    .guru label,
+    .guru [role="button"] {
+        touch-action: manipulation;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .guru a:hover {
+            color: var(--g-primary-hover);
+        }
     }
 
     .guru ::selection {
@@ -209,9 +221,11 @@
         transition: background-color 160ms var(--g-ease), transform 150ms var(--g-ease);
     }
 
-    .g-iconbtn:hover {
-        background: var(--g-surface-2);
-        color: var(--g-ink);
+    @media (hover: hover) and (pointer: fine) {
+        .g-iconbtn:hover {
+            background: var(--g-surface-2);
+            color: var(--g-ink);
+        }
     }
 
     .g-iconbtn:active {
@@ -288,11 +302,15 @@
         width: 60px;
         height: 32px;
         border-radius: 16px;
-        transition: background-color 160ms var(--g-ease);
+        transition: background-color 160ms var(--g-ease), transform 120ms var(--g-ease);
     }
 
     .g-nav__item[aria-current="page"] .g-nav__pill {
         background: var(--g-primary-soft);
+    }
+
+    .guru .g-nav__item:active .g-nav__pill {
+        transform: scale(0.92);
     }
 
     /* Tipografi */
@@ -427,11 +445,17 @@
 
     .guru a.g-card {
         color: var(--g-ink);
-        transition: background-color 160ms var(--g-ease);
+        transition: background-color 160ms var(--g-ease), transform 120ms var(--g-ease);
     }
 
-    .guru a.g-card:hover {
-        background: var(--g-surface-2);
+    .guru a.g-card:active {
+        transform: scale(0.985);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .guru a.g-card:hover {
+            background: var(--g-surface-2);
+        }
     }
 
     .g-card--flush {
@@ -532,7 +556,6 @@
         width: var(--p, 0%);
         border-radius: 4px;
         background: var(--g-accent);
-        transition: width 400ms var(--g-ease);
     }
 
     .g-progress__knob {
@@ -545,7 +568,6 @@
         border-radius: 8px;
         background: #FFFFFF;
         border: 3px solid var(--g-accent);
-        transition: left 400ms var(--g-ease);
     }
 
     .g-progress__labels {
@@ -685,9 +707,15 @@
         transition: background-color 160ms var(--g-ease);
     }
 
-    .guru a.g-list__item:hover {
+    .guru a.g-list__item:active {
         background: var(--g-surface-2);
-        color: var(--g-ink);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .guru a.g-list__item:hover {
+            background: var(--g-surface-2);
+            color: var(--g-ink);
+        }
     }
 
     .g-list__icon {
@@ -751,6 +779,18 @@
         transform: scale(0.98);
     }
 
+    /* Label kontrol tidak ikut terseleksi atau memunculkan callout saat ditekan lama. */
+    .guru .g-btn,
+    .guru .g-iconbtn,
+    .guru .g-nav__item,
+    .guru .g-choice,
+    .guru .g-chip,
+    .guru .g-menu__item {
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+    }
+
     .g-btn:disabled,
     .g-btn[aria-disabled="true"],
     .g-btn[aria-busy="true"] {
@@ -760,14 +800,17 @@
     }
 
     .guru .g-btn--primary { background: #1E5A48; color: #FFFFFF; }
-    .guru .g-btn--primary:hover { background: #153F33; color: #FFFFFF; }
     .guru .g-btn--hero { background: #FFFFFF; color: #1E5A48; }
-    .guru .g-btn--hero:hover { background: #F4F1EA; color: #153F33; }
     .guru .g-btn--hero[aria-disabled="true"] { background: rgb(255 255 255 / 0.14); color: var(--g-hero-muted); opacity: 1; }
     .guru .g-btn--pulang { background: var(--g-pulang); color: #FFFFFF; }
-    .guru .g-btn--pulang:hover { background: #8A361E; color: #FFFFFF; }
     .guru .g-btn--secondary { background: var(--g-surface); color: var(--g-ink); border-color: var(--g-border); }
-    .guru .g-btn--secondary:hover { background: var(--g-surface-2); color: var(--g-ink); }
+
+    @media (hover: hover) and (pointer: fine) {
+        .guru .g-btn--primary:hover { background: #153F33; color: #FFFFFF; }
+        .guru .g-btn--hero:hover { background: #F4F1EA; color: #153F33; }
+        .guru .g-btn--pulang:hover { background: #8A361E; color: #FFFFFF; }
+        .guru .g-btn--secondary:hover { background: var(--g-surface-2); color: var(--g-ink); }
+    }
     .guru .g-btn--danger { background: var(--g-pulang); color: #FFFFFF; }
 
     .g-btn--block {
@@ -900,7 +943,11 @@
         font-size: 14px;
         font-weight: 700;
         cursor: pointer;
-        transition: border-color 160ms var(--g-ease), background-color 160ms var(--g-ease);
+        transition: border-color 160ms var(--g-ease), background-color 160ms var(--g-ease), transform 120ms var(--g-ease);
+    }
+
+    .guru .g-choice:active {
+        transform: scale(0.97);
     }
 
     .g-choice input {
@@ -1105,6 +1152,7 @@
         padding-right: 20px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
         scrollbar-width: none;
     }
 
@@ -1191,8 +1239,14 @@
         cursor: pointer;
     }
 
-    .g-menu__item:hover {
+    .g-menu__item:active {
         background: var(--g-surface-2);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .g-menu__item:hover {
+            background: var(--g-surface-2);
+        }
     }
 
     .g-dialog {
@@ -1354,6 +1408,7 @@
         z-index: 10;
         height: 100%;
         pointer-events: none;
+        will-change: transform;
         animation: g-scan 3.2s ease-in-out infinite;
     }
 

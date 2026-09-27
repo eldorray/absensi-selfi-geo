@@ -1,4 +1,4 @@
-const CACHE_NAME = 'absensi-selfie-geo-v7';
+const CACHE_NAME = 'absensi-selfie-geo-v8';
 // Face-detection model files (~15 MB) change rarely: cache-first in their own
 // cache. Bump the version when public/mediapipe is updated.
 const MEDIAPIPE_CACHE = 'absensi-mediapipe-v1';

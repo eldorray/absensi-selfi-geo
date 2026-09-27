@@ -212,7 +212,7 @@
                     <a href="{{ route('attendance.information.show', $info) }}" class="g-info">
                         <div class="g-info__media">
                             @if ($info->image_url)
-                                <img src="{{ $info->image_url }}" alt="" loading="lazy">
+                                <img src="{{ $info->image_url }}" alt="" loading="lazy" decoding="async">
                             @endif
                             <span class="g-info__tag">Pengumuman</span>
                         </div>
