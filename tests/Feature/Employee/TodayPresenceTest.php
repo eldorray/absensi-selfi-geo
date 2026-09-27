@@ -48,9 +48,16 @@ test('before the check-in window opens', function () {
         ->and($p->checkIn)->toBeNull()
         ->and($p->scheduleStart)->toBe('07.00')
         ->and($p->scheduleEnd)->toBe('14.00')
-        ->and($p->action['label'])->toBe('Absen Masuk')
-        ->and($p->action['href'])->toBe(route('attendance.selfie'))
+        ->and($p->action)->toBe(['label' => 'Absen masuk dibuka 06.00', 'href' => null, 'icon' => 'clock', 'disabled' => true])
         ->and($p->locationText)->toBe('Lokasi dicek saat absen');
+});
+
+test('the check-in action becomes available once the window opens', function () {
+    $p = presence('2026-07-20 06:00:00');
+
+    expect($p->action['label'])->toBe('Absen Masuk')
+        ->and($p->action['href'])->toBe(route('attendance.selfie'))
+        ->and($p->action['disabled'])->toBeFalse();
 });
 
 test('inside the on-time and late windows', function () {
@@ -72,7 +79,7 @@ test('checked in and waiting for the check-out window', function () {
         ->and($p->checkIn)->toBe('06.52')
         ->and($p->checkOut)->toBeNull()
         ->and($p->progress)->toBe(40)
-        ->and($p->progressText)->toBe('Pulang dalam 3 j 42 m')
+        ->and($p->progressText)->toBe('Absen pulang dibuka dalam 3 j 42 m')
         ->and($p->action)->toBe(['label' => 'Pulang dibuka 13.30', 'href' => null, 'icon' => 'clock', 'disabled' => true])
         ->and($p->locationText)->toBe('Dalam area sekolah · 38 m dari titik absen');
 });

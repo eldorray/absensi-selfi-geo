@@ -91,9 +91,12 @@ final readonly class TodayPresence
                 progress: $progress,
                 progressText: $text,
                 locationText: 'Lokasi dicek saat absen',
-                action: $now->gt($closes)
-                    ? null
-                    : ['label' => 'Absen Masuk', 'href' => route('attendance.selfie'), 'icon' => 'login', 'disabled' => false],
+                action: match (true) {
+                    $now->gt($closes) => null,
+                    // Server menolak absen sebelum jendela dibuka; jangan biarkan guru selfie dulu baru ditolak.
+                    $now->lt($opens) => ['label' => 'Absen masuk dibuka '.$opens->format('H.i'), 'href' => null, 'icon' => 'clock', 'disabled' => true],
+                    default => ['label' => 'Absen Masuk', 'href' => route('attendance.selfie'), 'icon' => 'login', 'disabled' => false],
+                },
             );
         }
 
@@ -140,7 +143,7 @@ final readonly class TodayPresence
             scheduleStart: $start->format('H.i'),
             scheduleEnd: $end->format('H.i'),
             progress: $progress,
-            progressText: 'Pulang dalam '.self::duration($minutes),
+            progressText: 'Absen pulang dibuka dalam '.self::duration($minutes),
             locationText: self::location($attendance),
             action: ['label' => 'Pulang dibuka '.$data->checkoutOpensAt->format('H.i'), 'href' => null, 'icon' => 'clock', 'disabled' => true],
         );
