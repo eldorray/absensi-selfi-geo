@@ -27,6 +27,10 @@ final readonly class EmployeeDashboardData
         public int $monthlyPresent,
         public int $monthlyLate,
         public Collection $announcements,
+        public int $monthlyLeaveDays = 0,
+        public int $monthlyWorkDays = 0,
+        public int $pendingLeaves = 0,
+        public int $unreadNotifications = 0,
     ) {}
 
     /**
@@ -36,5 +40,18 @@ final readonly class EmployeeDashboardData
     public function monthlyTotal(): int
     {
         return $this->monthlyPresent;
+    }
+
+    public function monthlyOnTime(): int
+    {
+        return max(0, $this->monthlyPresent - $this->monthlyLate);
+    }
+
+    /**
+     * Work days this month that have either an attendance or an approved leave.
+     */
+    public function monthlyRecorded(): int
+    {
+        return min($this->monthlyPresent + $this->monthlyLeaveDays, $this->monthlyWorkDays);
     }
 }
