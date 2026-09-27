@@ -1,12 +1,20 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-C8lVG9I_.css",
+    "file": "assets/app-DtpnMrYR.css",
     "src": "resources/css/app.css",
     "isEntry": true
+  },
+  "resources/fonts/fraunces-latin.woff2": {
+    "file": "assets/fraunces-latin-BOz5zopO.woff2",
+    "src": "resources/fonts/fraunces-latin.woff2"
   },
   "resources/fonts/inter-latin.woff2": {
     "file": "assets/inter-latin-8kRkwJBP.woff2",
     "src": "resources/fonts/inter-latin.woff2"
+  },
+  "resources/fonts/plus-jakarta-sans-latin.woff2": {
+    "file": "assets/plus-jakarta-sans-latin-B2KjpZfh.woff2",
+    "src": "resources/fonts/plus-jakarta-sans-latin.woff2"
   },
   "resources/js/app.js": {
     "file": "assets/app-CprKdUdp.js",
