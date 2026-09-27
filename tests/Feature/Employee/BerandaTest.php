@@ -94,8 +94,8 @@ test('a late check-in shows the late chip', function () {
         ->assertSee('Terlambat');
 });
 
-test('a day without a schedule shows Libur and no attendance action', function () {
-    Carbon::setTestNow(Carbon::parse('2026-07-20 08:00:00'));
+test('a Sunday without a schedule shows Libur and no attendance action', function () {
+    Carbon::setTestNow(Carbon::parse('2026-07-19 08:00:00'));
 
     $this->actingAs(berandaTeacher())->get(route('attendance.dashboard'))
         ->assertSuccessful()
@@ -143,4 +143,17 @@ test('homeroom teachers see their class card and the Kelas tab', function () {
         ->getContent();
 
     expect(substr_count($html, 'class="g-nav__item"'))->toBe(4);
+});
+
+test('a weekday without a schedule still offers Absen Masuk with the default hours', function () {
+    Carbon::setTestNow(Carbon::parse('2026-07-20 07:05:00'));
+
+    $this->actingAs(berandaTeacher())->get(route('attendance.dashboard'))
+        ->assertSee('href="'.route('attendance.selfie').'"', false)
+        ->assertSee('16.00');
+});
+
+test('the focus ring on the green hero and install banner uses the amber accent', function () {
+    expect(file_get_contents(resource_path('css/guru.css')))
+        ->toMatch('/\.g-card--hero\s*,\s*\.g-install\s*\{\s*--g-focus:\s*#F2C879;/');
 });

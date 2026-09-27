@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Enums\AttendanceStatus;
 use App\Models\Attendance;
+use App\Models\WorkSchedule;
 use App\Models\WorkSetting;
 use Carbon\Carbon;
 
@@ -37,18 +38,30 @@ final readonly class TodayPresence
         $late = $attendance?->status === AttendanceStatus::Late;
 
         if ($schedule === null) {
-            return new self(
-                status: $attendance ? ($late ? 'Terlambat' : 'Tepat waktu') : 'Libur',
-                late: $late,
-                checkIn: $attendance?->created_at?->format('H.i'),
-                checkOut: $attendance?->check_out_at?->format('H.i'),
-                scheduleStart: null,
-                scheduleEnd: null,
-                progress: 0,
-                progressText: 'Tidak ada jadwal kerja hari ini',
-                locationText: self::location($attendance),
-                action: null,
-            );
+            $day = $now->copy();
+            $day->locale('id');
+
+            if ($attendance === null && strtolower($day->dayName) === 'minggu') {
+                return new self(
+                    status: 'Libur',
+                    late: false,
+                    checkIn: null,
+                    checkOut: null,
+                    scheduleStart: null,
+                    scheduleEnd: null,
+                    progress: 0,
+                    progressText: 'Tidak ada jadwal kerja hari ini',
+                    locationText: self::location(null),
+                    action: null,
+                );
+            }
+
+            // Mirrors the server: without a schedule only Sunday is a day off, and the
+            // default hours apply (AttendanceService::dayOffError / scheduledCheckIn).
+            $schedule = new WorkSchedule([
+                'check_in_time' => AttendanceService::DEFAULT_CHECK_IN_TIME,
+                'check_out_time' => WorkSchedule::DEFAULT_CHECK_OUT_TIME,
+            ]);
         }
 
         $start = Carbon::parse($schedule->check_in_time)->setDateFrom($now);

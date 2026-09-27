@@ -2,7 +2,9 @@
 
 // tests/Feature/Employee/DashboardDataTest.php
 
+use App\Enums\AttendanceStatus;
 use App\Models\AcademicYear;
+use App\Models\Attendance;
 use App\Models\Leave;
 use App\Models\Role;
 use App\Models\User;
@@ -28,17 +30,31 @@ function dataLeave(User $user, string $from, string $to, string $status): Leave
     return Leave::create(['user_id' => $user->id, 'type' => 'izin', 'start_date' => $from, 'end_date' => $to, 'reason' => 'Keperluan keluarga', 'status' => $status]);
 }
 
-test('approved leave days count distinct dates this month up to today', function () {
+function dataWeekdaySchedule(User $user): void
+{
+    $year = AcademicYear::firstOrCreate(['name' => '2026/2027'], ['start_date' => '2026-07-01', 'end_date' => '2027-06-30', 'is_active' => true]);
+    foreach (['senin', 'selasa', 'rabu', 'kamis', 'jumat'] as $day) {
+        WorkSchedule::create(['user_id' => $user->id, 'academic_year_id' => $year->id, 'day' => $day, 'check_in_time' => '07:00:00', 'check_out_time' => '14:00:00', 'is_active' => true]);
+    }
+}
+
+test('approved leave counts distinct scheduled dates this month up to today, not already attended', function () {
     $user = dataTeacher();
-    dataLeave($user, '2026-06-29', '2026-07-02', 'approved'); // 1–2 Juli
-    dataLeave($user, '2026-07-02', '2026-07-03', 'approved'); // 2 Juli tumpang tindih, +3 Juli
-    dataLeave($user, '2026-07-19', '2026-07-25', 'approved'); // 19–20 Juli (sampai hari ini)
+    dataWeekdaySchedule($user);
+    dataLeave($user, '2026-06-29', '2026-07-02', 'approved'); // 1–2 Juli (Rabu, Kamis)
+    dataLeave($user, '2026-07-02', '2026-07-03', 'approved'); // 2 Juli tumpang tindih, +3 Juli (Jumat)
+    dataLeave($user, '2026-07-18', '2026-07-25', 'approved'); // Sabtu–Minggu tak berjadwal; 20 Juli; sisanya belum terjadi
     dataLeave($user, '2026-07-10', '2026-07-10', 'pending');
-    dataLeave($user, '2026-07-11', '2026-07-11', 'rejected');
+    dataLeave($user, '2026-07-13', '2026-07-13', 'rejected');
+    $attended = Attendance::create(['user_id' => $user->id, 'status' => AttendanceStatus::Present, 'image_path' => 'x.jpg', 'check_in_lat' => -6.2, 'check_in_long' => 106.8, 'distance_meters' => 5]);
+    $attended->created_at = Carbon::parse('2026-07-03 06:55:00'); // hadir walau ada izin
+    $attended->save();
 
     $data = app(EmployeeDashboardService::class)->for($user);
 
-    expect($data->monthlyLeaveDays)->toBe(5)
+    expect($data->monthlyLeaveDays)->toBe(3) // 1, 2, 20 Juli
+        ->and($data->monthlyWorkDays)->toBe(14)
+        ->and($data->monthlyRecorded())->toBe(4) // 3 Juli hadir + 3 hari izin
         ->and($data->pendingLeaves)->toBe(1);
 });
 
@@ -71,13 +87,13 @@ test('unread notifications only count student referral notifications', function 
     expect(app(EmployeeDashboardService::class)->for($user)->unreadNotifications)->toBe(2);
 });
 
-test('on-time and recorded figures derive from the monthly counts', function () {
+test('on-time days derive from the monthly counts and recorded days are carried through', function () {
     $data = new EmployeeDashboardData(
         todayAttendance: null, todaySchedule: null, checkoutOpensAt: now(), checkoutTimeReached: false,
         monthlyPresent: 12, monthlyLate: 2, announcements: new Collection,
-        monthlyLeaveDays: 3, monthlyWorkDays: 14,
+        monthlyLeaveDays: 3, monthlyWorkDays: 14, monthlyRecordedDays: 13,
     );
 
     expect($data->monthlyOnTime())->toBe(10)
-        ->and($data->monthlyRecorded())->toBe(14);
+        ->and($data->monthlyRecorded())->toBe(13);
 });

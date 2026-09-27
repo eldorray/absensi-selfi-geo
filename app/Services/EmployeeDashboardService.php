@@ -50,6 +50,16 @@ final class EmployeeDashboardService
             ->whereBetween('created_at', [$monthStart, now()])
             ->count();
 
+        // Rekap per tanggal berjadwal: izin tidak dihitung pada hari libur atau hari yang sudah hadir.
+        $scheduledDates = $this->scheduledDatesThisMonth($user);
+        $attendedDates = Attendance::query()
+            ->where('user_id', $user->id)
+            ->whereBetween('created_at', [$monthStart, now()])
+            ->pluck('created_at')
+            ->mapWithKeys(fn ($at) => [$at->toDateString() => true])
+            ->all();
+        $leaveDates = array_diff_key(array_intersect_key($this->approvedLeaveDatesThisMonth($user), $scheduledDates), $attendedDates);
+
         return new EmployeeDashboardData(
             todayAttendance: $todayAttendance,
             todaySchedule: $todaySchedule,
@@ -60,17 +70,20 @@ final class EmployeeDashboardService
             announcements: Announcement::activeOrdered()
                 ->visibleToOffice($user->office_id)
                 ->get(),
-            monthlyLeaveDays: $this->approvedLeaveDaysThisMonth($user),
-            monthlyWorkDays: $this->scheduledDaysThisMonth($user),
+            monthlyLeaveDays: count($leaveDates),
+            monthlyWorkDays: count($scheduledDates),
             pendingLeaves: Leave::query()->where('user_id', $user->id)->pending()->count(),
             unreadNotifications: $user->unreadNotifications()->where('type', 'like', '%StudentReferral%')->count(),
+            monthlyRecordedDays: count(array_intersect_key($attendedDates + $leaveDates, $scheduledDates)),
         );
     }
 
     /**
      * Distinct dates this month, up to today, covered by the user's approved leaves.
+     *
+     * @return array<string, true>
      */
-    private function approvedLeaveDaysThisMonth(User $user): int
+    private function approvedLeaveDatesThisMonth(User $user): array
     {
         $from = now()->startOfMonth();
         $to = now()->startOfDay();
@@ -91,19 +104,21 @@ final class EmployeeDashboardService
                 }
             });
 
-        return count($dates);
+        return $dates;
     }
 
     /**
      * Dates this month, up to today, whose weekday has an active schedule in the
      * active academic year.
+     *
+     * @return array<string, true>
      */
-    private function scheduledDaysThisMonth(User $user): int
+    private function scheduledDatesThisMonth(User $user): array
     {
         $yearId = AcademicYear::getActive()?->id;
 
         if ($yearId === null) {
-            return 0;
+            return [];
         }
 
         $days = WorkSchedule::query()
@@ -114,19 +129,19 @@ final class EmployeeDashboardService
             ->all();
 
         if ($days === []) {
-            return 0;
+            return [];
         }
 
-        $count = 0;
+        $dates = [];
 
         for ($day = now()->startOfMonth(); $day->lte(now()->startOfDay()); $day->addDay()) {
             $day->locale('id');
 
             if (in_array(strtolower($day->dayName), $days, true)) {
-                $count++;
+                $dates[$day->toDateString()] = true;
             }
         }
 
-        return $count;
+        return $dates;
     }
 }

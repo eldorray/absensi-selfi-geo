@@ -94,10 +94,28 @@ test('checked out links to the history', function () {
         ->and($p->action['label'])->toBe('Lihat riwayat');
 });
 
-test('a day without a schedule is a holiday without actions', function () {
-    $p = presence('2026-07-20 08:00:00', schedule: false);
+test('a Sunday without a schedule is a holiday without actions', function () {
+    $p = presence('2026-07-19 08:00:00', schedule: false);
 
     expect($p->status)->toBe('Libur')->and($p->action)->toBeNull()->and($p->scheduleStart)->toBeNull();
+});
+
+// The server accepts attendance on unscheduled weekdays with its default hours
+// (AttendanceService::dayOffError only blocks Sunday), so the hero must offer it too.
+test('a weekday without a schedule falls back to the default hours', function () {
+    $p = presence('2026-07-20 07:05:00', schedule: false);
+
+    expect($p->status)->toBe('Belum absen')
+        ->and($p->scheduleStart)->toBe('07.00')
+        ->and($p->scheduleEnd)->toBe('16.00')
+        ->and($p->action['href'])->toBe(route('attendance.selfie'));
+});
+
+test('checked in without a schedule can still check out', function () {
+    $p = presence('2026-07-20 16:10:00', checkIn('2026-07-20 07:00:00'), schedule: false, checkoutOpen: true);
+
+    expect($p->action['label'])->toBe('Absen Pulang')
+        ->and($p->action['href'])->toBe(route('attendance.checkout'));
 });
 
 test('late check-in with a manual photo is flagged', function () {

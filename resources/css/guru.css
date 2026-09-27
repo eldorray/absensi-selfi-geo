@@ -463,6 +463,12 @@
         color: #FFFFFF;
     }
 
+    /* The primary colour is the hero's own background: focus there uses the amber accent. */
+    .g-card--hero,
+    .g-install {
+        --g-focus: #F2C879;
+    }
+
     .g-hero__label {
         font-size: 12px;
         font-weight: 700;

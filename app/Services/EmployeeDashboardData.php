@@ -31,6 +31,7 @@ final readonly class EmployeeDashboardData
         public int $monthlyWorkDays = 0,
         public int $pendingLeaves = 0,
         public int $unreadNotifications = 0,
+        public int $monthlyRecordedDays = 0,
     ) {}
 
     /**
@@ -48,10 +49,10 @@ final readonly class EmployeeDashboardData
     }
 
     /**
-     * Work days this month that have either an attendance or an approved leave.
+     * Scheduled work days this month that have either an attendance or an approved leave.
      */
     public function monthlyRecorded(): int
     {
-        return min($this->monthlyPresent + $this->monthlyLeaveDays, $this->monthlyWorkDays);
+        return $this->monthlyRecordedDays;
     }
 }
