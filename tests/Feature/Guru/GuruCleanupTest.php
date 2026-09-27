@@ -28,3 +28,9 @@ test('the offline page uses the guru palette', function () {
 
     expect($html)->toContain('#F4F1EA')->toContain('#1E5A48')->toContain('prefers-color-scheme: dark')->toContain('prefers-reduced-motion');
 });
+
+test('the offline page uses a light green primary in dark mode for icon and focus contrast', function () {
+    $html = file_get_contents(public_path('offline.html'));
+
+    expect($html)->toMatch('/prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{[^}]*--primary:\s*#8FD1B5/');
+});
