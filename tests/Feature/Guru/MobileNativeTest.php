@@ -84,3 +84,22 @@ test('announcement images decode off the main thread', function () {
     $this->actingAs(mobileTeacher())->get(route('attendance.dashboard'))
         ->assertSee('loading="lazy" decoding="async"', false);
 });
+
+// iOS 26+ lays a Liquid Glass blur over the top of an installed web app unless a solid
+// fixed box covers the top edge (taller than 10px, at least 90% wide); then it uses that colour.
+test('a solid fixed strip covers the status bar so iOS does not blur the header', function () {
+    $this->actingAs(mobileTeacher())->get(route('attendance.index'))
+        ->assertSee('<div class="g-statusbar" aria-hidden="true"></div>', false);
+
+    expect(mobileCss())->toMatch('/\.g-statusbar\s*\{[^}]*position:\s*fixed;[^}]*top:\s*0;[^}]*inset-inline:\s*0;[^}]*height:\s*max\(12px,\s*env\(safe-area-inset-top\)\);[^}]*background:\s*var\(--g-ground\)/');
+});
+
+test('the header keeps a gap below the status bar', function () {
+    expect(mobileCss())->toMatch('/\.g-header\s*\{[^}]*padding:\s*calc\(max\(4px,\s*env\(safe-area-inset-top\)\)\s*\+\s*12px\)/');
+});
+
+// iOS 26+ reports the installed app's viewport short by the top inset, so the fixed nav stops
+// above the screen edge; the strip below it shows the canvas, so paint the canvas in the nav colour.
+test('in standalone mode the canvas under a nav matches the nav', function () {
+    expect(mobileCss())->toMatch('/@media \(display-mode: standalone\)\s*\{\s*\.guru:has\(\.g-nav\)\s*\{\s*background:\s*var\(--g-surface\);/');
+});

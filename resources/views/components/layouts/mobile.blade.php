@@ -75,6 +75,7 @@
 </head>
 
 <body class="guru" data-teacher-ui="absenku-guru">
+    <div class="g-statusbar" aria-hidden="true"></div>
     <div class="g-app">
         @isset($header)
             {{ $header }}

@@ -147,6 +147,15 @@
         }
     }
 
+    /* iOS 26+ melaporkan viewport web app terpasang kurang sebesar inset atas, jadi nav fixed
+       berhenti di atas tepi layar dan celah di bawahnya menampilkan kanvas: samakan warnanya.
+       ponytail: hapus bila WebKit sudah memperbaiki tinggi viewport standalone. */
+    @media (display-mode: standalone) {
+        .guru:has(.g-nav) {
+            background: var(--g-surface);
+        }
+    }
+
     .guru ::selection {
         background: var(--g-accent);
         color: #1B2420;
@@ -187,7 +196,19 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        padding: max(16px, env(safe-area-inset-top)) 20px 0;
+        padding: calc(max(4px, env(safe-area-inset-top)) + 12px) 20px 0;
+    }
+
+    /* iOS 26+ melapisi tepi atas web app terpasang dengan blur Liquid Glass, kecuali ada
+       kotak fixed berwarna solid (>10px, ≥90% lebar) yang menutupinya: warnanya yang dipakai. */
+    .g-statusbar {
+        position: fixed;
+        top: 0;
+        inset-inline: 0;
+        z-index: 45;
+        height: max(12px, env(safe-area-inset-top));
+        background: var(--g-ground);
+        pointer-events: none;
     }
 
     .g-header__title {
