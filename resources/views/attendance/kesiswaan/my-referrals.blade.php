@@ -14,7 +14,7 @@
                 <x-guru.list-item :href="route('attendance.kesiswaan.referrals.show', $referral)" icon="send" tone="attn"
                     :title="$referral->student->nama_lengkap"
                     :desc="($referral->student->schoolClass?->name ?? strtoupper($referral->school_level)).' · '.$referral->reason">
-                    <span class="g-list__desc">{{ $referral->counselor?->name ?? 'Belum ditangani' }} · {{ $referral->observed_at?->translatedFormat('d M Y') }}</span>
+                    <span class="g-list__desc">{{ $referral->counselor?->name ?? 'Belum ditangani' }} · {{ $referral->observed_at?->locale('id')->isoFormat('D MMM Y') }}</span>
                     <x-slot:end>
                         <x-guru.chip :tone="$statusTones[$referral->status->value] ?? 'neutral'">{{ $statusLabels[$referral->status->value] ?? $referral->status->value }}</x-guru.chip>
                     </x-slot:end>

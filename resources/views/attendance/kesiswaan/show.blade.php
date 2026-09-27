@@ -40,7 +40,7 @@
             <h2 id="judul-pribadi" class="g-h2">Informasi pribadi</h2>
             <dl class="g-dl">
                 <div><dt>NIK</dt><dd class="break-all">{{ $student->nik ?: '-' }}</dd></div>
-                <div><dt>Tempat, tanggal lahir</dt><dd>{{ $student->tempat_lahir ?: '-' }}{{ $student->tanggal_lahir ? ', '.$student->tanggal_lahir->translatedFormat('d F Y') : '' }}</dd></div>
+                <div><dt>Tempat, tanggal lahir</dt><dd>{{ $student->tempat_lahir ?: '-' }}{{ $student->tanggal_lahir ? ', '.$student->tanggal_lahir->locale('id')->isoFormat('D MMMM Y') : '' }}</dd></div>
                 <div><dt>Telepon</dt><dd>{{ $student->no_telepon ?: '-' }}</dd></div>
                 <div><dt>Alamat</dt><dd>{{ $student->alamat ?: '-' }}</dd></div>
             </dl>
@@ -74,7 +74,7 @@
                 <x-guru.list>
                     @foreach ($referrals as $referral)
                         <x-guru.list-item :href="route('attendance.kesiswaan.referrals.show', $referral)" icon="send" tone="attn" :title="$referral->reason"
-                            :desc="$referral->observed_at?->translatedFormat('d M Y').' · '.($referral->counselor?->name ?? 'Belum ditangani')">
+                            :desc="$referral->observed_at?->locale('id')->isoFormat('D MMM Y').' · '.($referral->counselor?->name ?? 'Belum ditangani')">
                             <x-slot:end>
                                 <x-guru.chip>{{ $referralStatusLabels[$referral->status->value] ?? $referral->status->value }}</x-guru.chip>
                             </x-slot:end>

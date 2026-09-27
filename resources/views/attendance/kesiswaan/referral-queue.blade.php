@@ -15,7 +15,7 @@
                     :tone="$referral->urgency->value === 'urgent' ? 'attn' : 'izin'"
                     :title="$referral->student->nama_lengkap"
                     :desc="($referral->student->schoolClass?->name ?? strtoupper($referral->school_level)).' · '.$referral->reason">
-                    <span class="g-list__desc">{{ $referral->status->value === 'new' ? 'Belum ditangani' : ($referral->counselor?->name ?? 'Dalam penanganan') }} · {{ $referral->observed_at?->translatedFormat('d M Y') }}</span>
+                    <span class="g-list__desc">{{ $referral->status->value === 'new' ? 'Belum ditangani' : ($referral->counselor?->name ?? 'Dalam penanganan') }} · {{ $referral->observed_at?->locale('id')->isoFormat('D MMM Y') }}</span>
                     <x-slot:end>
                         <x-guru.chip :tone="$urgencyTones[$referral->urgency->value] ?? 'neutral'">{{ $urgencyLabels[$referral->urgency->value] ?? $referral->urgency->value }}</x-guru.chip>
                     </x-slot:end>
