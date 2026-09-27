@@ -15,15 +15,17 @@
     <link rel="manifest" href="{{ route('manifest') }}">
     <link rel="icon" href="{{ $branding->iconUrl() }}">
     <link rel="apple-touch-icon" href="{{ $branding->iconUrl() }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <title>AbsenKu | MI Daarul Hikmah</title>
 
     <script>
         (() => {
-            const savedTheme = localStorage.getItem('welcome-theme');
-            const theme = savedTheme === 'dark' ? 'dark' : 'light';
+            let theme = null;
+            try {
+                theme = localStorage.getItem('appearance') ?? localStorage.getItem('welcome-theme');
+            } catch (error) {}
+            if (theme !== 'light' && theme !== 'dark') {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
             document.documentElement.dataset.theme = theme;
         })();
     </script>
@@ -393,7 +395,9 @@
 
             toggle.addEventListener('click', () => {
                 root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-                localStorage.setItem('welcome-theme', root.dataset.theme);
+                try {
+                    localStorage.setItem('appearance', root.dataset.theme);
+                } catch (error) {}
                 synchronizeTheme();
             });
 

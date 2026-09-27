@@ -1,38 +1,29 @@
-<x-layouts.auth :title="__('Verify Email')">
-    <!-- Verify Email Card -->
-    <div
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div class="p-6">
-            <div class="text-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ __('Verify Your Email Address') }}
-                </h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">
-                    {{ __('Before proceeding, please check your email for a verification link.') }}<br>
-                    {{ __('If you did not receive the email, you can request another below.') }}
-                </p>
-            </div>
+<x-layouts.guest
+    title="Verifikasi Email"
+    description="Verifikasi alamat email akun AbsenKu."
+    heading="Verifikasi Email Anda"
+    lead="Sebelum melanjutkan, buka email Anda dan klik link verifikasi. Jika belum menerima email, kirim ulang di bawah."
+>
+    <x-slot:icon>
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <rect x="3" y="5.5" width="18" height="13" rx="2.5"></rect>
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4 7.5 8 6 8-6"></path>
+        </svg>
+    </x-slot:icon>
 
-            @if (session('status') === 'verification-link-sent')
-                <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-                    {{ __('A new verification link has been sent to your email address.') }}
-                </div>
-            @endif
+    <section class="form-panel" aria-label="Kirim ulang verifikasi email">
+        @if (session('status') === 'verification-link-sent')
+            <p class="status-message" role="status">Link verifikasi baru telah dikirim ke alamat email Anda.</p>
+        @endif
 
-            <form method="POST" action="{{ route('verification.store') }}">
-                @csrf
-                <x-button type="primary" buttonType="submit" class="w-full">
-                    {{ __('Resend Verification Email') }}
-                </x-button>
-            </form>
+        <form method="POST" action="{{ route('verification.store') }}" class="form">
+            @csrf
+            <button type="submit" class="submit-button">Kirim Ulang Email Verifikasi</button>
+        </form>
 
-            <div class="text-center mt-6">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-                        {{ __('Log out') }}
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</x-layouts.auth>
+        <form method="POST" action="{{ route('logout') }}" class="panel-footer">
+            @csrf
+            <button type="submit" class="text-link">Keluar</button>
+        </form>
+    </section>
+</x-layouts.guest>

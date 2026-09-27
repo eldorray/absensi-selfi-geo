@@ -8,7 +8,7 @@ it('renders the forgot password page zoomable with labelled, autocompleting inpu
         ->assertSee('autocomplete="email"', false)
         ->assertSee('for="email"', false)
         ->assertSee('id="email"', false)
-        ->assertSee('aria-label="Ganti Tema"', false)
+        ->assertSee('aria-label="Aktifkan tema gelap"', false)
         ->assertSee('prefers-reduced-motion: reduce', false)
         ->assertDontSee('scale(0.92)', false);
 });
@@ -31,7 +31,7 @@ it('renders the reset password page zoomable with labelled, autocompleting input
         ->assertSee('for="email"', false)
         ->assertSee('for="password"', false)
         ->assertSee('for="password_confirmation"', false)
-        ->assertSee('aria-label="Ganti Tema"', false)
+        ->assertSee('aria-label="Aktifkan tema gelap"', false)
         ->assertDontSee('scale(0.92)', false);
 });
 
@@ -46,4 +46,47 @@ it('renders the register page zoomable with labelled, autocompleting inputs', fu
         ->assertSee('for="email"', false)
         ->assertSee('for="password"', false)
         ->assertSee('for="password_confirmation"', false);
+});
+
+it('renders every guest auth page on the shared layout with the appearance theme contract', function (string $uri) {
+    $this->get($uri)
+        ->assertSuccessful()
+        ->assertSee('<html lang="id" data-theme="light">', false)
+        ->assertSee('data-auth-layout="guest"', false)
+        ->assertSee('--md-sys-color-primary: #176b43', false)
+        ->assertSee("localStorage.getItem('appearance') ?? localStorage.getItem('welcome-theme')", false)
+        ->assertSee("localStorage.setItem('appearance'", false)
+        ->assertSee("matchMedia('(prefers-color-scheme: dark)')", false)
+        ->assertSee('data-theme-toggle', false)
+        ->assertDontSee("localStorage.setItem('welcome-theme'", false)
+        ->assertDontSee('animate-blob', false)
+        ->assertDontSee('bg-grid-overlay', false)
+        ->assertDontSee('glass-card', false)
+        ->assertDontSee('text-sky-600', false);
+})->with([
+    'login' => '/login',
+    'forgot password' => '/forgot-password',
+    'reset password' => '/reset-password/dummy-token',
+    'register' => '/register',
+]);
+
+it('renders the authenticated auth pages on the shared layout', function (string $uri) {
+    $user = \App\Models\User::factory()->unverified()->create();
+
+    $this->actingAs($user)->get($uri)
+        ->assertSuccessful()
+        ->assertSee('<html lang="id"', false)
+        ->assertSee('data-auth-layout="guest"', false)
+        ->assertDontSee('x-data', false);
+})->with([
+    'verify email' => '/verify-email',
+    'confirm password' => '/confirm-password',
+]);
+
+it('wires reset password visibility toggles to their inputs', function () {
+    $this->get(route('password.reset', ['token' => 'dummy-token']))
+        ->assertSee('aria-controls="password"', false)
+        ->assertSee('aria-controls="password_confirmation"', false)
+        ->assertSee('aria-label="Tampilkan konfirmasi password"', false)
+        ->assertSee('aria-pressed="false"', false);
 });

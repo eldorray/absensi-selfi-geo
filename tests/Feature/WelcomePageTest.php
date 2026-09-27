@@ -23,6 +23,15 @@ it('renders the Material 3 welcome gateway for guests', function () {
         ->assertDontSee('animate-blob');
 });
 
+it('stores the welcome theme under the shared appearance key', function () {
+    $this->get(route('home'))
+        ->assertSuccessful()
+        ->assertSee("localStorage.getItem('appearance') ?? localStorage.getItem('welcome-theme')", false)
+        ->assertSee("localStorage.setItem('appearance'", false)
+        ->assertSee("matchMedia('(prefers-color-scheme: dark)')", false)
+        ->assertDontSee("localStorage.setItem('welcome-theme'", false);
+});
+
 it('links authenticated employees to their dashboard', function () {
     $role = Role::firstOrCreate(
         ['slug' => 'guru'],
