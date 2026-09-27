@@ -25,22 +25,22 @@
         remove(id) { this.selectedIds = this.selectedIds.filter(value => value !== id); },
     }"
     @click.outside="open = false" @keydown.escape.window="open = false" class="relative">
-    <span class="block text-xs font-bold">Siswa terkait <span class="font-normal theme-text-muted">(opsional)</span></span>
+    <span class="g-label">Siswa terkait <span class="font-normal text-guru-muted">(opsional)</span></span>
     <template x-for="id in selectedIds" :key="id"><input type="hidden" name="related_student_ids[]" :value="id"></template>
     <button type="button" @click="open = !open; if (open) $nextTick(() => $refs.relatedSearch.focus())"
-        class="theme-input mt-2 flex min-h-12 w-full items-center justify-between rounded-2xl px-4 py-3 text-left"
+        class="g-input mt-2 flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left"
         role="combobox" :aria-expanded="open" aria-controls="related-student-options" aria-haspopup="listbox">
         <span class="text-xs" x-text="selectedIds.length ? `${selectedIds.length} siswa dipilih` : 'Pilih siswa terkait'"></span>
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"></path></svg>
     </button>
     <div x-show="selectedStudents.length" class="mt-2 flex flex-wrap gap-2">
-        <template x-for="student in selectedStudents" :key="student.id"><button type="button" @click="remove(student.id)" class="inline-flex min-h-9 items-center gap-1 rounded-full bg-emerald-500/15 px-3 text-xs font-bold"><span x-text="student.name"></span><span aria-hidden="true">×</span><span class="sr-only">Hapus siswa terkait</span></button></template>
+        <template x-for="student in selectedStudents" :key="student.id"><button type="button" @click="remove(student.id)" class="inline-flex min-h-9 items-center gap-1 rounded-full bg-guru-primary-soft px-3 text-xs font-bold text-guru-primary"><span x-text="student.name"></span><span aria-hidden="true">×</span><span class="sr-only">Hapus siswa terkait</span></button></template>
     </div>
-    <div x-show="open" x-cloak class="solid-panel absolute z-30 mt-2 w-full rounded-2xl p-2 shadow-xl">
-        <input x-ref="relatedSearch" x-model="query" type="search" class="theme-input w-full rounded-xl p-3 text-xs" placeholder="Cari siswa terkait..." autocomplete="off">
+    <div x-show="open" x-cloak class="absolute z-30 mt-2 w-full rounded-2xl border border-guru-border bg-guru-surface p-2 shadow-xl">
+        <input x-ref="relatedSearch" x-model="query" type="search" class="g-input" placeholder="Cari siswa terkait..." autocomplete="off">
         <ul id="related-student-options" role="listbox" aria-multiselectable="true" class="mt-2 max-h-60 space-y-1 overflow-y-auto">
-            <template x-for="student in filtered" :key="student.id"><li role="option" :aria-selected="selectedIds.includes(student.id)"><button type="button" @click="toggle(student.id)" class="flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-emerald-500/10"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-emerald-500" :class="selectedIds.includes(student.id) ? 'bg-emerald-500 text-white' : ''"><span x-show="selectedIds.includes(student.id)">✓</span></span><span class="min-w-0"><span class="block truncate text-xs font-bold" x-text="student.name"></span><span class="block truncate text-xs theme-text-muted" x-text="`${student.className} · NISN ${student.nisn}`"></span></span></button></li></template>
-            <li x-show="filtered.length === 0" class="px-3 py-6 text-center text-xs theme-text-muted">Siswa tidak ditemukan.</li>
+            <template x-for="student in filtered" :key="student.id"><li role="option" :aria-selected="selectedIds.includes(student.id)"><button type="button" @click="toggle(student.id)" class="flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-guru-surface-2"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-guru-primary" :class="selectedIds.includes(student.id) ? 'bg-guru-primary text-guru-surface' : ''"><span x-show="selectedIds.includes(student.id)">✓</span></span><span class="min-w-0"><span class="block truncate text-xs font-bold" x-text="student.name"></span><span class="block truncate text-xs text-guru-muted" x-text="`${student.className} · NISN ${student.nisn}`"></span></span></button></li></template>
+            <li x-show="filtered.length === 0" class="px-3 py-6 text-center text-xs text-guru-muted">Siswa tidak ditemukan.</li>
         </ul>
     </div>
 </div>

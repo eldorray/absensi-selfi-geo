@@ -39,39 +39,39 @@
     @click.outside="open = false"
     @keydown.escape.window="open = false"
     class="relative">
-    <label for="primary-student-search" class="block text-xs font-bold">Siswa utama</label>
+    <label for="primary-student-search" class="g-label">Siswa utama</label>
     <input type="hidden" name="student_id" :value="selectedId" required>
     <button type="button" @click="open = !open; if (open) $nextTick(() => $refs.search.focus())"
-        class="theme-input mt-2 flex min-h-12 w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left"
+        class="g-input mt-2 flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left"
         role="combobox" :aria-expanded="open" aria-controls="primary-student-options" aria-haspopup="listbox">
         <span class="min-w-0">
             <span class="block truncate text-xs font-bold" x-text="selected?.name || 'Pilih siswa'"></span>
-            <span class="block truncate text-xs theme-text-muted" x-show="selected" x-text="selected ? `${selected.className} · NISN ${selected.nisn}` : 'Cari nama, NISN, NIK, atau kelas'"></span>
+            <span class="block truncate text-xs text-guru-muted" x-show="selected" x-text="selected ? `${selected.className} · NISN ${selected.nisn}` : 'Cari nama, NISN, NIK, atau kelas'"></span>
         </span>
         <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"></path></svg>
     </button>
 
     <div x-show="open" x-cloak x-transition.origin.top
-        class="solid-panel absolute z-40 mt-2 w-full rounded-2xl p-2 shadow-xl">
+        class="absolute z-40 mt-2 w-full rounded-2xl border border-guru-border bg-guru-surface p-2 shadow-xl">
         <div class="relative">
-            <svg class="pointer-events-none absolute left-3 top-3.5 h-4 w-4 theme-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <svg class="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-guru-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
             <input id="primary-student-search" x-ref="search" x-model="query" type="search"
                 @input="activeIndex = 0" @keydown.down.prevent="move(1)" @keydown.up.prevent="move(-1)" @keydown.enter.prevent="chooseActive()"
-                class="theme-input w-full rounded-xl py-3 pl-10 pr-3 text-xs" placeholder="Cari siswa..." autocomplete="off">
+                class="g-input pl-10" placeholder="Cari siswa..." autocomplete="off">
         </div>
         <ul id="primary-student-options" role="listbox" class="mt-2 max-h-60 space-y-1 overflow-y-auto">
             <template x-for="(student, index) in filtered" :key="student.id">
                 <li role="option" :aria-selected="selectedId === student.id">
                     <button type="button" @click="choose(student)" @mouseenter="activeIndex = index"
                         class="flex min-h-12 w-full items-center justify-between rounded-xl px-3 py-2 text-left"
-                        :class="activeIndex === index ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300' : 'hover:bg-emerald-500/10'">
-                        <span class="min-w-0"><span class="block truncate text-xs font-bold" x-text="student.name"></span><span class="block truncate text-xs theme-text-muted" x-text="`${student.className} · NISN ${student.nisn} · NIK ${student.nik}`"></span></span>
-                        <svg x-show="selectedId === student.id" class="h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m5 13 4 4L19 7"></path></svg>
+                        :class="activeIndex === index ? 'bg-guru-primary-soft text-guru-primary' : 'hover:bg-guru-surface-2'">
+                        <span class="min-w-0"><span class="block truncate text-xs font-bold" x-text="student.name"></span><span class="block truncate text-xs text-guru-muted" x-text="`${student.className} · NISN ${student.nisn} · NIK ${student.nik}`"></span></span>
+                        <svg x-show="selectedId === student.id" class="h-4 w-4 shrink-0 text-guru-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m5 13 4 4L19 7"></path></svg>
                     </button>
                 </li>
             </template>
-            <li x-show="filtered.length === 0" class="px-3 py-6 text-center text-xs theme-text-muted">Siswa tidak ditemukan.</li>
+            <li x-show="filtered.length === 0" class="px-3 py-6 text-center text-xs text-guru-muted">Siswa tidak ditemukan.</li>
         </ul>
     </div>
-    @error('student_id')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+    @error('student_id')<p class="g-error">{{ $message }}</p>@enderror
 </div>
