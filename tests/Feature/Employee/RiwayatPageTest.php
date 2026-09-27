@@ -31,3 +31,13 @@ test('empty history teaches the first step', function () {
         ->assertSee('Belum ada riwayat')
         ->assertSee('href="'.route('attendance.dashboard').'"', false);
 });
+
+test('photo links are 44px touch targets', function () {
+    $role = Role::firstOrCreate(['slug' => 'guru'], ['name' => 'Guru', 'is_admin' => false]);
+    $user = User::factory()->create(['role_id' => $role->id]);
+    Attendance::create(['user_id' => $user->id, 'status' => AttendanceStatus::Present, 'image_path' => 'x.jpg', 'check_in_lat' => -6.2, 'check_in_long' => 106.8, 'distance_meters' => 5, 'check_out_at' => now(), 'check_out_image_path' => 'y.jpg']);
+
+    $html = $this->actingAs($user)->get(route('attendance.index'))->getContent();
+
+    expect(preg_match_all('/<a href="[^"]+" target="_blank" rel="noopener" class="g-chip min-h-11 px-3">/', $html))->toBe(2);
+});

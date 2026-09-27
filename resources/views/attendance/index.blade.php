@@ -18,11 +18,11 @@
                                 <span>Masuk <b>{{ $attendance->created_at->format('H.i') }}</b></span>
                                 <span>Pulang <b>{{ $attendance->check_out_at?->format('H.i') ?? '––.––' }}</b></span>
                             </span>
-                            <span class="g-list__desc">
-                                {{ number_format((float) $attendance->distance_meters, 0, ',', '.') }} m dari titik absen
-                                · <a href="{{ $attendance->image_url }}" target="_blank" rel="noopener">Foto masuk</a>
+                            <span class="g-list__desc">{{ number_format((float) $attendance->distance_meters, 0, ',', '.') }} m dari titik absen</span>
+                            <span class="mt-1.5 flex flex-wrap gap-2">
+                                <a href="{{ $attendance->image_url }}" target="_blank" rel="noopener" class="g-chip min-h-11 px-3"><x-guru.icon name="image" :size="14" />Foto masuk</a>
                                 @if ($attendance->check_out_image_url)
-                                    · <a href="{{ $attendance->check_out_image_url }}" target="_blank" rel="noopener">Foto pulang</a>
+                                    <a href="{{ $attendance->check_out_image_url }}" target="_blank" rel="noopener" class="g-chip min-h-11 px-3"><x-guru.icon name="image" :size="14" />Foto pulang</a>
                                 @endif
                             </span>
                         </span>
