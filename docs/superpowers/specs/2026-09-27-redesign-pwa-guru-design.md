@@ -170,6 +170,8 @@ Token didefinisikan sebagai CSS custom property pada `.guru` (terang) dan `.dark
 | `unreadNotifications` | `user->unreadNotifications()->where('type', 'like', '%StudentReferral%')->count()` |
 | `workSetting` | `WorkSetting::current()`, dipakai untuk jendela absen masuk |
 
+Keadaan kartu hero (§4.2) dihitung oleh presenter `App\Services\TodayPresence::for(EmployeeDashboardData, WorkSetting, Carbon $now)` sehingga bisa di-unit-test dan view tetap tipis. Controller meneruskannya sebagai `presence`.
+
 Data yang sudah ada tetap dipakai: `todayAttendance`, `todaySchedule`, `checkoutOpensAt`, `checkoutTimeReached`, `announcements`, `linkedAccounts`, `homeroomAssignment`, `homeroomStudentCount`, `homeroomViolationCount`.
 
 ### 4.2 Kartu hero "Presensi hari ini"
@@ -234,7 +236,7 @@ Semua halaman memakai `x-layouts.mobile` dan komponen `x-guru.*`. **Data, form, 
 | Absen Masuk | `attendance/selfie.blade.php` | Header kembali "Absen Masuk"; kartu kamera gelap 3:4 radius 24 (bingkai sudut, garis pindai `transform`, elips panduan, prompt "Kedipkan mata"); status Wajah / Lokasi / Kantor sebagai chip berikon dan berteks; kartu kantor (terkunci / pilihan); kartu lokasi (koordinat, akurasi, jarak vs radius, tombol perbarui 44px); `notice` di luar radius; tombol utama hijau 56px "Kirim Absen Masuk"; layar "sudah absen" berupa kartu hero ringkas |
 | Absen Pulang | `attendance/checkout.blade.php` | Sama, dengan aksen terakota dan tombol "Kirim Absen Pulang" |
 | Riwayat | `attendance/index.blade.php` | Total di header; dikelompokkan per bulan (judul `section`); tiap baris berisi tanggal Fraunces + hari, jam masuk/pulang, chip status, jarak, dan tautan foto; paginasi |
-| Izin (daftar) | `attendance/leaves/index.blade.php` | Tombol "Ajukan Izin"; filter status sebagai chip; baris dengan jenis, rentang tanggal, dan chip status (pending / ok / attn) |
+| Izin (daftar) | `attendance/leaves/index.blade.php` | Tombol "Ajukan Izin"; baris dengan jenis, rentang tanggal, dan chip status (pending / ok / attn). Tanpa filter status: `LeaveController@index` tidak menyediakannya (filter hanya di halaman persetujuan) |
 | Izin (form) | `attendance/leaves/create.blade.php` | Pilihan Izin / Cuti / Sakit sebagai kartu radio besar; tanggal mulai/selesai; alasan; lampiran foto (keyboard-able, pratinjau, hapus 44px); tombol kirim dengan anti-dobel |
 | Izin (detail) | `attendance/leaves/show.blade.php` | Kartu ringkasan status, rincian, dan lampiran |
 | Persetujuan | `attendance/leaves/approval-index.blade.php`, `approval-show.blade.php` | Daftar pengajuan dan detail dengan aksi setuju/tolak (konfirmasi tetap) |
