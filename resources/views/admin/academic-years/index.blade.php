@@ -56,17 +56,17 @@
                                                 method="POST" x-data="{}"
                                                 @submit.prevent="$dispatch('admin-confirm', {
                                                     title: 'Aktifkan Tahun Ajaran',
-                                                    message: 'Aktifkan tahun ajaran ini? Jadwal kerja tiap tahun tersimpan terpisah.',
+                                                    message: @js('Aktifkan tahun ajaran '.$year->name.'? Jadwal kerja tiap tahun tersimpan terpisah.'),
                                                     confirmText: 'Aktifkan',
                                                     variant: 'primary',
                                                     form: $el,
                                                 })">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="admin-button-success admin-icon-action size-11 p-0"
-                                                    title="Aktifkan">
+                                                    class="admin-row-action admin-row-action-edit" title="Aktifkan"
+                                                    aria-label="Aktifkan tahun ajaran {{ $year->name }}">
                                                     <svg class="h-5 w-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
+                                                        viewBox="0 0 24 24" aria-hidden="true">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2" d="M5 13l4 4L19 7"></path>
                                                     </svg>
@@ -74,10 +74,9 @@
                                             </form>
                                         @endif
                                         <a href="{{ route('admin.academic-years.edit', $year) }}"
-                                            class="admin-button-primary admin-icon-action size-11 p-0"
-                                            title="Edit tahun ajaran">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
+                                            class="admin-row-action admin-row-action-edit" title="Edit tahun ajaran"
+    aria-label="Edit tahun ajaran {{ $year->name }}">
+    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>
@@ -88,7 +87,7 @@
                                                 method="POST" x-data="{}"
                                                 @submit.prevent="$dispatch('admin-confirm', {
                                                     title: 'Hapus Tahun Ajaran',
-                                                    message: 'Yakin ingin menghapus tahun ajaran ini?',
+                                                    message: @js('Hapus tahun ajaran '.$year->name.'? Tindakan ini tidak dapat dibatalkan.'),
                                                     confirmText: 'Hapus',
                                                     variant: 'danger',
                                                     form: $el,
@@ -96,10 +95,9 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="admin-button-danger admin-icon-action size-11 p-0"
-                                                    title="Hapus tahun ajaran">
-                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
+                                                    class="admin-row-action admin-row-action-delete" title="Hapus tahun ajaran"
+    aria-label="Hapus tahun ajaran {{ $year->name }}">
+    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2"
                                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">

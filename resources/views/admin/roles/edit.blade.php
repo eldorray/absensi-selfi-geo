@@ -17,28 +17,28 @@
                 @method('PUT')
 
                 <div>
-                    <label for="name" class="admin-label">Nama Role</label>
+                    <label for="name" class="admin-label">Nama Role <span aria-hidden="true" class="admin-text-danger">*</span></label>
                     <input type="text" name="name" id="name" value="{{ old('name', $role->name) }}" required
-                        class="admin-field p-2.5">
+                        class="admin-field p-2.5" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror>
                     @error('name')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="name-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
                     <label for="slug" class="admin-label">Slug</label>
                     <input type="text" name="slug" id="slug" value="{{ old('slug', $role->slug) }}"
-                        class="admin-field p-2.5">
+                        class="admin-field p-2.5" @error('slug') aria-invalid="true" aria-describedby="slug-error" @enderror>
                     @error('slug')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="slug-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
                     <label for="description" class="admin-label">Deskripsi</label>
-                    <textarea name="description" id="description" rows="3" class="admin-field p-2.5">{{ old('description', $role->description) }}</textarea>
+                    <textarea name="description" id="description" rows="3" class="admin-field p-2.5" @error('description') aria-invalid="true" aria-describedby="description-error" @enderror>{{ old('description', $role->description) }}</textarea>
                     @error('description')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="description-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 

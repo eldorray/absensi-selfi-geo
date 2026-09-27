@@ -75,7 +75,7 @@ test('an invalid office filter is ignored on work schedules', function () {
         ->assertSee('Guru SMP Satu');
 });
 
-test('work schedules lists all office employees without a 10-row page cap', function () {
+test('work schedules fit a dozen office employees on the first 25-row page', function () {
     $smp = jadwalOffice('SMP');
     for ($i = 1; $i <= 12; $i++) {
         jadwalGuru(sprintf('Guru %02d', $i), $smp); // zero-padded so "Guru 12" sorts last
@@ -85,10 +85,10 @@ test('work schedules lists all office employees without a 10-row page cap', func
         ->get(route('admin.work-schedules.index', ['office_id' => $smp->id]))
         ->assertStatus(200)
         ->assertSee('Guru 01')
-        ->assertSee('Guru 12'); // last by name → would be on page 2 under the old paginate(10)
+        ->assertSee('Guru 12'); // last by name, still on page 1 with paginate(25)
 });
 
-test('work schedules page renders a live search input', function () {
+test('work schedules page renders a search input', function () {
     jadwalOffice('SMP');
 
     $this->actingAs(jadwalAdmin())

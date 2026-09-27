@@ -95,14 +95,36 @@ test('student list honours the per page filter and falls back to the default', f
         ->assertSuccessful()
         ->assertViewHas('students', fn ($students) => $students->perPage() === 10 && $students->count() === 10);
 
-    $this->actingAs($admin)->get(route('admin.students.index', ['schoolLevel' => 'mi', 'per_page' => 'semua']))
-        ->assertSuccessful()
-        ->assertViewHas('students', fn ($students) => $students->count() === 12 && ! $students->hasPages());
-
     // Nilai di luar allowlist tidak boleh menentukan ukuran halaman.
-    $this->actingAs($admin)->get(route('admin.students.index', ['schoolLevel' => 'mi', 'per_page' => '999999']))
+    $this->actingAs($admin)->get(route('admin.students.index', ['schoolLevel' => 'mi', 'per_page' => 'abc']))
         ->assertSuccessful()
         ->assertViewHas('students', fn ($students) => $students->perPage() === 25);
+});
+
+test('student list clamps the legacy show-all and huge per page values to the maximum', function () {
+    Student::factory()->count(3)->create(['school_level' => 'mi']);
+    $admin = studentAdmin();
+
+    foreach (['semua', '100000', '999999'] as $value) {
+        $this->actingAs($admin)->get(route('admin.students.index', ['schoolLevel' => 'mi', 'per_page' => $value]))
+            ->assertSuccessful()
+            ->assertViewHas('students', fn ($students) => $students->perPage() === 200)
+            ->assertDontSee('Tampilkan semua');
+    }
+});
+
+test('student bulk select only serialises ids from the current page', function () {
+    $students = Student::factory()->count(12)->create(['school_level' => 'mi']);
+    $admin = studentAdmin();
+
+    $response = $this->actingAs($admin)->get(route('admin.students.index', ['schoolLevel' => 'mi', 'per_page' => 10]))
+        ->assertSuccessful()
+        ->assertSee(':indeterminate="ids.length > 0 && ids.length < pageIds.length"', false);
+
+    $pageIds = $response->viewData('students')->pluck('id');
+    expect($pageIds)->toHaveCount(10);
+    $offPage = $students->pluck('id')->diff($pageIds)->first();
+    $response->assertDontSee('name="ids[]" value="'.$offPage.'"', false);
 });
 
 test('deleting a student locked by a bk record reports an error instead of a 500', function () {

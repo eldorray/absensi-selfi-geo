@@ -16,30 +16,30 @@
                 @csrf
 
                 <div>
-                    <label for="name" class="admin-label">Nama Role</label>
+                    <label for="name" class="admin-label">Nama Role <span aria-hidden="true" class="admin-text-danger">*</span></label>
                     <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                        class="admin-field p-2.5" placeholder="Contoh: Kepala Sekolah">
+                        class="admin-field p-2.5" placeholder="Contoh: Kepala Sekolah" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror>
                     @error('name')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="name-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
                     <label for="slug" class="admin-label">Slug (opsional)</label>
                     <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
-                        class="admin-field p-2.5" placeholder="kepala-sekolah">
+                        class="admin-field p-2.5" placeholder="kepala-sekolah" @error('slug') aria-invalid="true" aria-describedby="slug-error" @enderror>
                     <p class="admin-hint">Akan dibuat otomatis dari nama role jika dikosongkan.</p>
                     @error('slug')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="slug-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
                     <label for="description" class="admin-label">Deskripsi</label>
                     <textarea name="description" id="description" rows="3" class="admin-field p-2.5"
-                        placeholder="Deskripsi singkat tentang role ini">{{ old('description') }}</textarea>
+                        placeholder="Deskripsi singkat tentang role ini" @error('description') aria-invalid="true" aria-describedby="description-error" @enderror>{{ old('description') }}</textarea>
                     @error('description')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="description-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 

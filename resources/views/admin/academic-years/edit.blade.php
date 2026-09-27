@@ -9,33 +9,33 @@
                 @method('PUT')
 
                 <div>
-                    <label for="name" class="admin-label">Nama Tahun Ajaran</label>
+                    <label for="name" class="admin-label">Nama Tahun Ajaran <span aria-hidden="true" class="admin-text-danger">*</span></label>
                     <input type="text" name="name" id="name" value="{{ old('name', $academicYear->name) }}"
                         placeholder="Contoh: 2024/2025"
-                        class="admin-field p-2.5 @error('name') border-red-500 @enderror">
+                        class="admin-field p-2.5 @error('name') border-red-500 @enderror" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror required>
                     @error('name')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="name-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                        <label for="start_date" class="admin-label">Tanggal Mulai</label>
+                        <label for="start_date" class="admin-label">Tanggal Mulai <span aria-hidden="true" class="admin-text-danger">*</span></label>
                         <input type="date" name="start_date" id="start_date"
                             value="{{ old('start_date', $academicYear->start_date->format('Y-m-d')) }}"
-                            class="admin-field p-2.5 @error('start_date') border-red-500 @enderror">
+                            class="admin-field p-2.5 @error('start_date') border-red-500 @enderror" @error('start_date') aria-invalid="true" aria-describedby="start_date-error" @enderror required>
                         @error('start_date')
-                            <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                            <p id="start_date-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div>
-                        <label for="end_date" class="admin-label">Tanggal Selesai</label>
+                        <label for="end_date" class="admin-label">Tanggal Selesai <span aria-hidden="true" class="admin-text-danger">*</span></label>
                         <input type="date" name="end_date" id="end_date"
                             value="{{ old('end_date', $academicYear->end_date->format('Y-m-d')) }}"
-                            class="admin-field p-2.5 @error('end_date') border-red-500 @enderror">
+                            class="admin-field p-2.5 @error('end_date') border-red-500 @enderror" @error('end_date') aria-invalid="true" aria-describedby="end_date-error" @enderror required>
                         @error('end_date')
-                            <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                            <p id="end_date-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>

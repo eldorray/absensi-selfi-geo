@@ -1,13 +1,29 @@
-            <aside :class="{
-                    'w-full md:w-64 app-sidebar-expanded': sidebarOpen,
-                    'w-0 md:w-16 hidden md:block app-sidebar-collapsed': !sidebarOpen,
+            {{-- Mobile (< lg) backdrop: closes the off-canvas sidebar. --}}
+            <div x-show="sidebarOpen && !isDesktop" x-cloak x-transition.opacity @click="setSidebar(false)"
+                class="fixed inset-0 z-30 bg-black/40 lg:hidden" aria-hidden="true"></div>
+
+            <aside id="app-sidebar" aria-label="Menu samping"
+                :class="{
+                    'app-sidebar-expanded translate-x-0! lg:w-64': sidebarOpen,
+                    'app-sidebar-collapsed lg:w-16': !sidebarOpen,
                 }"
+                :inert="!isDesktop && !sidebarOpen"
                 @class([
-                    'bg-white/70 dark:bg-gray-950/40 backdrop-blur-md border-r border-slate-100 dark:border-slate-900/80 sidebar-transition overflow-hidden',
+                    'fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] shrink-0 -translate-x-full bg-white dark:bg-gray-950 shadow-xl lg:static lg:z-auto lg:max-w-none lg:translate-x-0 lg:shadow-none lg:bg-white/70 lg:dark:bg-gray-950/40',
+                    'backdrop-blur-md border-r border-slate-100 dark:border-slate-900/80 overflow-hidden transition-[width,translate] duration-300 ease-in-out motion-reduce:transition-none',
                     'admin-sidebar' => request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()),
                 ]) data-layout-sidebar>
                 <!-- Sidebar Content -->
                 <div class="h-full flex flex-col">
+                    <div class="flex items-center justify-end px-2 pt-2 lg:hidden">
+                        <button type="button" x-ref="sidebarClose" @click="setSidebar(false)"
+                            class="rounded-lg p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                            aria-label="Tutup menu samping">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                     <!-- Sidebar Menu -->
                     <nav class="flex-1 overflow-y-auto custom-scrollbar py-4">
                         <ul class="admin-nav-list space-y-1 px-2">

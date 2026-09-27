@@ -30,6 +30,6 @@ class PasswordController extends Controller
             'visible_password' => $validated['password'],
         ]);
 
-        return back()->with('status', 'password-updated');
+        return back()->with('status', 'Password berhasil diperbarui.');
     }
 }

@@ -20,7 +20,7 @@
                     </div>
                     <div>
                         <label for="teacher_id" class="admin-label">Guru Wali</label>
-                        <select id="teacher_id" name="teacher_id" class="admin-field p-3">
+                        <select id="teacher_id" name="teacher_id" class="admin-field p-3" @error('teacher_id') aria-invalid="true" aria-describedby="teacher_id-error" @enderror>
                             <option value="">Belum ditetapkan</option>
                             @foreach ($teachers as $teacher)
                                 <option value="{{ $teacher->id }}" @selected((int) old('teacher_id', $assignment?->teacher_id) === $teacher->id)>
@@ -29,7 +29,7 @@
                             @endforeach
                         </select>
                         @error('teacher_id')
-                            <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                            <p id="teacher_id-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                         @enderror
                     </div>
                 </section>

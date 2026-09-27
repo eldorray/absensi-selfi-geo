@@ -2,8 +2,8 @@
     <div class="settings-page">
         <header class="admin-page-header settings-page-header">
             <span class="admin-kicker">Pengaturan akun</span>
-            <h1>{{ __('Update password') }}</h1>
-            <p>{{ __('Ensure your account is using a long, random password to stay secure') }}</p>
+            <h1>Ubah password</h1>
+            <p>Gunakan password yang panjang dan acak agar akun tetap aman.</p>
         </header>
 
         <div class="settings-layout">
@@ -28,23 +28,23 @@
                     @method('PUT')
 
                     <div>
-                        <label class="admin-label" for="current_password">Current Password</label>
+                        <label class="admin-label" for="current_password">Password saat ini</label>
                         <input id="current_password" class="admin-field px-4 py-3 @error('current_password') border-red-500 @enderror" type="password" name="current_password" autocomplete="current-password" required>
                         @error('current_password')<p class="admin-text-danger mt-1.5 text-xs">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
-                        <label class="admin-label" for="password">New Password</label>
+                        <label class="admin-label" for="password">Password baru</label>
                         <input id="password" class="admin-field px-4 py-3 @error('password') border-red-500 @enderror" type="password" name="password" autocomplete="new-password" required>
                         @error('password')<p class="admin-text-danger mt-1.5 text-xs">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
-                        <label class="admin-label" for="password_confirmation">Confirm Password</label>
+                        <label class="admin-label" for="password_confirmation">Konfirmasi password baru</label>
                         <input id="password_confirmation" class="admin-field px-4 py-3" type="password" name="password_confirmation" autocomplete="new-password" required>
                     </div>
 
-                    <button type="submit" class="admin-button-primary px-5 py-3">{{ __('Update Password') }}</button>
+                    <button type="submit" class="admin-button-primary px-5 py-3">Perbarui password</button>
                 </form>
             </section>
         </div>

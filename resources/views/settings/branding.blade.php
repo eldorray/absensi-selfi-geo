@@ -10,10 +10,6 @@
             @include('settings.partials.navigation')
 
             <section class="settings-content admin-glass-panel" aria-labelledby="branding-heading">
-                @if (session('success'))
-                    <div class="admin-alert-success rounded-2xl p-4 text-sm font-semibold">{{ session('success') }}</div>
-                @endif
-
                 <div class="settings-section">
                     <div class="settings-section-heading">
                         <span class="admin-tone-emerald settings-section-icon" aria-hidden="true">

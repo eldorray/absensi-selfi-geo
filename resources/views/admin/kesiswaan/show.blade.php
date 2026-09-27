@@ -3,6 +3,7 @@
     $initials = collect(explode(' ', $student->nama_lengkap))->filter()->take(2)->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode('');
     $typeLabels = ['violation' => 'Pelanggaran', 'counseling' => 'Konseling'];
     $statusLabels = ['new' => 'Baru', 'in_progress' => 'Dalam penanganan', 'waiting_follow_up' => 'Menunggu tindak lanjut', 'completed' => 'Selesai'];
+    $referralStatusLabels = ['new' => 'Baru', 'in_handling' => 'Dalam penanganan', 'completed' => 'Selesai', 'rejected' => 'Ditolak'];
 @endphp
 
 <x-layouts.app>
@@ -43,11 +44,11 @@
                     <div class="mt-4 space-y-3">
                         @forelse($referrals as $referral)
                             <a href="{{ route('admin.kesiswaan.referrals.show', $referral) }}" class="block rounded-2xl border admin-border p-4 transition hover:border-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">
-                                <div class="flex items-start justify-between gap-3"><h3 class="text-sm font-black admin-text-main">{{ $referral->reason }}</h3><span class="rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-bold admin-text-muted dark:bg-slate-800">{{ ucfirst(str_replace('_', ' ', $referral->status->value)) }}</span></div>
+                                <div class="flex items-start justify-between gap-3"><h3 class="text-sm font-black admin-text-main">{{ $referral->reason }}</h3><span class="rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-bold admin-text-muted dark:bg-slate-800">{{ $referralStatusLabels[$referral->status->value] ?? $referral->status->value }}</span></div>
                                 <p class="mt-2 text-xs admin-text-muted">{{ $referral->observed_at?->format('d M Y') }} · {{ $referral->counselor?->name ?? 'Belum ditangani' }}</p>
                             </a>
                         @empty
-                            <div class="rounded-2xl border admin-border p-6 text-center"><p class="font-bold admin-text-main">Belum ada rujukan</p><p class="mt-1 text-xs admin-text-muted">Aktivitas rujukan siswa akan muncul di sini.</p></div>
+                            <x-admin.empty-state icon="fas-clipboard-list" title="Belum ada rujukan" hint="Aktivitas rujukan siswa akan muncul di sini." />
                         @endforelse
                     </div>
                     <div class="mt-4">{{ $referrals->links() }}</div>

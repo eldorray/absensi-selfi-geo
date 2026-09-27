@@ -2,8 +2,8 @@
     <div class="settings-page">
         <header class="admin-page-header settings-page-header">
             <span class="admin-kicker">Pengaturan akun</span>
-            <h1>{{ __('Profile') }}</h1>
-            <p>{{ __('Update your name and email address') }}</p>
+            <h1>Profil</h1>
+            <p>Perbarui nama dan alamat email Anda.</p>
         </header>
 
         <div class="settings-layout">
@@ -29,7 +29,7 @@
                         @method('PUT')
 
                         <div>
-                            <label class="admin-label" for="name">Name</label>
+                            <label class="admin-label" for="name">Nama</label>
                             <input id="name" class="admin-field px-4 py-3 @error('name') border-red-500 @enderror" type="text" name="name" value="{{ old('name', $user->name) }}" autocomplete="name" required>
                             @error('name')<p class="admin-text-danger mt-1.5 text-xs">{{ $message }}</p>@enderror
                         </div>
@@ -40,19 +40,19 @@
                             @error('email')<p class="admin-text-danger mt-1.5 text-xs">{{ $message }}</p>@enderror
                         </div>
 
-                        <button type="submit" class="admin-button-primary px-5 py-3">{{ __('Save') }}</button>
+                        <button type="submit" class="admin-button-primary px-5 py-3">Simpan</button>
                     </form>
                 </div>
 
                 <div class="settings-danger-zone">
                     <div>
-                        <h2>{{ __('Delete account') }}</h2>
-                        <p class="admin-muted">{{ __('Delete your account and all of its resources') }}</p>
+                        <h2>Hapus akun</h2>
+                        <p class="admin-muted">Hapus akun Anda beserta seluruh datanya secara permanen.</p>
                     </div>
-                    <form action="{{ route('settings.profile.destroy') }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to delete your account?') }}')">
+                    <form action="{{ route('settings.profile.destroy') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan.')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="admin-button-danger px-5 py-3">{{ __('Delete account') }}</button>
+                        <button type="submit" class="admin-button-danger px-5 py-3">Hapus akun</button>
                     </form>
                 </div>
             </section>

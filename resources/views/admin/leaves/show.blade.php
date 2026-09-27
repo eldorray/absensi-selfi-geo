@@ -11,18 +11,7 @@
             </a>
         </x-admin.page-header>
 
-        <!-- Success/Error Messages -->
-        @if (session('success'))
-            <div class="admin-alert-success rounded-2xl p-4 text-sm font-semibold">
-                {{ session('success') }}
-            </div>
-        @endif
 
-        @if (session('error'))
-            <div class="admin-alert-danger rounded-2xl p-4 text-sm font-semibold">
-                {{ session('error') }}
-            </div>
-        @endif
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <!-- Main Content -->
@@ -92,7 +81,7 @@
                                 x-data="{}"
                                 @submit.prevent="$dispatch('admin-confirm', {
                                     title: 'Setujui Pengajuan',
-                                    message: 'Setujui pengajuan ini?',
+                                    message: @js('Setujui pengajuan '.$leave->type_label.' dari '.$leave->user->name.'?'),
                                     confirmText: 'Setujui',
                                     variant: 'success',
                                     form: $el,
@@ -109,15 +98,18 @@
                                 x-data="{}"
                                 @submit.prevent="$dispatch('admin-confirm', {
                                     title: 'Tolak Pengajuan',
-                                    message: 'Tolak pengajuan ini?',
+                                    message: @js('Tolak pengajuan '.$leave->type_label.' dari '.$leave->user->name.'?'),
                                     confirmText: 'Tolak',
                                     variant: 'danger',
                                     form: $el,
                                 })">
                                 @csrf
-                                <label for="rejection_reason" class="admin-label">Tolak dengan alasan:</label>
+                                <label for="rejection_reason" class="admin-label">Tolak dengan alasan: <span aria-hidden="true" class="admin-text-danger">*</span></label>
                                 <textarea name="rejection_reason" id="rejection_reason" rows="2" class="admin-field mb-3 p-3"
-                                    placeholder="Masukkan alasan penolakan..."></textarea>
+                                    placeholder="Masukkan alasan penolakan..." @error('rejection_reason') aria-invalid="true" aria-describedby="rejection_reason-error" @enderror required>{{ old('rejection_reason') }}</textarea>
+                                @error('rejection_reason')
+                                    <p id="rejection_reason-error" class="admin-hint admin-text-danger">{{ $message }}</p>
+                                @enderror
                                 <button type="submit" class="admin-button-danger w-full py-2 text-sm">
                                     &#10005; Tolak
                                 </button>

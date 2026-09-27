@@ -6,11 +6,6 @@
             @endunless
         </x-admin.page-header>
 
-        @if (session('success'))
-            <div class="admin-alert-success rounded-2xl px-4 py-3 text-sm font-semibold">
-                {{ session('success') }}
-            </div>
-        @endif
 
         <!-- Filters -->
         <div class="admin-glass-panel p-6">

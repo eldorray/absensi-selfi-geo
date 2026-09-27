@@ -18,30 +18,30 @@
 
                 <!-- Name -->
                 <div>
-                    <label for="name" class="admin-label">Nama Kantor</label>
+                    <label for="name" class="admin-label">Nama Kantor <span aria-hidden="true" class="admin-text-danger">*</span></label>
                     <input type="text" name="name" id="name" value="{{ old('name') }}"
-                        class="admin-field p-2.5" placeholder="Contoh: Kantor Pusat Jakarta">
+                        class="admin-field p-2.5" placeholder="Contoh: Kantor Pusat Jakarta" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror required>
                     @error('name')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="name-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <!-- Coordinates -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="latitude" class="admin-label">Latitude</label>
+                        <label for="latitude" class="admin-label">Latitude <span aria-hidden="true" class="admin-text-danger">*</span></label>
                         <input type="text" name="latitude" id="latitude" value="{{ old('latitude') }}"
-                            class="admin-field p-2.5" placeholder="-6.200000">
+                            class="admin-field p-2.5" placeholder="-6.200000" @error('latitude') aria-invalid="true" aria-describedby="latitude-error" @enderror required>
                         @error('latitude')
-                            <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                            <p id="latitude-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label for="longitude" class="admin-label">Longitude</label>
+                        <label for="longitude" class="admin-label">Longitude <span aria-hidden="true" class="admin-text-danger">*</span></label>
                         <input type="text" name="longitude" id="longitude" value="{{ old('longitude') }}"
-                            class="admin-field p-2.5" placeholder="106.816667">
+                            class="admin-field p-2.5" placeholder="106.816667" @error('longitude') aria-invalid="true" aria-describedby="longitude-error" @enderror required>
                         @error('longitude')
-                            <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                            <p id="longitude-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -61,12 +61,12 @@
 
                 <!-- Radius -->
                 <div>
-                    <label for="radius_meters" class="admin-label">Radius (meter)</label>
+                    <label for="radius_meters" class="admin-label">Radius (meter) <span aria-hidden="true" class="admin-text-danger">*</span></label>
                     <input type="number" name="radius_meters" id="radius_meters"
-                        value="{{ old('radius_meters', 100) }}" class="admin-field p-2.5" min="10" max="5000">
+                        value="{{ old('radius_meters', 100) }}" class="admin-field p-2.5" min="10" max="5000" @error('radius_meters') aria-invalid="true" aria-describedby="radius_meters-error" @enderror required>
                     <p class="admin-hint">Jarak maksimal karyawan dari titik kantor untuk absensi (10-5000 meter)</p>
                     @error('radius_meters')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="radius_meters-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 

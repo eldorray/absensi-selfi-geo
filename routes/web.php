@@ -5,6 +5,7 @@ use App\Http\Controllers\Employee;
 use App\Http\Controllers\Employee\AccountSwitchController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Settings;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('branding/{type}', [\App\Http\Controllers\BrandingAssetController::class, 'show'])
@@ -43,7 +44,8 @@ Route::get('/offline', function () {
     return response()->file(public_path('offline.html'));
 })->name('offline');
 
-Route::view('dashboard', 'dashboard')
+// Generic landing target used by the auth flows: send each user to the dashboard for their role.
+Route::get('dashboard', fn (Request $request) => to_route($request->user()->isAdmin() ? 'admin.dashboard' : 'attendance.dashboard'))
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 

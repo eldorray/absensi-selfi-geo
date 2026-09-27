@@ -19,8 +19,11 @@ use RuntimeException;
 
 class StudentController extends Controller
 {
-    /** Nilai yang boleh dipakai pada query string per_page; 'semua' menampilkan seluruh baris. */
-    private const PER_PAGE_OPTIONS = ['10', '25', '100', 'semua'];
+    /** Nilai yang boleh dipakai pada query string per_page. */
+    private const PER_PAGE_OPTIONS = ['10', '25', '100', '200'];
+
+    /** Batas atas ukuran halaman supaya satu request tidak memuat seluruh jenjang. */
+    private const MAX_PER_PAGE = 200;
 
     private const DEFAULT_PER_PAGE = '25';
 
@@ -32,7 +35,7 @@ class StudentController extends Controller
             ->when($request->filled('school_class_id'), fn ($query) => $query->where('school_class_id', $request->integer('school_class_id')))
             ->orderBy('nama_lengkap')->paginate($this->perPage($request))->withQueryString();
 
-        return view('admin.students.index', ['students' => $students, 'classes' => $this->classes($schoolLevel), 'schoolLevel' => $schoolLevel, 'perPageOptions' => self::PER_PAGE_OPTIONS, 'perPage' => $request->input('per_page', self::DEFAULT_PER_PAGE)]);
+        return view('admin.students.index', ['students' => $students, 'classes' => $this->classes($schoolLevel), 'schoolLevel' => $schoolLevel, 'perPageOptions' => self::PER_PAGE_OPTIONS, 'perPage' => (string) $students->perPage()]);
     }
 
     public function create(string $schoolLevel): View
@@ -132,11 +135,17 @@ class StudentController extends Controller
     private function perPage(Request $request): int
     {
         $requested = (string) $request->input('per_page', self::DEFAULT_PER_PAGE);
-        $requested = in_array($requested, self::PER_PAGE_OPTIONS, true) ? $requested : self::DEFAULT_PER_PAGE;
 
-        // ponytail: 'semua' cukup dipetakan ke perPage besar, tidak perlu cabang
-        // non-paginated tersendiri. Naikkan bila satu jenjang bisa lebih dari 100k siswa.
-        return $requested === 'semua' ? 100000 : (int) $requested;
+        if (in_array($requested, self::PER_PAGE_OPTIONS, true)) {
+            return (int) $requested;
+        }
+
+        // Tautan lama 'semua' dan angka di atas batas dipangkas ke ukuran maksimum.
+        if ($requested === 'semua' || (ctype_digit($requested) && (int) $requested > self::MAX_PER_PAGE)) {
+            return self::MAX_PER_PAGE;
+        }
+
+        return (int) self::DEFAULT_PER_PAGE;
     }
 
     private function classes(string $level)

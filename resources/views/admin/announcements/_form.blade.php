@@ -1,38 +1,38 @@
 @php($a = $announcement ?? null)
 
 <div>
-    <label for="title" class="admin-label">Judul</label>
+    <label for="title" class="admin-label">Judul <span aria-hidden="true" class="admin-text-danger">*</span></label>
     <input type="text" name="title" id="title" value="{{ old('title', $a?->title) }}"
         placeholder="Contoh: Rapat Guru Semester Genap"
-        class="admin-field p-2.5 @error('title') border-red-500 @enderror">
+        class="admin-field p-2.5 @error('title') border-red-500 @enderror" @error('title') aria-invalid="true" aria-describedby="title-error" @enderror required>
     @error('title')
-        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+        <p id="title-error" class="admin-hint admin-text-danger">{{ $message }}</p>
     @enderror
 </div>
 
 <div>
     <label for="summary" class="admin-label">Ringkasan</label>
     <input type="text" name="summary" id="summary" value="{{ old('summary', $a?->summary) }}"
-        placeholder="Ringkasan singkat 1 baris" class="admin-field p-2.5 @error('summary') border-red-500 @enderror">
+        placeholder="Ringkasan singkat 1 baris" class="admin-field p-2.5 @error('summary') border-red-500 @enderror" @error('summary') aria-invalid="true" aria-describedby="summary-error" @enderror>
     <p class="admin-hint">Tampil di kartu, opsional.</p>
     @error('summary')
-        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+        <p id="summary-error" class="admin-hint admin-text-danger">{{ $message }}</p>
     @enderror
 </div>
 
 <div>
-    <label for="body" class="admin-label">Isi Informasi</label>
+    <label for="body" class="admin-label">Isi Informasi <span aria-hidden="true" class="admin-text-danger">*</span></label>
     <textarea name="body" id="body" rows="8" placeholder="Tulis isi lengkap informasi di sini..."
-        class="admin-field p-2.5 @error('body') border-red-500 @enderror">{{ old('body', $a?->body) }}</textarea>
+        class="admin-field p-2.5 @error('body') border-red-500 @enderror" @error('body') aria-invalid="true" aria-describedby="body-error" @enderror required>{{ old('body', $a?->body) }}</textarea>
     @error('body')
-        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+        <p id="body-error" class="admin-hint admin-text-danger">{{ $message }}</p>
     @enderror
 </div>
 
 <div>
     <label for="office_id" class="admin-label">Kantor</label>
     <select name="office_id" id="office_id"
-        class="admin-field p-2.5 @error('office_id') border-red-500 @enderror">
+        class="admin-field p-2.5 @error('office_id') border-red-500 @enderror" @error('office_id') aria-invalid="true" aria-describedby="office_id-error" @enderror>
         <option value="">Semua Kantor</option>
         @foreach ($offices as $office)
             <option value="{{ $office->id }}" @selected(old('office_id', $a?->office_id) == $office->id)>{{ $office->name }}
@@ -41,7 +41,7 @@
     </select>
     <p class="admin-hint">Pilih kantor tujuan, atau "Semua Kantor" agar tampil ke semua guru.</p>
     @error('office_id')
-        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+        <p id="office_id-error" class="admin-hint admin-text-danger">{{ $message }}</p>
     @enderror
 </div>
 
@@ -53,10 +53,10 @@
         <p class="admin-hint mb-2" style="margin-top: 0">Unggah gambar baru untuk mengganti yang lama.</p>
     @endif
     <input type="file" name="image" id="image" accept="image/*"
-        class="admin-field p-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-indigo-700 hover:file:bg-indigo-100 @error('image') border-red-500 @enderror">
+        class="admin-field p-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-(--admin-primary-soft) file:px-4 file:py-2 file:font-semibold file:text-(--admin-nav-active) hover:file:brightness-95 @error('image') border-red-500 @enderror" @error('image') aria-invalid="true" aria-describedby="image-error" @enderror>
     <p class="admin-hint">Opsional, maksimal 2MB.</p>
     @error('image')
-        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+        <p id="image-error" class="admin-hint admin-text-danger">{{ $message }}</p>
     @enderror
 </div>
 
@@ -65,10 +65,10 @@
         <label for="sort_order" class="admin-label">Urutan</label>
         <input type="number" name="sort_order" id="sort_order" min="0" max="9999"
             value="{{ old('sort_order', $a?->sort_order ?? 0) }}"
-            class="admin-field p-2.5 @error('sort_order') border-red-500 @enderror">
+            class="admin-field p-2.5 @error('sort_order') border-red-500 @enderror" @error('sort_order') aria-invalid="true" aria-describedby="sort_order-error" @enderror>
         <p class="admin-hint">Angka kecil tampil lebih dulu.</p>
         @error('sort_order')
-            <p class="admin-hint admin-text-danger">{{ $message }}</p>
+            <p id="sort_order-error" class="admin-hint admin-text-danger">{{ $message }}</p>
         @enderror
     </div>
 

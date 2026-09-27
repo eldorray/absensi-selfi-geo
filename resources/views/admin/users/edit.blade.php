@@ -18,21 +18,21 @@
 
                 <!-- Name -->
                 <div>
-                    <label for="name" class="admin-label">Nama</label>
+                    <label for="name" class="admin-label">Nama <span aria-hidden="true" class="admin-text-danger">*</span></label>
                     <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}"
-                        class="admin-field p-2.5">
+                        class="admin-field p-2.5" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror required>
                     @error('name')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="name-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <!-- Email -->
                 <div>
-                    <label for="email" class="admin-label">Email</label>
+                    <label for="email" class="admin-label">Email <span aria-hidden="true" class="admin-text-danger">*</span></label>
                     <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}"
-                        class="admin-field p-2.5">
+                        class="admin-field p-2.5" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror required>
                     @error('email')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="email-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -41,10 +41,10 @@
                 <!-- Password -->
                 <div>
                     <label for="password" class="admin-label">Password Baru</label>
-                    <input type="password" name="password" id="password" class="admin-field p-2.5">
+                    <input type="password" name="password" id="password" class="admin-field p-2.5" @error('password') aria-invalid="true" aria-describedby="password-error" @enderror>
                     <p class="admin-hint">Kosongkan jika tidak ingin mengubah password.</p>
                     @error('password')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="password-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -59,8 +59,8 @@
 
                 <!-- Role -->
                 <div>
-                    <label for="role_id" class="admin-label">Role</label>
-                    <select name="role_id" id="role_id" class="admin-field p-2.5">
+                    <label for="role_id" class="admin-label">Role <span aria-hidden="true" class="admin-text-danger">*</span></label>
+                    <select name="role_id" id="role_id" class="admin-field p-2.5" @error('role_id') aria-invalid="true" aria-describedby="role_id-error" @enderror required>
                         <option value="">-- Pilih Role --</option>
                         @foreach ($roles as $role)
                             <option value="{{ $role->id }}"
@@ -70,14 +70,14 @@
                         @endforeach
                     </select>
                     @error('role_id')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="role_id-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <!-- Office -->
                 <div>
                     <label for="office_id" class="admin-label">Kantor</label>
-                    <select name="office_id" id="office_id" class="admin-field p-2.5">
+                    <select name="office_id" id="office_id" class="admin-field p-2.5" @error('office_id') aria-invalid="true" aria-describedby="office_id-error" @enderror>
                         <option value="">-- Pilih Kantor --</option>
                         @foreach ($offices as $office)
                             <option value="{{ $office->id }}"
@@ -87,7 +87,7 @@
                         @endforeach
                     </select>
                     @error('office_id')
-                        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+                        <p id="office_id-error" class="admin-hint admin-text-danger">{{ $message }}</p>
                     @enderror
                 </div>
 

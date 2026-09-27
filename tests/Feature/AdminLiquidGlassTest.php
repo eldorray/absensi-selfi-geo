@@ -94,14 +94,6 @@ dataset('admin compact text actions', [
         'admin/leaves/index.blade.php',
         '/<a\b[^>]*class="[^"]*\badmin-button-primary\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Detail\s*<\/a>/s',
     ],
-    'role edit' => [
-        'admin/roles/index.blade.php',
-        '/<a\b[^>]*class="[^"]*\badmin-button-primary\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Edit\s*<\/a>/s',
-    ],
-    'role delete' => [
-        'admin/roles/index.blade.php',
-        '/<button\b[^>]*class="[^"]*\badmin-button-danger\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Hapus\s*<\/button>/s',
-    ],
 ]);
 
 test('compact admin text actions retain intentional horizontal padding', function (string $view, string $pattern) {
@@ -114,24 +106,26 @@ dataset('admin icon action views', [
     'academic years' => 'admin/academic-years/index.blade.php',
     'announcements' => 'admin/announcements/index.blade.php',
     'offices' => 'admin/offices/index.blade.php',
+    'roles' => 'admin/roles/index.blade.php',
     'users' => 'admin/users/index.blade.php',
 ]);
 
-test('icon-only admin actions use fixed accessible targets', function (string $view) {
+test('icon-only admin row actions share the tonal row-action pattern with a named label', function (string $view) {
     $source = file_get_contents(resource_path("views/{$view}"));
     $matched = preg_match_all(
-        '/<(?<tag>a|button)\b[^>]*class="(?<classes>[^"]*\badmin-button-(?:primary|success|danger)\b[^"]*)"[^>]*>\s*<svg\b(?:(?!<\/svg>).)*<\/svg>\s*<\/\k<tag>>/s',
+        '/<(?<tag>a|button)\b(?<attrs>(?:(?!<svg\b).)*?class="[^"]*\badmin-row-action\b[^"]*"(?:(?!<svg\b).)*?)>\s*<svg\b(?<svg>[^>]*)>/s',
         $source,
         $actions,
     );
 
     expect($matched)->toBeGreaterThan(0);
 
-    foreach ($actions['classes'] as $classes) {
-        expect($classes)
-            ->toContain('size-11')
-            ->toContain('p-0');
+    foreach ($actions['attrs'] as $index => $attrs) {
+        expect($attrs)->toMatch('/aria-label="[^"]*\{\{/');
+        expect($actions['svg'][$index])->toContain('aria-hidden="true"');
     }
+
+    expect($source)->not->toMatch('/admin-icon-action size-11/');
 })->with('admin icon action views');
 
 dataset('admin form surface views', [
@@ -271,8 +265,8 @@ test('admin detail views retain semantic status and approval mappings', function
         ->toContain("'rejected' => 'admin-status-danger'")
         // Approve/reject confirmation now runs through the glass confirm modal
         // (form-level admin-confirm dispatch) instead of native onclick confirm.
-        ->toContain("message: 'Setujui pengajuan ini?'")
-        ->toContain("message: 'Tolak pengajuan ini?'")
+        ->toContain("message: @js('Setujui pengajuan '.\$leave->type_label.' dari '.\$leave->user->name.'?')")
+        ->toContain("message: @js('Tolak pengajuan '.\$leave->type_label.' dari '.\$leave->user->name.'?')")
         ->toMatch("/leaves\\.approve.*?admin-confirm.*?variant: 'success'/s")
         ->toMatch("/leaves\\.reject.*?admin-confirm.*?variant: 'danger'/s")
         ->toContain('admin-button-success')
@@ -349,19 +343,18 @@ test('pdf report templates stay isolated from admin screen classes', function (s
     expect($source)->not->toMatch('/\badmin-[a-z0-9-]+/i');
 })->with('admin pdf report views');
 
+// Session flash (status/success/error) is rendered once by the admin layout;
+// pages only keep their own validation summaries.
 dataset('direct admin feedback containers', [
-    'leaves index success' => ['admin/leaves/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
-    'leaves index error' => ['admin/leaves/index.blade.php', "session\\('error'\\)", 'admin-alert-danger'],
-    'leave detail success' => ['admin/leaves/show.blade.php', "session\\('success'\\)", 'admin-alert-success'],
-    'leave detail error' => ['admin/leaves/show.blade.php', "session\\('error'\\)", 'admin-alert-danger'],
-    'users success' => ['admin/users/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
-    'users error' => ['admin/users/index.blade.php', "session\\('error'\\)", 'admin-alert-danger'],
-    'offices success' => ['admin/offices/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
-    'roles success' => ['admin/roles/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
     'roles errors' => ['admin/roles/index.blade.php', '\\$errors->any\\(\\)', 'admin-alert-danger'],
-    'work schedules success' => ['admin/work-schedules/index.blade.php', "session\\('success'\\)", 'admin-alert-success'],
     'work schedule edit errors' => ['admin/work-schedules/edit.blade.php', '\\$errors->any\\(\\)', 'admin-alert-danger'],
 ]);
+
+test('admin pages leave session flash rendering to the layout', function () {
+    foreach (glob(resource_path('views/admin/**/*.blade.php')) ?: [] as $view) {
+        expect(file_get_contents($view), $view)->not->toMatch("/session\\('(success|error|status)'\\)/");
+    }
+});
 
 test('direct admin feedback containers use semantic alert classes', function (string $view, string $condition, string $semanticClass) {
     $source = file_get_contents(resource_path("views/{$view}"));

@@ -7,7 +7,7 @@
                     <form method="POST" action="{{ route('admin.work-schedules.copy-previous', ['user' => $user] + request()->query()) }}" x-data="{}"
                         @submit.prevent="$dispatch('admin-confirm', {
                             title: 'Salin Jadwal',
-                            message: 'Salin jadwal dari tahun ajaran {{ $previousYear->name }} ke {{ $activeYear->name }}? Jadwal {{ $activeYear->name }} yang ada akan ditimpa.',
+                            message: @js('Salin jadwal '.$user->name.' dari tahun ajaran '.$previousYear->name.' ke '.$activeYear->name.'? Jadwal '.$activeYear->name.' yang ada akan ditimpa.'),
                             confirmText: 'Salin',
                             variant: 'primary',
                             form: $el,
@@ -50,27 +50,27 @@
 
                             <!-- Check In Time -->
                             <div class="flex-1">
-                                <label for="check-in-{{ $key }}" class="admin-label">Jam Masuk</label>
+                                <label for="check-in-{{ $key }}" class="admin-label">Jam Masuk <span aria-hidden="true" class="admin-text-danger">*</span></label>
                                 <input id="check-in-{{ $key }}" type="time"
                                     name="schedules[{{ $key }}][check_in_time]"
                                     value="{{ $schedule ? \Carbon\Carbon::parse($schedule->check_in_time)->format('H:i') : '07:00' }}"
-                                    class="admin-field p-2">
+                                    class="admin-field p-2" required>
                             </div>
 
                             <!-- Check Out Time -->
                             <div class="flex-1">
-                                <label for="check-out-{{ $key }}" class="admin-label">Jam Pulang</label>
+                                <label for="check-out-{{ $key }}" class="admin-label">Jam Pulang <span aria-hidden="true" class="admin-text-danger">*</span></label>
                                 <input id="check-out-{{ $key }}" type="time"
                                     name="schedules[{{ $key }}][check_out_time]"
                                     value="{{ $schedule ? \Carbon\Carbon::parse($schedule->check_out_time)->format('H:i') : '16:00' }}"
-                                    class="admin-field p-2">
+                                    class="admin-field p-2" required>
                             </div>
 
                             <!-- Active Toggle -->
                             <div class="flex flex-col items-center">
                                 <span class="admin-label">Aktif</span>
                                 <label class="relative inline-flex cursor-pointer items-center">
-                                    <input type="checkbox" name="schedules[{{ $key }}][is_active]"
+                                    <input type="checkbox" name="schedules[{{ $key }}][is_active]" aria-label="Aktif hari {{ $label }}"
                                         value="1" {{ !$schedule || $schedule->is_active ? 'checked' : '' }}
                                         class="sr-only peer admin-toggle">
                                     <div

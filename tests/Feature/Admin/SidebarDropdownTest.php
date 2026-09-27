@@ -20,7 +20,7 @@ test('admin sidebar renders the grouped dropdowns', function () {
         ->assertSee('open && sidebarOpen', false)
         ->assertSee('temporarilyOpenSidebar()', false)
         ->assertSee('closeSidebarOnMobile()', false)
-        ->assertSee('window.innerWidth < 768', false)
+        ->assertSee("window.matchMedia('(min-width: 1024px)')", false)
         ->assertSee('@click="closeSidebarOnMobile()"', false)
         ->assertSee('admin-nav-icon', false)
         ->assertSee('aria-expanded', false);

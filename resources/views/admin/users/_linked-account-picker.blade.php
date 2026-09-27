@@ -106,7 +106,7 @@
     </p>
 
     @error('linked_accounts.0')
-        <p class="admin-hint admin-text-danger">{{ $message }}</p>
+        <p id="linked_accounts-error" class="admin-hint admin-text-danger" role="alert">{{ $message }}</p>
     @enderror
 
     <template x-teleport="body">

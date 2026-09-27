@@ -19,6 +19,8 @@ use Illuminate\View\View;
  */
 class WorkScheduleController extends Controller
 {
+    private const PER_PAGE = 25;
+
     /**
      * Display work schedules listing with tolerance settings.
      */
@@ -30,11 +32,12 @@ class WorkScheduleController extends Controller
         $selectedOffice = $officeId ? Office::find((int) $officeId) : null;
         $activeYear = AcademicYear::getActive();
 
-        // Get all non-admin users (users with roles where is_admin = false),
-        // optionally scoped to a single office. Schedules are eager-loaded only
-        // for the active academic year so the "X Hari" count reflects the year
-        // being viewed. Not paginated: the list is filtered live (client-side)
-        // by the search box, which needs every row present at once.
+        $search = trim((string) $request->input('search', ''));
+
+        // Non-admin users, optionally scoped to one office and a name/email
+        // search. Schedules are eager-loaded only for the active academic year
+        // so the "X Hari" count reflects the year being viewed. Paginated on
+        // the server so the page never renders every employee at once.
         $users = User::with([
             'workSchedules' => fn ($query) => $query->where('academic_year_id', $activeYear?->id),
             'role',
@@ -44,8 +47,12 @@ class WorkScheduleController extends Controller
                 $query->where('is_admin', false);
             })
             ->when($selectedOffice, fn ($query) => $query->where('office_id', $selectedOffice->id))
+            ->when($search !== '', fn ($query) => $query->where(fn ($nested) => $nested
+                ->where('name', 'like', '%'.$search.'%')
+                ->orWhere('email', 'like', '%'.$search.'%')))
             ->orderBy('name')
-            ->get();
+            ->paginate(self::PER_PAGE)
+            ->withQueryString();
 
         return view('admin.work-schedules.index', [
             'settings' => $settings,
@@ -54,6 +61,7 @@ class WorkScheduleController extends Controller
             'selectedOffice' => $selectedOffice,
             'officeId' => $selectedOffice?->id,
             'activeYear' => $activeYear,
+            'search' => $search,
         ]);
     }
 

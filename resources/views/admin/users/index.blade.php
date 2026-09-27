@@ -43,26 +43,6 @@
             </a>
         </x-admin.page-header>
 
-        <!-- Messages -->
-        @if (session('success'))
-            <div class="admin-alert-success flex items-center gap-3 rounded-2xl p-4">
-                <svg class="h-5 w-5 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span class="text-sm font-semibold">{{ session('success') }}</span>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="admin-alert-danger flex items-center gap-3 rounded-2xl p-4">
-                <svg class="h-5 w-5 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-                <span class="text-sm font-semibold">{{ session('error') }}</span>
-            </div>
-        @endif
-
         <!-- Filters -->
         <div class="admin-glass-panel p-6">
             <form method="GET" class="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -130,7 +110,7 @@
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <span
                                         class="{{ $user->role?->is_admin? 'admin-status-danger': match ($user->role?->slug) {'tendik' => 'admin-status-success','kepala-sekolah', 'guru' => 'admin-status-info',default => 'admin-status-neutral'} }} px-2.5 py-1 text-xs">
-                                        {{ $user->role?->name ?? 'No Role' }}
+                                        {{ $user->role?->name ?? 'Tanpa Role' }}
                                     </span>
                                 </td>
                                 <td class="admin-muted whitespace-nowrap px-6 py-4 text-sm">
@@ -209,10 +189,10 @@
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.users.edit', ['user' => $user] + request()->query()) }}"
-                                            class="admin-button-primary admin-icon-action size-11 p-0"
-                                            title="Edit user">
+                                            class="admin-row-action admin-row-action-edit"
+                                            title="Edit user" aria-label="Edit user {{ $user->name }}">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
+                                                viewBox="0 0 24 24" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>
@@ -223,17 +203,17 @@
                                                 method="POST" x-data="{}"
                                                 @submit.prevent="$dispatch('admin-confirm', {
                                                     title: 'Reset Password',
-                                                    message: 'Reset password user ini ke password acak baru? Password lama akan diganti.',
+                                                    message: @js('Reset password '.$user->name.' ke password acak baru? Password lama akan diganti.'),
                                                     confirmText: 'Reset',
                                                     variant: 'primary',
                                                     form: $el,
                                                 })">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="admin-button-secondary admin-icon-action size-11 p-0"
-                                                    title="Reset password">
+                                                    class="admin-row-action admin-row-action-edit"
+                                                    title="Reset password" aria-label="Reset password {{ $user->name }}">
                                                     <svg class="h-5 w-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
+                                                        viewBox="0 0 24 24" aria-hidden="true">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2"
                                                             d="M15 7a2 2 0 012 2m4-2a6 6 0 01-7.743 5.743L11 14H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
@@ -247,7 +227,7 @@
                                                 x-data="{}"
                                                 @submit.prevent="$dispatch('admin-confirm', {
                                                     title: 'Hapus User',
-                                                    message: 'Yakin ingin menghapus user ini?',
+                                                    message: @js('Hapus user '.$user->name.'? Tindakan ini tidak dapat dibatalkan.'),
                                                     confirmText: 'Hapus',
                                                     variant: 'danger',
                                                     form: $el,
@@ -255,10 +235,10 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="admin-button-danger admin-icon-action size-11 p-0"
-                                                    title="Hapus user">
+                                                    class="admin-row-action admin-row-action-delete"
+                                                    title="Hapus user" aria-label="Hapus user {{ $user->name }}">
                                                     <svg class="h-5 w-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
+                                                        viewBox="0 0 24 24" aria-hidden="true">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2"
                                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">

@@ -8,7 +8,7 @@
                 <circle cx="12" cy="8" r="3.5"></circle>
                 <path stroke-linecap="round" d="M5.5 20c.8-3.8 3-5.8 6.5-5.8s5.7 2 6.5 5.8"></path>
             </svg>
-            <span>{{ __('Profile') }}</span>
+            <span>Profil</span>
         </a>
         <a href="{{ route('settings.password.edit') }}" @class([
             'settings-navigation-item',
@@ -18,7 +18,7 @@
                 <rect x="5" y="10" width="14" height="10" rx="2"></rect>
                 <path stroke-linecap="round" d="M8 10V7a4 4 0 0 1 8 0v3"></path>
             </svg>
-            <span>{{ __('Password') }}</span>
+            <span>Password</span>
         </a>
         <a href="{{ route('settings.appearance.edit') }}" @class([
             'settings-navigation-item',
@@ -27,7 +27,7 @@
             <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"></path>
             </svg>
-            <span>{{ __('Appearance') }}</span>
+            <span>Tampilan</span>
         </a>
         @if (auth()->user()?->isAdmin())
             <a href="{{ route('settings.branding.edit') }}" @class([

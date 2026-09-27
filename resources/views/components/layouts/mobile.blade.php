@@ -26,10 +26,6 @@
     <link rel="apple-touch-icon" href="{{ $branding->iconUrl() }}">
     <title>AbsenKu - {{ $title }}</title>
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -538,7 +534,12 @@
     <!-- Theme Restore (runs as body's first child: document.body exists here, unlike in <head>) -->
     <script>
         (function() {
-            if (localStorage.getItem('welcome-theme') === 'light') {
+            // Shared theme key across the app: 'light' | 'dark', absent = follow the OS.
+            // 'welcome-theme' is the legacy key, read so earlier choices survive.
+            let saved = null;
+            try { saved = localStorage.getItem('appearance') ?? localStorage.getItem('welcome-theme'); } catch (e) {}
+            const light = saved ? saved === 'light' : !window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (light) {
                 document.body.classList.add('light-theme');
             }
         })();
@@ -611,7 +612,7 @@
                             @endif
 
                             <!-- Theme Toggle Button -->
-                            <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Toggle Theme">
+                            <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Ganti tema terang/gelap">
                                 <!-- Sun Icon (for dark mode) -->
                                 <svg class="sun-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
@@ -685,7 +686,7 @@
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
             const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('welcome-theme', isLight ? 'light' : 'dark');
+            try { localStorage.setItem('appearance', isLight ? 'light' : 'dark'); } catch (e) {}
         }
     </script>
 

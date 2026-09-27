@@ -12,14 +12,6 @@
         </x-admin.page-header>
 
         <!-- Success Message -->
-        @if (session('success'))
-            <div class="admin-alert-success flex items-center gap-3 rounded-2xl p-4">
-                <svg class="h-5 w-5 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span class="text-sm font-semibold">{{ session('success') }}</span>
-            </div>
-        @endif
 
         <!-- Table -->
         <div class="admin-glass-panel overflow-hidden">
@@ -65,10 +57,9 @@
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.offices.edit', $office) }}"
-                                            class="admin-button-primary admin-icon-action size-11 p-0"
-                                            title="Edit kantor">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
+                                            class="admin-row-action admin-row-action-edit" title="Edit kantor"
+    aria-label="Edit kantor {{ $office->name }}">
+    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>
@@ -78,7 +69,7 @@
                                             x-data="{}"
                                             @submit.prevent="$dispatch('admin-confirm', {
                                                 title: 'Hapus Kantor',
-                                                message: 'Yakin ingin menghapus kantor ini?',
+                                                message: @js('Hapus kantor '.$office->name.'? Tindakan ini tidak dapat dibatalkan.'),
                                                 confirmText: 'Hapus',
                                                 variant: 'danger',
                                                 form: $el,
@@ -86,10 +77,9 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="admin-button-danger admin-icon-action size-11 p-0"
-                                                title="Hapus kantor">
-                                                <svg class="h-5 w-5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
+                                                class="admin-row-action admin-row-action-delete" title="Hapus kantor"
+    aria-label="Hapus kantor {{ $office->name }}">
+    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">

@@ -41,18 +41,7 @@
             </form>
         </div>
 
-        <!-- Success/Error Messages -->
-        @if (session('success'))
-            <div class="admin-alert-success rounded-2xl p-4 text-sm font-semibold">
-                {{ session('success') }}
-            </div>
-        @endif
 
-        @if (session('error'))
-            <div class="admin-alert-danger rounded-2xl p-4 text-sm font-semibold">
-                {{ session('error') }}
-            </div>
-        @endif
 
         <!-- Table -->
         <div class="admin-glass-panel overflow-hidden">

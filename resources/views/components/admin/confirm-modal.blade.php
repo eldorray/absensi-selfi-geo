@@ -20,6 +20,9 @@
         const target = this.form;
         this.close();
         if (target) {
+            // form.submit() skips the submit event, so mark the form busy explicitly
+            // (layout helper) to block a second submit of long actions.
+            if (typeof window.markFormBusy === 'function') window.markFormBusy(target);
             target.submit();
         }
     },

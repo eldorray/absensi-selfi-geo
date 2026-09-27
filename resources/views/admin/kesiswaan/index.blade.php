@@ -1,6 +1,6 @@
 <x-layouts.app>
     <div class="space-y-6" data-kesiswaan-list="admin">
-        <x-admin.page-header kicker="Kesiswaan" title="Pusat Profil Siswa" description="Cari siswa lintas jenjang dan buka profil read-only untuk pengawasan rujukan."/>
+        <x-admin.page-header kicker="Kesiswaan" title="Pusat Profil Siswa" description="Cari siswa lintas jenjang dan buka profil hanya-baca untuk pengawasan rujukan."/>
 
         <form method="GET" action="{{ route('admin.kesiswaan.index') }}" class="admin-glass-panel grid gap-4 p-5 md:grid-cols-[minmax(0,1.5fr)_minmax(10rem,0.55fr)_minmax(12rem,0.7fr)_auto] md:items-end">
             <div><label for="kesiswaan-search" class="admin-label">Pencarian siswa</label><input id="kesiswaan-search" name="search" value="{{ request('search') }}" placeholder="Nama, NISN, NIK, atau kelas" class="admin-field mt-2 min-h-11 px-4 py-2.5"></div>
@@ -21,7 +21,7 @@
                         <svg class="size-5 shrink-0 admin-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"></path></svg>
                     </a>
                 @empty
-                    <div class="p-10 text-center"><p class="font-black admin-text-main">Siswa tidak ditemukan</p><p class="admin-muted mt-1 text-sm">Ubah pencarian atau filter untuk melihat data lain.</p></div>
+                    <x-admin.empty-state icon="fas-user-graduate" title="Siswa tidak ditemukan" hint="Ubah pencarian atau filter untuk melihat data lain." />
                 @endforelse
             </div>
         </section>
