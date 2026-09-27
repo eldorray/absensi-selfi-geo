@@ -165,3 +165,19 @@ test('the install banner reserves room below the content while it is shown', fun
         ->and(file_get_contents(resource_path('css/guru.css')))
         ->toMatch('/\.g-has-install\s+\.g-main\s*\{[^}]*padding-bottom:/');
 });
+
+test('the homeroom assignment is looked up once per request', function () {
+    Carbon::setTestNow(Carbon::parse('2026-07-20 10:00:00'));
+    $teacher = berandaTeacher();
+    $year = AcademicYear::create(['name' => '2026/2027', 'start_date' => '2026-07-01', 'end_date' => '2027-06-30', 'is_active' => true]);
+    $class = SchoolClass::create(['school_level' => 'mi', 'name' => 'VIII-B', 'normalized_name' => SchoolClass::normalizeName('VIII-B'), 'grade_level' => 8, 'is_active' => true]);
+    HomeroomAssignment::create(['academic_year_id' => $year->id, 'school_class_id' => $class->id, 'teacher_id' => $teacher->id]);
+
+    Illuminate\Support\Facades\DB::enableQueryLog();
+    $this->actingAs($teacher)->get(route('attendance.dashboard'))->assertOk();
+    $lookups = collect(Illuminate\Support\Facades\DB::getQueryLog())
+        ->filter(fn (array $query) => str_contains($query['query'], 'from "homeroom_assignments"'))
+        ->count();
+
+    expect($lookups)->toBe(1);
+});

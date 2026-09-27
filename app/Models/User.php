@@ -173,13 +173,19 @@ class User extends Authenticatable
         return $this->hasMany(StudentReferral::class, 'assigned_counselor_id');
     }
 
+    /**
+     * Memoised per user instance for the request: the teacher layout (Kelas tab)
+     * and the beranda controller both ask on the same page.
+     */
     public function activeHomeroomAssignment(): ?HomeroomAssignment
     {
-        $activeYear = AcademicYear::getActive();
+        return once(function (): ?HomeroomAssignment {
+            $activeYear = AcademicYear::getActive();
 
-        return $activeYear
-            ? $this->homeroomAssignments()->with(['schoolClass', 'academicYear'])->where('academic_year_id', $activeYear->id)->first()
-            : null;
+            return $activeYear
+                ? $this->homeroomAssignments()->with(['schoolClass', 'academicYear'])->where('academic_year_id', $activeYear->id)->first()
+                : null;
+        });
     }
 
     /**
