@@ -100,7 +100,7 @@ Token didefinisikan sebagai CSS custom property pada `.guru` (terang) dan `.dark
 - Umpan balik tekan: `scale(0.98)` 150ms.
 - Transisi warna: 160ms.
 - View transition antarhalaman: crossfade bawaan browser.
-- Knob progres hanya berpindah saat jam diperbarui (tiap 60 detik), tanpa animasi berkelanjutan.
+- Knob progres tidak dianimasikan terus-menerus; posisinya dihitung saat halaman dimuat.
 - `prefers-reduced-motion`: semua transisi 0ms.
 
 **Tema:** kelas `dark` pada `<html>`, diatur sebelum halaman digambar. Key localStorage `appearance` (`light` | `dark`; kosong berarti ikut OS), dengan fallback key lama `welcome-theme`. Meta `theme-color` mengikuti tema: `#F4F1EA` untuk terang, `#111512` untuk gelap.
@@ -190,7 +190,7 @@ Kartu berwarna `hero`, radius 24px, `section aria-label="Presensi hari ini"`.
   | Jendela pulang terbuka | "Absen pulang sudah dibuka" |
   | Sudah pulang | "Selesai hari ini" |
 
-  Label diperbarui tiap 60 detik lewat Alpine.
+  Label dihitung di server saat halaman dimuat. Beranda memuat ulang dirinya ketika PWA dibuka kembali setelah lebih dari 5 menit (`visibilitychange`), karena itu lebih cocok untuk PWA yang sering di-background daripada timer.
 - **Baris lokasi:** setelah masuk, "Dalam area sekolah · N m dari titik absen" dari `distance_meters`, ditambah "· foto manual, menunggu pemeriksaan" bila `liveness_verified === false`. Sebelum masuk: "Lokasi dicek saat absen".
 - **Tombol putih 56px** (`x-guru.button variant="hero"`):
 

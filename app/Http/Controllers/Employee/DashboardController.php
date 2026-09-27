@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Models\WorkSetting;
 use App\Services\EmployeeDashboardService;
+use App\Services\TodayPresence;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -31,14 +33,8 @@ class DashboardController extends Controller
         $homeroomAssignment = $user->activeHomeroomAssignment();
 
         return view('attendance.dashboard', [
-            'todayAttendance' => $data->todayAttendance,
-            'todaySchedule' => $data->todaySchedule,
-            'checkoutOpensAt' => $data->checkoutOpensAt,
-            'checkoutTimeReached' => $data->checkoutTimeReached,
-            'monthlyPresent' => $data->monthlyPresent,
-            'monthlyLate' => $data->monthlyLate,
-            'totalAttendance' => $data->monthlyTotal(),
-            'announcements' => $data->announcements,
+            'data' => $data,
+            'presence' => TodayPresence::for($data, WorkSetting::current(), now()),
             'linkedAccounts' => $user->linkedAccounts()->with('office')->orderBy('name')->get(),
             'homeroomAssignment' => $homeroomAssignment,
             'homeroomStudentCount' => $homeroomAssignment?->schoolClass->students()->where('status', 'Aktif')->count() ?? 0,

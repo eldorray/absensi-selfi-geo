@@ -37,9 +37,10 @@ test('only enabled bk teachers with configured school level may access bk routes
 test('bk dashboard shortcut only appears for enabled counselor', function () {
     $regular = bkTeacher(false);
     $bk = bkTeacher(true);
+    $link = 'href="'.route('attendance.bk.index').'"';
 
-    $this->actingAs($regular)->get(route('attendance.dashboard'))->assertDontSee('>BK<', false);
-    $this->actingAs($bk)->get(route('attendance.dashboard'))->assertSee('>BK<', false);
+    $this->actingAs($regular)->get(route('attendance.dashboard'))->assertDontSee($link, false);
+    $this->actingAs($bk)->get(route('attendance.dashboard'))->assertSee($link, false)->assertSee('Bimbingan Konseling');
 });
 
 test('bk teacher only sees students from their office school level', function () {
