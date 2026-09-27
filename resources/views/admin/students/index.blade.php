@@ -9,8 +9,8 @@
         @if(session('success'))<div class="admin-alert-success rounded-2xl p-4 text-sm font-semibold">{{ session('success') }}</div>@endif
         @if(session('error'))<div class="admin-alert-danger rounded-2xl p-4 text-sm font-semibold">{{ session('error') }}</div>@endif
         <form class="admin-glass-panel grid gap-3 p-4 md:grid-cols-[1fr_220px_170px_auto]" method="GET">
-            <input name="search" value="{{ request('search') }}" class="admin-field p-3" placeholder="Cari nama, NISN, atau NIK">
-            <select name="school_class_id" class="admin-field p-3"><option value="">Semua kelas</option>@foreach($classes as $class)<option value="{{ $class->id }}" @selected(request('school_class_id') == $class->id)>{{ $class->name }}</option>@endforeach</select>
+            <label for="student-search" class="sr-only">Cari siswa</label><input id="student-search" name="search" value="{{ request('search') }}" class="admin-field p-3" placeholder="Cari nama, NISN, atau NIK">
+            <label for="student-class-filter" class="sr-only">Filter kelas</label><select id="student-class-filter" name="school_class_id" class="admin-field p-3"><option value="">Semua kelas</option>@foreach($classes as $class)<option value="{{ $class->id }}" @selected(request('school_class_id') == $class->id)>{{ $class->name }}</option>@endforeach</select>
             <select name="per_page" class="admin-field p-3" aria-label="Jumlah siswa per halaman" onchange="this.form.requestSubmit()">@foreach($perPageOptions as $option)<option value="{{ $option }}" @selected($perPage == $option)>{{ $option === 'semua' ? 'Tampilkan semua' : $option.' per halaman' }}</option>@endforeach</select>
             <button class="admin-button-secondary px-5 py-3 text-sm">Terapkan</button>
         </form>

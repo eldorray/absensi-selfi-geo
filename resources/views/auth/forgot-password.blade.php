@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full overflow-hidden">
+<html lang="id" class="h-full">
 
 <head>
     @php
         $branding = \App\Models\ApplicationSetting::current();
     @endphp
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#080710">
     <meta name="description" content="Halaman reset password aplikasi absensi digital MI Daarul Hikmah.">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -43,6 +43,9 @@
             --phone-shell-bg: #000000;
             --phone-shell-border: rgba(255, 255, 255, 0.12);
             --active-nav-color: #A5D6A7;
+            --link-color: #A5D6A7;
+            --status-ok-color: #6ee7b7;
+            --error-color: #f87171;
             
             /* Inputs */
             --input-bg: rgba(255, 255, 255, 0.03);
@@ -77,6 +80,9 @@
             --phone-shell-border: rgba(0, 0, 0, 0.04);
             
             --active-nav-color: #66BB6A;
+            --link-color: #1B5E20;
+            --status-ok-color: #065f46;
+            --error-color: #b91c1c;
             
             /* Inputs */
             --input-bg: rgba(255, 255, 255, 0.5);
@@ -89,10 +95,13 @@
             --btn-accent-shadow: 0 10px 24px rgba(99, 102, 241, 0.2);
         }
 
+        html {
+            height: 100%;
+        }
+
         html,
         body {
-            height: 100%;
-            overflow: hidden;
+            min-height: 100%;
             overscroll-behavior: none;
             width: 100%;
             margin: 0;
@@ -232,26 +241,44 @@
             animation: float-blob 19s infinite alternate-reverse ease-in-out;
         }
 
-        @media (max-width: 640px) and (max-height: 760px) {
-            .login-panel {
-                transform: scale(0.92);
-                transform-origin: top center;
+        @media (prefers-reduced-motion: reduce) {
+            .animate-blob-1,
+            .animate-blob-2,
+            .animate-blob-3 {
+                animation: none;
             }
         }
-    </style>
 
-    <!-- Theme Restore (Prevents Flash of Unthemed Content) -->
+        .theme-link {
+            color: var(--link-color);
+            transition: color 0.5s ease;
+        }
+
+        .theme-status-ok-text {
+            color: var(--status-ok-color);
+        }
+
+        .theme-error-text {
+            color: var(--error-color);
+        }
+
+        .password-toggle:focus-visible {
+            outline: 2px solid var(--link-color);
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body class="antialiased theme-bg flex items-center justify-center">
+    <!-- Theme Restore (runs as body's first child: document.body exists here, unlike in <head>). Same key & default (light) as login. -->
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('welcome-theme');
-            if (savedTheme === 'light') {
+            if (localStorage.getItem('welcome-theme') !== 'dark') {
                 document.body.classList.add('light-theme');
             }
         })();
     </script>
-</head>
-
-<body class="antialiased theme-bg flex items-center justify-center">
 
     <!-- ════════ Background Liquid Layer ════════ -->
     <div class="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
@@ -278,8 +305,8 @@
             <!-- Speaker Ear Piece (Desktop only) -->
             <div class="hidden sm:block absolute top-4 left-1/2 -translate-x-1/2 w-10 h-0.75 bg-neutral-950 rounded-full z-50"></div>
 
-            <!-- Phone Screen Content (Full viewport on mobile, scroll locked) -->
-            <div class="screen-content relative h-full w-full sm:rounded-[38px] overflow-hidden flex flex-col justify-between p-5 border border-transparent sm:border-white/5">
+            <!-- Phone Screen Content (Full viewport on mobile, scrolls when content does not fit) -->
+            <div class="screen-content relative h-full w-full sm:rounded-[38px] overflow-x-hidden overflow-y-auto flex flex-col justify-between p-5 border border-transparent sm:border-white/5">
                 
                 <!-- Internal Screen Mesh Gradient -->
                 <div class="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-green-500/10 via-transparent to-emerald-500/5"></div>
@@ -301,7 +328,7 @@
                     </div>
 
                     <!-- Theme Toggle Button -->
-                    <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Toggle Theme">
+                    <button onclick="toggleTheme()" class="theme-toggle w-7.5 h-7.5 rounded-lg glass-card theme-border flex items-center justify-center text-amber-500 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Ganti Tema">
                         <!-- Sun Icon (for dark mode) -->
                         <svg class="sun-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
@@ -314,7 +341,7 @@
                 </header>
 
                 <!-- Login panel inner wrapper -->
-                <div class="login-panel flex-1 flex flex-col justify-center min-h-0 py-4">
+                <div class="login-panel flex-1 flex flex-col justify-center py-4">
                     
                     <!-- Decorative Lock Icon -->
                     <div class="mb-4 flex justify-center">
@@ -335,7 +362,7 @@
                     <!-- Form card -->
                     <div class="rounded-[24px] glass-card theme-border p-4.5 sm:p-5 shadow-xl">
                         @if (session('status'))
-                            <div class="mb-3.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-xs theme-status-ok-text">
+                            <div role="status" class="mb-3.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-xs theme-status-ok-text">
                                 {{ session('status') }}
                             </div>
                         @endif
@@ -345,12 +372,13 @@
 
                             <!-- Email Field -->
                             <div>
-                                <label class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Email</label>
-                                <input type="email" name="email" value="{{ old('email') }}" autofocus
+                                <label for="email" class="mb-1.5 block text-[10px] font-bold tracking-wide uppercase theme-text-muted font-outfit">Email</label>
+                                <input type="email" name="email" id="email" autocomplete="email" value="{{ old('email') }}" autofocus
+                                    @error('email') aria-invalid="true" aria-describedby="email-error" @enderror
                                     class="theme-input w-full rounded-2xl px-4.5 py-3 text-[14px] shadow-sm"
                                     placeholder="Masukkan email terdaftar" required>
                                 @error('email')
-                                    <p class="mt-1.5 text-xs text-red-500 font-medium leading-normal">{{ $message }}</p>
+                                    <p id="email-error" class="mt-1.5 text-xs theme-error-text font-medium leading-normal">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -364,7 +392,7 @@
 
                     <!-- Bottom back to login Link -->
                     <div class="text-center mt-6">
-                        <a href="{{ route('login') }}" class="text-xs font-bold font-outfit uppercase tracking-wider hover:opacity-80 transition-opacity" style="color: var(--active-nav-color)">
+                        <a href="{{ route('login') }}" class="theme-link text-xs font-bold font-outfit uppercase tracking-wider hover:opacity-80 transition-opacity">
                             Kembali ke Login
                         </a>
                     </div>

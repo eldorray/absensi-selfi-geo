@@ -21,6 +21,7 @@
         <span class="flex items-center">
             @svg($icon, 'admin-nav-icon w-4.5 h-4.5')
             <span x-show="sidebarOpen" class="ml-3 whitespace-nowrap">{{ $label }}</span>
+            <span x-show="!sidebarOpen" class="sr-only">{{ $label }}</span>
         </span>
         <span x-show="sidebarOpen" :class="{ 'rotate-90': open }"
             class="transition-transform duration-200">
@@ -28,7 +29,7 @@
         </span>
     </button>
 
-    <ul x-show="open && sidebarOpen" x-collapse class="mt-1 space-y-1 pl-3">
+    <ul x-show="open && sidebarOpen" x-transition.opacity class="mt-1 space-y-1 pl-3">
         {{ $slot }}
     </ul>
 </li>

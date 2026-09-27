@@ -260,16 +260,31 @@
         </div>
 
         <!-- Photo Modal Overlay -->
-        <div x-data="{ open: false, imageUrl: '', title: '' }"
-            @open-photo-modal.window="open = true; imageUrl = $event.detail.url; title = $event.detail.title"
-            x-show="open" x-cloak class="admin-modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"
+        <div x-data="{
+            open: false,
+            imageUrl: '',
+            title: '',
+            returnFocus: null,
+            close() {
+                this.open = false;
+                const el = this.returnFocus;
+                this.returnFocus = null;
+                if (el && typeof el.focus === 'function' && document.contains(el)) {
+                    this.$nextTick(() => el.focus());
+                }
+            },
+        }" x-id="['photo-modal-title']"
+            @open-photo-modal.window="if (!open) returnFocus = document.activeElement; open = true; imageUrl = $event.detail.url; title = $event.detail.title; $nextTick(() => $refs.closeBtn.focus())"
+            @keydown.escape.window="open && close()" @keydown.tab.window="if (open) { $event.preventDefault(); $refs.closeBtn.focus() }"
+            x-show="open" x-cloak role="dialog" aria-modal="true" :aria-labelledby="$id('photo-modal-title')"
+            class="admin-modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"
             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
 
             <!-- Modal Box -->
             <div class="admin-glass-modal relative w-full max-w-md overflow-hidden p-5 text-left"
-                @click.away="open = false" x-transition:enter="transition ease-out duration-300 transform"
+                @click.away="open && close()" x-transition:enter="transition ease-out duration-300 transform"
                 x-transition:enter-start="opacity-0 translate-y-4 scale-95"
                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                 x-transition:leave="transition ease-in duration-200 transform"
@@ -278,9 +293,9 @@
 
                 <!-- Header -->
                 <div class="mb-4 flex items-center justify-between gap-3">
-                    <span class="admin-label" style="margin-bottom: 0" x-text="title">Foto Absensi</span>
-                    <button @click="open = false" class="admin-button-secondary admin-icon-action size-11 p-0"
-                        aria-label="Tutup pratinjau foto">
+                    <h2 :id="$id('photo-modal-title')" class="admin-label" style="margin-bottom: 0" x-text="title">Foto Absensi</h2>
+                    <button type="button" x-ref="closeBtn" @click="close()" class="admin-button-secondary admin-icon-action size-11 p-0"
+                        aria-label="Tutup">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>

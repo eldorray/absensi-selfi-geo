@@ -140,7 +140,8 @@
                             class="admin-field !w-auto py-2.5 pl-9 pr-3 text-sm" aria-label="Cari karyawan">
                     </div>
                     <form method="GET" class="flex items-end gap-2">
-                        <select name="office_id" class="admin-field !w-auto p-2.5 text-sm" onchange="this.form.submit()">
+                        <label for="work-schedule-office-filter" class="sr-only">Filter kantor</label>
+                        <select id="work-schedule-office-filter" name="office_id" class="admin-field !w-auto p-2.5 text-sm" onchange="this.form.submit()">
                             <option value="">Semua Kantor</option>
                             @foreach ($offices as $office)
                                 <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
@@ -169,12 +170,18 @@
                                 @click="expandedRow = expandedRow === {{ $user->id }} ? null : {{ $user->id }}">
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="flex items-center">
-                                        <svg class="admin-muted mr-2 h-4 w-4 transition-transform"
-                                            :class="{ 'rotate-90': expandedRow === {{ $user->id }} }"
-                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 5l7 7-7 7"></path>
-                                        </svg>
+                                        <button type="button" class="mr-2 rounded"
+                                            @click.stop="expandedRow = expandedRow === {{ $user->id }} ? null : {{ $user->id }}"
+                                            :aria-expanded="(expandedRow === {{ $user->id }}).toString()"
+                                            aria-controls="schedule-detail-{{ $user->id }}"
+                                            aria-label="Tampilkan detail jadwal {{ $user->name }}">
+                                            <svg class="admin-muted h-4 w-4 transition-transform"
+                                                :class="{ 'rotate-90': expandedRow === {{ $user->id }} }"
+                                                fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </button>
                                         {{ $loop->iteration }}
                                     </div>
                                 </td>
@@ -204,7 +211,7 @@
                                 </td>
                             </tr>
                             <!-- Expanded Row - Schedule Details -->
-                            <tr x-show="expandedRow === {{ $user->id }} && match({{ $loop->index }})" x-collapse>
+                            <tr id="schedule-detail-{{ $user->id }}" x-show="expandedRow === {{ $user->id }} && match({{ $loop->index }})" x-transition.opacity>
                                 <td colspan="5" class="px-6 py-4">
                                     <div class="overflow-x-auto">
                                         <table class="admin-table w-full text-sm">

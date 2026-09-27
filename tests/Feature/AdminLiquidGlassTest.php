@@ -320,13 +320,13 @@ test('daily report photo modal adopts semantic glass classes and an accessible c
     expect($source)
         ->toContain('admin-modal-overlay')
         ->toContain('admin-glass-modal')
-        ->toContain('@open-photo-modal.window="open = true; imageUrl = $event.detail.url; title = $event.detail.title"')
-        ->toContain('@click.away="open = false"')
+        ->toContain('imageUrl = $event.detail.url; title = $event.detail.title')
+        ->toContain('@click.away="open && close()"')
         ->toContain('x-text="title"')
         ->toContain(':src="imageUrl"');
 
     $matched = preg_match(
-        '/<button\b[^>]*@click="open = false"[^>]*class="(?<classes>[^"]*)"[^>]*>/s',
+        '/<button\b[^>]*@click="close\(\)"[^>]*class="(?<classes>[^"]*)"[^>]*>/s',
         $source,
         $closeButton,
     );
