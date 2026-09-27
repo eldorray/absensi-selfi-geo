@@ -93,7 +93,7 @@
                         @empty
                             <tr>
                                 <td colspan="5">
-                                    <x-admin.empty-state icon="fas-building" title="Belum ada kantor"
+                                    <x-admin.empty-state icon="building" title="Belum ada kantor"
                                         hint="Tambahkan kantor pertama untuk mengaktifkan geofencing absensi.">
                                         <a href="{{ route('admin.offices.create') }}"
                                             class="admin-button-secondary inline-flex items-center px-4 py-2 text-sm">

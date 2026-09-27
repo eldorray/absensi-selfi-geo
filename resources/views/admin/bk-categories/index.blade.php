@@ -58,7 +58,7 @@
                         @empty
                             <tr>
                                 <td colspan="5">
-                                    <x-admin.empty-state icon="fas-tags" title="Belum ada kategori BK"
+                                    <x-admin.empty-state icon="tag" title="Belum ada kategori BK"
                                         hint="Tambahkan kategori pelanggaran atau konseling untuk dipakai Guru BK.">
                                         <a href="{{ route('admin.bk-categories.create') }}"
                                             class="admin-button-secondary inline-flex items-center px-4 py-2 text-sm">

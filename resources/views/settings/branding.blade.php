@@ -23,12 +23,12 @@
                         @method('PUT')
 
                         <div class="grid gap-5 lg:grid-cols-2">
-                            <div class="rounded-3xl bg-emerald-50 p-5 dark:bg-emerald-950/30">
-                                <div class="mb-4 flex min-h-28 items-center justify-center rounded-2xl bg-white p-5 dark:bg-gray-900">
+                            <div class="admin-soft-tile p-5">
+                                <div class="mb-4 flex min-h-28 items-center justify-center rounded-2xl p-5" style="background: var(--admin-surface)">
                                     @if ($settings->logoUrl())
                                         <img src="{{ $settings->logoUrl() }}" alt="Logo aplikasi saat ini" class="max-h-20 max-w-full object-contain">
                                     @else
-                                        <span class="text-xl font-bold text-emerald-800 dark:text-emerald-200">{{ config('app.name') }}</span>
+                                        <span class="admin-display text-xl">{{ config('app.name') }}</span>
                                     @endif
                                 </div>
                                 <label for="application_logo" class="admin-label">Logo aplikasi</label>
@@ -37,8 +37,8 @@
                                 @error('application_logo')<p class="admin-text-danger mt-1.5 text-xs">{{ $message }}</p>@enderror
                             </div>
 
-                            <div class="rounded-3xl bg-slate-100 p-5 dark:bg-slate-900/60">
-                                <div class="mb-4 flex min-h-28 items-center justify-center rounded-2xl bg-white p-5 dark:bg-gray-900">
+                            <div class="admin-soft-tile p-5">
+                                <div class="mb-4 flex min-h-28 items-center justify-center rounded-2xl p-5" style="background: var(--admin-surface)">
                                     <img src="{{ $settings->iconUrl() }}" alt="Ikon aplikasi saat ini" class="size-20 rounded-2xl object-cover">
                                 </div>
                                 <label for="application_icon" class="admin-label">Ikon aplikasi</label>

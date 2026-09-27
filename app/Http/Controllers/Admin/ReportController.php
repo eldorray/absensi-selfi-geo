@@ -130,6 +130,8 @@ class ReportController extends Controller
             'checked_in' => $attendances->count(),
             'checked_out' => $attendances->filter(fn ($a) => $a->check_out_at !== null)->count(),
             'total_fine' => (int) $reportData->sum('fine'),
+            'late' => $reportData->where('status', 'late')->count(),
+            'absent' => $reportData->where('status', 'absent')->count(),
         ];
 
         return compact('reportData', 'stats', 'selectedDate', 'activeYear', 'settings', 'selectedOffice', 'officeId');

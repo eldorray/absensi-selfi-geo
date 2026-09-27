@@ -4,28 +4,34 @@
     $typeLabels = ['violation' => 'Pelanggaran', 'counseling' => 'Konseling'];
     $statusLabels = ['new' => 'Baru', 'in_progress' => 'Dalam penanganan', 'waiting_follow_up' => 'Menunggu tindak lanjut', 'completed' => 'Selesai'];
     $referralStatusLabels = ['new' => 'Baru', 'in_handling' => 'Dalam penanganan', 'completed' => 'Selesai', 'rejected' => 'Ditolak'];
+    $referralStatusClass = ['new' => 'admin-status-warning', 'in_handling' => 'admin-status-info', 'completed' => 'admin-status-success', 'rejected' => 'admin-status-neutral'];
 @endphp
 
-<x-layouts.app>
+<x-layouts.app title="Profil Siswa">
     <div class="space-y-6" data-kesiswaan-design="profile-centered-admin">
         <x-admin.page-header kicker="Kesiswaan" title="Profil Siswa" description="Pusat informasi siswa dan pengawasan rujukan dalam mode hanya-baca.">
-            <a href="{{ route('admin.kesiswaan.index') }}" class="admin-button-secondary px-4 py-2.5">Kembali ke daftar</a>
-            <a href="{{ route('admin.students.edit', [$student->school_level, $student]) }}" class="admin-button-primary px-4 py-2.5">Buka Data Siswa</a>
+            <a href="{{ route('admin.kesiswaan.index') }}" class="admin-button-secondary px-4 text-sm">
+                <x-admin.icon name="chevron-left" size="16" />
+                Kembali ke daftar
+            </a>
+            <a href="{{ route('admin.students.edit', [$student->school_level, $student]) }}" class="admin-button-primary px-4 text-sm">Buka Data Siswa</a>
         </x-admin.page-header>
 
-        <div class="grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(19rem,0.75fr)]">
-            <div class="space-y-5">
-                <section class="rounded-[26px] border border-emerald-200/70 bg-emerald-50 p-5 md:p-6 dark:border-emerald-800/60 dark:bg-emerald-950/45">
-                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-                        <div class="grid size-16 shrink-0 place-items-center rounded-[20px] bg-emerald-200 text-lg font-black text-emerald-900 dark:bg-emerald-800 dark:text-emerald-50" aria-hidden="true">{{ $initials ?: 'S' }}</div>
-                        <div class="min-w-0 flex-1"><p class="text-[10px] font-black uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300">{{ $student->status ?? 'Siswa' }}</p><h1 class="mt-1 truncate text-2xl font-black admin-text-main">{{ $student->nama_lengkap }}</h1><p class="mt-1 text-xs admin-text-muted">NISN {{ $student->nisn ?: '-' }} · NIK {{ $student->nik ?: '-' }}</p></div>
-                        <span class="w-fit rounded-xl bg-white px-3 py-2 text-xs font-black text-emerald-800 shadow-sm dark:bg-emerald-900 dark:text-emerald-100">{{ $student->schoolClass?->name ?? strtoupper($student->school_level) }}</span>
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(19rem,0.75fr)]">
+            <div class="space-y-6">
+                <section class="admin-hero-card flex flex-col gap-4 p-6 sm:flex-row sm:items-center">
+                    <span class="admin-hero-avatar" aria-hidden="true">{{ $initials ?: 'S' }}</span>
+                    <div class="min-w-0 flex-1">
+                        <p class="admin-hero-muted text-xs font-semibold">{{ $student->status ?? 'Siswa' }}</p>
+                        <h2 class="admin-display mt-0.5 truncate text-[1.75rem] leading-tight">{{ $student->nama_lengkap }}</h2>
+                        <p class="admin-hero-muted mt-1 text-xs tabular-nums">NISN {{ $student->nisn ?: '-' }} · NIK {{ $student->nik ?: '-' }}</p>
                     </div>
+                    <span class="admin-hero-chip">{{ $student->schoolClass?->name ?? strtoupper($student->school_level) }}</span>
                 </section>
 
-                <section class="admin-glass-panel p-5 md:p-6">
-                    <h2 class="text-base font-black admin-text-main">Informasi siswa</h2>
-                    <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                <section class="admin-glass-panel p-6">
+                    <h2 class="admin-panel-title">Informasi siswa</h2>
+                    <dl class="mt-4 grid gap-3 sm:grid-cols-2">
                         @foreach([
                             ['Kelas aktif', $student->schoolClass?->name ?? '-'],
                             ['Wali kelas', $assignment?->teacher?->name ?? '-'],
@@ -34,44 +40,64 @@
                             ['Telepon', $student->no_telepon ?: '-'],
                             ['Alamat', $student->alamat ?: '-'],
                         ] as [$label, $value])
-                            <div class="rounded-2xl border admin-border bg-white/50 p-4 dark:bg-white/5"><p class="admin-label">{{ $label }}</p><p class="mt-1 text-sm font-bold admin-text-main">{{ $value }}</p></div>
+                            <div class="admin-soft-tile p-4">
+                                <dt class="admin-label" style="margin-bottom: .25rem">{{ $label }}</dt>
+                                <dd class="text-sm font-bold">{{ $value }}</dd>
+                            </div>
                         @endforeach
-                    </div>
+                    </dl>
                 </section>
 
-                <section class="admin-glass-panel p-5 md:p-6">
-                    <div class="flex items-end justify-between gap-3"><div><h2 class="text-base font-black admin-text-main">Aktivitas rujukan</h2><p class="mt-1 text-xs admin-text-muted">Riwayat yang dapat diawasi administrator.</p></div><span class="text-sm font-black text-emerald-700 dark:text-emerald-300">{{ $referrals->total() }}</span></div>
-                    <div class="mt-4 space-y-3">
-                        @forelse($referrals as $referral)
-                            <a href="{{ route('admin.kesiswaan.referrals.show', $referral) }}" class="block rounded-2xl border admin-border p-4 transition hover:border-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">
-                                <div class="flex items-start justify-between gap-3"><h3 class="text-sm font-black admin-text-main">{{ $referral->reason }}</h3><span class="rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-bold admin-text-muted dark:bg-slate-800">{{ $referralStatusLabels[$referral->status->value] ?? $referral->status->value }}</span></div>
-                                <p class="mt-2 text-xs admin-text-muted">{{ $referral->observed_at?->format('d M Y') }} · {{ $referral->counselor?->name ?? 'Belum ditangani' }}</p>
-                            </a>
-                        @empty
-                            <x-admin.empty-state icon="fas-clipboard-list" title="Belum ada rujukan" hint="Aktivitas rujukan siswa akan muncul di sini." />
-                        @endforelse
+                <section class="admin-glass-panel p-6">
+                    <div class="flex items-end justify-between gap-3">
+                        <div>
+                            <h2 class="admin-panel-title">Aktivitas rujukan</h2>
+                            <p class="admin-muted mt-1 text-xs">Riwayat yang dapat diawasi administrator.</p>
+                        </div>
+                        <span class="admin-display text-2xl">{{ $referrals->total() }}</span>
                     </div>
+                    <ul class="mt-4 space-y-3">
+                        @forelse($referrals as $referral)
+                            <li>
+                                <a href="{{ route('admin.kesiswaan.referrals.show', $referral) }}" class="admin-row-link admin-card-link block p-4">
+                                    <span class="flex items-start justify-between gap-3">
+                                        <span class="text-sm font-bold">{{ $referral->reason }}</span>
+                                        <span class="{{ $referralStatusClass[$referral->status->value] ?? 'admin-status-neutral' }} shrink-0 px-2.5 py-0.5 text-xs">{{ $referralStatusLabels[$referral->status->value] ?? $referral->status->value }}</span>
+                                    </span>
+                                    <span class="admin-muted mt-2 block text-xs">{{ $referral->observed_at?->locale('id')->translatedFormat('d M Y') }} · {{ $referral->counselor?->name ?? 'Belum ditangani' }}</span>
+                                </a>
+                            </li>
+                        @empty
+                            <li><x-admin.empty-state icon="clipboard" title="Belum ada rujukan" hint="Aktivitas rujukan siswa akan muncul di sini." /></li>
+                        @endforelse
+                    </ul>
                     <div class="mt-4">{{ $referrals->links() }}</div>
                 </section>
             </div>
 
-            <aside class="space-y-5">
-                <section class="admin-glass-panel p-5">
-                    <h2 class="text-base font-black admin-text-main">Ringkasan BK yang aman</h2>
-                    <p class="mt-1 text-xs admin-text-muted">Metadata umum tanpa mengubah isi profesional.</p>
+            <aside class="space-y-6">
+                <section class="admin-glass-panel p-6">
+                    <h2 class="admin-panel-title">Ringkasan BK yang aman</h2>
+                    <p class="admin-muted mt-1 text-xs">Metadata umum tanpa mengubah isi profesional.</p>
                     <div class="mt-4 grid grid-cols-2 gap-3">
-                        <div class="rounded-2xl bg-emerald-50 p-4 dark:bg-emerald-950/60"><strong class="text-2xl font-black text-emerald-800 dark:text-emerald-200">{{ $summary['active_count'] }}</strong><span class="mt-1 block text-[10px] font-bold text-emerald-700 dark:text-emerald-300">Catatan aktif</span></div>
-                        <div class="rounded-2xl bg-amber-50 p-4 dark:bg-amber-950/60"><strong class="text-lg font-black text-amber-800 dark:text-amber-200">{{ $summary['needs_follow_up'] ? 'Ya' : 'Tidak' }}</strong><span class="mt-1 block text-[10px] font-bold text-amber-700 dark:text-amber-300">Perlu tindak lanjut</span></div>
+                        <div class="admin-tone-primary rounded-xl p-4">
+                            <strong class="admin-display block text-3xl">{{ $summary['active_count'] }}</strong>
+                            <span class="mt-1 block text-xs font-bold">Catatan aktif</span>
+                        </div>
+                        <div class="admin-tone-warning rounded-xl p-4">
+                            <strong class="admin-display block text-2xl">{{ $summary['needs_follow_up'] ? 'Ya' : 'Tidak' }}</strong>
+                            <span class="mt-1 block text-xs font-bold">Perlu tindak lanjut</span>
+                        </div>
                     </div>
-                    <dl class="mt-4 divide-y admin-border text-xs">
-                        <div class="flex items-start justify-between gap-4 py-3"><dt class="admin-text-muted">Jenis</dt><dd class="max-w-[65%] text-right font-bold admin-text-main">{{ collect($summary['types'])->map(fn ($type) => $typeLabels[$type] ?? ucfirst($type))->implode(', ') ?: '-' }}</dd></div>
-                        <div class="flex items-start justify-between gap-4 py-3"><dt class="admin-text-muted">Status</dt><dd class="max-w-[65%] text-right font-bold admin-text-main">{{ collect($summary['statuses'])->map(fn ($status) => $statusLabels[$status] ?? ucfirst(str_replace('_', ' ', $status)))->implode(', ') ?: '-' }}</dd></div>
+                    <dl class="mt-4 divide-y admin-border text-sm">
+                        <div class="flex items-start justify-between gap-4 py-3"><dt class="admin-muted">Jenis</dt><dd class="max-w-[65%] text-right font-bold">{{ collect($summary['types'])->map(fn ($type) => $typeLabels[$type] ?? ucfirst($type))->implode(', ') ?: '-' }}</dd></div>
+                        <div class="flex items-start justify-between gap-4 py-3"><dt class="admin-muted">Status</dt><dd class="max-w-[65%] text-right font-bold">{{ collect($summary['statuses'])->map(fn ($status) => $statusLabels[$status] ?? ucfirst(str_replace('_', ' ', $status)))->implode(', ') ?: '-' }}</dd></div>
                     </dl>
                 </section>
 
-                <section class="rounded-[22px] border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-800 dark:bg-emerald-950/45">
-                    <h2 class="text-sm font-black text-emerald-900 dark:text-emerald-100">Halaman ini hanya-baca</h2>
-                    <p class="mt-2 text-xs leading-5 text-emerald-800 dark:text-emerald-200">Perubahan identitas dilakukan melalui Data Siswa. Isi konseling dan catatan profesional tetap mengikuti kebijakan akses BK.</p>
+                <section class="admin-alert-success rounded-2xl p-5">
+                    <h2 class="text-sm font-bold">Halaman ini hanya-baca</h2>
+                    <p class="mt-2 text-xs leading-5">Perubahan identitas dilakukan melalui Data Siswa. Isi konseling dan catatan profesional tetap mengikuti kebijakan akses BK.</p>
                 </section>
             </aside>
         </div>

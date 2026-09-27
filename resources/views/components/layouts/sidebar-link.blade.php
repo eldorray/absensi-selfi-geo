@@ -1,22 +1,24 @@
-@props(['active' => false, 'href' => '#', 'icon' => null])
+@props(['active' => false, 'href' => '#', 'icon' => null, 'badge' => null])
 @php($usesAdminMaterial = request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()))
 <li>
     <a href="{{ $href }}" @class([
-        'flex items-center text-xs rounded-xl px-4 py-2.5 justify-center transition-all duration-200 font-semibold',
-        'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold' => $active,
-        'hover:bg-slate-500/5 hover:text-slate-800 dark:hover:text-slate-200 text-slate-600 dark:text-slate-400' => !$active,
+        'relative flex items-center gap-3 text-sm rounded-xl px-4 py-2.5 transition-colors duration-200 font-semibold',
+        'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold' => $active && ! $usesAdminMaterial,
+        'hover:bg-slate-500/5 text-slate-600 dark:text-slate-400' => ! $active && ! $usesAdminMaterial,
         'admin-nav-link' => $usesAdminMaterial,
         'admin-nav-active' => $usesAdminMaterial && $active,
     ])
     @if ($active) aria-current="page" @endif
     @click="closeSidebarOnMobile()"
     :class="{ 'justify-center': !sidebarOpen, 'justify-start': sidebarOpen }">
-        @svg($icon, 'admin-nav-icon w-4.5 h-4.5')
-        <span x-show="sidebarOpen" x-transition:enter="transition-all duration-300" x-transition:enter-start="opacity-0 transform -translate-x-2"
-            x-transition:enter-end="opacity-100 transform translate-x-0" x-transition:leave="transition-all duration-300"
-            x-transition:leave-start="opacity-100 transform translate-x-0" x-transition:leave-end="opacity-0 transform -translate-x-2"
-            class="ml-3 whitespace-nowrap">{{ $slot }}</span>
+        @if ($icon)
+            <x-admin.icon :name="$icon" class="admin-nav-icon h-[1.125rem] w-[1.125rem] shrink-0" />
+        @endif
+        <span x-show="sidebarOpen" class="min-w-0 flex-1 truncate">{{ $slot }}</span>
         {{-- Keep an accessible name when the collapsed sidebar hides the visible label. --}}
         <span x-show="!sidebarOpen" class="sr-only">{{ $slot }}</span>
+        @if ($badge)
+            <span class="admin-badge" aria-label="{{ $badge }} perlu ditindaklanjuti">{{ $badge }}</span>
+        @endif
     </a>
 </li>

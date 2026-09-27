@@ -111,7 +111,8 @@ test('monthly report counts Monday through Saturday as work days', function () {
         'end_date' => '2026-08-19',
     ]))
         ->assertSuccessful()
-        ->assertSee('16 hari kerja');
+        ->assertViewHas('workDays', 16)
+        ->assertSee('Hari kerja');
 });
 
 test('daily pdf export with office filter returns a pdf', function () {

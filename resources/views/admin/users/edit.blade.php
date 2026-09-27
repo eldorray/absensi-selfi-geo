@@ -92,7 +92,7 @@
                 </div>
 
                 @unless ($user->isAdmin())
-                    <div class="rounded-2xl bg-emerald-50 p-4 dark:bg-emerald-950/30">
+                    <div class="admin-soft-tile p-4">
                         <input type="hidden" name="is_bk_counselor" value="0">
                         <input type="hidden" name="is_student_affairs_officer" value="0">
                         <label class="flex items-center gap-3 font-semibold">

@@ -69,7 +69,7 @@
                         @empty
                             <tr>
                                 <td colspan="5">
-                                    <x-admin.empty-state icon="fas-clipboard-list" title="Belum ada catatan BK"
+                                    <x-admin.empty-state icon="clipboard" title="Belum ada catatan BK"
                                         hint="Ubah filter atau tunggu Guru BK mencatat kasus baru." />
                                 </td>
                             </tr>

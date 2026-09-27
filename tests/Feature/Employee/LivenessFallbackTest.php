@@ -139,6 +139,6 @@ test('the daily report flags manual photos and keeps apostrophe names JS-safe', 
     $this->actingAs(User::factory()->create(['role_id' => $adminRole->id]))
         ->get(route('admin.reports.daily', ['date' => '2026-07-20']))
         ->assertOk()
-        ->assertSee('>Manual</span>', false)
+        ->assertSee('>Foto manual</span>', false)
         ->assertDontSee("'Foto Masuk - Nur&#039;aini'", false);
 });

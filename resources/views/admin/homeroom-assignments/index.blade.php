@@ -38,7 +38,7 @@
                     @if($assignment)<form method="POST" action="{{ route('admin.homeroom-assignments.destroy', $assignment) }}" class="mt-2 text-right" x-data="{}" @submit.prevent="$dispatch('admin-confirm', { title: 'Hapus Penugasan', message: @js('Hapus penugasan wali kelas '.$class->name.'? Kelas akan kembali tanpa wali.'), confirmText: 'Hapus', variant: 'danger', form: $el })">@csrf @method('DELETE')<button class="admin-text-danger text-sm font-semibold" aria-label="Hapus penugasan wali kelas {{ $class->name }}">Hapus penugasan</button></form>@endif
                 </section>
             @empty
-                <div class="admin-glass-panel lg:col-span-2"><x-admin.empty-state icon="fas-chalkboard" title="Belum ada kelas" hint="Tambahkan kelas pada jenjang ini terlebih dahulu." /></div>
+                <div class="admin-glass-panel lg:col-span-2"><x-admin.empty-state icon="book" title="Belum ada kelas" hint="Tambahkan kelas pada jenjang ini terlebih dahulu." /></div>
             @endforelse
         </div>
     </div>

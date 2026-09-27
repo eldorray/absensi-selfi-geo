@@ -1,4 +1,4 @@
-@props(['label', 'icon' => null, 'active' => false])
+@props(['label', 'icon' => null, 'active' => false, 'badge' => null])
 @php($usesAdminMaterial = request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()))
 
 {{-- Collapsible sidebar group. Opens automatically when one of its child
@@ -12,24 +12,27 @@
             open = true;
         }
     " @class([
-        'flex w-full items-center text-xs rounded-xl px-4 py-2.5 transition-all duration-200 font-semibold',
-        'hover:bg-slate-500/5 hover:text-slate-800 dark:hover:text-slate-200 text-slate-600 dark:text-slate-400',
+        'relative flex w-full items-center gap-3 text-sm rounded-xl px-4 py-2.5 transition-colors duration-200 font-semibold',
+        'hover:bg-slate-500/5 text-slate-600 dark:text-slate-400' => ! $usesAdminMaterial,
         'admin-nav-link' => $usesAdminMaterial,
         'admin-nav-active' => $active,
-    ]) :class="{ 'justify-center': !sidebarOpen, 'justify-between': sidebarOpen }"
+    ]) :class="{ 'justify-center': !sidebarOpen }"
         :aria-expanded="open">
-        <span class="flex items-center">
-            @svg($icon, 'admin-nav-icon w-4.5 h-4.5')
-            <span x-show="sidebarOpen" class="ml-3 whitespace-nowrap">{{ $label }}</span>
-            <span x-show="!sidebarOpen" class="sr-only">{{ $label }}</span>
-        </span>
-        <span x-show="sidebarOpen" :class="{ 'rotate-90': open }"
-            class="transition-transform duration-200">
-            @svg('fas-chevron-right', 'w-3 h-3 text-slate-400 dark:text-slate-500')
+        @if ($icon)
+            <x-admin.icon :name="$icon" class="admin-nav-icon h-[1.125rem] w-[1.125rem] shrink-0" />
+        @endif
+        <span x-show="sidebarOpen" class="min-w-0 flex-1 truncate">{{ $label }}</span>
+        <span x-show="!sidebarOpen" class="sr-only">{{ $label }}</span>
+        @if ($badge)
+            {{-- Hitungan anak ikut naik ke tombol grup selama grupnya tertutup. --}}
+            <span x-show="!open || !sidebarOpen" class="admin-badge" aria-label="{{ $badge }} perlu ditindaklanjuti">{{ $badge }}</span>
+        @endif
+        <span x-show="sidebarOpen" :class="{ 'rotate-90': open }" class="admin-nav-chevron inline-flex">
+            <x-admin.icon name="chevron-right" size="12" />
         </span>
     </button>
 
-    <ul x-show="open && sidebarOpen" x-transition.opacity class="mt-1 space-y-1 pl-3">
+    <ul x-show="open && sidebarOpen" x-transition.opacity class="mt-0.5 space-y-0.5 pl-3">
         {{ $slot }}
     </ul>
 </li>

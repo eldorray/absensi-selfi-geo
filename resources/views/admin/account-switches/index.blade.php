@@ -27,7 +27,7 @@
                         @empty
                             <tr>
                                 <td colspan="4">
-                                    <x-admin.empty-state icon="fas-right-left" title="Belum ada riwayat"
+                                    <x-admin.empty-state icon="swap" title="Belum ada riwayat"
                                         hint="Perpindahan akun cepat akan tercatat di sini." />
                                 </td>
                             </tr>

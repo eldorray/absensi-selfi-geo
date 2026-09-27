@@ -168,7 +168,7 @@
                     </td>
                     <td>
                         @if ($data['work_schedule'])
-                            {{ $data['work_schedule']->start_time }} - {{ $data['work_schedule']->end_time }}
+                            {{ substr((string) $data['work_schedule']->check_in_time, 0, 5) }} - {{ substr((string) $data['work_schedule']->check_out_time, 0, 5) }}
                         @else
                             -
                         @endif
@@ -190,6 +190,7 @@
                     <td class="text-center">
                         @switch($data['status'])
                             @case('on_time')
+                            @case('present')
                                 <span class="badge badge-success">Hadir</span>
                             @break
 

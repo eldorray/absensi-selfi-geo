@@ -1,217 +1,202 @@
-<x-layouts.app>
+@php
+    $isToday = $selectedDate->isToday();
+    $absentLabel = $isToday ? 'Belum absen' : 'Alpha';
+    $rupiah = fn (int $amount): string => 'Rp '.number_format($amount, 0, ',', '.');
+    $dayLink = fn (int $offset): string => route('admin.reports.daily', array_filter([
+        'date' => $selectedDate->copy()->addDays($offset)->format('Y-m-d'),
+        'office_id' => $officeId,
+    ]));
+@endphp
+
+<x-layouts.app title="Rekap Harian">
     <div class="space-y-6">
-        <x-admin.page-header kicker="Kehadiran" title="Rekap Absensi Harian" :description="$activeYear ? 'Tahun Ajaran ' . $activeYear->name : null">
+        <x-admin.page-header kicker="Kehadiran" title="Rekap Harian" :description="$activeYear ? 'Tahun ajaran '.$activeYear->name : null">
             @unless ($activeYear)
                 <span class="admin-status-warning px-3 py-1.5 text-xs">Belum ada tahun ajaran aktif</span>
             @endunless
+            <a href="{{ route('admin.reports.daily.export-pdf', ['date' => $selectedDate->format('Y-m-d'), 'office_id' => $officeId]) }}"
+                class="admin-button-secondary px-4 text-sm">
+                <x-admin.icon name="download" />
+                Export PDF
+            </a>
         </x-admin.page-header>
 
-
         <!-- Filters -->
-        <div class="admin-glass-panel p-6">
-            <form method="GET" class="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <div>
-                    <label for="filter-date" class="admin-label">Tanggal</label>
+        <form method="GET" class="admin-glass-panel flex flex-wrap items-end gap-4 px-6 py-5">
+            <div>
+                <label for="filter-date" class="admin-label">Tanggal</label>
+                <div class="flex gap-1.5">
+                    <a href="{{ $dayLink(-1) }}" class="admin-button-secondary size-11 p-0" aria-label="Hari sebelumnya">
+                        <x-admin.icon name="chevron-left" size="16" />
+                    </a>
                     <input id="filter-date" type="date" name="date" value="{{ $selectedDate->format('Y-m-d') }}"
-                        class="admin-field p-2.5">
-                </div>
-                <div>
-                    <label for="filter-office" class="admin-label">Kantor</label>
-                    <select id="filter-office" name="office_id" class="admin-field p-2.5">
-                        <option value="">Semua Kantor</option>
-                        @foreach ($offices as $office)
-                            <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="flex items-end gap-2">
-                    <button type="submit"
-                        class="admin-button-primary flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                            </path>
-                        </svg>
-                        Refresh
-                    </button>
-                    <a href="{{ route('admin.reports.daily.export-pdf', ['date' => $selectedDate->format('Y-m-d'), 'office_id' => $officeId]) }}"
-                        class="admin-button-danger flex items-center gap-2 px-4 py-2.5 text-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                        Export PDF
+                        class="admin-field w-48 px-3">
+                    <a href="{{ $dayLink(1) }}" class="admin-button-secondary size-11 p-0" aria-label="Hari berikutnya">
+                        <x-admin.icon name="chevron-right" size="16" />
                     </a>
                 </div>
-            </form>
-        </div>
+            </div>
+            <div>
+                <label for="filter-office" class="admin-label">Kantor</label>
+                <select id="filter-office" name="office_id" class="admin-field w-56 px-3">
+                    <option value="">Semua kantor</option>
+                    @foreach ($offices as $office)
+                        <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <button type="submit" class="admin-button-primary px-5 text-sm">Tampilkan</button>
+            <p class="admin-muted ml-auto self-center text-[13px]">{{ $selectedDate->locale('id')->translatedFormat('l, d F Y') }}</p>
+        </form>
 
-        <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <x-admin.stat-card tone="indigo" label="Jumlah Pegawai" :value="$stats['total_employees']">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-            </x-admin.stat-card>
-
-            <x-admin.stat-card tone="emerald" label="Sudah Absen Masuk" :value="$stats['checked_in']">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </x-admin.stat-card>
-
-            <x-admin.stat-card tone="violet" label="Sudah Absen Pulang" :value="$stats['checked_out']">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-            </x-admin.stat-card>
-        </div>
+        <!-- Summary -->
+        <section aria-label="Ringkasan" class="admin-glass-panel admin-stat-strip overflow-hidden">
+            <div>
+                <span class="admin-label" style="margin-bottom: 0">Pegawai</span>
+                <span class="admin-display text-3xl">{{ $stats['total_employees'] }}</span>
+            </div>
+            <div>
+                <span class="admin-label flex items-center gap-2" style="margin-bottom: 0"><span class="admin-meter-dot admin-meter-success"></span>Absen masuk</span>
+                <span class="admin-display text-3xl">{{ $stats['checked_in'] }}</span>
+            </div>
+            <div>
+                <span class="admin-label" style="margin-bottom: 0">Absen pulang</span>
+                <span class="admin-display text-3xl">{{ $stats['checked_out'] }}</span>
+            </div>
+            <div>
+                <span class="admin-label flex items-center gap-2" style="margin-bottom: 0"><span class="admin-meter-dot admin-meter-warning"></span>Terlambat</span>
+                <span class="admin-display text-3xl">{{ $stats['late'] }}</span>
+            </div>
+            <div>
+                <span class="admin-label flex items-center gap-2" style="margin-bottom: 0"><span class="admin-meter-dot admin-meter-idle"></span>{{ $absentLabel }}</span>
+                <span class="admin-display text-3xl">{{ $stats['absent'] }}</span>
+            </div>
+            <div>
+                <span class="admin-label" style="margin-bottom: 0">Total denda</span>
+                <span @class(['admin-display whitespace-nowrap text-2xl leading-[2.25rem]', 'admin-text-danger' => $stats['total_fine'] > 0])>{{ $rupiah($stats['total_fine']) }}</span>
+            </div>
+        </section>
 
         <!-- Table -->
-        <div class="admin-glass-panel overflow-hidden">
+        <section aria-labelledby="judul-daftar" class="admin-glass-panel overflow-hidden">
             <div class="admin-panel-header">
-                <span class="admin-label">Daftar Hadir</span>
-                <span class="flex flex-wrap items-center gap-2">
-                    @if ($selectedOffice)
-                        <span class="admin-chip">{{ $selectedOffice->name }}</span>
-                    @endif
-                    <span class="admin-chip admin-chip-time">{{ $selectedDate->translatedFormat('l, d F Y') }}</span>
-                </span>
+                <h2 id="judul-daftar" class="admin-panel-title">Daftar hadir</h2>
+                @if ($selectedOffice)
+                    <span class="admin-chip">{{ $selectedOffice->name }}</span>
+                @endif
             </div>
             <div class="overflow-x-auto">
-                <table class="admin-table w-full">
+                <table class="admin-table">
                     <thead>
                         <tr>
-                            <th class="px-4 py-3 text-left">No.</th>
-                            <th class="px-4 py-3 text-left">Nama</th>
-                            <th class="px-4 py-3 text-left">Jam Kerja</th>
-                            <th class="px-4 py-3 text-left">Jam Masuk</th>
-                            <th class="px-4 py-3 text-center">Foto Masuk</th>
-                            <th class="px-4 py-3 text-left">Jam Pulang</th>
-                            <th class="px-4 py-3 text-center">Foto Pulang</th>
-                            <th class="px-4 py-3 text-center">Keterangan</th>
-                            <th class="px-4 py-3 text-right">Denda</th>
-                            <th class="px-4 py-3 text-center">Aksi</th>
+                            <th scope="col" class="w-14 py-2.5 pl-6 pr-2 text-left">No.</th>
+                            <th scope="col" class="px-4 py-2.5 text-left">Nama</th>
+                            <th scope="col" class="px-4 py-2.5 text-left">Jam kerja</th>
+                            <th scope="col" class="px-4 py-2.5 text-left">Masuk</th>
+                            <th scope="col" class="px-4 py-2.5 text-left">Pulang</th>
+                            <th scope="col" class="px-4 py-2.5 text-left">Keterangan</th>
+                            <th scope="col" class="px-4 py-2.5 text-right">Denda</th>
+                            <th scope="col" class="py-2.5 pl-4 pr-6 text-right"><span class="sr-only">Aksi</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($reportData as $index => $data)
+                            @php($attendance = $data['attendance'])
                             <tr>
-                                <td class="admin-muted px-4 py-3 text-sm">{{ $index + 1 }}</td>
-                                <td class="whitespace-nowrap px-4 py-3">
-                                    <div class="text-sm font-bold">{{ $data['user']->name }}</div>
-                                    <div class="admin-muted text-xs">{{ $data['user']->role?->name ?? '-' }}</div>
+                                <td class="admin-muted py-2 pl-6 pr-2 text-sm tabular-nums">{{ $index + 1 }}</td>
+                                <td class="whitespace-nowrap px-4 py-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="admin-avatar admin-avatar-sm" style="width: 2.125rem; height: 2.125rem">{{ $data['user']->initials() }}</span>
+                                        <span class="flex flex-col leading-tight">
+                                            <span class="font-bold">{{ $data['user']->name }}</span>
+                                            <span class="admin-muted text-xs">{{ $data['user']->office?->name ?? ($data['user']->role?->name ?? '-') }}</span>
+                                        </span>
+                                    </div>
                                 </td>
-                                <td class="admin-muted whitespace-nowrap px-4 py-3 text-sm"
-                                    style="font-variant-numeric: tabular-nums">
+                                <td class="admin-muted whitespace-nowrap px-4 py-2 text-sm tabular-nums">
                                     @if ($data['work_schedule'])
-                                        {{ $data['work_schedule']->start_time }} s/d
-                                        {{ $data['work_schedule']->end_time }}
+                                        {{ \Illuminate\Support\Str::substr($data['work_schedule']->check_in_time, 0, 5) }}–{{ \Illuminate\Support\Str::substr($data['work_schedule']->check_out_time, 0, 5) }}
                                     @else
-                                        -
+                                        —
                                     @endif
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-3">
-                                    @if ($data['attendance'])
-                                        <span class="admin-chip admin-chip-time">
-                                            {{ $data['attendance']->created_at->format('H:i') }}
-                                        </span>
+                                <td class="whitespace-nowrap px-4 py-2">
+                                    @if ($attendance)
+                                        <div class="flex items-center gap-2.5">
+                                            @if ($attendance->image_path)
+                                                <button type="button" class="admin-photo-button"
+                                                    aria-label="Lihat foto masuk {{ $data['user']->name }}"
+                                                    @click="$dispatch('open-photo-modal', { url: @js($attendance->image_url), title: @js('Foto Masuk - '.$data['user']->name) })">
+                                                    <x-admin.icon name="image" />
+                                                </button>
+                                            @endif
+                                            <span class="flex flex-col leading-tight">
+                                                <span @class(['admin-display text-lg', 'admin-text-warning' => $data['status'] === 'late'])>{{ $attendance->created_at->format('H:i') }}</span>
+                                                @if ($attendance->liveness_verified === false)
+                                                    <span class="admin-text-danger text-[11px] font-semibold" title="Kedip tidak terdeteksi, foto diambil manual. Periksa wajah di foto.">Foto manual</span>
+                                                @endif
+                                            </span>
+                                        </div>
                                     @else
-                                        <span class="admin-muted">-</span>
+                                        <span class="admin-muted">—</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-center">
-                                    @if ($data['attendance'] && $data['attendance']->image_path)
-                                        <button type="button"
-                                            @click="$dispatch('open-photo-modal', { url: @js($data['attendance']->image_url), title: @js('Foto Masuk - '.$data['user']->name) })"
-                                            class="admin-chip inline-flex items-center gap-1 text-xs">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                                </path>
-                                            </svg>
-                                            Lihat
-                                        </button>
-                                        @if ($data['attendance']->liveness_verified === false)
-                                            <span class="admin-status-warning mt-1 block px-2 py-0.5 text-[11px]"
-                                                title="Kedip tidak terdeteksi, foto diambil manual. Periksa wajah di foto.">Manual</span>
-                                        @endif
+                                <td class="whitespace-nowrap px-4 py-2">
+                                    @if ($attendance && $attendance->check_out_at)
+                                        <div class="flex items-center gap-2.5">
+                                            @if ($attendance->check_out_image_path)
+                                                <button type="button" class="admin-photo-button"
+                                                    aria-label="Lihat foto pulang {{ $data['user']->name }}"
+                                                    @click="$dispatch('open-photo-modal', { url: @js($attendance->check_out_image_url), title: @js('Foto Pulang - '.$data['user']->name) })">
+                                                    <x-admin.icon name="image" />
+                                                </button>
+                                            @endif
+                                            <span class="flex flex-col leading-tight">
+                                                <span class="admin-display text-lg">{{ $attendance->check_out_at->format('H:i') }}</span>
+                                                @if ($attendance->check_out_liveness_verified === false)
+                                                    <span class="admin-text-danger text-[11px] font-semibold" title="Kedip tidak terdeteksi, foto diambil manual. Periksa wajah di foto.">Foto manual</span>
+                                                @endif
+                                            </span>
+                                        </div>
+                                    @elseif ($attendance && ! $isToday)
+                                        <span class="admin-text-danger text-[13px]">Tidak absen pulang</span>
                                     @else
-                                        <span class="admin-muted">-</span>
+                                        <span class="admin-muted">—</span>
                                     @endif
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-3">
-                                    @if ($data['attendance'] && $data['attendance']->check_out_at)
-                                        <span class="admin-chip admin-chip-time">
-                                            {{ $data['attendance']->check_out_at->format('H:i') }}
-                                        </span>
-                                    @else
-                                        <span class="admin-muted">-</span>
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    @if ($data['attendance'] && $data['attendance']->check_out_image_path)
-                                        <button type="button"
-                                            @click="$dispatch('open-photo-modal', { url: @js($data['attendance']->check_out_image_url), title: @js('Foto Pulang - '.$data['user']->name) })"
-                                            class="admin-chip inline-flex items-center gap-1 text-xs">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor"
-                                                stroke-width="2" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                                </path>
-                                            </svg>
-                                            Lihat
-                                        </button>
-                                        @if ($data['attendance']->check_out_liveness_verified === false)
-                                            <span class="admin-status-warning mt-1 block px-2 py-0.5 text-[11px]"
-                                                title="Kedip tidak terdeteksi, foto diambil manual. Periksa wajah di foto.">Manual</span>
-                                        @endif
-                                    @else
-                                        <span class="admin-muted">-</span>
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-center">
+                                <td class="whitespace-nowrap px-4 py-2">
                                     @switch($data['status'])
                                         @case('on_time')
-                                            <span class="admin-status-success px-2.5 py-1 text-xs">Hadir</span>
+                                        @case('present')
+                                            <span class="admin-status-success px-2.5 py-1 text-xs">Tepat waktu</span>
                                         @break
 
                                         @case('late')
-                                            <span class="admin-status-warning px-2.5 py-1 text-xs">Hadir Terlambat</span>
+                                            <span class="admin-status-warning px-2.5 py-1 text-xs">Terlambat {{ $data['late_minutes'] }} mnt</span>
                                         @break
 
                                         @case('absent')
-                                            <span class="admin-status-danger px-2.5 py-1 text-xs">Alpha</span>
+                                            <span @class(['px-2.5 py-1 text-xs', 'admin-status-neutral' => $isToday, 'admin-status-danger' => ! $isToday])>{{ $absentLabel }}</span>
                                         @break
 
                                         @case('no_schedule')
-                                            <span class="admin-status-neutral px-2.5 py-1 text-xs">Libur / Tidak Ada
-                                                Jadwal</span>
+                                            <span class="admin-status-neutral px-2.5 py-1 text-xs">Tidak terjadwal</span>
                                         @break
 
                                         @default
-                                            <span
-                                                class="admin-status-neutral px-2.5 py-1 text-xs">{{ $data['status'] }}</span>
+                                            <span class="admin-status-neutral px-2.5 py-1 text-xs">{{ $data['status'] }}</span>
                                     @endswitch
                                 </td>
-                                <td class="px-4 py-3 text-right text-sm">
+                                <td class="whitespace-nowrap px-4 py-2 text-right text-sm tabular-nums">
                                     @if ($data['fine'] > 0)
-                                        <span
-                                            class="admin-text-danger font-semibold">{{ 'Rp ' . number_format($data['fine'], 0, ',', '.') }}</span>
-                                        <div class="admin-muted text-[10px]">telat {{ $data['late_minutes'] }} mnt
-                                        </div>
+                                        <span class="admin-text-danger font-bold">{{ $rupiah($data['fine']) }}</span>
                                     @else
-                                        <span class="admin-muted">-</span>
+                                        <span class="admin-muted">—</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-center">
-                                    @if ($data['attendance'])
-                                        <form action="{{ route('admin.reports.daily.reset', $data['attendance']) }}"
+                                <td class="whitespace-nowrap py-2 pl-4 pr-6 text-right">
+                                    @if ($attendance)
+                                        <form action="{{ route('admin.reports.daily.reset', $attendance) }}"
                                             method="POST" class="inline" x-data="{}"
                                             @submit.prevent="$dispatch('admin-confirm', {
                                                 title: 'Reset Absensi',
@@ -222,18 +207,16 @@
                                             })">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
-                                                class="admin-button-danger admin-icon-action px-3 text-xs">Reset</button>
+                                            <button type="submit" class="admin-button-danger admin-icon-action px-3 text-xs"
+                                                aria-label="Reset absensi {{ $data['user']->name }}">Reset</button>
                                         </form>
-                                    @else
-                                        <span class="admin-muted">-</span>
                                     @endif
                                 </td>
                             </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10">
-                                        <x-admin.empty-state icon="fas-users" title="Tidak ada data pegawai"
+                                    <td colspan="8">
+                                        <x-admin.empty-state icon="users" title="Tidak ada data pegawai"
                                             hint="Pegawai aktif akan tampil di rekap harian ini." />
                                     </td>
                                 </tr>
@@ -242,16 +225,15 @@
                         @if ($reportData->isNotEmpty())
                             <tfoot>
                                 <tr>
-                                    <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold">Total Denda</td>
-                                    <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold">
-                                        {{ 'Rp ' . number_format($stats['total_fine'], 0, ',', '.') }}</td>
+                                    <td colspan="6" class="py-3 pl-6 pr-4 text-right text-sm font-semibold">Total denda</td>
+                                    <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold tabular-nums">{{ $rupiah($stats['total_fine']) }}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
                         @endif
                     </table>
                 </div>
-            </div>
+            </section>
         </div>
 
         <!-- Photo Modal Overlay -->

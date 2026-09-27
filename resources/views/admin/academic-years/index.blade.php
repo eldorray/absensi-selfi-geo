@@ -112,7 +112,7 @@
                         @empty
                             <tr>
                                 <td colspan="5">
-                                    <x-admin.empty-state icon="fas-calendar" title="Belum ada tahun ajaran"
+                                    <x-admin.empty-state icon="calendar" title="Belum ada tahun ajaran"
                                         hint="Tambahkan tahun ajaran pertama untuk memulai penjadwalan absensi.">
                                         <a href="{{ route('admin.academic-years.create') }}"
                                             class="admin-button-secondary inline-flex items-center px-4 py-2 text-sm">

@@ -1,4 +1,4 @@
-<x-layouts.app>
+<x-layouts.app title="Kesiswaan">
     <div class="space-y-6" data-kesiswaan-list="admin">
         <x-admin.page-header kicker="Kesiswaan" title="Pusat Profil Siswa" description="Cari siswa lintas jenjang dan buka profil hanya-baca untuk pengawasan rujukan."/>
 
@@ -9,21 +9,31 @@
             <button type="submit" class="admin-button-primary min-h-11 px-5 py-2.5">Terapkan</button>
         </form>
 
-        <section class="admin-glass-panel overflow-hidden">
-            <div class="admin-panel-header flex-wrap gap-3"><div><span class="admin-label">Daftar siswa</span><p class="admin-muted mt-1 text-xs">{{ $students->total() }} siswa sesuai filter.</p></div></div>
-            <div class="divide-y admin-border">
+        <section class="admin-glass-panel overflow-hidden" aria-labelledby="judul-daftar-siswa">
+            <div class="admin-panel-header">
+                <div>
+                    <h2 id="judul-daftar-siswa" class="admin-panel-title">Daftar siswa</h2>
+                    <p class="admin-muted mt-0.5 text-xs">{{ $students->total() }} siswa sesuai filter.</p>
+                </div>
+            </div>
+            <ul class="divide-y admin-border">
                 @forelse($students as $student)
                     @php $initials = collect(explode(' ', $student->nama_lengkap))->filter()->take(2)->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode(''); @endphp
-                    <a href="{{ route('admin.kesiswaan.show', $student) }}" class="flex min-h-20 items-center gap-4 px-5 py-4 transition hover:bg-emerald-50/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-600 dark:hover:bg-emerald-950/30">
-                        <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-emerald-100 text-xs font-black text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200" aria-hidden="true">{{ $initials ?: 'S' }}</span>
-                        <span class="min-w-0 flex-1"><strong class="block truncate text-sm admin-text-main">{{ $student->nama_lengkap }}</strong><span class="admin-muted mt-1 block truncate text-xs">NISN {{ $student->nisn ?: '—' }} · NIK {{ $student->nik ?: '—' }}</span></span>
-                        <span class="hidden rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold admin-text-muted sm:block dark:bg-slate-800">{{ strtoupper($student->school_level) }} · {{ $student->schoolClass?->name ?? 'Tanpa kelas' }}</span>
-                        <svg class="size-5 shrink-0 admin-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"></path></svg>
-                    </a>
+                    <li>
+                        <a href="{{ route('admin.kesiswaan.show', $student) }}" class="admin-row-link admin-list-row flex min-h-18 items-center gap-4 px-6 py-3.5">
+                            <span class="admin-avatar" aria-hidden="true">{{ $initials ?: 'S' }}</span>
+                            <span class="min-w-0 flex-1">
+                                <strong class="block truncate text-sm">{{ $student->nama_lengkap }}</strong>
+                                <span class="admin-muted mt-0.5 block truncate text-xs tabular-nums">NISN {{ $student->nisn ?: '—' }} · NIK {{ $student->nik ?: '—' }}</span>
+                            </span>
+                            <span class="admin-chip hidden sm:inline-flex">{{ strtoupper($student->school_level) }} · {{ $student->schoolClass?->name ?? 'Tanpa kelas' }}</span>
+                            <x-admin.icon name="chevron-right" size="18" class="admin-muted shrink-0" />
+                        </a>
+                    </li>
                 @empty
-                    <x-admin.empty-state icon="fas-user-graduate" title="Siswa tidak ditemukan" hint="Ubah pencarian atau filter untuk melihat data lain." />
+                    <li><x-admin.empty-state icon="users" title="Siswa tidak ditemukan" hint="Ubah pencarian atau filter untuk melihat data lain." /></li>
                 @endforelse
-            </div>
+            </ul>
         </section>
 
         {{ $students->links() }}

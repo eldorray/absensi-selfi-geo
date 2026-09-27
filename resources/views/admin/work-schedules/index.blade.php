@@ -244,10 +244,10 @@
                             <tr>
                                 <td colspan="5">
                                     @if ($search !== '')
-                                        <x-admin.empty-state icon="fas-magnifying-glass" title="Tidak ditemukan"
+                                        <x-admin.empty-state icon="search" title="Tidak ditemukan"
                                             hint="Tidak ada karyawan yang cocok dengan pencarian." />
                                     @else
-                                        <x-admin.empty-state icon="fas-clock" title="Belum ada data karyawan"
+                                        <x-admin.empty-state icon="clock" title="Belum ada data karyawan"
                                             hint="Karyawan yang terdaftar akan muncul di sini beserta jadwal kerjanya." />
                                     @endif
                                 </td>

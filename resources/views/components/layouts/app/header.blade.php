@@ -1,33 +1,69 @@
+@props(['title' => null])
+@php
+    $usesAdminMaterial = request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin());
+    $pageTitle = trim(strip_tags((string) $title));
+@endphp
+{{-- Brand ada di sidebar; header hanya membawa lokasi halaman, tema, dan akun. --}}
 <!-- Header -->
 <header @class([
-    'bg-white/85 dark:bg-gray-900/80 backdrop-blur-md z-20 border-b border-slate-100 dark:border-slate-800/80',
-    'admin-header' => request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()),
+    'sticky top-0 z-20 border-b',
+    'bg-white/85 dark:bg-gray-900/80 backdrop-blur-md border-slate-100 dark:border-slate-800/80' => ! $usesAdminMaterial,
+    'admin-header' => $usesAdminMaterial,
 ])>
-    <div class="flex items-center justify-between h-16 px-4">
-        <!-- Left side: Logo and toggle -->
-        <div class="flex items-center">
-            <button type="button" x-ref="sidebarToggle" @click="toggleSidebar()"
-                class="sidebar-toggle p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
-                aria-label="Menu samping" aria-controls="app-sidebar" :aria-expanded="sidebarOpen">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-            <div class="app-brand ml-4 flex items-center gap-2 font-semibold text-xl text-blue-600 dark:text-blue-400">
-                @if (($branding ?? null)?->logoUrl())
-                    <img src="{{ $branding->logoUrl() }}" alt="" class="h-9 max-w-32 object-contain">
+    <div class="flex h-16 items-center gap-3 px-4 lg:h-[4.5rem] lg:gap-4 lg:px-10">
+        <button type="button" x-ref="sidebarToggle" @click="toggleSidebar()"
+            class="sidebar-toggle shrink-0 rounded-md p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            aria-label="Menu samping" aria-controls="app-sidebar" :aria-expanded="sidebarOpen">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 5h16v14H4zM9 5v14" />
+            </svg>
+        </button>
+
+        @if ($usesAdminMaterial)
+            <nav aria-label="Breadcrumb" class="admin-breadcrumb">
+                @php
+                    $sections = [
+                        'admin.dashboard' => 'Dashboard',
+                        'admin.reports.daily*' => 'Rekap Harian',
+                        'admin.reports.monthly*' => 'Rekap Bulanan',
+                        'admin.attendances.*' => 'Detail Absensi',
+                        'admin.leaves.*' => 'Perizinan',
+                        'admin.kesiswaan.*' => 'Kesiswaan',
+                        'admin.students.*' => 'Data Siswa',
+                        'admin.school-classes.*' => 'Kelas',
+                        'admin.homeroom-assignments.*' => 'Penugasan Wali Kelas',
+                        'admin.bk-records.*' => 'Catatan BK',
+                        'admin.bk-categories.*' => 'Kategori BK',
+                        'admin.academic-years.*' => 'Tahun Ajaran',
+                        'admin.offices.*' => 'Kelola Kantor',
+                        'admin.users.*' => 'Kelola User',
+                        'admin.roles.*' => 'Kelola Role',
+                        'admin.work-schedules.*' => 'Jam Kerja',
+                        'admin.announcements.*' => 'Informasi',
+                        'admin.account-switches.*' => 'Riwayat Ganti Akun',
+                        'settings.*' => 'Pengaturan',
+                    ];
+                    $crumb = collect($sections)->first(fn (string $label, string $route): bool => request()->routeIs($route))
+                        ?? ($pageTitle !== '' ? $pageTitle : null);
+                @endphp
+                <a href="{{ route('admin.dashboard') }}" @class(['hidden sm:inline' => $crumb])>Admin</a>
+                @if ($crumb)
+                    <span aria-hidden="true" class="hidden sm:inline">/</span>
+                    <span aria-current="page">{{ $crumb }}</span>
                 @endif
+            </nav>
+        @else
+            <div class="app-brand flex items-center gap-2 text-xl font-semibold text-blue-600 dark:text-blue-400">
                 <span>{{ config('app.name') }}</span>
             </div>
-            @if (request()->routeIs('admin.*'))
-                <span class="admin-chip ml-3 hidden sm:inline-flex">Admin</span>
-            @endif
-        </div>
+        @endif
+
+        <div class="flex-1"></div>
 
         <!-- Right side: appearance and profile -->
         <div class="flex items-center gap-2 sm:gap-3">
-            @if (request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()))
+            @if ($usesAdminMaterial)
                 <div class="admin-topbar-appearance hidden sm:flex" role="group" aria-label="Tema tampilan">
                     <button type="button" value="light" data-appearance="light" onclick="setAppearance('light')" class="admin-topbar-theme-option" aria-label="Gunakan tema terang" title="Tema terang">
                         <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -66,59 +102,60 @@
                         </button>
                     </div>
                 </div>
+
+                <span class="hidden h-7 w-px sm:block" style="background: var(--admin-border)" aria-hidden="true"></span>
             @endif
 
             <!-- Profile -->
             <div x-data="{ open: false }" class="relative"
                 @keydown.escape.window="if (open) { open = false; $refs.profileTrigger.focus(); }">
                 <button type="button" x-ref="profileTrigger" @click="open = !open"
-                    class="profile-trigger flex items-center focus:outline-none"
+                    class="profile-trigger flex items-center gap-2.5 text-left"
                     aria-label="Menu akun {{ Auth::user()->name }}" aria-haspopup="true"
                     aria-controls="profile-menu" :aria-expanded="open">
-                    <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                        <span
-                            class="flex h-full w-full items-center justify-center rounded-lg bg-gray-200 text-black dark:bg-gray-700 dark:text-white">
+                    @if ($usesAdminMaterial)
+                        <span class="admin-profile-avatar">{{ Auth::user()->initials() }}</span>
+                        <span class="hidden flex-col leading-tight md:flex">
+                            <span class="text-sm font-bold">{{ Auth::user()->name }}</span>
+                            <span class="admin-muted text-xs">{{ Auth::user()->role?->name ?? 'Admin' }}</span>
+                        </span>
+                    @else
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-200 text-black dark:bg-gray-700 dark:text-white">
                             {{ Auth::user()->initials() }}
                         </span>
-                    </span>
-                    <span class="ml-2 hidden md:block">{{ Auth::user()->name }}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        <span class="hidden md:block">{{ Auth::user()->name }}</span>
+                    @endif
+                    <svg class="h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6" />
                     </svg>
                 </button>
 
-                <div id="profile-menu" x-show="open" @click.away="open = false" :class="{ 'block': open, 'hidden': !open }"
+                <div id="profile-menu" x-show="open" x-cloak @click.away="open = false"
                     @class([
-                        'hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700',
-                        'admin-glass-popover' => request()->routeIs('admin.*') || (request()->routeIs('settings.*') && auth()->user()?->isAdmin()),
+                        'absolute right-0 z-50 mt-2 w-52 p-1.5',
+                        'rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800' => ! $usesAdminMaterial,
+                        'admin-glass-popover' => $usesAdminMaterial,
                     ])>
                     <a href="{{ route('settings.profile.edit') }}"
-                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Pengaturan
-                        </div>
+                        class="flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Pengaturan
                     </a>
-                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                    <div class="my-1 border-t border-gray-200 dark:border-gray-700"></div>
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
-                        <button type="submit"
-                            class="block w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                                Keluar
-                            </div>
+                        <button type="submit" class="flex min-h-11 w-full items-center gap-2 rounded-lg px-3 text-sm">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Keluar
                         </button>
                     </form>
                 </div>

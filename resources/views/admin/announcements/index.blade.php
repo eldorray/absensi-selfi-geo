@@ -102,7 +102,7 @@
                         @empty
                             <tr>
                                 <td colspan="4">
-                                    <x-admin.empty-state icon="fas-bullhorn" title="Belum ada informasi"
+                                    <x-admin.empty-state icon="megaphone" title="Belum ada informasi"
                                         hint="Kartu informasi yang aktif akan tampil di beranda guru.">
                                         <a href="{{ route('admin.announcements.create') }}"
                                             class="admin-button-secondary inline-flex items-center px-4 py-2 text-sm">

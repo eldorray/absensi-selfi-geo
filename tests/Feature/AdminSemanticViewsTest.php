@@ -14,7 +14,7 @@ function liquidGlassUser(bool $admin): User
     return User::factory()->create(['role_id' => $role->id]);
 }
 
-test('admin routes expose the liquid glass shell', function () {
+test('admin routes expose the admin shell', function () {
     $this->actingAs(liquidGlassUser(admin: true));
     session()->flash('status', 'Admin settings updated.');
 
@@ -54,7 +54,6 @@ dataset('admin index views', [
     'academic years' => 'admin/academic-years/index.blade.php',
     'announcements' => 'admin/announcements/index.blade.php',
     'attendances' => 'admin/attendances/index.blade.php',
-    'leaves' => 'admin/leaves/index.blade.php',
     'offices' => 'admin/offices/index.blade.php',
     'daily report' => 'admin/reports/daily.blade.php',
     'monthly report' => 'admin/reports/monthly.blade.php',
@@ -79,6 +78,17 @@ test('admin index views adopt semantic glass surfaces', function (string $view) 
     }
 })->with('admin index views');
 
+test('the leave queue uses a pick list beside the selected request', function () {
+    $source = file_get_contents(resource_path('views/admin/leaves/index.blade.php'));
+
+    expect($source)
+        ->toMatch('/<x-admin\.page-header\b/')
+        ->toContain('admin-glass-panel')
+        ->toContain('admin-pick-list')
+        ->toContain('aria-current="true"')
+        ->toContain("@include('admin.leaves._detail'");
+});
+
 test('roles table body stays transparent inside the glass panel', function () {
     $source = file_get_contents(resource_path('views/admin/roles/index.blade.php'));
 
@@ -88,10 +98,6 @@ test('roles table body stays transparent inside the glass panel', function () {
 dataset('admin compact text actions', [
     'attendance detail' => [
         'admin/attendances/index.blade.php',
-        '/<a\b[^>]*class="[^"]*\badmin-button-primary\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Detail\s*<\/a>/s',
-    ],
-    'leave detail' => [
-        'admin/leaves/index.blade.php',
         '/<a\b[^>]*class="[^"]*\badmin-button-primary\b[^"]*\bpx-[34]\b[^"]*"[^>]*>\s*Detail\s*<\/a>/s',
     ],
 ]);
@@ -254,7 +260,7 @@ test('admin detail views adopt semantic glass surfaces', function (string $view)
 
 test('admin detail views retain semantic status and approval mappings', function () {
     $attendance = file_get_contents(resource_path('views/admin/attendances/show.blade.php'));
-    $leave = file_get_contents(resource_path('views/admin/leaves/show.blade.php'));
+    $leave = file_get_contents(resource_path('views/admin/leaves/_detail.blade.php'));
 
     expect($attendance)->toContain(
         "{{ \$attendance->status->value === 'present' ? 'admin-status-success' : 'admin-status-warning' }}",
@@ -292,7 +298,7 @@ dataset('leave type semantic mappings', [
 ]);
 
 test('leave types retain their semantic mappings', function (string $type, string $expectedClass) {
-    $source = file_get_contents(resource_path('views/admin/leaves/show.blade.php'));
+    $source = file_get_contents(resource_path('views/admin/leaves/_detail.blade.php'));
     $matched = preg_match(
         '/\{\{ \$leave->type === \'(?<dangerType>[^\']+)\' \? \'(?<dangerClass>[^\']+)\' : \'(?<otherClass>[^\']+)\' \}\}/',
         $source,
@@ -368,17 +374,12 @@ test('direct admin feedback containers use semantic alert classes', function (st
     expect($alert['classes'])->toContain($semanticClass);
 })->with('direct admin feedback containers');
 
-test('leave rejection feedback panels use the semantic danger alert', function () {
-    $source = file_get_contents(resource_path('views/admin/leaves/show.blade.php'));
-    $matched = preg_match_all(
-        '/<div\b[^>]*class="(?<classes>[^"]*\bbg-red-50\b[^"]*\bdark:bg-red-900\/20\b[^"]*)"[^>]*>/s',
-        $source,
-        $panels,
-    );
+test('leave rejection feedback uses the semantic danger alert', function () {
+    $source = file_get_contents(resource_path('views/admin/leaves/_detail.blade.php'));
 
-    expect($matched)->toBe(2);
-
-    foreach ($panels['classes'] as $classes) {
-        expect($classes)->toContain('admin-alert-danger');
-    }
+    expect($source)
+        ->toMatch('/@else\s*<div class="admin-alert-danger\b/')
+        ->toContain('$leave->rejection_reason')
+        ->toContain('x-model="reason"')
+        ->toContain(':disabled="reason.trim() === \'\'"');
 });

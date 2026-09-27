@@ -63,7 +63,7 @@
                         @endforeach
                     </ul>
                 @else
-                    <x-admin.empty-state icon="fas-folder" title="Tidak ada lampiran" />
+                    <x-admin.empty-state icon="doc" title="Tidak ada lampiran" />
                 @endif
             </section>
 
@@ -86,7 +86,7 @@
                         @endforeach
                     </ol>
                 @else
-                    <x-admin.empty-state icon="fas-clock" title="Belum ada riwayat status" />
+                    <x-admin.empty-state icon="clock" title="Belum ada riwayat status" />
                 @endif
             </section>
         </div>

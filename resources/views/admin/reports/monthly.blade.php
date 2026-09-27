@@ -1,145 +1,156 @@
-<x-layouts.app>
+@php
+    $rupiah = fn (int $amount): string => 'Rp '.number_format($amount, 0, ',', '.');
+    $start = \Carbon\Carbon::parse($startDate)->locale('id');
+    $end = \Carbon\Carbon::parse($endDate)->locale('id');
+    $monthLink = fn (int $offset): string => route('admin.reports.monthly', array_filter([
+        'start_date' => $start->copy()->startOfMonth()->addMonthsNoOverflow($offset)->format('Y-m-d'),
+        'end_date' => $start->copy()->startOfMonth()->addMonthsNoOverflow($offset)->endOfMonth()->format('Y-m-d'),
+        'office_id' => $officeId,
+    ]));
+    $employees = $reportData->count();
+    $averageRate = $employees > 0 ? round($reportData->avg('attendance_rate'), 1) : 0;
+@endphp
+
+<x-layouts.app title="Rekap Bulanan">
     <div class="space-y-6">
-        <x-admin.page-header kicker="Kehadiran" title="Rekap Absensi" :description="$activeYear ? 'Tahun Ajaran ' . $activeYear->name : null">
+        <x-admin.page-header kicker="Kehadiran" title="Rekap Bulanan" :description="$activeYear ? 'Tahun ajaran '.$activeYear->name : null">
             @unless ($activeYear)
                 <span class="admin-status-warning px-3 py-1.5 text-xs">Belum ada tahun ajaran aktif</span>
             @endunless
+            <a href="{{ route('admin.reports.monthly.export-pdf', ['start_date' => $startDate, 'end_date' => $endDate, 'office_id' => $officeId]) }}"
+                class="admin-button-secondary px-4 text-sm">
+                <x-admin.icon name="download" />
+                Export PDF
+            </a>
         </x-admin.page-header>
 
         <!-- Filters -->
-        <div class="admin-glass-panel p-6">
-            <form method="GET" class="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <form method="GET" class="admin-glass-panel flex flex-wrap items-end gap-4 px-6 py-5">
+            <div class="flex items-end gap-1.5">
+                <a href="{{ $monthLink(-1) }}" class="admin-button-secondary size-11 p-0" aria-label="Bulan sebelumnya">
+                    <x-admin.icon name="chevron-left" size="16" />
+                </a>
                 <div>
-                    <label for="filter-start" class="admin-label">Tanggal Awal</label>
-                    <input id="filter-start" type="date" name="start_date" value="{{ $startDate }}"
-                        class="admin-field p-2.5">
-                </div>
-                <div>
-                    <label for="filter-end" class="admin-label">Tanggal Akhir</label>
-                    <input id="filter-end" type="date" name="end_date" value="{{ $endDate }}"
-                        class="admin-field p-2.5">
+                    <label for="filter-start" class="admin-label">Tanggal awal</label>
+                    <input id="filter-start" type="date" name="start_date" value="{{ $startDate }}" class="admin-field w-44 px-3">
                 </div>
                 <div>
-                    <label for="filter-office" class="admin-label">Kantor</label>
-                    <select id="filter-office" name="office_id" class="admin-field p-2.5">
-                        <option value="">Semua Kantor</option>
-                        @foreach ($offices as $office)
-                            <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
-                        @endforeach
-                    </select>
+                    <label for="filter-end" class="admin-label">Tanggal akhir</label>
+                    <input id="filter-end" type="date" name="end_date" value="{{ $endDate }}" class="admin-field w-44 px-3">
                 </div>
-                <div class="flex items-end gap-2">
-                    <button type="submit"
-                        class="admin-button-primary flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                            </path>
-                        </svg>
-                        Refresh
-                    </button>
-                    <a href="{{ route('admin.reports.monthly.export-pdf', ['start_date' => $startDate, 'end_date' => $endDate, 'office_id' => $officeId]) }}"
-                        class="admin-button-danger flex items-center gap-2 px-4 py-2.5 text-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                        Export PDF
-                    </a>
-                </div>
-            </form>
-        </div>
+                <a href="{{ $monthLink(1) }}" class="admin-button-secondary size-11 p-0" aria-label="Bulan berikutnya">
+                    <x-admin.icon name="chevron-right" size="16" />
+                </a>
+            </div>
+            <div>
+                <label for="filter-office" class="admin-label">Kantor</label>
+                <select id="filter-office" name="office_id" class="admin-field w-56 px-3">
+                    <option value="">Semua kantor</option>
+                    @foreach ($offices as $office)
+                        <option value="{{ $office->id }}" @selected($officeId == $office->id)>{{ $office->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <button type="submit" class="admin-button-primary px-5 text-sm">Tampilkan</button>
+        </form>
+
+        <!-- Summary -->
+        <section aria-label="Ringkasan" class="admin-glass-panel admin-stat-strip overflow-hidden">
+            <div>
+                <span class="admin-label" style="margin-bottom: 0">Periode</span>
+                <span class="admin-display whitespace-nowrap text-xl leading-9">{{ $start->translatedFormat('d M') }} – {{ $end->translatedFormat('d M Y') }}</span>
+            </div>
+            <div>
+                <span class="admin-label" style="margin-bottom: 0">Hari kerja</span>
+                <span class="admin-display text-3xl">{{ $workDays }}</span>
+            </div>
+            <div>
+                <span class="admin-label" style="margin-bottom: 0">Pegawai</span>
+                <span class="admin-display text-3xl">{{ $employees }}</span>
+            </div>
+            <div>
+                <span class="admin-label flex items-center gap-2" style="margin-bottom: 0"><span class="admin-meter-dot admin-meter-success"></span>Rata-rata hadir</span>
+                <span class="admin-display text-3xl">{{ $averageRate }}%</span>
+            </div>
+            <div>
+                <span class="admin-label" style="margin-bottom: 0">Total denda</span>
+                <span @class(['admin-display whitespace-nowrap text-2xl leading-9', 'admin-text-danger' => $totalFine > 0])>{{ $rupiah($totalFine) }}</span>
+            </div>
+        </section>
 
         <!-- Table -->
-        <div class="admin-glass-panel overflow-hidden">
-            <div class="admin-panel-header flex-wrap">
-                <span class="admin-label">Rekap Kehadiran</span>
-                <span class="flex flex-wrap items-center gap-2">
-                    <span class="admin-chip admin-chip-time">
-                        {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} -
-                        {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}
-                    </span>
-                    @if ($selectedOffice)
-                        <span class="admin-chip">{{ $selectedOffice->name }}</span>
-                    @endif
-                    <span class="admin-chip">{{ $workDays }} hari kerja</span>
-                </span>
+        <section aria-labelledby="judul-rekap" class="admin-glass-panel overflow-hidden">
+            <div class="admin-panel-header">
+                <h2 id="judul-rekap" class="admin-panel-title">Rekap kehadiran</h2>
+                @if ($selectedOffice)
+                    <span class="admin-chip">{{ $selectedOffice->name }}</span>
+                @endif
             </div>
             <div class="overflow-x-auto">
-                <table class="admin-table w-full">
+                <table class="admin-table">
                     <thead>
                         <tr>
-                            <th class="px-4 py-3 text-left">No.</th>
-                            <th class="px-4 py-3 text-left">Nama</th>
-                            <th class="px-4 py-3 text-center">Hari Kerja</th>
-                            <th class="px-4 py-3 text-center">Total Hadir</th>
-                            <th class="px-4 py-3 text-center">Tepat Waktu</th>
-                            <th class="px-4 py-3 text-center">Terlambat</th>
-                            <th class="px-4 py-3 text-center">Alpha</th>
-                            <th class="px-4 py-3 text-center">Persentase</th>
-                            <th class="px-4 py-3 text-right">Total Denda</th>
+                            <th scope="col" class="w-14 py-2.5 pl-6 pr-2 text-left">No.</th>
+                            <th scope="col" class="px-4 py-2.5 text-left">Nama</th>
+                            <th scope="col" class="px-4 py-2.5 text-right">Hadir</th>
+                            <th scope="col" class="px-4 py-2.5 text-right">Tepat waktu</th>
+                            <th scope="col" class="px-4 py-2.5 text-right">Terlambat</th>
+                            <th scope="col" class="px-4 py-2.5 text-right">Alpha</th>
+                            <th scope="col" class="px-4 py-2.5 text-left">Kehadiran</th>
+                            <th scope="col" class="py-2.5 pl-4 pr-6 text-right">Denda</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($reportData as $index => $data)
+                            @php
+                                $rate = $data['attendance_rate'];
+                                $alpha = max(0, $data['total_alpha']);
+                            @endphp
                             <tr>
-                                <td class="admin-muted px-4 py-3 text-sm">{{ $index + 1 }}</td>
-                                <td class="whitespace-nowrap px-4 py-3">
-                                    <div class="text-sm font-bold">{{ $data['user']->name }}</div>
-                                    <div class="admin-muted text-xs">{{ $data['user']->role?->name ?? '-' }}</div>
-                                </td>
-                                <td class="admin-muted px-4 py-3 text-center text-sm">
-                                    {{ $data['work_days'] }}
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="admin-text-success font-semibold">{{ $data['total_present'] }}</span>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <span
-                                        class="admin-status-success px-2.5 py-1 text-xs">{{ $data['total_on_time'] }}</span>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <span
-                                        class="admin-status-warning px-2.5 py-1 text-xs">{{ $data['total_late'] }}</span>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <span
-                                        class="admin-status-danger px-2.5 py-1 text-xs">{{ max(0, $data['total_alpha']) }}</span>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    @php
-                                        $rate = $data['attendance_rate'];
-                                        $rateClass =
-                                            $rate >= 90
-                                                ? 'admin-text-success'
-                                                : ($rate >= 75
-                                                    ? 'admin-text-warning'
-                                                    : 'admin-text-danger');
-                                    @endphp
-                                    <div class="inline-flex items-center gap-2">
-                                        <span class="admin-meter w-14">
-                                            <span
-                                                class="admin-meter-seg {{ $rate >= 90 ? 'admin-meter-success' : 'admin-meter-warning' }}"
-                                                style="width: {{ min($rate, 100) }}%"></span>
+                                <td class="admin-muted py-2.5 pl-6 pr-2 text-sm tabular-nums">{{ $index + 1 }}</td>
+                                <td class="whitespace-nowrap px-4 py-2.5">
+                                    <div class="flex items-center gap-3">
+                                        <span class="admin-avatar admin-avatar-sm" style="width: 2.125rem; height: 2.125rem">{{ $data['user']->initials() }}</span>
+                                        <span class="flex flex-col leading-tight">
+                                            <span class="font-bold">{{ $data['user']->name }}</span>
+                                            <span class="admin-muted text-xs">{{ $data['user']->office?->name ?? ($data['user']->role?->name ?? '-') }}</span>
                                         </span>
-                                        <span class="{{ $rateClass }} font-semibold"
-                                            style="font-variant-numeric: tabular-nums">{{ $rate }}%</span>
                                     </div>
                                 </td>
-                                <td class="px-4 py-3 text-right text-sm">
+                                <td class="px-4 py-2.5 text-right"><span class="admin-display text-lg">{{ $data['total_present'] }}</span><span class="admin-muted text-xs"> / {{ $data['work_days'] }}</span></td>
+                                <td class="px-4 py-2.5 text-right text-sm tabular-nums">{{ $data['total_on_time'] }}</td>
+                                <td @class(['px-4 py-2.5 text-right text-sm tabular-nums', 'admin-text-warning font-bold' => $data['total_late'] > 0])>{{ $data['total_late'] }}</td>
+                                <td @class(['px-4 py-2.5 text-right text-sm tabular-nums', 'admin-text-danger font-bold' => $alpha > 0])>{{ $alpha }}</td>
+                                <td class="px-4 py-2.5">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="admin-meter admin-meter-thin w-20" role="img" aria-label="Kehadiran {{ $rate }} persen">
+                                            @if ($rate > 0)
+                                                <div class="admin-meter-seg {{ $rate >= 90 ? 'admin-meter-success' : 'admin-meter-warning' }}" style="flex: {{ min($rate, 100) }} 1 0px"></div>
+                                            @endif
+                                            @if ($rate < 100)
+                                                <div class="admin-meter-seg admin-meter-idle" style="flex: {{ 100 - min($rate, 100) }} 1 0px"></div>
+                                            @endif
+                                        </div>
+                                        <span @class([
+                                            'text-sm font-bold tabular-nums',
+                                            'admin-text-success' => $rate >= 90,
+                                            'admin-text-warning' => $rate >= 75 && $rate < 90,
+                                            'admin-text-danger' => $rate < 75,
+                                        ])>{{ $rate }}%</span>
+                                    </div>
+                                </td>
+                                <td class="whitespace-nowrap py-2.5 pl-4 pr-6 text-right text-sm tabular-nums">
                                     @if ($data['total_fine'] > 0)
-                                        <span
-                                            class="admin-text-danger font-semibold">{{ 'Rp ' . number_format($data['total_fine'], 0, ',', '.') }}</span>
+                                        <span class="admin-text-danger font-bold">{{ $rupiah($data['total_fine']) }}</span>
                                     @else
-                                        <span class="admin-muted">-</span>
+                                        <span class="admin-muted">—</span>
                                     @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9">
-                                    <x-admin.empty-state icon="fas-chart-bar" title="Tidak ada data pegawai"
+                                <td colspan="8">
+                                    <x-admin.empty-state icon="clipboard" title="Tidak ada data pegawai"
                                         hint="Pegawai aktif akan tampil di rekap kehadiran ini." />
                                 </td>
                             </tr>
@@ -148,15 +159,13 @@
                     @if ($reportData->isNotEmpty())
                         <tfoot>
                             <tr>
-                                <td colspan="8" class="px-4 py-3 text-right text-sm font-semibold">Total Denda
-                                    Keseluruhan</td>
-                                <td class="admin-text-danger px-4 py-3 text-right text-sm font-bold">
-                                    {{ 'Rp ' . number_format($totalFine, 0, ',', '.') }}</td>
+                                <td colspan="7" class="py-3 pl-6 pr-4 text-right text-sm font-semibold">Total denda keseluruhan</td>
+                                <td class="admin-text-danger whitespace-nowrap py-3 pl-4 pr-6 text-right text-sm font-bold tabular-nums">{{ $rupiah($totalFine) }}</td>
                             </tr>
                         </tfoot>
                     @endif
                 </table>
             </div>
-        </div>
+        </section>
     </div>
 </x-layouts.app>

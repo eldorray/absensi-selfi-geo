@@ -13,11 +13,11 @@ function settingsUser(bool $admin): User
     return User::factory()->create(['role_id' => $role->id]);
 }
 
-it('renders every admin settings page with Material You components', function (string $routeName, string $marker) {
+it('renders every admin settings page with the admin components', function (string $routeName, string $marker) {
     $this->actingAs(settingsUser(admin: true))
         ->get(route($routeName))
         ->assertSuccessful()
-        ->assertSee('data-admin-ui="material-you-3"', false)
+        ->assertSee('data-admin-ui="absenku"', false)
         ->assertSee('admin-shell', false)
         ->assertSee('settings-navigation-surface', false)
         ->assertSee('settings-content', false)
@@ -28,11 +28,11 @@ it('renders every admin settings page with Material You components', function (s
     'appearance' => ['settings.appearance.edit', 'settings-theme-options'],
 ]);
 
-it('keeps teacher settings outside the admin Material You scope', function () {
+it('keeps teacher settings outside the admin scope', function () {
     $this->actingAs(settingsUser(admin: false))
         ->get(route('settings.profile.edit'))
         ->assertSuccessful()
-        ->assertDontSee('data-admin-ui="material-you-3"', false)
+        ->assertDontSee('data-admin-ui="absenku"', false)
         ->assertDontSee('admin-shell', false);
 });
 

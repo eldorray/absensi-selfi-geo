@@ -88,7 +88,7 @@
                         @empty
                             <tr>
                                 <td colspan="5">
-                                    <x-admin.empty-state icon="fas-user-tag" title="Belum ada role"
+                                    <x-admin.empty-state icon="tag" title="Belum ada role"
                                         hint="Tambahkan role pertama untuk mengatur hak akses pengguna.">
                                         <a href="{{ route('admin.roles.create') }}"
                                             class="admin-button-secondary inline-flex items-center px-4 py-2 text-sm">

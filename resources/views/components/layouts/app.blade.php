@@ -213,9 +213,10 @@
      overlay that always starts closed (not persisted); at lg+ it collapses between
      256px and 64px and that preference is persisted in localStorage. --}}
 <body @class([
-    'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased',
+    'antialiased',
+    'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200' => ! $usesAdminMaterial,
     'admin-shell' => $usesAdminMaterial,
-]) data-admin-ui="{{ $usesAdminMaterial ? 'material-you-3' : '' }}" x-data="{
+]) data-admin-ui="{{ $usesAdminMaterial ? 'absenku' : '' }}" x-data="{
     isDesktop: window.matchMedia('(min-width: 1024px)').matches,
     sidebarOpen: window.matchMedia('(min-width: 1024px)').matches && localStorage.getItem('sidebarOpen') !== 'false',
     init() {
@@ -281,22 +282,22 @@
         </div>
     </div>
 
-    <!-- Main Container -->
-    <div class="min-h-screen flex flex-col">
+    <!-- Main Container: sidebar setinggi layar, header hanya di atas konten. -->
+    <div class="flex min-h-screen">
 
-        <x-layouts.app.header />
+        <x-layouts.app.sidebar />
 
-        <!-- Main Content Area -->
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex min-w-0 flex-1 flex-col">
 
-            <x-layouts.app.sidebar />
+            <x-layouts.app.header :title="$title" />
 
             <!-- Main Content -->
             <main @class([
-                'flex-1 overflow-auto bg-gray-100 dark:bg-gray-900 content-transition',
+                'flex-1 content-transition',
+                'bg-gray-100 dark:bg-gray-900' => ! $usesAdminMaterial,
                 'admin-main' => $usesAdminMaterial,
             ])>
-                <div class="p-6">
+                <div @class(['p-6', 'lg:px-10 lg:py-8' => $usesAdminMaterial])>
                     {{-- Flash messages: rendered once here for every page. --}}
                     @foreach ($flashMessages as $flash)
                         @php($isError = $flash['type'] === 'error')

@@ -106,7 +106,7 @@
                         @empty
                             <tr>
                                 <td colspan="6">
-                                    <x-admin.empty-state icon="fas-clipboard-list"
+                                    <x-admin.empty-state icon="clipboard"
                                         title="Tidak ada data absensi yang ditemukan"
                                         hint="Ubah tanggal, kantor, atau status pada filter di atas." />
                                 </td>
