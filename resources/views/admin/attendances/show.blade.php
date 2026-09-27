@@ -54,6 +54,18 @@
                         <dd>{{ number_format($attendance->distance_meters, 0) }} meter</dd>
                     </div>
                     <div>
+                        <dt>Verifikasi Kedip</dt>
+                        <dd>
+                            @if ($attendance->liveness_verified === false)
+                                <span class="admin-status-warning px-2.5 py-1 text-xs">Foto manual, periksa wajah</span>
+                            @elseif ($attendance->liveness_verified === true)
+                                <span class="admin-status-success px-2.5 py-1 text-xs">Terverifikasi</span>
+                            @else
+                                <span class="admin-muted">-</span>
+                            @endif
+                        </dd>
+                    </div>
+                    <div>
                         <dt>Waktu Check-in</dt>
                         <dd>
                             <span

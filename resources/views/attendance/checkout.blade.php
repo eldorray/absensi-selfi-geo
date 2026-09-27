@@ -164,6 +164,8 @@
                         <p class="text-[10px] text-slate-400 mt-1" x-text="livenessError"></p>
                         <button type="button" @click="startLiveness()"
                             class="mt-4 px-5 py-2 rounded-xl bg-amber-500/90 text-white text-[10px] font-black uppercase tracking-wider font-outfit">Coba Lagi</button>
+                        <button type="button" @click="useManualCapture()"
+                            class="mt-3 px-5 py-2 text-[11px] font-bold uppercase tracking-wider font-outfit text-slate-300 underline underline-offset-4">Foto Manual</button>
                     </div>
 
                     <!-- Blink capture flash -->
@@ -186,7 +188,7 @@
                         </div>
 
                         <!-- Liveness Prompt Tag -->
-                        <div x-show="!livenessLoading && !livenessError"
+                        <div x-show="!livenessLoading && !livenessError && !manualOnly"
                             class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border transition-colors"
                             :class="faceDetected ? 'border-green-400/40' : 'border-white/10'">
                             <span class="w-1.5 h-1.5 rounded-full animate-pulse" :class="faceDetected ? 'bg-green-400' : 'bg-amber-400'"></span>
@@ -202,7 +204,7 @@
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
-                            Foto Terkunci
+                            <span x-text="livenessVerified ? 'Foto Terkunci' : 'Foto Manual'"></span>
                         </span>
                     </div>
                 </div>
@@ -210,7 +212,7 @@
 
             <!-- Action Trigger: retake only; capture is automatic on blink -->
             <div class="flex gap-3">
-                <div x-show="!photoTaken && !cameraError && !livenessError"
+                <div x-show="!photoTaken && !cameraError && !livenessError && !manualAllowed"
                     class="flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-[11px] font-bold uppercase tracking-wider font-outfit text-slate-400 border border-dashed theme-border">
                     <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
@@ -218,6 +220,11 @@
                     </svg>
                     Kedip untuk Ambil Foto
                 </div>
+                <button type="button" @click="takeManualPhoto()" x-show="!photoTaken && !cameraError && !livenessError && manualAllowed" x-cloak
+                    class="flex-1 theme-nav-inactive flex items-center justify-center gap-2 rounded-2xl py-3.5 text-xs font-bold uppercase tracking-wider font-outfit active:scale-98 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+                    Ambil Foto Manual
+                </button>
                 <button type="button" @click="retakePhoto()" x-show="photoTaken"
                     class="flex-1 theme-nav-inactive flex items-center justify-center gap-2 rounded-2xl py-3.5 text-xs font-bold uppercase tracking-wider font-outfit hover:bg-white/5 active:scale-98 transition-all">
                     <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -226,6 +233,9 @@
                     Ulangi Foto
                 </button>
             </div>
+            <p x-show="manualAllowed && !photoTaken && !cameraError && !livenessError" x-cloak class="-mt-2 text-center text-xs theme-text-muted">
+                Kedip tidak terdeteksi? Foto manual tetap bisa dipakai, tapi akan ditandai untuk diperiksa admin.
+            </p>
 
             <!-- Office Location Selection Card -->
             <div class="glass-card theme-border rounded-[22px] p-4 text-left">
@@ -399,6 +409,10 @@
                 faceDetected: false,
                 captureFlash: false,
                 detector: null,
+                manualAllowed: false,
+                manualOnly: false,
+                manualTimer: null,
+                livenessVerified: true,
                 locationLoading: false,
                 locationFetched: false,
                 locationError: null,
@@ -445,9 +459,27 @@
                     }
                     await this.detector.start();
                     if (!this.livenessError) this.livenessLoading = false;
+                    if (!this.livenessError && !this.photoTaken) {
+                        clearTimeout(this.manualTimer);
+                        this.manualTimer = setTimeout(() => { this.manualAllowed = true; }, 15000);
+                    }
+                },
+
+                takeManualPhoto() {
+                    this.livenessVerified = false;
+                    this.takePhoto();
+                },
+
+                useManualCapture() {
+                    // Model failed to load: let the teacher frame the shot themselves.
+                    if (this.detector) this.detector.stop();
+                    this.livenessError = null;
+                    this.manualOnly = true;
+                    this.manualAllowed = true;
                 },
 
                 onBlinkCapture() {
+                    this.livenessVerified = true;
                     this.captureFlash = true;
                     this.takePhoto();
                     setTimeout(() => { this.captureFlash = false; }, 220);
@@ -473,6 +505,7 @@
                 },
 
                 takePhoto() {
+                    clearTimeout(this.manualTimer);
                     const video = this.$refs.video;
                     const canvas = this.$refs.canvas;
                     const context = canvas.getContext('2d');
@@ -493,7 +526,7 @@
                     this.photoTaken = false;
                     this.imageBase64 = '';
                     await this.initCamera();
-                    if (!this.cameraError) this.startLiveness();
+                    if (!this.cameraError && !this.manualOnly) this.startLiveness();
                 },
 
                 fetchLocation() {
@@ -556,6 +589,17 @@
                     }
                 },
 
+                submitErrorMessage(response, data) {
+                    if (response.status === 401 || response.status === 419 || response.redirected) {
+                        return 'Sesi Anda sudah berakhir. Muat ulang halaman atau login kembali, lalu coba lagi.';
+                    }
+                    if (response.status === 429) {
+                        return 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.';
+                    }
+                    const messages = Object.values(data.errors || {}).flat().join('\n');
+                    return messages || data.message || `Terjadi kesalahan server (kode ${response.status}). Silakan coba lagi.`;
+                },
+
                 async submitForm() {
                     if (!this.canSubmit) return;
                     this.isSubmitting = true;
@@ -565,6 +609,7 @@
                     formData.append('latitude', this.latitude);
                     formData.append('longitude', this.longitude);
                     formData.append('image_base64', this.imageBase64);
+                    formData.append('liveness_verified', this.livenessVerified ? '1' : '0');
                     try {
                         const response = await fetch('{{ route('attendance.checkout.store') }}', {
                             method: 'POST',
@@ -574,15 +619,15 @@
                             }
                         });
 
-                        if (response.ok || response.redirected) {
+                        // Only a JSON success counts: a redirect (e.g. to login after the
+                        // session expired) or an HTML error page must not look like it worked.
+                        const data = await response.json().catch(() => ({}));
+                        if (response.ok && data.success) {
                             window.location.href = '{{ route('attendance.dashboard') }}';
-                        } else if (response.status === 422) {
-                            const data = await response.json();
-                            alert('Gagal absensi pulang:\n' + (data.message || 'Terjadi kesalahan validasi.'));
-                            this.isSubmitting = false;
-                        } else {
-                            window.location.href = '{{ route('attendance.dashboard') }}';
+                            return;
                         }
+                        this.isSubmitting = false;
+                        alert('Gagal absensi pulang:\n' + this.submitErrorMessage(response, data));
                     } catch (error) {
                         this.isSubmitting = false;
                         alert('Terjadi gangguan koneksi jaringan. Silakan coba kembali.');

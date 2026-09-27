@@ -266,6 +266,9 @@
     body.pwa-m3 [class*="from-green"] { background-color: var(--m3-primary) !important; color: var(--m3-on-primary); }
     body.pwa-m3 [class*="from-red"],
     body.pwa-m3 [class*="from-rose"] { background-color: var(--m3-error) !important; color: #410002; }
+    /* Matches .nav-fab-pulang so the check-out CTA keeps a solid, readable fill (white on #a24e38 ≈ 5.6:1). */
+    body.pwa-m3 [class*="from-amber"],
+    body.pwa-m3 [class*="from-orange"] { background-color: #a24e38 !important; color: #ffffff !important; }
     body.pwa-m3 #pwa-install-banner { background: var(--m3-primary) !important; color: var(--m3-on-primary); box-shadow: 0 8px 22px var(--m3-shadow); }
 
     body.pwa-m3 .rounded-full[class*="bg-emerald"],

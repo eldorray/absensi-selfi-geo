@@ -82,6 +82,7 @@ class AttendanceController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'image_base64' => 'required|string',
+            'liveness_verified' => 'nullable|boolean',
         ], [
             'office_id.required' => 'Pilih kantor tujuan.',
             'office_id.exists' => 'Kantor tidak ditemukan.',
@@ -122,6 +123,7 @@ class AttendanceController extends Controller
             'academic_year_id' => AcademicYear::getActive()?->id,
             'status' => $status,
             'image_path' => $imagePath,
+            'liveness_verified' => $validated['liveness_verified'] ?? null,
             'check_in_lat' => $validated['latitude'],
             'check_in_long' => $validated['longitude'],
             'distance_meters' => $distance,
@@ -195,6 +197,7 @@ class AttendanceController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'image_base64' => 'required|string',
+            'liveness_verified' => 'nullable|boolean',
         ], [
             'office_id.required' => 'Pilih kantor tujuan.',
             'latitude.required' => 'Lokasi GPS diperlukan.',
@@ -230,6 +233,7 @@ class AttendanceController extends Controller
         $attendance->update([
             'check_out_at' => now(),
             'check_out_image_path' => $imagePath,
+            'check_out_liveness_verified' => $validated['liveness_verified'] ?? null,
             'check_out_lat' => $validated['latitude'],
             'check_out_long' => $validated['longitude'],
         ]);

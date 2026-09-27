@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property ?\Illuminate\Support\Carbon $check_out_at
  * @property ?string $image_path
  * @property ?string $check_out_image_path
+ * @property ?bool $liveness_verified
+ * @property ?bool $check_out_liveness_verified
  */
 class Attendance extends Model
 {
@@ -32,6 +34,7 @@ class Attendance extends Model
         'academic_year_id',
         'status',
         'image_path',
+        'liveness_verified',
         'check_in_lat',
         'check_in_long',
         'distance_meters',
@@ -39,6 +42,7 @@ class Attendance extends Model
         'check_out_lat',
         'check_out_long',
         'check_out_image_path',
+        'check_out_liveness_verified',
         'check_out_distance_meters',
         'client_uuid',
         'synced_at',
@@ -58,6 +62,8 @@ class Attendance extends Model
             'check_in_lat' => 'decimal:8',
             'check_in_long' => 'decimal:8',
             'distance_meters' => 'float',
+            'liveness_verified' => 'boolean',
+            'check_out_liveness_verified' => 'boolean',
             'check_out_at' => 'datetime',
             'check_out_lat' => 'decimal:8',
             'check_out_long' => 'decimal:8',

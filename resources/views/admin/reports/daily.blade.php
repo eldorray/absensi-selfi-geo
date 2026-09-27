@@ -132,7 +132,7 @@
                                 <td class="px-4 py-3 text-center">
                                     @if ($data['attendance'] && $data['attendance']->image_path)
                                         <button type="button"
-                                            @click="$dispatch('open-photo-modal', { url: '{{ $data['attendance']->image_url }}', title: 'Foto Masuk - {{ $data['user']->name }}' })"
+                                            @click="$dispatch('open-photo-modal', { url: @js($data['attendance']->image_url), title: @js('Foto Masuk - '.$data['user']->name) })"
                                             class="admin-chip inline-flex items-center gap-1 text-xs">
                                             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
                                                 viewBox="0 0 24 24">
@@ -142,6 +142,10 @@
                                             </svg>
                                             Lihat
                                         </button>
+                                        @if ($data['attendance']->liveness_verified === false)
+                                            <span class="admin-status-warning mt-1 block px-2 py-0.5 text-[11px]"
+                                                title="Kedip tidak terdeteksi, foto diambil manual. Periksa wajah di foto.">Manual</span>
+                                        @endif
                                     @else
                                         <span class="admin-muted">-</span>
                                     @endif
@@ -158,7 +162,7 @@
                                 <td class="px-4 py-3 text-center">
                                     @if ($data['attendance'] && $data['attendance']->check_out_image_path)
                                         <button type="button"
-                                            @click="$dispatch('open-photo-modal', { url: '{{ $data['attendance']->check_out_image_url }}', title: 'Foto Pulang - {{ $data['user']->name }}' })"
+                                            @click="$dispatch('open-photo-modal', { url: @js($data['attendance']->check_out_image_url), title: @js('Foto Pulang - '.$data['user']->name) })"
                                             class="admin-chip inline-flex items-center gap-1 text-xs">
                                             <svg class="h-4 w-4" fill="none" stroke="currentColor"
                                                 stroke-width="2" viewBox="0 0 24 24">
@@ -168,6 +172,10 @@
                                             </svg>
                                             Lihat
                                         </button>
+                                        @if ($data['attendance']->check_out_liveness_verified === false)
+                                            <span class="admin-status-warning mt-1 block px-2 py-0.5 text-[11px]"
+                                                title="Kedip tidak terdeteksi, foto diambil manual. Periksa wajah di foto.">Manual</span>
+                                        @endif
                                     @else
                                         <span class="admin-muted">-</span>
                                     @endif
