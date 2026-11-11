@@ -7,11 +7,11 @@
     <p class="text-sm text-guru-muted">Pantau rujukan yang Anda kirim ke guru BK.</p>
 
     @if ($referrals->isEmpty())
-        <x-guru.empty icon="send" title="Belum ada rujukan">Buat rujukan dari profil siswa di menu Kelas.</x-guru.empty>
+        <x-guru.empty icon="send" title="Belum ada rujukan">Buat rujukan dari profil siswa di menu Kelas</x-guru.empty>
     @else
         <x-guru.list>
             @foreach ($referrals as $referral)
-                <x-guru.list-item :href="route('attendance.kesiswaan.referrals.show', $referral)" icon="send" tone="attn"
+                <x-guru.list-item :href="route('attendance.kesiswaan.referrals.show', $referral)" icon="send"
                     :title="$referral->student->nama_lengkap"
                     :desc="($referral->student->schoolClass?->name ?? strtoupper($referral->school_level)).' · '.$referral->reason">
                     <span class="g-list__desc">{{ $referral->counselor?->name ?? 'Belum ditangani' }} · {{ $referral->observed_at?->locale('id')->isoFormat('D MMM Y') }}</span>

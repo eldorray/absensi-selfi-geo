@@ -9,10 +9,10 @@
         <x-guru.button :href="route('attendance.kesiswaan.referrals.create', $student)" icon="send" class="g-btn--block">Buat rujukan ke Guru BK</x-guru.button>
     </x-guru.card>
 
-    <section class="flex flex-col gap-2.5" aria-labelledby="judul-pelanggaran">
+    <section class="flex flex-col gap-3" aria-labelledby="judul-pelanggaran">
         <h2 id="judul-pelanggaran" class="g-h2">Ringkasan pelanggaran</h2>
         @if ($violations->isEmpty())
-            <x-guru.empty icon="check" title="Tidak ada pelanggaran">Catatan pelanggaran siswa ini dari guru BK akan tampil di sini.</x-guru.empty>
+            <x-guru.empty icon="check" title="Tidak ada pelanggaran">Catatan pelanggaran siswa ini dari guru BK akan tampil di sini</x-guru.empty>
         @else
             <x-guru.list>
                 @foreach ($violations as $record)

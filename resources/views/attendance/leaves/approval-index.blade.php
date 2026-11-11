@@ -23,7 +23,7 @@
     </nav>
 
     @if ($leaves->isEmpty())
-        <x-guru.empty icon="clipboard" title="Tidak ada pengajuan">Belum ada pengajuan izin untuk filter ini.</x-guru.empty>
+        <x-guru.empty icon="clipboard" title="Tidak ada pengajuan">Belum ada pengajuan izin untuk filter ini</x-guru.empty>
     @else
         <x-guru.list>
             @foreach ($leaves as $leave)

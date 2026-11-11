@@ -108,9 +108,9 @@
 
 <x-guru.card as="div">
     <div class="flex items-center gap-3">
-        <span class="g-list__icon" :class="locationError ? 'g-list__icon--attn' : 'g-list__icon--primary'"><x-guru.icon name="pin" /></span>
+        <span class="g-list__icon" :class="locationError && 'g-list__icon--attn'"><x-guru.icon name="pin" /></span>
         <div class="min-w-0 flex-1">
-            <p class="font-bold" x-text="locationLoading ? 'Mengambil lokasi GPS…' : (locationFetched ? 'Lokasi GPS didapat' : 'Lokasi GPS belum didapat')">Mengambil lokasi GPS…</p>
+            <p class="font-semibold" x-text="locationLoading ? 'Mengambil lokasi GPS…' : (locationFetched ? 'Lokasi GPS didapat' : 'Lokasi GPS belum didapat')">Mengambil lokasi GPS…</p>
             <p x-show="locationFetched" x-cloak class="g-num text-xs text-guru-muted" x-text="latitude + ', ' + longitude + (accuracy ? ' · akurasi ±' + accuracy + ' m' : '')"></p>
             <p x-show="locationFetched && officeId" x-cloak class="g-num text-xs text-guru-muted" x-text="'Jarak ' + Math.round(currentDistance) + ' m · batas ' + maxDistance + ' m'"></p>
             <p x-show="locationError" x-cloak class="g-error mt-1" x-text="locationError"></p>

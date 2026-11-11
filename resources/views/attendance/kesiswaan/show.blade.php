@@ -51,7 +51,7 @@
                 <h2 id="judul-ringkasan-bk" class="g-h2">Ringkasan BK</h2>
                 <x-guru.chip tone="ok">{{ $summary['active_count'] }} aktif</x-guru.chip>
             </div>
-            <p class="text-xs text-guru-muted">Hanya informasi umum yang aman ditampilkan.</p>
+            <p class="text-xs text-guru-muted">Hanya informasi umum yang aman ditampilkan</p>
             <dl class="g-dl">
                 <div><dt>Jenis catatan</dt><dd>{{ collect($summary['types'])->map(fn ($type) => $typeLabels[$type] ?? ucfirst($type))->implode(', ') ?: '-' }}</dd></div>
                 <div><dt>Status penanganan</dt><dd>{{ collect($summary['statuses'])->map(fn ($status) => $statusLabels[$status] ?? $status)->implode(', ') ?: '-' }}</dd></div>
@@ -63,17 +63,17 @@
             <x-guru.button :href="route('attendance.kesiswaan.referrals.create', $student)" icon="send" class="g-btn--block">Buat rujukan ke Guru BK</x-guru.button>
         @endcan
 
-        <section class="flex flex-col gap-2.5" aria-labelledby="judul-riwayat-rujukan">
+        <section class="flex flex-col gap-3" aria-labelledby="judul-riwayat-rujukan">
             <div class="flex items-end justify-between gap-3">
                 <h2 id="judul-riwayat-rujukan" class="g-h2">Riwayat rujukan</h2>
-                <span class="g-num text-xs font-bold text-guru-muted">{{ $referrals->total() }}</span>
+                <span class="g-num text-xs font-semibold text-guru-muted">{{ $referrals->total() }}</span>
             </div>
             @if ($referrals->isEmpty())
-                <x-guru.empty icon="send" title="Belum ada rujukan">Rujukan siswa akan tampil di bagian ini.</x-guru.empty>
+                <x-guru.empty icon="send" title="Belum ada rujukan">Rujukan siswa akan tampil di bagian ini</x-guru.empty>
             @else
                 <x-guru.list>
                     @foreach ($referrals as $referral)
-                        <x-guru.list-item :href="route('attendance.kesiswaan.referrals.show', $referral)" icon="send" tone="attn" :title="$referral->reason"
+                        <x-guru.list-item :href="route('attendance.kesiswaan.referrals.show', $referral)" icon="send" :title="$referral->reason"
                             :desc="$referral->observed_at?->locale('id')->isoFormat('D MMM Y').' · '.($referral->counselor?->name ?? 'Belum ditangani')">
                             <x-slot:end>
                                 <x-guru.chip>{{ $referralStatusLabels[$referral->status->value] ?? $referral->status->value }}</x-guru.chip>

@@ -13,7 +13,7 @@
                         <span class="g-hero__time-value">{{ $todayAttendance->created_at->format('H.i') }}</span>
                     </div>
                 </div>
-                <x-guru.button variant="hero" :href="route('attendance.dashboard')" icon="home">Kembali ke Beranda</x-guru.button>
+                <x-guru.button variant="hero" :href="route('attendance.dashboard')" icon="home" data-nav="pop">Kembali ke Beranda</x-guru.button>
             </x-guru.card>
         @else
             @include('attendance.partials.absen-form', ['mode' => 'masuk', 'action' => route('attendance.store')])

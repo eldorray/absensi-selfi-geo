@@ -1,10 +1,10 @@
-<x-layouts.mobile title="Riwayat Absen" backUrl="{{ route('attendance.dashboard') }}" activeTab="riwayat">
+<x-layouts.mobile title="Riwayat Absen" activeTab="riwayat">
     <x-slot:headerAction>
         <x-guru.chip>{{ $attendances->total() }} hari</x-guru.chip>
     </x-slot:headerAction>
 
     @forelse ($attendances->getCollection()->groupBy(fn ($attendance) => $attendance->created_at->format('Y-m')) as $month => $days)
-        <section class="flex flex-col gap-2.5" aria-labelledby="bulan-{{ $month }}">
+        <section class="flex flex-col gap-3" aria-labelledby="bulan-{{ $month }}">
             <h2 id="bulan-{{ $month }}" class="g-h2">{{ $days->first()->created_at->locale('id')->isoFormat('MMMM Y') }}</h2>
             <x-guru.list>
                 @foreach ($days as $attendance)
@@ -33,9 +33,9 @@
         </section>
     @empty
         <x-guru.empty icon="calendar" title="Belum ada riwayat">
-            Jam masuk dan pulang Anda tercatat di sini setelah absen pertama.
+            Jam masuk dan pulang Anda tercatat di sini setelah absen pertama
             <x-slot:action>
-                <x-guru.button :href="route('attendance.dashboard')" icon="home">Ke Beranda</x-guru.button>
+                <x-guru.button :href="route('attendance.dashboard')" icon="home" data-nav="tab">Ke Beranda</x-guru.button>
             </x-slot:action>
         </x-guru.empty>
     @endforelse

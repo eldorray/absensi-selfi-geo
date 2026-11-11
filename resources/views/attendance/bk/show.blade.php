@@ -34,11 +34,11 @@
     </x-guru.card>
 
     @if ($record->attachments->isNotEmpty())
-        <section class="flex flex-col gap-2.5" aria-labelledby="judul-lampiran">
+        <section class="flex flex-col gap-3" aria-labelledby="judul-lampiran">
             <h2 id="judul-lampiran" class="g-h2">Lampiran privat</h2>
             <x-guru.list>
                 @foreach ($record->attachments as $attachment)
-                    <x-guru.list-item :href="route('attendance.bk.attachments.show', $attachment)" icon="paperclip" tone="neutral" :title="$attachment->original_name" />
+                    <x-guru.list-item :href="route('attendance.bk.attachments.show', $attachment)" icon="paperclip" :title="$attachment->original_name" />
                 @endforeach
             </x-guru.list>
         </section>

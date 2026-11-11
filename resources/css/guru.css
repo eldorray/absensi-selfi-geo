@@ -78,8 +78,12 @@
     --g-accent: #F2C879;
     --g-pulang: #A8462A;
 
+    /* Di belakang sheet: latar, dan halaman sebelumnya yang meredup (ground × 0,78). */
+    --g-backdrop: #868581;
+    --g-peek: #BEBCB7;
+
     --g-shadow: 0 1px 2px rgb(27 36 32 / 0.05), 0 8px 24px rgb(27 36 32 / 0.06);
-    --g-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --g-ease: cubic-bezier(0.32, 0.72, 0, 1);
 
     color-scheme: light;
 }
@@ -107,6 +111,8 @@
     --g-empty-bar: #2A312C;
     --g-info-media: #2A2F2A;
     --g-focus: #8FD1B5;
+    --g-backdrop: #000000;
+    --g-peek: #0D100E;
     --g-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
 
     color-scheme: dark;
@@ -191,6 +197,51 @@
         background: var(--g-ground);
     }
 
+    /* Halaman sheet (isSheet): kartu modal ala iOS. Kartu diam, isinya yang menggulir;
+       di atasnya mengintip tepi halaman sebelumnya yang mundur dan meredup. */
+    .guru:has(.g-app--sheet) {
+        background: var(--g-backdrop);
+    }
+
+    .guru:has(.g-app--sheet)::before {
+        content: "";
+        position: fixed;
+        top: max(12px, env(safe-area-inset-top));
+        inset-inline: 4%;
+        height: 40px;
+        border-radius: 12px 12px 0 0;
+        background: var(--g-peek);
+    }
+
+    .guru:has(.g-app--sheet) .g-statusbar {
+        background: var(--g-backdrop);
+    }
+
+    .g-app--sheet {
+        position: fixed;
+        inset: calc(max(12px, env(safe-area-inset-top)) + 12px) 0 0;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .g-app--sheet::before {
+        content: "";
+        flex: none;
+        align-self: center;
+        width: 36px;
+        height: 4px;
+        margin-top: 8px;
+        border-radius: 2px;
+        background: var(--g-field);
+        opacity: 0.5;
+    }
+
+    .g-app--sheet .g-header {
+        padding-top: 8px;
+    }
+
     .g-header {
         display: flex;
         align-items: center;
@@ -218,7 +269,15 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         font-size: 18px;
-        font-weight: 800;
+        font-weight: 600;
+    }
+
+    /* Halaman akar tab: tanpa tombol kembali, judul besar seperti tanggal di Beranda. */
+    .g-header--root .g-header__title {
+        font-family: var(--font-guru-display);
+        font-size: 26px;
+        letter-spacing: -0.01em;
+        line-height: 44px;
     }
 
     .g-header__actions {
@@ -234,7 +293,7 @@
         flex: none;
         width: 44px;
         height: 44px;
-        border-radius: 14px;
+        border-radius: 12px;
         border: 1px solid var(--g-border);
         background: var(--g-surface);
         color: var(--g-ink);
@@ -260,8 +319,8 @@
 
     .g-iconbtn__dot {
         position: absolute;
-        top: 9px;
-        right: 10px;
+        top: 8px;
+        right: 8px;
         width: 8px;
         height: 8px;
         border-radius: 4px;
@@ -274,11 +333,11 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
-        padding: 24px 20px calc(108px + env(safe-area-inset-bottom));
+        padding: 24px 20px calc(104px + env(safe-area-inset-bottom));
     }
 
     .g-main--bare {
-        padding-bottom: calc(28px + env(safe-area-inset-bottom));
+        padding-bottom: calc(24px + env(safe-area-inset-bottom));
     }
 
     .g-nav {
@@ -288,23 +347,36 @@
         z-index: 40;
         max-width: 30rem;
         margin-inline: auto;
-        display: flex;
-        justify-content: space-around;
-        padding: 8px 8px max(22px, env(safe-area-inset-bottom));
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        padding: 8px 8px max(20px, env(safe-area-inset-bottom));
         background: var(--g-surface);
         border-top: 1px solid var(--g-border);
     }
 
+    /* Penanda tab aktif: satu elemen di bawah ikon, bergeser antar tab saat transisi
+       seperti tab bar iOS. --g-tab = indeks tab aktif, --g-tabs = jumlah tab. */
+    .g-nav__ind {
+        position: absolute;
+        top: 8px;
+        left: calc(8px + (100% - 16px) * (var(--g-tab) + 0.5) / var(--g-tabs) - 30px);
+        width: 60px;
+        height: 32px;
+        border-radius: 16px;
+        background: var(--g-primary-soft);
+    }
+
     .g-nav__item {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        min-width: 72px;
         min-height: 52px;
         color: var(--g-muted);
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 500;
     }
 
     .guru .g-nav__item {
@@ -313,7 +385,7 @@
 
     .guru .g-nav__item[aria-current="page"] {
         color: var(--g-primary);
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .g-nav__pill {
@@ -323,11 +395,7 @@
         width: 60px;
         height: 32px;
         border-radius: 16px;
-        transition: background-color 160ms var(--g-ease), transform 120ms var(--g-ease);
-    }
-
-    .g-nav__item[aria-current="page"] .g-nav__pill {
-        background: var(--g-primary-soft);
+        transition: transform 120ms var(--g-ease);
     }
 
     .guru .g-nav__item:active .g-nav__pill {
@@ -346,14 +414,12 @@
 
     .g-h2 {
         font-size: 15px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .g-caps {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        font-size: 13px;
+        font-weight: 500;
         color: var(--g-muted);
     }
 
@@ -391,7 +457,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         font-size: 17px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .g-avatar {
@@ -406,7 +472,7 @@
         background: var(--g-primary-soft);
         color: var(--g-primary);
         font-size: 15px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .g-avatar img {
@@ -437,20 +503,12 @@
         gap: 12px;
     }
 
-    .g-dateline h1,
-    .g-dateline p:first-child {
+    .g-dateline h1 {
         font-family: var(--font-guru-display);
         font-size: 26px;
         font-weight: 600;
         letter-spacing: -0.01em;
         line-height: 1.2;
-    }
-
-    .g-dateline > :last-child {
-        flex: none;
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--g-muted);
     }
 
     /* Kartu */
@@ -459,7 +517,7 @@
         flex-direction: column;
         gap: 16px;
         padding: 20px;
-        border-radius: 24px;
+        border-radius: 20px;
         background: var(--g-surface);
         border: 1px solid var(--g-border);
     }
@@ -486,10 +544,8 @@
     }
 
     .g-card__caps {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        font-size: 13px;
+        font-weight: 500;
         color: var(--g-muted);
     }
 
@@ -502,7 +558,7 @@
 
     /* Kartu hero "Presensi hari ini" */
     .g-card--hero {
-        gap: 18px;
+        gap: 20px;
         border: 0;
         background: var(--g-hero);
         color: #FFFFFF;
@@ -515,10 +571,8 @@
     }
 
     .g-hero__label {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
+        font-size: 13px;
+        font-weight: 500;
         color: var(--g-hero-muted);
     }
 
@@ -596,7 +650,7 @@
         justify-content: space-between;
         gap: 8px;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 500;
         color: var(--g-hero-muted);
     }
 
@@ -631,23 +685,23 @@
 
     .g-stat__label {
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 500;
         color: var(--g-muted);
     }
 
     .g-stackbar {
         display: flex;
-        gap: 3px;
-        height: 10px;
+        gap: 2px;
+        height: 8px;
     }
 
     .g-stackbar > span {
         min-width: 0;
     }
 
-    .g-stackbar > span:first-child { border-radius: 5px 0 0 5px; }
-    .g-stackbar > span:last-child { border-radius: 0 5px 5px 0; }
-    .g-stackbar > span:only-child { border-radius: 5px; }
+    .g-stackbar > span:first-child { border-radius: 4px 0 0 4px; }
+    .g-stackbar > span:last-child { border-radius: 0 4px 4px 0; }
+    .g-stackbar > span:only-child { border-radius: 4px; }
     .g-stackbar .is-ok { background: var(--g-hero); }
     .g-stackbar .is-late { background: var(--g-late-bar); }
     .g-stackbar .is-izin { background: var(--g-izin-bar); }
@@ -657,11 +711,11 @@
     .g-chip {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 4px 10px;
+        gap: 4px;
+        padding: 4px 12px;
         border-radius: 999px;
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 500;
         line-height: 1.4;
         white-space: nowrap;
         background: var(--g-surface-2);
@@ -682,12 +736,12 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        margin-bottom: -10px;
+        margin-bottom: -8px;
     }
 
     .g-section h2 {
         font-size: 15px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .g-section a {
@@ -695,14 +749,14 @@
         align-items: center;
         min-height: 44px;
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 500;
     }
 
     .g-list {
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        border-radius: 24px;
+        border-radius: 20px;
         background: var(--g-surface);
         border: 1px solid var(--g-border);
     }
@@ -710,9 +764,9 @@
     .g-list__item {
         display: flex;
         align-items: center;
-        gap: 14px;
+        gap: 12px;
         min-height: 64px;
-        padding: 10px 16px;
+        padding: 12px 16px;
         color: var(--g-ink);
     }
 
@@ -747,14 +801,12 @@
         width: 40px;
         height: 40px;
         border-radius: 12px;
-        background: var(--g-primary-soft);
-        color: var(--g-primary);
+        background: var(--g-surface-2);
+        color: var(--g-ink);
     }
 
+    /* Satu-satunya tone: galat atau hal yang perlu perhatian. */
     .g-list__icon--attn { background: var(--g-attn-soft); color: var(--g-attn); }
-    .g-list__icon--izin { background: var(--g-izin-soft); color: var(--g-izin); }
-    .g-list__icon--neutral { background: var(--g-surface-2); color: var(--g-ink); }
-    .g-list__icon--late { background: var(--g-pending-bg); color: var(--g-late); }
 
     .g-list__body {
         flex: 1;
@@ -766,7 +818,7 @@
 
     .g-list__title {
         font-size: 15px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .g-list__desc {
@@ -784,14 +836,14 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 8px;
         min-height: 56px;
         padding: 0 20px;
-        border-radius: 16px;
+        border-radius: 12px;
         border: 1px solid transparent;
         font: inherit;
         font-size: 16px;
-        font-weight: 800;
+        font-weight: 600;
         cursor: pointer;
         transition: transform 150ms var(--g-ease), background-color 160ms var(--g-ease), opacity 160ms var(--g-ease);
     }
@@ -840,8 +892,8 @@
 
     .g-btn--sm {
         min-height: 44px;
-        padding: 0 14px;
-        border-radius: 14px;
+        padding: 0 16px;
+        border-radius: 12px;
         font-size: 14px;
     }
 
@@ -853,9 +905,9 @@
 
     .g-label {
         display: block;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 500;
         color: var(--g-ink);
     }
 
@@ -867,8 +919,8 @@
         display: block;
         width: 100%;
         min-height: 52px;
-        padding: 12px 14px;
-        border-radius: 14px;
+        padding: 12px 16px;
+        border-radius: 12px;
         border: 1.5px solid var(--g-field);
         background: var(--g-surface);
         color: var(--g-ink);
@@ -908,20 +960,20 @@
         padding-right: 44px;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235E665F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 14px center;
+        background-position: right 16px center;
         background-size: 18px;
     }
 
     .g-hint {
-        margin-top: 6px;
+        margin-top: 8px;
         font-size: 12px;
         color: var(--g-muted);
     }
 
     .g-error {
-        margin-top: 6px;
+        margin-top: 8px;
         font-size: 13px;
-        font-weight: 600;
+        font-weight: 500;
         color: var(--g-attn);
     }
 
@@ -931,7 +983,7 @@
 
     .g-search > svg {
         position: absolute;
-        left: 14px;
+        left: 16px;
         top: 50%;
         transform: translateY(-50%);
         color: var(--g-muted);
@@ -954,15 +1006,15 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 6px;
+        gap: 8px;
         min-height: 84px;
-        padding: 10px;
-        border-radius: 16px;
+        padding: 12px;
+        border-radius: 12px;
         border: 1.5px solid var(--g-border);
         background: var(--g-surface);
         color: var(--g-ink);
         font-size: 14px;
-        font-weight: 700;
+        font-weight: 500;
         cursor: pointer;
         transition: border-color 160ms var(--g-ease), background-color 160ms var(--g-ease), transform 120ms var(--g-ease);
     }
@@ -1015,8 +1067,8 @@
         flex-direction: column;
         align-items: center;
         gap: 8px;
-        padding: 18px;
-        border-radius: 16px;
+        padding: 20px;
+        border-radius: 12px;
         border: 1.5px dashed var(--g-field);
         background: var(--g-surface);
         text-align: center;
@@ -1037,7 +1089,7 @@
     .g-seg {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 6px;
+        gap: 4px;
         padding: 4px;
         border-radius: 16px;
         background: var(--g-surface-2);
@@ -1052,7 +1104,7 @@
         min-height: 60px;
         border-radius: 12px;
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 500;
         color: var(--g-muted);
         cursor: pointer;
     }
@@ -1079,8 +1131,8 @@
         display: flex;
         gap: 12px;
         align-items: flex-start;
-        padding: 14px;
-        border-radius: 16px;
+        padding: 16px;
+        border-radius: 12px;
         background: var(--g-surface-2);
         font-size: 14px;
         color: var(--g-ink);
@@ -1089,7 +1141,7 @@
     .g-notice strong {
         display: block;
         font-size: 15px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .g-notice__icon {
@@ -1099,7 +1151,7 @@
         flex: none;
         width: 32px;
         height: 32px;
-        border-radius: 10px;
+        border-radius: 8px;
         background: var(--g-surface);
         color: var(--g-ink);
     }
@@ -1113,7 +1165,7 @@
 
     .g-empty {
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         padding: 32px 20px;
         text-align: center;
     }
@@ -1124,14 +1176,14 @@
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: 14px;
+        border-radius: 12px;
         background: var(--g-surface-2);
         color: var(--g-muted);
     }
 
     .g-empty h2 {
         font-size: 16px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .g-empty p {
@@ -1162,7 +1214,7 @@
         margin: 0;
         max-width: 62%;
         text-align: right;
-        font-weight: 600;
+        font-weight: 500;
     }
 
     /* Informasi (carousel) */
@@ -1187,7 +1239,7 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        border-radius: 20px;
+        border-radius: 16px;
         background: var(--g-surface);
         border: 1px solid var(--g-border);
         scroll-snap-align: start;
@@ -1220,7 +1272,7 @@
         border-radius: 8px;
         background: #FFFFFF;
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 500;
         color: #1E5A48;
     }
 
@@ -1228,7 +1280,7 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
-        padding: 14px;
+        padding: 16px;
     }
 
     /* Menu dan dialog */
@@ -1238,7 +1290,7 @@
         top: calc(100% + 8px);
         z-index: 50;
         width: min(18rem, calc(100vw - 40px));
-        padding: 6px;
+        padding: 4px;
         border-radius: 16px;
         background: var(--g-surface);
         border: 1px solid var(--g-border);
@@ -1248,10 +1300,10 @@
     .g-menu__item {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         width: 100%;
         min-height: 56px;
-        padding: 8px 10px;
+        padding: 8px 12px;
         border-radius: 12px;
         background: transparent;
         color: var(--g-ink);
@@ -1274,7 +1326,7 @@
         width: min(100% - 40px, 24rem);
         padding: 20px;
         border: 0;
-        border-radius: 24px;
+        border-radius: 20px;
         background: var(--g-surface);
         color: var(--g-ink);
     }
@@ -1294,8 +1346,8 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 12px 14px;
-        border-radius: 20px;
+        padding: 12px 16px;
+        border-radius: 16px;
         background: var(--g-hero);
         color: #FFFFFF;
         box-shadow: 0 12px 32px rgb(17 21 18 / 0.25);
@@ -1336,22 +1388,21 @@
     .g-history__date span:last-child {
         margin-top: 4px;
         font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
+        font-weight: 500;
         color: var(--g-muted);
     }
 
     .g-history__times {
         display: flex;
         flex-wrap: wrap;
-        gap: 4px 14px;
+        gap: 4px 16px;
         font-size: 14px;
         color: var(--g-muted);
     }
 
     .g-history__times b {
         color: var(--g-ink);
-        font-weight: 700;
+        font-weight: 600;
     }
 
     /* Kamera */
@@ -1359,7 +1410,7 @@
         position: relative;
         aspect-ratio: 3 / 4;
         overflow: hidden;
-        border-radius: 24px;
+        border-radius: 20px;
         background: #0B0F0C;
     }
 
@@ -1378,7 +1429,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 12px;
         padding: 24px;
         text-align: center;
         background: rgb(11 15 12 / 0.92);
@@ -1387,7 +1438,7 @@
 
     .g-camera__overlay strong {
         font-size: 16px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .g-camera__overlay p {
@@ -1404,13 +1455,13 @@
         z-index: 10;
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 14px;
+        gap: 8px;
+        padding: 12px;
+        border-radius: 12px;
         background: rgb(11 15 12 / 0.8);
         color: #FFFFFF;
         font-size: 15px;
-        font-weight: 700;
+        font-weight: 500;
     }
 
     .g-camera__guide {
@@ -1493,17 +1544,128 @@
     align-items: center;
     min-height: 44px;
     padding: 0 16px;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid var(--g-border);
     background: var(--g-surface);
     color: var(--g-ink);
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .guru .g-pager nav[role="navigation"] span {
     color: var(--g-muted);
 }
+
+/* ── Transisi halaman gaya iOS ─────────────────────────────────────────
+   Jenisnya dipasang skrip di layouts/mobile saat pageswap dan pagereveal.
+   push: halaman baru masuk dari kanan di atas halaman lama; pop: kebalikannya;
+   tab: isi silang pudar singkat dan penanda tab bergeser; sheet: kartu naik dari bawah;
+   dismiss: turun lagi. Nav bawah, penandanya, dan tiap tab punya nama sendiri: nav diam
+   di tempat, penanda bergeser di bawah ikon. Saat sheet, semuanya ikut halaman. */
+.g-nav { view-transition-name: g-nav; }
+.g-nav__ind { view-transition-name: g-nav-ind; }
+.g-nav__item:nth-of-type(1) { view-transition-name: g-tab-1; }
+.g-nav__item:nth-of-type(2) { view-transition-name: g-tab-2; }
+.g-nav__item:nth-of-type(3) { view-transition-name: g-tab-3; }
+.g-nav__item:nth-of-type(4) { view-transition-name: g-tab-4; }
+
+html:active-view-transition-type(sheet, dismiss) :is(.g-nav, .g-nav__ind, .g-nav__item) {
+    view-transition-name: none;
+}
+
+/* Nav tidak silang pudar: keadaan baru langsung tampil dan hanya penanda yang bergeser.
+   Silang pudar teks dan ikon berganti warna/bobot di tengah jalan dan terlihat sebagai kedip.
+   ponytail: tanpa :not(:only-child) (tidak sah setelah pseudo-elemen ini), jadi penanda yang
+   hanya ada di satu sisi (tab ↔ sub-halaman) muncul/hilang seketika, bukan memudar. */
+::view-transition-old(g-nav),
+::view-transition-old(g-nav-ind),
+::view-transition-old(g-tab-1),
+::view-transition-old(g-tab-2),
+::view-transition-old(g-tab-3),
+::view-transition-old(g-tab-4) {
+    display: none;
+}
+
+::view-transition-new(g-nav),
+::view-transition-new(g-nav-ind),
+::view-transition-new(g-tab-1),
+::view-transition-new(g-tab-2),
+::view-transition-new(g-tab-3),
+::view-transition-new(g-tab-4) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-group(g-nav-ind) {
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+html:active-view-transition-type(tab)::view-transition-old(root),
+html:active-view-transition-type(tab)::view-transition-new(root) {
+    animation-duration: 160ms;
+}
+
+html:active-view-transition-type(push, pop, sheet, dismiss)::view-transition-old(root),
+html:active-view-transition-type(push, pop, sheet, dismiss)::view-transition-new(root) {
+    mix-blend-mode: normal;
+    animation-duration: 440ms;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+    animation-fill-mode: both;
+}
+
+html:active-view-transition-type(push)::view-transition-old(root) { animation-name: g-vt-under-out; }
+html:active-view-transition-type(push)::view-transition-new(root) { animation-name: g-vt-over-in; }
+html:active-view-transition-type(pop)::view-transition-new(root) { animation-name: g-vt-under-in; }
+html:active-view-transition-type(pop)::view-transition-old(root) { animation-name: g-vt-over-out; z-index: 1; }
+
+/* Halaman yang di atas membawa bayangan tepi kiri, seperti tumpukan layar iOS. */
+html:active-view-transition-type(push)::view-transition-new(root),
+html:active-view-transition-type(pop)::view-transition-old(root) {
+    box-shadow: -1px 0 0 rgb(0 0 0 / 0.08), -12px 0 32px rgb(0 0 0 / 0.08);
+}
+
+/* Sheet iOS: kartu naik dari bawah; halaman di bawahnya mundur jadi kartu redup yang
+   tepinya mengintip di atas sheet (lihat .g-app--sheet). Latar belakangnya = --g-backdrop. */
+.g-app--sheet {
+    view-transition-name: g-sheet;
+}
+
+html:active-view-transition-type(sheet, dismiss)::view-transition { background: #868581; }
+html.dark:active-view-transition-type(sheet, dismiss)::view-transition { background: #000000; }
+
+html:active-view-transition-type(sheet)::view-transition-old(root),
+html:active-view-transition-type(dismiss)::view-transition-new(root) {
+    transform-origin: top center;
+    clip-path: inset(0 round 12px 12px 0 0);
+}
+
+html:active-view-transition-type(sheet)::view-transition-old(root) { animation-name: g-vt-card-back; }
+html:active-view-transition-type(dismiss)::view-transition-new(root) { animation-name: g-vt-card-front; }
+
+/* Akar halaman sheet hanya latar dan tepi kartu: tampil begitu transisi selesai. */
+html:active-view-transition-type(sheet)::view-transition-new(root),
+html:active-view-transition-type(dismiss)::view-transition-old(root) {
+    animation: none;
+    opacity: 0;
+}
+
+html:active-view-transition-type(sheet)::view-transition-new(g-sheet),
+html:active-view-transition-type(dismiss)::view-transition-old(g-sheet) {
+    mix-blend-mode: normal;
+    animation: g-vt-sheet-in 440ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+html:active-view-transition-type(dismiss)::view-transition-old(g-sheet) { animation-name: g-vt-sheet-out; }
+
+@keyframes g-vt-sheet-in { from { transform: translateY(100%); } }
+@keyframes g-vt-sheet-out { to { transform: translateY(100%); } }
+@keyframes g-vt-card-back { to { transform: translateY(max(12px, env(safe-area-inset-top))) scale(0.92); filter: brightness(0.78); } }
+@keyframes g-vt-card-front { from { transform: translateY(max(12px, env(safe-area-inset-top))) scale(0.92); filter: brightness(0.78); } }
+@keyframes g-vt-over-in { from { transform: translateX(100%); } }
+@keyframes g-vt-over-out { to { transform: translateX(100%); } }
+@keyframes g-vt-under-out { to { transform: translateX(-30%); } }
+@keyframes g-vt-under-in { from { transform: translateX(-30%); } }
 
 @media (prefers-reduced-motion: reduce) {
     .guru *,

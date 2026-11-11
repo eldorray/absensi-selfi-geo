@@ -1,4 +1,4 @@
-<x-layouts.mobile title="Ajukan Izin" backUrl="{{ route('attendance.leaves.index') }}" activeTab="izin">
+<x-layouts.mobile title="Ajukan Izin" backUrl="{{ route('attendance.leaves.index') }}" :isSheet="true">
     <form action="{{ route('attendance.leaves.store') }}" method="POST" enctype="multipart/form-data" class="g-card"
         x-data="{
             sending: false,
@@ -62,8 +62,8 @@
                 <template x-if="imagePreview">
                     <img :src="imagePreview" alt="Pratinjau lampiran" class="g-drop__preview">
                 </template>
-                <span x-show="! imagePreview" class="g-list__icon g-list__icon--izin"><x-guru.icon name="image" /></span>
-                <span class="font-bold" x-text="imagePreview ? 'Ganti foto' : 'Pilih foto bukti atau surat'">Pilih foto bukti atau surat</span>
+                <span x-show="! imagePreview" class="g-list__icon"><x-guru.icon name="image" /></span>
+                <span class="font-semibold" x-text="imagePreview ? 'Ganti foto' : 'Pilih foto bukti atau surat'">Pilih foto bukti atau surat</span>
                 <span id="attachment-hint" class="text-xs text-guru-muted">JPG atau PNG, maksimal 5 MB</span>
             </label>
             <button type="button" x-show="imagePreview" x-cloak @click="clearFile()" class="g-btn g-btn--secondary g-btn--sm mt-2 self-start">

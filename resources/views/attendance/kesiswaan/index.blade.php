@@ -2,11 +2,11 @@
     <div class="flex flex-col gap-5" data-kesiswaan-list="mobile">
         <x-guru.card as="section" data-kesiswaan-hero="directory">
             <div class="flex items-start gap-3">
-                <span class="g-list__icon size-11 rounded-[14px]"><x-guru.icon name="school" :size="22" /></span>
+                <span class="g-list__icon size-11 rounded-xl"><x-guru.icon name="school" :size="22" /></span>
                 <div class="min-w-0">
                     <span class="g-card__caps">Petugas kesiswaan</span>
                     <h2 class="g-card__title">Direktori siswa</h2>
-                    <p class="mt-1 text-sm text-guru-muted">Buka profil siswa dan pantau ringkasan penanganan sesuai kewenangan Anda.</p>
+                    <p class="mt-1 text-sm text-guru-muted">Buka profil siswa dan pantau ringkasan penanganan sesuai kewenangan Anda</p>
                 </div>
             </div>
             <dl class="g-dl">
@@ -27,19 +27,19 @@
             @if (request('search'))
                 <div class="flex items-center justify-between gap-3 text-xs">
                     <p class="truncate text-guru-muted">Hasil untuk “{{ request('search') }}”</p>
-                    <a href="{{ route('attendance.kesiswaan.index') }}" class="flex min-h-11 items-center font-bold">Hapus pencarian</a>
+                    <a href="{{ route('attendance.kesiswaan.index') }}" class="flex min-h-11 items-center font-semibold">Hapus pencarian</a>
                 </div>
             @endif
         </form>
 
-        <section id="student-directory" class="flex scroll-mt-4 flex-col gap-2.5" aria-labelledby="judul-direktori">
+        <section id="student-directory" class="flex scroll-mt-4 flex-col gap-3" aria-labelledby="judul-direktori">
             <div class="flex items-end justify-between gap-3">
                 <h2 id="judul-direktori" class="g-h2">Siswa dalam cakupan</h2>
-                <span class="g-num text-xs font-bold text-guru-muted">{{ $students->firstItem() ?? 0 }}–{{ $students->lastItem() ?? 0 }}</span>
+                <span class="g-num text-xs font-semibold text-guru-muted">{{ $students->firstItem() ?? 0 }}–{{ $students->lastItem() ?? 0 }}</span>
             </div>
 
             @if ($students->isEmpty())
-                <x-guru.empty icon="search" title="Siswa tidak ditemukan">Ubah kata pencarian atau hapus pencarian untuk melihat semua siswa dalam cakupan.</x-guru.empty>
+                <x-guru.empty icon="search" title="Siswa tidak ditemukan">Ubah kata pencarian atau hapus pencarian untuk melihat semua siswa dalam cakupan</x-guru.empty>
             @else
                 <x-guru.list>
                     @foreach ($students as $student)

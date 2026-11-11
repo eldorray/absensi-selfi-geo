@@ -3,9 +3,9 @@
     $iconFor = fn ($leave) => match ($leave->type) { 'sakit' => 'medical', 'cuti' => 'briefcase', default => 'doc' };
 @endphp
 
-<x-layouts.mobile title="Perizinan Saya" backUrl="{{ route('attendance.dashboard') }}" activeTab="izin">
+<x-layouts.mobile title="Perizinan Saya" activeTab="izin">
     <x-slot:headerAction>
-        <x-guru.button :href="route('attendance.leaves.create')" icon="plus" class="g-btn--sm">Ajukan</x-guru.button>
+        <x-guru.button :href="route('attendance.leaves.create')" icon="plus" class="g-btn--sm" data-nav="sheet">Ajukan</x-guru.button>
     </x-slot:headerAction>
 
     @if (session('success'))
@@ -14,15 +14,15 @@
 
     @if ($leaves->isEmpty())
         <x-guru.empty icon="doc" title="Belum ada pengajuan">
-            Izin, cuti, atau sakit yang Anda ajukan tampil di sini beserta statusnya.
+            Izin, cuti, atau sakit yang Anda ajukan tampil di sini beserta statusnya
             <x-slot:action>
-                <x-guru.button :href="route('attendance.leaves.create')" icon="plus">Ajukan Izin</x-guru.button>
+                <x-guru.button :href="route('attendance.leaves.create')" icon="plus" data-nav="sheet">Ajukan Izin</x-guru.button>
             </x-slot:action>
         </x-guru.empty>
     @else
         <x-guru.list>
             @foreach ($leaves as $leave)
-                <x-guru.list-item :href="route('attendance.leaves.show', $leave)" :icon="$iconFor($leave)" tone="izin"
+                <x-guru.list-item :href="route('attendance.leaves.show', $leave)" :icon="$iconFor($leave)"
                     :title="$leave->type_label.' · '.$leave->duration.' hari'" :desc="$leave->reason">
                     <span class="g-list__desc g-num">
                         {{ $leave->start_date->locale('id')->isoFormat('D MMM Y') }}@if (! $leave->start_date->equalTo($leave->end_date)) – {{ $leave->end_date->locale('id')->isoFormat('D MMM Y') }}@endif

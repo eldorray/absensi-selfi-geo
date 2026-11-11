@@ -14,7 +14,7 @@
         <div class="flex items-center gap-3">
             <span class="g-avatar">{{ $leave->user->initials() }}</span>
             <div class="min-w-0">
-                <p class="truncate text-[17px] font-bold">{{ $leave->user->name }}</p>
+                <p class="truncate text-[17px] font-semibold">{{ $leave->user->name }}</p>
                 <p class="truncate text-xs text-guru-muted">{{ $leave->user->role?->name ?? 'Pegawai' }} · {{ $leave->user->office?->name ?? '-' }}</p>
             </div>
         </div>
@@ -67,7 +67,7 @@
             <div class="flex items-center gap-3">
                 <span class="g-avatar g-avatar--sm">{{ $leave->approver?->initials() ?? '?' }}</span>
                 <div class="min-w-0">
-                    <p class="truncate font-bold">{{ $leave->approver?->name ?? '-' }}</p>
+                    <p class="truncate font-semibold">{{ $leave->approver?->name ?? '-' }}</p>
                     <p class="text-xs text-guru-muted">{{ $leave->approved_at?->locale('id')->isoFormat('D MMM Y, HH.mm') ?? '-' }}</p>
                 </div>
             </div>

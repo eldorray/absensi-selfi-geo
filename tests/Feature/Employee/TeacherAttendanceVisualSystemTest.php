@@ -41,8 +41,18 @@ it('renders teacher pages inside the AbsenKU Guru shell', function (string $rout
     'profile form' => ['attendance.profile', 'Profil Saya'],
     'password form' => ['attendance.password', 'Ganti Password'],
     'leave list' => ['attendance.leaves.index', 'Perizinan Saya'],
-    'leave create form' => ['attendance.leaves.create', 'Jenis Perizinan'],
 ]);
+
+it('renders the leave form as an iOS-style sheet without the tab bar', function () {
+    $this->actingAs(teacherForVisualSystem())
+        ->get(route('attendance.leaves.create'))
+        ->assertSuccessful()
+        ->assertSee('<body class="guru" data-teacher-ui="absenku-guru">', false)
+        ->assertSee('class="g-app g-app--sheet"', false)
+        ->assertSee('aria-label="Tutup" data-nav="dismiss"', false)
+        ->assertDontSee('aria-label="Navigasi utama"', false)
+        ->assertSee('Jenis Perizinan');
+});
 
 it('shows three tabs for a regular teacher and marks the current one', function () {
     $html = $this->actingAs(teacherForVisualSystem())
@@ -51,6 +61,7 @@ it('shows three tabs for a regular teacher and marks the current one', function 
         ->getContent();
 
     expect(substr_count($html, 'class="g-nav__item"'))->toBe(3)
+        ->and($html)->toContain('<span class="g-nav__ind" style="--g-tab: 1" aria-hidden="true"></span>')
         ->and($html)->toContain('href="'.route('attendance.index').'" class="g-nav__item" aria-current="page"')
         ->not->toContain('href="'.route('attendance.my-class.index').'" class="g-nav__item"');
 });

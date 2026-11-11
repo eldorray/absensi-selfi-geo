@@ -76,7 +76,7 @@
     </section>
 
     <x-guru.list>
-        <x-guru.list-item :href="route('attendance.password')" icon="lock" tone="neutral" title="Ganti Password" desc="Kelola kata sandi akun" />
+        <x-guru.list-item :href="route('attendance.password')" icon="lock" title="Ganti Password" desc="Kelola kata sandi akun" />
     </x-guru.list>
 
     <x-guru.card as="div">

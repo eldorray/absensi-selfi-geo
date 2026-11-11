@@ -2,7 +2,7 @@
     <div x-data="checkoutForm()" x-init="init()" class="flex flex-col gap-4">
         @if (! $todayAttendance)
             <x-guru.empty icon="login" title="Belum absen masuk">
-                Absen masuk dulu sebelum mencatat absen pulang hari ini.
+                Absen masuk dulu sebelum mencatat absen pulang hari ini
                 <x-slot:action>
                     <x-guru.button :href="route('attendance.selfie')" icon="login">Absen Masuk Sekarang</x-guru.button>
                 </x-slot:action>
@@ -11,7 +11,7 @@
             <x-guru.empty icon="clock" title="Belum waktunya pulang">
                 Absen pulang dibuka pukul {{ $checkoutOpensAt->format('H.i') }}.
                 <x-slot:action>
-                    <x-guru.button variant="secondary" :href="route('attendance.dashboard')" icon="home">Kembali ke Beranda</x-guru.button>
+                    <x-guru.button variant="secondary" :href="route('attendance.dashboard')" icon="home" data-nav="pop">Kembali ke Beranda</x-guru.button>
                 </x-slot:action>
             </x-guru.empty>
         @elseif ($todayAttendance->hasCheckedOut())
@@ -29,7 +29,7 @@
                         <span class="g-hero__time-value">{{ $todayAttendance->check_out_at->format('H.i') }}</span>
                     </div>
                 </div>
-                <x-guru.button variant="hero" :href="route('attendance.dashboard')" icon="home">Kembali ke Beranda</x-guru.button>
+                <x-guru.button variant="hero" :href="route('attendance.dashboard')" icon="home" data-nav="pop">Kembali ke Beranda</x-guru.button>
             </x-guru.card>
         @else
             @include('attendance.partials.absen-form', ['mode' => 'pulang', 'action' => route('attendance.checkout.store')])

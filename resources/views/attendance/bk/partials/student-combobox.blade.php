@@ -45,7 +45,7 @@
         class="g-input mt-2 flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left"
         role="combobox" :aria-expanded="open" aria-controls="primary-student-options" aria-haspopup="listbox">
         <span class="min-w-0">
-            <span class="block truncate text-xs font-bold" x-text="selected?.name || 'Pilih siswa'"></span>
+            <span class="block truncate text-xs font-semibold" x-text="selected?.name || 'Pilih siswa'"></span>
             <span class="block truncate text-xs text-guru-muted" x-show="selected" x-text="selected ? `${selected.className} · NISN ${selected.nisn}` : 'Cari nama, NISN, NIK, atau kelas'"></span>
         </span>
         <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"></path></svg>
@@ -65,7 +65,7 @@
                     <button type="button" @click="choose(student)" @mouseenter="activeIndex = index"
                         class="flex min-h-12 w-full items-center justify-between rounded-xl px-3 py-2 text-left"
                         :class="activeIndex === index ? 'bg-guru-primary-soft text-guru-primary' : 'hover:bg-guru-surface-2'">
-                        <span class="min-w-0"><span class="block truncate text-xs font-bold" x-text="student.name"></span><span class="block truncate text-xs text-guru-muted" x-text="`${student.className} · NISN ${student.nisn} · NIK ${student.nik}`"></span></span>
+                        <span class="min-w-0"><span class="block truncate text-xs font-semibold" x-text="student.name"></span><span class="block truncate text-xs text-guru-muted" x-text="`${student.className} · NISN ${student.nisn} · NIK ${student.nik}`"></span></span>
                         <svg x-show="selectedId === student.id" class="h-4 w-4 shrink-0 text-guru-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m5 13 4 4L19 7"></path></svg>
                     </button>
                 </li>

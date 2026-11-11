@@ -20,12 +20,12 @@
     @endif
 
     @if ($notifications->isEmpty())
-        <x-guru.empty icon="bell" title="Belum ada notifikasi">Kabar rujukan siswa akan muncul di sini.</x-guru.empty>
+        <x-guru.empty icon="bell" title="Belum ada notifikasi">Kabar rujukan siswa akan muncul di sini</x-guru.empty>
     @else
         <x-guru.list>
             @foreach ($notifications as $notification)
                 <x-guru.list-item :href="route('attendance.kesiswaan.notifications.show', $notification)" icon="send"
-                    :tone="$notification->read_at ? 'neutral' : 'primary'"
+                   
                     :title="$notification->data['student_name'] ?? 'Rujukan siswa'"
                     :desc="($statusLabels[$notification->data['status'] ?? 'new'] ?? 'Kabar rujukan').' · '.$notification->created_at->locale('id')->diffForHumans()">
                     @unless ($notification->read_at)

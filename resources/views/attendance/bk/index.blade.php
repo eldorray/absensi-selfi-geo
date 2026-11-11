@@ -7,11 +7,11 @@
         <x-guru.button :href="route('attendance.bk.create')" icon="plus" class="g-btn--sm">Tambah</x-guru.button>
     </x-slot:headerAction>
 
-    <p class="text-sm text-guru-muted">Catatan bimbingan dan konseling yang Anda tangani.</p>
+    <p class="text-sm text-guru-muted">Catatan bimbingan dan konseling yang Anda tangani</p>
 
     @if ($records->isEmpty())
         <x-guru.empty icon="chat" title="Belum ada catatan">
-            Buat catatan pertama untuk siswa yang Anda tangani.
+            Buat catatan pertama untuk siswa yang Anda tangani
             <x-slot:action>
                 <x-guru.button :href="route('attendance.bk.create')" icon="plus">Buat Catatan</x-guru.button>
             </x-slot:action>

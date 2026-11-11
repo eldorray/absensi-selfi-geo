@@ -37,7 +37,7 @@
             <div class="flex items-center gap-3">
                 <span class="g-avatar g-avatar--sm">{{ $leave->approver?->initials() ?? '?' }}</span>
                 <div class="min-w-0">
-                    <p class="truncate font-bold">{{ $leave->approver?->name ?? '-' }}</p>
+                    <p class="truncate font-semibold">{{ $leave->approver?->name ?? '-' }}</p>
                     <p class="text-xs text-guru-muted">{{ $leave->approved_at?->locale('id')->isoFormat('D MMM Y, HH.mm') ?? '-' }}</p>
                 </div>
             </div>

@@ -50,7 +50,7 @@ test('beranda renders the header, date line and hero inside the guru shell', fun
         ->assertSee('<body class="guru" data-teacher-ui="absenku-guru">', false)
         ->assertSee('data-profile-link="teacher-identity"', false)
         ->assertSee('aria-label="Buka profil Siti Rahmawati"', false)
-        ->assertSee('Selamat pagi,')
+        ->assertDontSee('Selamat pagi,')
         ->assertSee('Senin, 20 Juli')
         ->assertSee('data-hero="today"', false)
         ->assertSee('Tepat waktu s.d. 07.10')
